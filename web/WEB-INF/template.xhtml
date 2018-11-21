@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title><ui:insert name="title">PrimeFaces babylon</ui:insert></title>
+        <h:outputScript name="js/nanoscroller.js" library="babylon-layout" />
+        <h:outputScript name="js/layout.js" library="babylon-layout" />
+        <ui:insert name="head"/>
+    </h:head>
+
+    <h:body>
+        <div class="layout-wrapper #{guestPreferences.menuMode} #{guestPreferences.menuColor}">
+            <ui:include src="./topbar.xhtml"></ui:include>
+            <ui:include src="./menu.xhtml"></ui:include>
+
+            <div class="layout-main">       
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> 
+                        <span>/ </span>
+                        <ui:insert name="viewname" />
+                    </div>
+                </div> 
+                <div class="layout-content" style="min-height:300px">
+                    <ui:insert name="content"></ui:insert>
+                </div>
+            </div>
+
+            <div class="layout-footer">
+                <ui:include src="./footer.xhtml"></ui:include>
+            </div>
+
+            <p:ajaxStatus styleClass="layout-ajax-loader">
+                <f:facet name="start">
+                    <i class="fa fa-circle-o-notch fa-spin layout-ajax-loader-icon" aria-hidden="true"></i>
+                </f:facet>
+
+                <f:facet name="complete">
+                    <h:outputText value="" />
+                </f:facet>
+            </p:ajaxStatus>
+
+            <div class="layout-mask"></div>
+        </div>
+       
+        <h:outputStylesheet name="css/nanoscroller.css" library="babylon-layout" />
+        <h:outputStylesheet name="css/primeflex.css" library="babylon-layout" />
+        <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="babylon-layout" />
+    </h:body>
+
+</html>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    
+    <!--<name>primefaces_babylon</name> -->
+    
+    <component>
+        <component-type>org.primefaces.component.BabylonMenu</component-type>
+        <component-class>org.primefaces.babylon.component.BabylonMenu</component-class>
+    </component>
+    
+    <render-kit>
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.BabylonMenuRenderer</renderer-type>
+            <renderer-class>org.primefaces.babylon.component.BabylonMenuRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+    
+    <managed-bean>
+        <managed-bean-name>administrationAction</managed-bean-name>
+        <managed-bean-class>erp.action.AdministrationAction</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    
+    <converter>
+        <converter-id>UserrolesConverter</converter-id>
+        <converter-class>erp.converter.UserrolesConverter</converter-class>
+    </converter> 
+    
+    <application>
+        <action-listener>org.primefaces.application.DialogActionListener</action-listener>
+        <navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
+        <view-handler>org.primefaces.application.DialogViewHandler</view-handler>       
+        <locale-config>
+            <default-locale>gr</default-locale>
+        </locale-config>
+        <resource-bundle>
+            <base-name>erp.bundle.MessageBundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
+        <message-bundle>
+            erp.bundle.skeletonmsg
+        </message-bundle>                
+    </application>
+ 
+    <lifecycle>
+        <phase-listener>org.omnifaces.eventlistener.ResetInputAjaxActionListener</phase-listener>
+    </lifecycle>
+    
+</faces-config>

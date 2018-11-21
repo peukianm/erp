@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+            <meta name="apple-mobile-web-app-capable" content="yes" />            
+        </f:facet>
+        <title>#{bundle.loginPage}</title>
+
+    </h:head>
+
+    <h:body styleClass="login-body">
+
+        <div class="login-panel"></div>
+
+        <div class="login-content">
+            <p:graphicImage name="images/logo-black.png" library="babylon-layout" />
+
+            <h1>#{bundle.signIn}</h1>
+            <p>#{bundle.welcomeMsg}</p>
+
+
+            <h:form id="loginForm">
+
+                <p:messages class="erp-login-msg" id="msgs"/>  
+                <div class="login-input-wrapper">                    
+                    <p:inputText id="username" value="#{userBean.username}" required="true" label="username" requiredMessage="#{bundle.username}:#{bundle.mandatoryField}" />  			              
+                    <!--<p:message for="username" display="icon"/> -->
+                    <i class="fa fa-user" />
+
+                </div>
+
+                <div class="login-input-wrapper">
+                    <p:password id="password" value="#{userBean.password}" label="password" required="true" requiredMessage="#{bundle.password}:#{bundle.mandatoryField}" />  			              
+                    <!--<p:message for="password" id="msgPassword" display="icon"/> -->
+                    <i class="fa fa-lock" />
+                </div>
+
+
+                <p:commandButton id="btn" value="#{bundle.entrance}" update="loginForm, :selectRolePanel"  action="#{administrationAction.loginAction}" style="" /> <br/>
+                <!--<p:spacer height="15" width="0" /> -->
+                <h:commandLink immediate="true" action="#{administrationAction.goResetPasswordEmail()}"  value="#{bundle.forgetPassword}" style="font-weight: bold; color: #069;text-decoration: underline;font-size: 11px"   />
+
+            </h:form>
+
+
+            <p:dialog id="selectRoleDialogID" header="#{bundle.selectRole}" widgetVar="selectRoleDialog" visible="false"  
+                      modal="true" resizable="false" position="center" parent="" >  
+                <p:panel id="selectRolePanel" style="padding:0px ! important;" > 
+                    <h:form id="selectRoleForm"> 
+
+                        <table>
+                            <tr>
+                                <td>
+                                    <p:selectOneMenu value="#{roleSelectionBean.selectedRole}" converter="UserrolesConverter"  onchange="" >									 
+                                        <f:selectItem itemLabel="#{bundle.selectRole}" itemValue=""  />
+                                        <f:selectItems value="#{roleSelectionBean.userroles}" var="userrole" itemLabel="#{userrole.role.name}" itemValue="#{userrole}"   />
+                                        <p:ajax update="@form" /> 
+                                    </p:selectOneMenu>
+                                </td>
+                            </tr>
+
+                            <tr>                                    
+                                <td>
+                                    <p:commandButton update=":selectRolePanel" disabled="#{roleSelectionBean.selectedRole==null}" value="#{bundle.select}" oncomplete="selectRoleDialog.hide()" action="#{administrationAction.selectRole}"  />
+                                    <p:commandButton value="#{bundle.cancel}" onclick="selectRoleDialog.hide()"  />
+                                </td>
+                            </tr>
+                        </table>
+
+                    </h:form>
+                </p:panel>
+            </p:dialog>
+
+        </div> 
+
+        <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="babylon-layout" />
+        <h:outputStylesheet name="css/erp.css" library="babylon-layout" />
+
+    </h:body>
+
+</html>

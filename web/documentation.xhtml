@@ -1,0 +1,989 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Documentation</ui:define>
+    
+    <ui:define name="head">
+        <style type="text/css">
+            .docs h1 {
+                margin-top: 30px;
+            }
+            
+            .docs p,
+            .docs li {
+                line-height: 1.5;
+            }
+            
+            .docs pre {
+                font-family: monospace;
+                background-color: #E0E0E0;
+                color: #212121;
+                padding: 1em;
+                font-size: 14px;
+                border-radius: 3px;
+                overflow: auto;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="viewname">
+        <li><p:link outcome="/documentation">Documentation</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+    
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card docs">   
+                    <h1>Getting Started</h1>
+                    <p>First of all, you'd need SASS to compile CSS, proceed to <a href="https://sass-lang.com/install">SASS Installation</a> before beginning if you do not have SASS available in your command line.</p>
+                    <p>Demo project has an integrated jetty plugin so running the sample is easy as building the css first followed by the mvn jetty:run command.</p>
+<pre>
+sass --update src/main/webapp/resources/ --sourcemap=none
+mvn jetty:run
+</pre> 
+                    <p>Navigate to <b>http://localhost:8080/babylon</b> to view the demos which is exactly same as the live version.</p>                 
+                    
+                    <h1>Layout</h1>
+                    <p>Babylon utilizes <a href="http://docs.oracle.com/javaee/6/tutorial/doc/giqxp.html">JSF templating APIs</a> and provides a main template.xhtml along with additional <i>topbar</i>, <i>sidebar</i>, <i>rightpanel</i> and <i>footer</i> fragments for the base layout. 
+                        These xhtml files must be placed under WEB-INF folder and client pages should reference the template.xhtml as their template. 
+                        Provided empty.xhtml is a sample content page using the main template.xhtml that defines "content" as the main ui:define placeholder. By default template defines 3 placeholders 
+                        (page title, breadcrumb and actual content) and you many add more as per your requirements.</p>
+                        
+                    <p>Sample page below uses the main template from babylon.</p>
+<pre>
+&lt;ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"&gt;
+                
+    &lt;ui:define name="title"&gt;Test Page&lt;/ui:define&gt;
+
+    &lt;ui:define name="content"&gt;
+        Content goes here
+    &lt;/ui:define&gt;
+
+&lt;/ui:composition&gt;
+</pre>
+                    
+                    <p>Other required assets are the css, javascript and images that are located inside resources/babylon-layout folder, simply copy the babylon-layout folder to your <b>%WEB-APP-FOLDER%/resources</b> folder 
+                        so that final path would be <b>%WEB-APP-FOLDER%/resources/babylon-layout/</b>. Please refer to demo app or maven project of the demo app as the reference.</p>
+                    
+                    <h1>GuestPreferences Bean</h1>
+                    <p>GuestPreferences is a simple session scoped bean to keep the user customizations of the layout, template xhtml files
+                    refer to this bean to dynamically change their behavior such as menu mode or theme. This bean is not necessary to run the babylon
+                    and only used for demo purposes. For example template.xhtml includes layout color depending on a user preference using an EL expression.</p>
+<pre>
+&lt;h:outputStylesheet name="css/layout-\#{guestPreferences.theme}.css" library="babylon-layout" /&gt;
+</pre>               
+                    <p>In your application, you may also need a similar bean to make the template dynamic so that your users will be able to change their preferred menu or theme.</p>  
+                       
+                    <p>Source code of GuestPreferences.</p>
+<pre>
+public class GuestPreferences implements Serializable {
+    
+    private String menuMode = "layout-static";
+
+    private String theme = "blue-accent";
+
+    private String layout = "blue";
+
+    private boolean darkMenu = true;
+
+    private String profileMode = "popup";
+    
+    private boolean groupedMenu = true;
+
+    private boolean darkLogo;
+
+    public String getLayout() {		
+        return this.layout;
+    }
+
+    public String getTheme() {		
+        return this.theme;
+    }
+    
+    public void setTheme(String theme) {
+        this.theme = theme;
+        this.layout = this.theme.split("-")[0];
+        this.darkLogo = this.layout.equals("lime") || this.layout.equals("yellow");
+    }
+
+    public void changeTheme(String theme, boolean dark) {
+        this.setTheme(theme);
+        this.darkMenu = dark;
+    }
+
+    public String getMenuMode() {
+        return this.menuMode;
+    }
+
+    public void setMenuMode(String menuMode) {
+        this.menuMode = menuMode;
+        
+        if (this.menuMode.equals("layout-horizontal")) {
+            this.groupedMenu = true;
+        }
+    }
+    
+    public boolean isDarkMenu() {
+        return this.darkMenu;
+    }
+
+    public void setDarkMenu(boolean darkMenu) {
+        this.darkMenu = darkMenu;
+    } 
+
+    public String getMenuColor() {
+        return this.darkMenu ? "layout-menu-dark" : "layout-menu-light";
+    }
+
+    public String getProfileMode() {
+        return this.profileMode;
+    }
+
+    public void setProfileMode(String profileMode) {
+        this.profileMode = profileMode;
+    }
+    
+    public boolean isGroupedMenu() {
+        return this.groupedMenu;
+    }
+
+    public void setGroupedMenu(boolean value) {
+        this.groupedMenu = value;
+        this.menuMode = "layout-static";
+    }
+    
+    public boolean isDarkLogo() {
+        return this.darkLogo;
+    }
+}    
+</pre>
+                    
+                    <h1>Theme</h1>
+                    <p>Babylon provides 51 PrimeFaces theme colors out of the box. Setup of a theme simple as including the theme jar in your classpath and defining primefaces.THEME 
+                        context parameter in web.xml such as "babylon-blue-accent". A theme color offers 3 alternatives, in "accent" mode a secondary color is used for highlighted elements
+                        and headers are displayed with the primary color. In "light" and "dark" alternatives, highlighted elements use the primary color and header elements 
+                        are displayed as light or dark. Full list of available themes are;</p>
+                    
+                    <ul>
+                        <li>babylon-amber-accent</li>
+                        <li>babylon-amber-dark</li>
+                        <li>babylon-amber-light</li>
+                        <li>babylon-blue-accent</li>
+                        <li>babylon-blue-dark</li>
+                        <li>babylon-blue-light</li>
+                        <li>babylon-bluegrey-accent</li>
+                        <li>babylon-bluegrey-dark</li>
+                        <li>babylon-bluegrey-light</li>
+                        <li>babylon-brown-accent</li>
+                        <li>babylon-brown-dark</li>
+                        <li>babylon-brown-light</li>
+                        <li>babylon-cyan-accent</li>
+                        <li>babylon-cyan-dark</li>
+                        <li>babylon-cyan-light</li>
+                        <li>babylon-deeporange-accent</li>
+                        <li>babylon-deeporange-dark</li>
+                        <li>babylon-deeporange-light</li>
+                        <li>babylon-deeppurple-accent</li>
+                        <li>babylon-deeppurple-dark</li>
+                        <li>babylon-deeppurple-light</li>
+                        <li>babylon-green-accent</li>
+                        <li>babylon-green-dark</li>
+                        <li>babylon-green-light</li>
+                        <li>babylon-indigo-accent</li>
+                        <li>babylon-indigo-dark</li>
+                        <li>babylon-indigo-light</li>
+                        <li>babylon-lightblue-accent</li>
+                        <li>babylon-lightblue-dark</li>
+                        <li>babylon-lightblue-light</li>
+                        <li>babylon-lightgreen-accent</li>
+                        <li>babylon-lightgreen-dark</li>
+                        <li>babylon-lightgreen-light</li>
+                        <li>babylon-lime-accent</li>
+                        <li>babylon-lime-dark</li>
+                        <li>babylon-lime-light</li>
+                        <li>babylon-orange-accent</li>
+                        <li>babylon-orange-dark</li>
+                        <li>babylon-orange-light</li>
+                        <li>babylon-pink-accent</li>
+                        <li>babylon-pink-dark</li>
+                        <li>babylon-pink-light</li>
+                        <li>babylon-purple-accent</li>
+                        <li>babylon-purple-dark</li>
+                        <li>babylon-purple-light</li>
+                        <li>babylon-teal-accent</li>
+                        <li>babylon-teal-dark</li>
+                        <li>babylon-teal-light</li>
+                        <li>babylon-yellow-accent</li>
+                        <li>babylon-yellow-dark</li>
+                        <li>babylon-yellow-light</li>
+                    </ul>
+                    
+                    <p>A custom theme can be developed by the following steps.</p>
+                    <ul>
+                        <li>Create a custom theme folder such as primefaces-babylon-myown under webapp/resources and place an empty theme.scss inside.</li>
+                        <li>Copy the sass folder from the distribution to webapp/resources.</li>
+                        <li>Define the variables listed below along with the imports at the end.</li>
+                        <li>Build the scss to generate css.</li>
+                        <li>Set primefaces.THEME context parameter as <i>babylon-myown</i></li>
+                        <li>Either bundle the css in a jar file for reuse between different projects or serve from webapp/resources/primefaces-babylon-myown folder using a h:outputStyleSheet.</li>
+                    </ul>
+                    
+                    <p>Here are the variables required to create a theme.</p>
+                        
+<pre>
+$primaryLighterColor:#BBDEFB;
+$primaryColor:#2196F3;
+$primaryDarkerColor:#1976D2;
+$primaryDarkestColor:#1565C0;
+$primaryColorText:#ffffff;
+
+$accentColor:$primaryColor;
+$accentDarkerColor:$primaryDarkerColor;
+$accentColorText:$primaryColorText;
+
+$containerHeaderBgColor:#eeeeee;
+$containerHeaderBorder:1px solid #e0e0e0;
+$containerHeaderTextColor:#212121;
+$containerHeaderIconColor:#757575;
+$containerHeaderIconHoverColor:#212121;
+
+$clickableContainerHeaderBgColor:#eeeeee;
+$clickableContainerHeaderBorder:1px solid #e0e0e0;
+$clickableContainerHeaderTextColor:#212121;
+$clickableContainerHeaderIconColor:#757575;
+
+$clickableContainerHeaderHoverBgColor:#e0e0e0;
+$clickableContainerHeaderHoverBorder:1px solid #bdbdbd;
+$clickableContainerHeaderHoverTextColor:#212121;
+$clickableContainerHeaderHoverIconColor:#757575;
+
+$clickableContainerHeaderActiveBgColor:$primaryColor;
+$clickableContainerHeaderActiveBorder:1px solid $primaryColor;
+$clickableContainerHeaderActiveTextColor:$primaryColorText;
+$clickableContainerHeaderActiveIconColor:$primaryColorText;
+
+$clickableContainerHeaderActiveHoverBgColor:$primaryDarkerColor;
+$clickableContainerHeaderActiveHoverHoverBorder:1px solid $primaryDarkerColor;
+$clickableContainerHeaderActiveHoverTextColor:$primaryColorText;
+$clickableContainerHeaderActiveHoverIconColor:$primaryColorText;
+
+@import '../sass/_theme_variables';
+@import '../sass/theme/_core';
+</pre> 
+                        
+                    <p> An example sass command to compile the css would be;</p>
+                        
+<pre>
+sass src/main/webapp/resources/primefaces-babylon-myown/theme.scss src/main/webapp/resources/primefaces-babylon-myown/theme.css  --sourcemap=none
+</pre>
+
+                    <p>Watch mode is handy to avoid compiling everytime when a change is made, instead use the following command
+                    so that sass generates the file whenever you make a customization. This builds all css files whenever a change is made to any scss file.</p>
+<pre>
+sass -w src/main/webapp/resources/ --sourcemap=none
+</pre> 
+
+                    <h1>Layout</h1>
+                    <p>Layout customization is similar to theme method.</p>
+                    <ul>
+                        <li>Choose a layout name such as layout-myown.</li>
+                        <li>Create an empty file named layout-myown.scss inside resources/babylon-layout/css folder.</li>
+                        <li>Copy the sass folder from the distribution to webapp/resources.</li>
+                        <li>Define the variables listed below along with the import at the end.</li>
+                        <li>Build the scss to generate css</li>
+                        <li>Serve the css by importing it using h:outputStylesheet.</li>
+                    </ul>
+
+                    <p>Here are the variables required to create a layout.</p>
+                        
+<pre>
+$logoBgColor:#42A5F5;
+$topbarBgColor:#2196F3;
+$topbarIconColor:#ffffff;
+$topbarIconHoverBgColor:#64b5f6;
+$lightMenuitemActiveTextColor:#2196F3;
+$darkMenuitemActiveTextColor:#2196F3;
+$horizontalMenuitemActiveBgColor:#2196F3;
+$horizontalMenuitemActiveTextColor:#ffffff;
+$badgeBgColor:#2196F3;
+$badgeTextColor:#ffffff;
+
+@import '../../sass/layout/_layout';
+</pre> 
+
+                    <h1>SASS Variables</h1>
+                    <p>In case you'd like to customize common variables such as font-size, the _variables.scss under the sass folder is where they are defined.</p>
+<pre>
+$fontFamily:'cabin',sans-serif;
+$fontSize:14px;
+$textColor:#212121;
+$textSecondaryColor:#727272;
+$borderRadius:3px;
+$transitionDuration:.3s;
+</pre> 
+
+                    <p>_variables.scss under sass/layout folder define the shared variables of the layout.</p>
+<pre>
+@import '../_variables';
+
+//main
+$bodyBgColor:#f2f2f2;
+$dividerColor:#E0E0E0;
+
+$footerBgColor:#ffffff;
+$footerBorderColor:#e8e8e8;
+
+//breadcrumb
+$breadcrumbBgColor:#ffffff;
+$breadcrumbBorder: 1px solid #e8e8e8;
+
+//light menu
+$menuBgColor:#ffffff;
+$menuBorder: 1px solid #E0E0E0;
+$menuSeparator:1px solid $dividerColor;
+$rootMenuitemTextColor:$textSecondaryColor;
+$menuitemTextColor:$textSecondaryColor;
+$menuitemIconColor:$textSecondaryColor;
+$menuitemHoverBgColor:#e0e0e0;
+
+//dark menu
+$darkMenuBgColor:#212121;
+$darkMenuBorder: 1px solid #212121;
+$darkMenuSeparator:1px solid #373737;
+$darkMenuRootMenuitemTextColor:#757575;
+$darkMenuitemTextColor:#BDBDBD;
+$darkMenuitemIconColor:#BDBDBD;
+$darkMenuitemHoverBgColor:#373737;
+
+//topbar
+$topbarMenuBgColor:#ffffff;
+$topbarMenuBorderColor:#e0e0e0;
+$topbarBadgeBgColor:#e0284f;
+$topbarBadgeTextColor:#ffffff;
+
+//card
+$cardBgColor:#ffffff;
+$cardBorder:1px solid #EEEEEE;
+
+//tooltip
+$tooltipBgColor:#212121;
+$tooltipTextColor:#ffffff;
+</pre>
+
+                    <p>Similarly __theme_variables.scss files under sass contains the whole set of variables to generate a PrimeFaces theme.</p>
+
+<div style="height:400px;overflow: auto">
+<pre>
+@import './variables';
+
+//icons
+$iconWidth:1em;
+$iconHeight:1em;
+$iconFontSize:1.143em;
+
+//anchors
+$linkColor:$primaryColor;
+$linkHoverColor:$primaryDarkerColor;
+$linkActiveColor:$primaryDarkestColor;
+
+//highlight
+$highlightBgColor:$accentColor;
+$highlightColorText:$accentColorText;
+
+//input field
+$inputPadding:.429em;
+$inputBgColor:#f5f5f5;
+$inputBorder:1px solid #E0E0E0;
+$inputHoverBorderColor:#bdbdbd;
+$inputFocusBorderColor:$primaryColor;
+$inputErrorBorderColor:#EF5350;
+$inputPlaceholderTextColor:#909090;
+$inputFocusShadow:0 none;
+$inputTransition:border-color $transitionDuration,box-shadow $transitionDuration;
+
+//groups
+$inputGroupBorderColor:#E0E0E0;
+$inputGroupBgColor:#eeeeee;
+$inputGroupTextColor:$textColor;
+$inputGroupIconColor:$textSecondaryColor;
+$inputGroupAddonMinWidth:2*$fontSize;
+
+//input lists
+$inputListMinWidth:12em;
+$inputListBgColor:#ffffff;
+$inputListBorder:0px none;
+$inputListPadding:0;
+
+$inputListItemPadding:.429em .857em;
+$inputListItemBgColor:transparent;
+$inputListItemTextColor:$textColor;
+$inputListItemHoverBgColor:$primaryLighterColor;
+$inputListItemHoverTextColor:$primaryDarkestColor;
+$inputListItemHighlightBgColor:$highlightBgColor;
+$inputListItemHighlightTextColor:$highlightColorText;
+$inputListItemBorder:0 none;
+$inputListItemBorderRadius:0;
+$inputListItemMargin:0;
+
+$inputListHeaderPaddingTop:.429em;
+$inputListHeaderPaddingLeft:.857em;
+$inputListHeaderPaddingRight:.857em;
+$inputListHeaderPaddingBottom:.429em;
+$inputListHeaderBgColor:#eeeeee;
+$inputListHeaderTextColor:$textColor;
+$inputListHeaderBorder:1px solid #E0E0E0;
+
+$inputListHeaderSearchIconColor:$textSecondaryColor;
+$inputListHeaderCloseIconColor:$primaryColor;
+$inputListHeaderCloseIconHoverColor:$primaryDarkerColor;
+$inputListHeaderCloseIconTransition:color $transitionDuration;
+
+//inputs with panels (password, keyboard)
+$inputContentPanelPadding:.857em;
+$inputContentPanelBgColor:#ffffff;
+$inputContentPanelTextColor:$textColor;
+
+//inputs with overlays
+$inputOverlayBorder:1px solid #E0E0E0;
+$inputOverlayShadow:0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+//input dropdowns
+$inputDropdownIconColor:$textSecondaryColor;
+
+//inputs with buttons
+$inputButtonWidth:2.143em;
+
+//button
+$buttonTextOnlyPadding:.429em 1em;
+$buttonWithLeftIconPadding:.429em 1em .429em 2em;
+$buttonWithRightIconPadding:.429em 2em .429em 1em;
+$buttonIconOnlyPadding:.429em;
+$buttonIconOnlyWidth:2.143em;
+
+$buttonBgColor:$primaryColor;
+$buttonBorder:1px solid $primaryColor;
+$buttonTextColor:$primaryColorText;
+
+$buttonHoverBgColor:$primaryDarkerColor;
+$buttonHoverTextColor:$primaryColorText;
+$buttonHoverBorderColor:$primaryDarkerColor;
+
+$buttonActiveBgColor:$primaryDarkestColor;
+$buttonActiveTextColor:$primaryColorText;
+$buttonActiveBorderColor:$primaryDarkestColor;
+
+$buttonFocusOutline: 2px dotted $primaryColor;
+$buttonFocusOutlineOffset:1px;
+$buttonFocusShadow:0 none;
+$buttonTransition:background-color $transitionDuration,box-shadow $transitionDuration;
+$raisedButtonShadow:0 0 3px 2px rgba(0, 0, 0, 0.2);
+$roundedButtonBorderRadius:1em;
+
+//button severities
+$secondaryButtonBgColor:#F5F5F5;
+$secondaryButtonBorder:1px solid #F5F5F5;
+$secondaryButtonTextColor:#212121;
+$secondaryButtonHoverBgColor:#E0E0E0;
+$secondaryButtonHoverTextColor:#212121;
+$secondaryButtonHoverBorderColor:#E0E0E0;
+$secondaryButtonActiveBgColor:#BDBDBD;
+$secondaryButtonActiveTextColor:#212121;
+$secondaryButtonActiveBorderColor:#BDBDBD;
+
+$helpButtonBgColor:#009688;
+$helpButtonTextColor:#ffffff;
+$helpButtonBorder:1px solid #009688;
+$helpButtonHoverBgColor:#00796B;
+$helpButtonHoverTextColor:#ffffff;
+$helpButtonHoverBorderColor:#00796B;
+$helpButtonActiveBgColor:#00695C;
+$helpButtonActiveTextColor:#ffffff;
+$helpButtonActiveBorderColor:#00695C;
+
+$warningButtonBgColor:#FFC107;
+$warningButtonTextColor:#000000;
+$warningButtonBorder:1px solid #FFC107;
+$warningButtonHoverBgColor:#FFA000;
+$warningButtonHoverTextColor:#000000;
+$warningButtonHoverBorderColor:#FFA000;
+$warningButtonActiveBgColor:#FF8F00;
+$warningButtonActiveTextColor:#000000;
+$warningButtonActiveBorderColor:#FF8F00;
+
+$successButtonBgColor:#4CAF50;
+$successButtonTextColor:#ffffff;
+$successButtonBorder:1px solid #4CAF50;
+$successButtonHoverBgColor:#388E3C;
+$successButtonHoverTextColor:#ffffff;
+$successButtonHoverBorderColor:#388E3C;
+$successButtonActiveBgColor:#2E7D32;
+$successButtonActiveTextColor:#ffffff;
+$successButtonActiveBorderColor:#2E7D32;
+
+$infoButtonBgColor:#2196F3;
+$infoButtonTextColor:#ffffff;
+$infoButtonBorder:1px solid #2196F3;
+$infoButtonHoverBgColor:#1976D2;
+$infoButtonHoverTextColor:#ffffff;
+$infoButtonHoverBorderColor:#1976D2;
+$infoButtonActiveBgColor:#1565C0;
+$infoButtonActiveTextColor:#ffffff;
+$infoButtonActiveBorderColor:#1565C0;
+
+$dangerButtonBgColor:#FF5722;
+$dangerButtonTextColor:#ffffff;
+$dangerButtonBorder:1px solid #FF5722;
+$dangerButtonHoverBgColor:#E64A19;
+$dangerButtonHoverTextColor:#ffffff;
+$dangerButtonHoverBorderColor:#E64A19;
+$dangerButtonActiveBgColor:#D84315;
+$dangerButtonActiveTextColor:#ffffff;
+$dangerButtonActiveBorderColor:#D84315;
+
+//checkbox
+$checkboxWidth:20px;
+$checkboxHeight:20px;
+$checkboxActiveBorderColor:$primaryColor;
+$checkboxActiveBgColor:$primaryColor;
+$checkboxActiveHoverBgColor:$primaryDarkestColor;
+$checkboxActiveTextColor:$primaryColorText;
+$checkboxFocusBgColor:$inputBgColor;
+$checkboxFocusTextColor:$primaryColor;
+$checkboxFocusBorderColor:$primaryColor;
+$checkboxFocusShadow:none;
+$checkboxTransition:background-color $transitionDuration, border-color $transitionDuration;
+
+//radiobutton
+$radioButtonWidth:20px;
+$radioButtonHeight:20px;
+$radioButtonActiveBorderColor:$primaryColor;
+$radioButtonActiveBgColor:$primaryColor;
+$radioButtonActiveHoverBgColor:$primaryDarkestColor;
+$radioButtonActiveTextColor:$primaryColorText;
+$radioButtonFocusBgColor:$inputBgColor;
+$radioButtonFocusTextColor:$primaryColor;
+$radioButtonFocusBorderColor:$primaryColor;
+$radioButtonFocusShadow:none;
+$radioButtonTransition:background-color $transitionDuration, border-color $transitionDuration;
+
+//togglebutton
+$toggleButtonBgColor:#E0E0E0;
+$toggleButtonBorder:1px solid #E0E0E0;
+$toggleButtonTextColor:$textColor;
+$toggleButtonIconColor:$textSecondaryColor;
+$toggleButtonHoverBgColor:$primaryLighterColor;
+$toggleButtonHoverBorderColor:$primaryLighterColor;
+$toggleButtonHoverTextColor:$primaryDarkestColor;
+$toggleButtonHoverIconColor:$primaryColor;
+$toggleButtonActiveBgColor:$primaryColor;
+$toggleButtonActiveBorderColor:$primaryColor;
+$toggleButtonActiveTextColor:$primaryColorText;
+$toggleButtonActiveIconColor:$primaryColorText;
+$toggleButtonActiveHoverBgColor:$primaryDarkerColor;
+$toggleButtonActiveHoverBorderColor:$primaryDarkerColor;
+$toggleButtonActiveHoverTextColor:$primaryColorText;
+$toggleButtonActiveHoverIconColor:$primaryColorText;
+$toggleButtonFocusOutline:2px dotted $primaryColor;
+$toggleButtonFocusBgColor:$primaryLighterColor;
+$toggleButtonFocusBorderColor:$primaryLighterColor;
+$toggleButtonFocusTextColor:$primaryDarkestColor;
+$toggleButtonFocusIconColor:$primaryColor;
+
+//inplace
+$inplacePadding:.429em;
+$inplaceHoverBgColor:$primaryLighterColor;
+$inplaceHoverTextColor:$primaryDarkestColor;
+$inplaceTransition:background-color $transitionDuration;
+
+//rating
+$ratingTransition:color $transitionDuration;
+$ratingCancelIconColor:#E57373;
+$ratingCancelHoverIconColor:#E57373;
+$ratingIconWidth:1.429em;
+$ratingIconHeight:1.429em;
+$ratingIconFontSize:1.429em;
+$ratingStarIconColor:$textColor;
+$ratingStarIconHoverColor:$primaryDarkerColor;
+$ratingStarActiveIconColor:$primaryColor;
+
+//slider
+$sliderBgColor:#e0e0e0;
+$sliderHeight:.286em;
+$sliderWidth:.286em;
+$sliderHandleWidth:1.429em;
+$sliderHandleHeight:1.429em;
+$sliderHandleBgColor:#bdbdbd;
+$sliderHandleBorder:2px solid #bdbdbd;
+$sliderHandleHoverBorder:2px solid $primaryLighterColor;
+$sliderHandleHoverBgColor:$primaryLighterColor;
+$sliderHandleFocusBorder:2px solid $primaryColor;
+$sliderHandleFocusBgColor:$primaryColor;
+$sliderHandleBorderRadius:50%;
+$sliderHandleTransition:background-color $transitionDuration;
+$sliderRangeBgColor:$primaryColor;
+
+//calendar
+$calendarWidth:18.571em;
+$calendarNavIconColor:$textSecondaryColor;
+$calendarNavIconHoverColor:$primaryColor;
+$calendarNavIconTransition:color $transitionDuration;
+$calendarTitlePadding:0 .857em;
+$calendarTitleBgColor:inherit;
+$calendarTitleTextColor:$textColor;
+$calendarTableMargin:.857em 0 0 0;
+$calendarCellPadding:.286em;
+$calendarCellDatePadding:.286em;
+$calendarCellDateAnchorPadding:.286em;
+$calendarCellDateHoverBgColor:$primaryLighterColor;
+$calendarCellDateBorderRadius:$borderRadius;
+$calendarCellDateSelectedBgColor:$highlightBgColor;
+$calendarCellDateSelectedTextColor:$highlightColorText;
+$calendarCellDateTodayBgColor:#ffffff;
+$calendarCellDateTodayTextColor:$textColor;
+$calendarOverlayBorder:0 none;
+$calendarTimePickerMargin:.857em 0;
+$calendarTimePickerLabelPadding:0;
+$calendarTimePickerInputPadding:.429em 0;
+$calendarTimePickerInputMargin:0 .714em .714em 40%;
+
+//spinner
+$spinnerButtonWidth:1.429em;
+$spinnerButtonBorder:0 none;
+$spinnerButtonBgColor:$primaryColor;
+$spinnerButtonTextColor:$primaryColorText;
+$spinnerButtonHoverBorder:0 none;
+$spinnerButtonHoverBgColor:$primaryDarkerColor;
+$spinnerButtonHoverTextColor:$primaryColorText;
+$spinnerButtonActiveBorder:0 none;
+$spinnerButtonActiveBgColor:$primaryDarkestColor;
+$spinnerButtonActiveTextColor:$primaryColorText;
+$spinnerButtonFocusBorder:0 none;
+$spinnerButtonFocusBgColor:$primaryDarkerColor;
+$spinnerButtonFocusTextColor:$primaryColorText;
+
+//keyboard
+$keyboardButtonPadding:.429em;
+$keyboardButtonMargin:2px;
+$keyboardButtonBorder:1px solid transparent;
+$keyboardButtonBgColor:#f5f5f5;
+$keyboardButtonTextColor:$textColor;
+$keyboardButtonHoverBorder:1px solid transparent;
+$keyboardButtonHoverBgColor:$primaryLighterColor;
+$keyboardButtonHoverTextColor:$textColor;
+$keyboardButtonActiveBorder:1px solid $primaryColor;
+$keyboardButtonActiveBgColor:$primaryColor;
+$keyboardButtonActiveTextColor:#ffffff;
+$keyboardSpecialButtonBorder:1px solid transparent;
+$keyboardSpecialButtonBgColor:$primaryColor;
+$keyboardSpecialButtonTextColor:#ffffff;
+$keyboardSpecialButtonHoverBorder:1px solid transparent;
+$keyboardSpecialButtonHoverBgColor:$primaryDarkerColor;
+$keyboardSpecialButtonHoverTextColor:#ffffff;
+
+//panel common
+$panelHeaderBorder:$containerHeaderBorder;
+$panelHeaderBgColor:$containerHeaderBgColor;
+$panelHeaderTextColor:$containerHeaderTextColor;
+$panelHeaderIconColor:$containerHeaderIconColor;
+$panelHeaderIconHoverColor:$containerHeaderIconHoverColor;
+$panelHeaderIconTransition:color $transitionDuration;
+$panelHeaderFontWeight:700;
+$panelHeaderPadding:.857em 1em;
+$panelContentBorder:1px solid #e0e0e0;
+$panelContentBgColor:#ffffff;
+$panelContentTextColor:$textColor;
+$panelContentPadding:.571em 1em;
+$panelContentLineHeight:1.5;
+$panelFooterBorder:1px solid #e0e0e0;
+$panelFooterBgColor:#ffffff;
+$panelFooterTextColor:$textColor;
+$panelFooterPadding:.571em 1em;
+$clickablePanelHeaderBorder:$clickableContainerHeaderBorder;
+$clickablePanelHeaderBgColor:$clickableContainerHeaderBgColor;
+$clickablePanelHeaderTextColor:$clickableContainerHeaderTextColor;
+$clickablePanelHeaderIconColor:$clickableContainerHeaderIconColor;
+$clickablePanelHeaderIconTransition:color $transitionDuration;
+$clickablePanelHeaderFontWeight:700;
+$clickablePanelHeaderPadding:.857em 1em;
+$clickablePanelHeaderHoverBgColor:$clickableContainerHeaderHoverBgColor;
+$clickablePanelHeaderHoverBorder:$clickableContainerHeaderHoverBorder;
+$clickablePanelHeaderHoverTextColor:$clickableContainerHeaderHoverTextColor;
+$clickablePanelHeaderHoverIconColor:$clickableContainerHeaderHoverIconColor;
+$clickablePanelHeaderActiveBgColor:$clickableContainerHeaderActiveBgColor;
+$clickablePanelHeaderActiveBorder:$clickableContainerHeaderActiveBorder;
+$clickablePanelHeaderActiveTextColor:$clickableContainerHeaderActiveTextColor;
+$clickablePanelHeaderActiveIconColor:$clickableContainerHeaderActiveIconColor;
+$clickablePanelHeaderActiveHoverBgColor:$clickableContainerHeaderActiveHoverBgColor;
+$clickablePanelHeaderActiveHoverBorder:$clickableContainerHeaderActiveHoverHoverBorder;
+$clickablePanelHeaderActiveHoverTextColor:$clickableContainerHeaderActiveHoverTextColor;
+$clickablePanelHeaderActiveHoverIconColor:$clickableContainerHeaderActiveHoverIconColor;
+$clickablePanelHeaderTransition:background-color $transitionDuration;
+
+//accordion
+$accordionHeaderMargin:2px;
+
+//tabview
+$tabsHeaderSpacing:.214em;
+$tabsNavBorder:0 none;
+$tabsNavBgColor:#ffffff;
+
+//scrollpanel
+$scrollPanelHandleBgColor:#bdbdbd;
+$scrollPanelTrackBorder:0 none;
+$scrollPanelTrackBgColor:#e0e0e0;
+
+//panelgrid
+$panelGridContentBgColor: #ffffff;
+
+//paginator
+$paginatorBgColor:#ffffff;
+$paginatorBorder:$panelContentBorder;
+$paginatorIconColor:$textSecondaryColor;
+$paginatorPadding:0;
+$paginatorElementWidth:2.286em;
+$paginatorElementHeight:2.286em;
+$paginatorElementHoverBgColor:$primaryLighterColor;
+$paginatorElementHoverIconColor:$primaryDarkestColor;
+$paginatorElementMargin:0;
+$paginatorElementBorder:0 none;
+$paginatorElementBorderRadius:0;
+
+//datatable
+$datatableHeaderCellPadding:.500em 1.214em;
+$datatableHeaderCellBgColor:#ffffff;
+$datatableHeaderCellTextColor:$textColor;
+$datatableHeaderCellFontWeight:700;
+$datatableHeaderCellBorder:$panelContentBorder;
+$datatableHeaderCellHoverBgColor:$primaryLighterColor;
+$datatableHeaderCellHoverTextColor:$primaryDarkestColor;
+$datatableBodyRowBgColor:#ffffff;
+$datatableBodyRowTextColor:$textColor;
+$datatableBodyRowBorder:$panelContentBorder;
+$datatableBodyRowEvenBgColor:#F5F5F5;
+$datatableBodyRowHoverBgColor:$primaryLighterColor;
+$datatableBodyRowHoverTextColor:$primaryDarkestColor;
+$datatableBodyCellPadding:.500em 1.214em;
+$datatableFooterCellPadding:.500em 1.214em;
+$datatableFooterCellBgColor:#ffffff;
+$datatableFooterCellTextColor:$textColor;
+$datatableFooterCellFontWeight:500;
+$datatableFooterCellBorder:$panelContentBorder;
+$datatableResizerHelperBgColor:$primaryColor;
+$datatableDataIconColor:$textSecondaryColor;
+
+//schedule
+$scheduleEventBgColor:$primaryColor;
+$scheduleEventBorder:1px solid $primaryDarkerColor;
+$scheduleEventTextColor:$primaryColorText;
+
+//tree
+$treeNodePadding:.143em 0;
+$treeNodeLabelPadding:.286em;
+
+//treetable
+$treeTableEditingCellPaddingLeft:1.214em;
+
+//messages
+$messagesMargin:1em 0;
+$messagesPadding:1em;
+$messagesIconFontSize:1.714em;
+$infoMessageBgColor:#64B5F6;
+$infoMessageBorder:1px solid #64B5F6;
+$infoMessageTextColor:#000000;
+$infoMessageIconColor:#000000;
+$warnMessageBgColor:#FFD54F;
+$warnMessageBorder:1px solid #FFD54F;
+$warnMessageTextColor:#000000;
+$warnMessageIconColor:#000000;
+$errorMessageBgColor:#EF5350;
+$errorMessageBorder:1px solid #EF5350;
+$errorMessageTextColor:#ffffff;
+$errorMessageIconColor:#ffffff;
+$fatalMessageBgColor:#757575;
+$fatalMessageBorder:1px solid #757575;
+$fatalMessageTextColor:#ffffff;
+$fatalMessageIconColor:#ffffff;
+$growlIconFontSize:3.429em;
+$growlMargin:0 0 1em 0;
+$growlPadding:1em;
+$growlShadow:0 3px .429em 0 rgba(0, 0, 0, 0.16);
+$messagePadding:$inputPadding;
+$messageMargin:0;
+
+//overlays
+$overlayContentBorder:$panelContentBorder;
+$overlayContainerShadow:0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+//overlay panel
+$overlayPanelCloseIconBgColor:$primaryDarkerColor;
+$overlayPanelCloseIconColor:$primaryColorText;
+$overlayPanelCloseIconHoverBgColor:$primaryDarkestColor;
+$overlayPanelCloseIconHoverColor:$primaryColorText;
+
+//tooltip
+$tooltipBgColor:#212121;
+$tooltipTextColor:#ffffff;
+
+//steps
+$stepsItemBgColor:#ffffff;
+$stepsItemBorder:1px solid #e0e0e0;
+$stepsItemBorderRadius:$borderRadius;
+$stepsItemNumberColor:$textColor;
+$stepsItemTextColor:$textSecondaryColor;
+$stepsItemWidth:2em;
+$stepsItemHeight:2em;
+
+//progressbar
+$progressBarHeight:1.714em;
+$progressBarBorder:0 none;
+$progressBarBgColor:#e0e0e0;
+$progressBarValueBgColor:$primaryColor;
+
+//menu
+$menuitemSubMenuPadding:0;
+$menuBgColor:$panelContentBgColor;
+$menuBorder:$panelContentBorder;
+$menuPadding:0;
+$menuTextColor:$textColor;
+$menuitemPadding:.571em .857em;
+$menuitemTextColor:$textColor;
+$menuitemIconColor:$textColor;
+$menuitemHoverTextColor:$primaryDarkestColor;
+$menuitemHoverIconColor:$primaryDarkestColor;
+$menuitemHoverBgColor:$primaryLighterColor;
+$toggleableMenuHeaderMargin:1px;
+$overlayMenuBorder:1px solid #e0e0e0;
+$overlayMenuShadow:0 3px 6px 0 rgba(0, 0, 0, 0.16);
+
+//upload
+$fileItemPadding:0.429em 0.857em;
+
+//misc
+$maskBgColor:rgba(139, 139, 144, 0.72);
+$inlineSpacing:.429em;
+$chipsItemMargin:0 .286em 0 0;
+$dataIconColor:$textSecondaryColor;
+$dataIconHoverColor:$textColor;
+
+//general
+$disabledOpacity:.5;    
+</pre>
+</div>
+
+                    <h1>Menu</h1>    
+                    <p>Menu is a regular JSF component that supports PrimeFaces MenuModel API, allowing both declarative and programmatic approaches.</p>
+<pre>
+xmlns:po="http://primefaces.org/babylon"
+
+&lt;po:menu&gt;
+&lt;/po:menu&gt;
+</pre>  
+                    <p>Menu has 3 layouts modes; "static", "overlay" and "horizontal". Layout wrapper element in template.xhtml is used to define which mode to use by adding specific classes. Default
+                    is static and here is the list of classes for each mode.</p>
+                    
+                    <ul>
+                        <li>Static: "layout-static"</li>
+                        <li>Overlay: "layout-overlay"</li>
+                        <li>Horizontal: "layout-horizontal"</li>
+                    </ul>
+
+                    <p>Example layout below always uses the horizontal mode.</p>
+<pre>
+&lt;div class="layout-wrapper layout-horizontal"&gt;
+...
+&lt;/div&gt;
+</pre>
+                    
+                    <p>Layout mode can be dynamic using an EL expression as well using an example bean like guestPreferences so that your users can choose the layout they prefer when using your application.</p>
+<pre>
+&lt;div class="layout-wrapper \#{guestPreferences.menuMode}"&gt;
+...
+&lt;/div&gt;
+</pre>
+
+                    <h1>Menu Colors</h1>
+                    <p>In addition to layout options, menu can be styled as "light" or "dark", default mode is dark and in order to enable the light mode, add "layout-menu-light" to the
+                        "layout-wrapper" div which is the outmost container of the template. Similarly as the layout mode, using a helper bean like GuestPreferences, the choice can be
+                        left to the user as in the demo.</p>
+<pre>
+&lt;div class="layout-wrapper layout-menu-light"&gt;
+...
+&lt;/div&gt;
+</pre>
+
+<pre>
+&lt;div class="layout-wrapper layout-menu-dark"&gt;
+...
+&lt;/div&gt;
+</pre>
+
+                    <h1>Grouped and Ungrouped Menu</h1>
+                    <p>Root menuitems of the menu are displayed as readonly and expanded by default which are called grouped submenus. In case you need to make them expandable, 
+                        wrap the menu structure within a submenu. See groupedMenu.xhtml and ungroupedMenu.xhtml for example.
+                    </p>
+
+                    <h1>User Profile</h1>
+                    <p>User profile can either be displayed at the topbar or inside the menu.</p>
+
+                    <h1>Icons</h1>
+                    <p>Babylon Layout uses font awesome icons for layout so enable font awesome support in PrimeFaces by setting primefaces.FONT_AWESOME context parameter in web.xml as true.</p>
+<pre>
+&lt;context-param&gt;
+    &lt;param-name&gt;primefaces.FONT_AWESOME&lt;/param-name&gt;
+    &lt;param-value&gt;true&lt;/param-value&gt;
+&lt;/context-param&gt;
+</pre>              
+
+                    <h1>Card</h1>
+                    <p>Card is a section to group content and layout provides a built-in css for it. Apply .card style class to your container to use it. If the
+                    card has a title defined with h1 tag, add card-w-title to adjust paddings.</p>
+<pre>
+&lt;div class="card"&gt;
+    Content here
+&lt;/div&gt;
+
+&lt;div class="card card-w-title"&gt;
+    &lt;h1&gt;Card with Title&lt;h1&gt;
+    Content here
+&lt;/div&gt;
+</pre>  
+
+                    <h1>PrimeFlex Grid System</h1>
+                    <p>Babylon uses PrimeFlex Grid System throughout the samples, although any Grid library can be used we suggest using PrimeFlex as your grid system as it is well tested and 
+                        supported by PrimeFaces. PrimeFlex is included within the Babylon distribution.</p> 
+                    
+                    <h1>Tips</h1>
+                    <ul>
+                        <li>Familiarity with <a href="http://sass-lang.com/">SASS</a> is required to make customizations to the layout and theme.</li>
+                        <li>Demo application war and the maven project tag are included in distribution however you don't necessarily need them to install babylon, 
+                            the actual artifacts required are the layout zip file and the theme jar.</li>
+                    </ul>
+
+                    <h1>Migration Guide</h1>
+                    <p>For seamless updates use the /sass/_layout_styles.scss for overriding the layout styles and /sass/_theme_styles.scss for customizing the them styles instead
+                        of changing the scss files under layout and theme files to avoid maintenance issues. Updates usually require updating the layout and theme folders so 
+                        your changes won't get effected during updates since they are kept in external files.
+                    </p>
+
+                    <p>From 1.0.0 to 2.0.0</p>
+                    <ul>
+                        <li>Update layout.js</li>
+                        <li>Update layout css files</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Overlay</ui:define>
+    <ui:define name="viewname">
+        <li>Components</li>
+        <li>/</li>
+        <li><p:link outcome="/overlay">Overlays</p:link></li>
+    </ui:define>
+
+    <ui:define name="content">
+        
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-lg-6">
+                <!-- Left Side -->
+                <div class="card">
+                    <h1>Overlay Panel</h1>
+                    <h:form>
+                        <div class="ui-g">
+                            <div class="ui-g-6">
+                                <p:commandButton id="imageBtn" value="Basic" type="button" />
+                                <p:overlayPanel id="imagePanel" for="imageBtn" hideEffect="fade">
+                                    <p:graphicImage name="demo/images/nature/nature9.jpg" width="250" />
+                                </p:overlayPanel>
+                            </div>
+                            <div class="ui-g-6">
+                                <p:commandButton id="carBtn" value="Dynamic" type="button" />
+                                <p:overlayPanel id="carPanel" for="carBtn" hideEffect="clip" dynamic="true" style="width:300px" dismissable="false" showCloseIcon="true">
+                                    <p:dataTable var="car" value="#{dtBasicView.cars}" rows="5" paginator="true" reflow="true">
+                                        <p:column headerText="Id">
+                                            <h:outputText value="#{car.id}" />
+                                        </p:column>
+                                        <p:column headerText="Year">
+                                            <h:outputText value="#{car.year}" />
+                                        </p:column>
+                                        <p:column headerText="Brand">
+                                            <h:outputText value="#{car.brand}" />
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:overlayPanel>
+                            </div>
+                        </div>
+                    </h:form>
+                </div>
+                
+                <div class="card">
+                    <h1>Dialog</h1>
+                    <h:form>
+                        <p:commandButton value="Show" type="button" onclick="PF('dlg').show()" style="width:100%" />
+
+                        <p:dialog header="Dialog" widgetVar="dlg" modal="true" responsive="true" width="500">
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            </p>
+                            <f:facet name="footer">
+                                <p:commandButton value="Yes" type="button" icon="fa fa-check" onclick="PF('dlg').hide()" />
+                                <p:commandButton value="No" type="button" styleClass="secondary-button" icon="fa fa-close" onclick="PF('dlg').hide()" />
+                            </f:facet>
+                        </p:dialog>  
+                    </h:form>
+                </div>
+                
+                <div class="card">
+                    <h1>Confirm Dialog</h1>
+                    <h:form>
+                        <p:growl id="message" showDetail="true" />
+
+                        <p:commandButton value="Confirm" update="message">
+                            <p:confirm header="Confirmation" message="Are you sure you want to proceed?" icon="fa fa-warning" />
+                        </p:commandButton>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="350">
+                            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+                        </p:confirmDialog>
+                    </h:form>
+                </div>
+                
+                <div class="card">
+                    <h:form>
+                        <p:tooltip />
+                        <h1>Tooltip</h1>
+                        <p:commandButton value="Update" type="button" pt:data-tooltip="Click to update contents" icon="ui-icon-update" />
+                    </h:form>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-lg-6">
+                <!-- Right Side -->
+                <div class="card">
+                    <h1>LightBox</h1>
+                    <p:lightBox styleClass="imagebox" id="lighbox1">
+                        <h:outputLink value="resources/demo/images/nature/nature1.jpg" title="Nature 1">  
+                            <p:graphicImage name="demo/images/nature/nature1.jpg" style="height: 77px; width: auto; margin-right: 10px;" />  
+                        </h:outputLink>
+
+                        <h:outputLink value="resources/demo/images/nature/nature2.jpg" title="Nature 2">  
+                            <p:graphicImage name="demo/images/nature/nature2.jpg" style="height: 77px; width: auto; margin-right: 10px;" />  
+                        </h:outputLink>
+
+                        <h:outputLink value="resources/demo/images/nature/nature2.jpg" title="Nature 3">  
+                            <p:graphicImage name="demo/images/nature/nature3.jpg" style="height: 77px; width: auto; margin-right: 10px;" />  
+                        </h:outputLink>
+
+                        <h:outputLink value="resources/demo/images/nature/nature4.jpg" title="Nature 4">  
+                            <p:graphicImage name="demo/images/nature/nature4.jpg" style="height: 77px; width: auto;" />  
+                        </h:outputLink>
+                    </p:lightBox>
+
+                    <h1>Inline</h1>
+                    <h:form>
+                        <p:lightBox id="lighbox2">
+                            <h:outputLink value="#">
+                                <h:outputText value="Video Content" />
+                            </h:outputLink>
+
+                            <f:facet name="inline">
+                                <iframe src="https://www.youtube.com/embed/B_lYGUtCd0g" frameborder="0" width="560" height="330"></iframe>
+                            </f:facet>
+                        </p:lightBox>
+                    </h:form>
+                </div> 
+            </div>
+        </div>
+
+    </ui:define>
+
+</ui:composition>

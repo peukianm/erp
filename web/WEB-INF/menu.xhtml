@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+
+    <div class="layout-menu-container">
+        <div class="layout-menu-logo">
+            <h:link outcome="/dashboard">
+                <p:graphicImage name="images/#{guestPreferences.darkLogo ? 'logo-black.png' : 'logo-white.png'}" library="babylon-layout" />
+            </h:link>
+        </div>
+        
+        <div class="nano layout-menu-wrapper">
+            <div class="nano-content menu-scroll-content">
+                <h:form id="menuform">
+                    <ui:fragment rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">
+                        <div class="layout-profile">
+                            <a class="layout-profile-button" href="#">
+                                <p:graphicImage name="images/avatar.png" library="babylon-layout" />
+                                <div class="layout-profile-userinfo">
+                                    <span class="layout-profile-name">Arlene Welch</span>
+                                    <span class="layout-profile-role">Design Ops</span>
+                                </div>
+                                <i class="layout-profile-icon fa fa-angle-down"></i>
+                            </a>
+                            <ul class="layout-profile-menu">
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-fw fa-user"></i>
+                                        <span>Profile</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-fw fa-cog"></i>
+                                        <span>Settings</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-fw fa-envelope-o"></i>
+                                        <span>Messages</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-fw fa-bell-o"></i>
+                                        <span>Notifications</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </ui:fragment>
+                    
+                    <ui:include src="#{guestPreferences.groupedMenu ? 'groupedMenu.xhtml' : 'ungroupedMenu.xhtml'}" />
+
+                </h:form>
+            </div>
+        </div>
+    </div>
+</ui:composition>
