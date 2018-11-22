@@ -55,8 +55,7 @@ public class AdministrationAction implements Serializable {
     }
 
     public String loginAction() {
-        try {
-            if(logger.isDebugEnabled()) logger.debug("java logging level is DEBUG Enabled");  
+        try {            
             Users temp = null;
             List<Users> users = userDAO.findByProperty("username", userBean.getUsername());
             if (users == null || users.size() > 0) {                

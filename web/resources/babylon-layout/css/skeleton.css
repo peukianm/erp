@@ -1,0 +1,605 @@
+body {
+    margin: 0px;
+    padding: 0;
+    color: #616161;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 1.6em;
+    font-weight: normal;
+}
+
+h2 {
+    font-size: 1.6em;
+}
+
+h3 {
+    font-size: 1em;
+    margin-top:20px;
+}
+
+ul {
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a img {
+    border: none;
+}
+
+img.left {
+    float: left;
+    margin: 0 20px 0 0;
+}
+
+img.right {
+    float: right;
+    margin: 0 0 0 20px;
+}
+
+/* Header */
+#header {
+    padding: 4px 0px;
+    height: 75px;
+    position: relative;
+    margin-top: 5px;
+}
+
+#logo {
+    text-align: left;
+    vertical-align: middle;
+}
+
+/* Menu 
+#menu {
+    position: absolute;
+    top:65px;
+    left:17%;
+    padding: 0;
+    height: 50px;
+    overflow: hidden;    
+} */
+
+
+.tabmenu {
+    vertical-align:middle !important;	
+    font-weight:bold;	
+    font-style: inherit; 	
+}
+
+#menu ul {
+    margin: 0;
+    list-style: none;
+}
+
+#menu li {
+    display: inline;
+}
+
+#menu li a {
+    display: block;
+    float: left;
+    height: 20px;
+    margin: 0;
+    padding: 9px 30px 9px 30px;
+    text-decoration: none;
+    font-size: 18px;	
+
+}
+
+#menu li a:hover {
+    text-decoration: underline;
+}
+
+#globalthemeswitcher {
+    position:absolute;
+    top:5px;
+    right:5px;
+}
+
+#username {
+    position:absolute;
+    bottom:5px;
+    right:5px;
+    font-weight: bold;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    
+}
+
+/* Page */
+#page {
+    padding: 7px 0px;
+    margin-top: 5px;
+    background: whitesmoke;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+}
+
+/* Content */
+#content {
+    width: 100%;
+    float: left ;
+}
+
+.post {
+    padding-bottom: 15px;
+}
+
+.post h1 {
+    font-weight: normal;
+}
+
+.title {
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 8px 0 0 20px;
+}
+
+.title a {
+    border-bottom: none;
+    color: #FFFFFF;
+}
+
+.title a:hover {
+    border-bottom: 1px dotted #000000;
+}
+
+.submenu-title {
+    padding: 4px 10px;
+}
+
+.submenu-content {
+    text-align:center;
+}
+
+.byline {
+    margin: -60px 20px 20px 20px;
+}
+
+.byline a {
+    color: #DC8700;
+}
+
+.tag {
+    padding: 0 15px;
+}
+ 
+.entry {
+    padding: 0 10px;
+}
+
+.entry p {
+    line-height: 200%;
+}
+
+.links {
+    padding: 4px 0px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.links a {
+    border: none;
+}
+
+.links a:hover {
+}
+
+#sidebar {
+    float: left;
+    width: 16%;
+    padding: 0 0px;    
+    overflow: hidden;
+    margin-top: 95px;
+    margin-left: 0.2% ;
+    background: oldlace;
+}
+
+#sidebar a.ui-state-hover, 
+#sidebar a.ui-state-highlight {
+    border:0 none;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+#sidebar table {
+   width: 100%;
+}
+
+#sidebar table td {
+    vertical-align: top;
+}
+
+#sidebar ul {
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar ul li {
+    list-style-type: none;
+    padding: 1px;
+}
+
+/* Footer */
+#footer {    
+    height: 50px;
+    margin: 0 auto;
+    padding: 0 10px;
+    font-size: 14px;
+}
+
+#footer p {
+    margin: 0;
+    padding: 12px 0 0 0;
+    text-align: center;
+}
+
+#footer a {
+}
+
+#footer .link {
+    float: right;
+}
+
+#footer .copyright {
+    color: black;
+    text-align: center;
+    /*float: left;*/
+}
+
+.homeText {
+    line-height: 175%;
+}
+
+.homeMenu {
+    width:200px;
+    float:left;
+    margin-right:10px
+}
+
+.themeMenu {
+    overflow: auto;
+    height:300px;
+    width:200px;
+}
+
+.dp-xml {
+    width:1000px;
+}
+
+.ui-themeswitcher a.ui-selectonemenu-label-container {
+    text-decoration: none !important;
+}
+
+.ui-widget {
+    font-size: 11px !important;
+}
+
+.left-font {
+    text-align: left;
+    width: 53%;	
+}
+
+.right-font {
+    text-align: right;
+    font-weight: bold;
+    /*     float: right; */
+    width: 47%;	
+}
+
+.center-font {
+    text-align: center;	
+}
+
+.bold_font {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.center1 {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.disconnect {
+    background-image: url(../images/closebar.png) !important;	
+    height:16px;
+    width:16px;
+}
+.disconnect-menu {
+    background-image: url(../images/closebar.png) !important;	
+    height:15px  !important;
+    width:15px  !important;
+}
+
+.menu-icon {
+    background-image: url(../images/next.png) !important;	
+    height:15px  !important;
+    width:15px  !important;
+}
+
+
+
+.ui-state-default .plus-icon {
+    background-image: url(../images/plus.png) !important;	
+    margin:-10px !important;
+    height:28px  !important;
+    width:28px  !important;
+}
+
+
+
+.menuleft{
+    background-color: transparent  !important;
+    margin: 0px  !important;
+    border: 3px  !important;
+    width :100%;
+}
+
+.left-fieldset {
+    margin-bottom: 8px;
+    padding: 1px;	
+}
+
+
+#checktameio .ui-fieldset-legend {
+    color: red !important ;
+    font-weight:bold;
+}
+
+
+
+
+.loginTitle {
+    position: absolute;         
+    font-stretch:condensed; 
+    font-style:inherit;
+    
+    top:40px;
+    margin-left: 40%;	
+    color:black; 
+    font-weight:bold;            
+    font-size:20px;     
+    font-family: Verdana,Arial,Helvetica,sans-serif;  
+}
+
+.errorTitle {
+    position: absolute;
+    color:red; 
+    font-weight:900;
+    font-stretch:condensed;
+    font-style:inherit;
+    font-variant:small-caps; 
+    font-size:24px; 
+    top:40px;
+    margin-left: 40%;	
+}
+
+.pageTitle {
+    color:black; 
+    font-weight:bold;            
+    font-size: 150% ;     
+    font-family: Verdana,Arial,Helvetica,sans-serif;   
+}
+
+.pageSubTitle {
+    color:black; 
+    font-weight:bold;    	    
+    font-size:125%;
+    font-family: Verdana,Arial,Helvetica,sans-serif;      
+}
+
+
+.iatrikoPageTitle {
+    color:black; 
+    font-weight:bold;            
+    font-size:18px;     
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+}
+
+.iatrikoPageSubTitle {
+    color:black; 
+    font-weight:bold;    	    
+    font-size:14px;
+    font-family: Verdana,Arial,Helvetica,sans-serif;  
+}
+
+
+
+
+.errorDetails{
+    color: red;
+    font-stretch: condensed;
+    font-size: 14px;
+    font-weight:bold;    
+    font-family: Verdana,Arial,Helvetica,sans-serif; 
+    font-style: italic;
+}
+
+/*.ui-menuitem-link {
+    padding: 0px;
+    margin: 0px;	
+
+}
+
+
+
+.ui-menuitem{
+    padding: -20px;
+    margin: -20px;	
+}
+
+.ui-menu-list {
+    width : 190px;
+    padding: -20px;
+    margin: -20px;	
+}
+
+*/
+
+
+
+
+.noPadding {
+    padding: 0px;
+}
+
+.noborder {
+    border: 0px;
+}
+
+.align_top_max {
+    vertical-align: top;
+    width: 100%;
+}
+
+.align_right {
+    text-align: right;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.alignCenter {
+    margin: 0 auto;
+}
+
+.width20pct {
+    width: 5%;
+}
+
+.alignTop {
+    vertical-align: top;
+}
+
+
+.ui-menuitem-text {		
+    font-family: Tahoma, Arial, Verdana   !important; 
+    font-size: 11px   !important ;	
+    color :black;				
+}
+
+.content1{
+    font-family: Tahoma, Arial, Verdana   !important; 
+    font-size: 11px   !important ;
+    color :black;	    
+}
+
+.ui-datatable-data, table,.ui-outputlabel, .ui-selectonemenu-label, .ui-selectonemenu-items, .ui-selectonemenu, .ui-autocomplete-items, .ui-autocomplete-input, 
+.ui-button-text,.ui-button-text-only, .ui-datatable-header,.ui-tabs .ui-tabs-nav li a, .ui-selectcheckboxmenu .ui-selectcheckboxmenu-label, .ui-selectcheckboxmenu-list-item label, 
+.ui-tree-selectable .ui-treenode-label, ui-inputfield, .ui-widget textarea, .ui-widget input, ui-datalist-content{
+    font-family: Tahoma, Arial, Verdana   !important; 
+    font-size: 11px   !important ;	
+    color :black !important;
+}
+
+.ui-button-text,.ui-button-text-only, ui-datatable-header, .ui-tabs .ui-tabs-nav li a {
+    font-weight: bold !important ;
+    
+}
+
+
+.ui-autocomplete-items,.ui-autocomplete-item{
+    /*font-family: Tahoma, Arial, Verdana   !important; */     
+    font-stretch: condensed; 
+    font-size: 10px; 
+    margin: 0px;
+    
+}
+/*.ui-autocomplete-query, .ui-autocomplete,.ui-autocomplete-input{
+    margin: 0px;
+}
+
+
+
+.ui-datatable-data, table, 
+.ui-button-text,.ui-button-text-only {
+    font-family: Tahoma, Arial, Verdana   !important; 
+    font-size: 12px   !important ;	
+    color :black !important;
+
+} */
+
+
+
+
+.centered {
+    display: block;
+    margin-left: auto;
+    margin-right: auto }
+
+.redBorderAssertion{
+   border-color: red !important;
+}
+
+.mainBG{
+    /*background-image:url('../images/gradient5.png'); 
+    background-image:url('../images/kaplamas1.jpg') ;    
+    background-repeat:repeat; */
+}
+
+.ui-datepicker{
+    width: 200px ! important;
+}
+
+.hide-column-names table thead tr {
+    display: none;
+}
+
+.middle > * {
+    vertical-align: middle;
+}
+
+.bottom > * {
+    vertical-align: bottom;
+}
+
+.top > * {
+    vertical-align: top;
+}
+
+.ui-datatable table .noCollapse {
+    border-collapse: separate ! important;
+    padding:0px;
+}
+
+.ui-datatable thead tr th, .ui-datatable thead tr, .ui-datatable thead  {
+    font-weight: bold ! important;    
+}
+
+.noBorderTable tbody td {
+    border-style: none !important; 
+}
+
+#coloring {
+    float:left;border:1px solid black; 
+    width:20px; height:20px;
+    margin: 2px;
+    line-height:0;
+    display: inline-block;
+    
+    
+    /*border-right:100px solid #AAC32B;
+    border-bottom:100px solid #C2C2C2;
+    border-left:100px solid #3D3D3D; */
+}
+
+
+
+
+
+
+
+
+
