@@ -944,8 +944,8 @@ public class AdministrationAction implements Serializable {
         try {
             FacesUtils.resetManagedBeanJSF2("sessionBean");
             FacesUtils.invalidateSession();
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/loginPage.jsf?faces-redirect=true");
-            return "./loginPage?faces-redirect=true";
+            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/login.jsf?faces-redirect=true");
+            return "./login?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -959,7 +959,7 @@ public class AdministrationAction implements Serializable {
             FacesUtils.resetManagedBeanJSF2("sessionBean");
             FacesUtils.invalidateSession();
             //FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/loginPage.jsf?faces-redirect=true");
-            return "/loginPage?faces-redirect=true";
+            return "/login?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");

@@ -107,11 +107,7 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     
-    
-    
-    
-    
-    
+        
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
@@ -126,6 +122,9 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+     <error-page>
+        <location>/error.jsf</location>
+    </error-page>
     
     
     <mime-mapping>

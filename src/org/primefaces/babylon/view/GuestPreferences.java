@@ -16,7 +16,7 @@ public class GuestPreferences implements Serializable {
 
     private boolean darkMenu = true;
 
-    private String profileMode = "popup";
+    private String profileMode = "inline";
 
     private boolean groupedMenu = true;
 

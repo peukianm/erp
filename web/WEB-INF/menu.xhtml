@@ -16,8 +16,8 @@
                             <a class="layout-profile-button" href="#">
                                 <p:graphicImage name="images/avatar.png" library="babylon-layout" />
                                 <div class="layout-profile-userinfo">
-                                    <span class="layout-profile-name">Arlene Welch</span>
-                                    <span class="layout-profile-role">Design Ops</span>
+                                    <span class="layout-profile-name">#{sessionBean.users.name} #{sessionBean.users.surname}</span>
+                                    <span class="layout-profile-role">#{sessionBean.users.company.name}-#{sessionBean.users.role.name}</span>
                                 </div>
                                 <i class="layout-profile-icon fa fa-angle-down"></i>
                             </a>

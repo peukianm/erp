@@ -1,58 +1,58 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
 
-    <ui:define name="title">Dashboard</ui:define>
-    
+    <!--<ui:define name="title">Dashboard</ui:define>-->
+
     <ui:define name="head">
         <h:outputScript name="chartjs/chart.js" library="demo" />
         <script type="text/javascript">
-            $(function() {
+            $(function () {
                 var ctx = document.getElementById("dashboard-chart").getContext('2d');
                 var myChart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                         datasets: [{
-                            label: 'Sales',
-                            data: [12, 19, 3, 5, 2, 3, 9],
-                            borderColor: [
-                                '#7E57C2',
-                            ],
-                            borderWidth: 3,
-                            borderDash:[5, 5],
-                            fill: false,
-                            pointRadius: 3
-                        }, {
-                            label: 'Income',
-                            data: [1, 2, 5, 3, 12, 7, 15],
-                            backgroundColor: [
-                                'rgba(187,222,251,0.2)',
-                            ],
-                            borderColor: [
-                                '#42A5F5',
-                            ],
-                            borderWidth: 3,
-                            fill: true
-                        },
-                        {
-                            label: 'Expenses',
-                            data: [7, 12, 15, 5, 3, 13, 21],
-                            borderColor: [
-                                '#FFB300',
-                            ],
-                            borderWidth: 3,
-                            fill: false,
-                            pointRadius: [4, 6, 4, 12, 8, 0, 4]
-                        },
-                        {
-                            label: 'New Users',
-                            data: [3, 7, 2, 17, 15, 13, 19],
-                            borderColor: [
-                                '#66BB6A',
-                            ],
-                            borderWidth: 3,
-                            fill: false
-                        }]
+                                label: 'Sales',
+                                data: [12, 19, 3, 5, 2, 3, 9],
+                                borderColor: [
+                                    '#7E57C2',
+                                ],
+                                borderWidth: 3,
+                                borderDash: [5, 5],
+                                fill: false,
+                                pointRadius: 3
+                            }, {
+                                label: 'Income',
+                                data: [1, 2, 5, 3, 12, 7, 15],
+                                backgroundColor: [
+                                    'rgba(187,222,251,0.2)',
+                                ],
+                                borderColor: [
+                                    '#42A5F5',
+                                ],
+                                borderWidth: 3,
+                                fill: true
+                            },
+                            {
+                                label: 'Expenses',
+                                data: [7, 12, 15, 5, 3, 13, 21],
+                                borderColor: [
+                                    '#FFB300',
+                                ],
+                                borderWidth: 3,
+                                fill: false,
+                                pointRadius: [4, 6, 4, 12, 8, 0, 4]
+                            },
+                            {
+                                label: 'New Users',
+                                data: [3, 7, 2, 17, 15, 13, 19],
+                                borderColor: [
+                                    '#66BB6A',
+                                ],
+                                borderWidth: 3,
+                                fill: false
+                            }]
                     },
                     options: {
                         responsive: true,
@@ -61,19 +61,19 @@
                         },
                         scales: {
                             xAxes: [{
-                                display: true,
-                                scaleLabel: {
                                     display: true,
-                                    labelString: 'Month'
-                                }
-                            }],
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Month'
+                                    }
+                                }],
                             yAxes: [{
-                                display: true,
-                                scaleLabel: {
                                     display: true,
-                                    labelString: 'Value'
-                                }
-                            }]
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Value'
+                                    }
+                                }]
                         }
                     }
                 });
@@ -81,9 +81,9 @@
         </script>
     </ui:define>
 
-    <ui:define name="viewname">
+    <ui:define name="viewname" >
         <li>
-            <p:link outcome="/dashboard">Dashboard</p:link>
+            <p:link outcome="/dashboard">#{sessionBean.pageName}</p:link> 
         </li>
     </ui:define>
 
@@ -144,86 +144,86 @@
                 </div>
 
                 <div class="p-col-12 p-lg-8">
-                        <div class="card card-w-title statistics">
-                            <h1>Statistics</h1>
-                            <canvas id="dashboard-chart"></canvas>
+                    <div class="card card-w-title statistics">
+                        <h1>Statistics</h1>
+                        <canvas id="dashboard-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-lg-4">
+                    <div class="card user-card">
+                        <div class="user-card-header">
+                            <p:graphicImage name="images/dashboard/bg-header.png" library="babylon-layout" class="profile-image" />
+                        </div>
+                        <div class="user-card-content">
+                            <p:graphicImage name="images/avatar.png" library="babylon-layout" class="profile-image" />
+                            <p:commandButton id="user-button" type="button" icon="fa fa-cog" />
+
+                            <p:menu overlay="true" trigger="user-button" my="left top" at="left bottom">
+                                <p:menuitem value="Save" icon="fa fa-check" url="#"/>
+                                <p:menuitem value="Update" icon="fa fa-refresh" url="#"/>
+                                <p:menuitem value="Delete" icon="fa fa-trash" url="#"/>
+                            </p:menu>
+
+                            <div class="user-card-name">
+                                <span>Arlene Welch</span>
+                            </div>
+
+                            <div class="user-detail">
+                                <ul>
+                                    <li>
+                                        <i class="fa fa-tasks fa-fw"></i>
+                                        <span class="project-title">Tasks</span>
+                                        <span class="project-detail">3 open</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 50%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-usd fa-fw"></i>
+                                        <span class="project-title">Revenue</span>
+                                        <span class="project-detail">+20%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 20%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-credit-card fa-fw"></i>
+                                        <span class="project-title">Payments</span>
+                                        <span class="project-detail">24 new</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 65%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-users fa-fw"></i>
+                                        <span class="project-title">Clients</span>
+                                        <span class="project-detail">+80%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 80%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-credit-card fa-fw"></i>
+                                        <span class="project-title">Sales</span>
+                                        <span class="project-detail">+45%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 45%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-line-chart fa-fw"></i>
+                                        <span class="project-title">Performance</span>
+                                        <span class="project-detail">+75%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 75%"></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-    
-                    <div class="p-col-12 p-lg-4">
-                        <div class="card user-card">
-                            <div class="user-card-header">
-                                <p:graphicImage name="images/dashboard/bg-header.png" library="babylon-layout" class="profile-image" />
-                            </div>
-                            <div class="user-card-content">
-                                <p:graphicImage name="images/avatar.png" library="babylon-layout" class="profile-image" />
-                                <p:commandButton id="user-button" type="button" icon="fa fa-cog" />
-        
-                                <p:menu overlay="true" trigger="user-button" my="left top" at="left bottom">
-                                    <p:menuitem value="Save" icon="fa fa-check" url="#"/>
-                                    <p:menuitem value="Update" icon="fa fa-refresh" url="#"/>
-                                    <p:menuitem value="Delete" icon="fa fa-trash" url="#"/>
-                                </p:menu>
-        
-                                <div class="user-card-name">
-                                    <span>Arlene Welch</span>
-                                </div>
-        
-                                <div class="user-detail">
-                                    <ul>
-                                        <li>
-                                            <i class="fa fa-tasks fa-fw"></i>
-                                            <span class="project-title">Tasks</span>
-                                            <span class="project-detail">3 open</span>
-                                            <div class="project-progressbar">
-                                                <div class="project-progressbar-value" style="width: 50%"></div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-usd fa-fw"></i>
-                                            <span class="project-title">Revenue</span>
-                                            <span class="project-detail">+20%</span>
-                                            <div class="project-progressbar">
-                                                <div class="project-progressbar-value" style="width: 20%"></div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-credit-card fa-fw"></i>
-                                            <span class="project-title">Payments</span>
-                                            <span class="project-detail">24 new</span>
-                                            <div class="project-progressbar">
-                                                <div class="project-progressbar-value" style="width: 65%"></div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-users fa-fw"></i>
-                                            <span class="project-title">Clients</span>
-                                            <span class="project-detail">+80%</span>
-                                            <div class="project-progressbar">
-                                                <div class="project-progressbar-value" style="width: 80%"></div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-credit-card fa-fw"></i>
-                                            <span class="project-title">Sales</span>
-                                            <span class="project-detail">+45%</span>
-                                            <div class="project-progressbar">
-                                                <div class="project-progressbar-value" style="width: 45%"></div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <i class="fa fa-line-chart fa-fw"></i>
-                                            <span class="project-title">Performance</span>
-                                            <span class="project-detail">+75%</span>
-                                            <div class="project-progressbar">
-                                                <div class="project-progressbar-value" style="width: 75%"></div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
 
                 <div class="p-col-12 p-md-4 p-lg-4">
                     <div class="card card-w-title tasks">
@@ -258,7 +258,7 @@
                     </div>
                 </div>
 
-                
+
 
                 <div class="p-col-12 p-md-4 p-lg-4">
                     <div class="card card-w-title resolution-center ui-fluid">
@@ -349,7 +349,7 @@
                                 <div class="timeline-content">
                                     <h3>Notes Added</h3>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean blandit tortor a ipsum vehicula,
-                                            in semper sapien auctor.</p>
+                                        in semper sapien auctor.</p>
                                     <div class="timeline-footer">
                                         <i class="fa fa-clock-o"></i>
                                         <span>3 Sep 2018 at 10:41</span>
@@ -416,8 +416,8 @@
                     <div class="card card-w-title global-sales ui-fluid">
                         <h1>Global Sales</h1>
                         <p:dataTable var="car" value="#{dtSelectionView.cars7}" selectionMode="single" reflow="true" paginatorPosition="bottom"
-                                    selection="#{dtSelectionView.selectedCar}" rowKey="#{car.id}" paginator="true" rows="5">
-     
+                                     selection="#{dtSelectionView.selectedCar}" rowKey="#{car.id}" paginator="true" rows="5">
+
                             <p:column headerText="Logo" style="width: 84px">
                                 <p:graphicImage name="demo/images/car/#{car.brand}.png" width="50"/> 
                             </p:column>
@@ -461,7 +461,7 @@
                                     </div>
                                     <div class="p-col">
                                         <div class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                                Nam ac euismod justo, eget blandit purus.</div>
+                                            Nam ac euismod justo, eget blandit purus.</div>
                                     </div>
                                 </div>
                             </li>

@@ -7,8 +7,25 @@ and open the template in the editor.
     Created on : 21 Νοε 2018, 12:48:03 μμ
     Author     : user
 */
+.erp-login-header {    
+    color: black;
+    font-weight: bold;
+    font-size: 150%;
+    font-family: Tahoma, Arial, Verdana !important;
+    /*font-family: Verdana,Arial,Helvetica,sans-serif;*/
+}
 
-    .erp-login-msg {
-      position: relative;
-      width: 400px
-    }
+.erp-login-subheader {    
+    font-family: Tahoma, Arial, Verdana !important;
+    font-size: 12px !important;
+}
+
+.erp-login-msg {
+    position: relative;
+    width: 400px
+}
+
+.erp-error-msg {
+    position: relative;
+    width: 500px;
+}

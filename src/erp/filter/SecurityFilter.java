@@ -13,32 +13,62 @@ import javax.servlet.http.HttpSession;
 
 import erp.bean.SessionBean;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SecurityFilter implements Filter {
 
     @Inject
     private SessionBean sessionBean;
-    private final static String FILTER_APPLIED = "_security_filter_applied";
-    public SecurityFilter() {}
-    public void init(FilterConfig conf) throws ServletException {}
-    public void destroy() {}
 
-    /**
-     * Creates a new instance of SecurityCheckFilter
-     */
+    private static final Logger logger = LogManager.getLogger(SecurityFilter.class);
+
+    private final static String FILTER_APPLIED = "_security_filter_applied";
+
+    public SecurityFilter() {
+    }
+
+    public void init(FilterConfig conf) throws ServletException {
+    }
+
+    public void destroy() {
+    }
+
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
+ 
+        if (logger.isDebugEnabled()) {
+            logger.debug("sessionBean="+sessionBean);
+        }
+
+        if (sessionBean != null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("user="+sessionBean.getUsers());
+            }
+        }
+       
+
         HttpServletRequest hreq = (HttpServletRequest) request;
         HttpServletResponse hres = (HttpServletResponse) response;
-        HttpSession session = hreq.getSession();        
+        HttpSession session = hreq.getSession();
         String checkforloginpage = hreq.getServletPath();
+        
+         if (logger.isDebugEnabled()) {
+            logger.debug("checkforloginpage=" + checkforloginpage);
+        }
 
-        if (checkforloginpage == null)  checkforloginpage = "";
-
+        if (checkforloginpage == null) {
+            checkforloginpage = "";
+        }
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("hreq.getHeader(Faces-Request) ="+hreq.getHeader("Faces-Request"));
+        }
+        
         if ((request.getAttribute(FILTER_APPLIED) == null)
                 && (!checkforloginpage.endsWith("index.jsp"))
-                && (!checkforloginpage.endsWith("loginPage.jsf"))
+                && (!checkforloginpage.endsWith("login.jsf"))
                 && (!checkforloginpage.endsWith("resetPassword.jsf"))
                 && (!checkforloginpage.endsWith("error.jsf"))
                 && (checkforloginpage.contains("backend") || checkforloginpage.contains("common") || checkforloginpage.contains("templates"))) {
@@ -46,7 +76,9 @@ public class SecurityFilter implements Filter {
             request.setAttribute(FILTER_APPLIED, Boolean.TRUE);
             String user = null;
             if (session != null) {
-                if (sessionBean != null && sessionBean.getUsers() != null)   user = "OK";               
+                if (sessionBean != null && sessionBean.getUsers() != null) {
+                    user = "OK";
+                }
             }
 
             if (user == null) {
