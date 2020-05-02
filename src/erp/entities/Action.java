@@ -1,78 +1,87 @@
 package erp.entities;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
- * Action entity. @author MyEclipse Persistence Tools
+ * The persistent class for the "ACTION" database table.
+ *
  */
 @Entity
-@Table(name = "ACTION", schema = "SKELETON")
-public class Action implements java.io.Serializable {
+@Table(name = "\"ACTION\"")
+@NamedQuery(name = "Action.findAll", query = "SELECT a FROM Action a")
+public class Action implements Serializable {
 
-	// Fields
+    private static final long serialVersionUID = 1L;
 
-	private BigDecimal actionid;
-	private Actionscategory actionscategory;
-	private String name;
+    @Id
+    @SequenceGenerator(name = "ACTION_ACTIONID_GENERATOR", sequenceName = "ACTION_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACTION_ACTIONID_GENERATOR")
+    private BigDecimal actionid;
 
-	// Constructors
+    private String name;
 
-	/** default constructor */
-	public Action() {
-	}
+    //bi-directional many-to-one association to Actionscategory
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CATEGORYID")
+    private Actionscategory actionscategory;
 
-	/** minimal constructor */
-	public Action(BigDecimal actionid, String name) {
-		this.actionid = actionid;
-		this.name = name;
-	}
+    //bi-directional many-to-one association to Auditing
+    @OneToMany(mappedBy = "action")
+    private List<Auditing> auditings;
 
-	/** full constructor */
-	public Action(BigDecimal actionid, Actionscategory actionscategory, String name) {
-		this.actionid = actionid;
-		this.actionscategory = actionscategory;
-		this.name = name;
-	}
+    public Action() {
+    }
 
-	// Property accessors
-	@Id
-	@Column(name = "ACTIONID", unique = true, nullable = false, precision = 22, scale = 0)
-	public BigDecimal getActionid() {
-		return this.actionid;
-	}
+    public BigDecimal getActionid() {
+        return this.actionid;
+    }
 
-	public void setActionid(BigDecimal actionid) {
-		this.actionid = actionid;
-	}
+    public void setActionid(BigDecimal actionid) {
+        this.actionid = actionid;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CATEGORYID")
-	public Actionscategory getActionscategory() {
-		return this.actionscategory;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setActionscategory(Actionscategory actionscategory) {
-		this.actionscategory = actionscategory;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@Column(name = "NAME", nullable = false, length = 300)
-	public String getName() {
-		return this.name;
-	}
+    public Actionscategory getActionscategory() {
+        return this.actionscategory;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-        
-        
-        @Override
+    public void setActionscategory(Actionscategory actionscategory) {
+        this.actionscategory = actionscategory;
+    }
+
+    public List<Auditing> getAuditings() {
+        return this.auditings;
+    }
+
+    public void setAuditings(List<Auditing> auditings) {
+        this.auditings = auditings;
+    }
+
+    public Auditing addAuditing(Auditing auditing) {
+        getAuditings().add(auditing);
+        auditing.setAction(this);
+
+        return auditing;
+    }
+
+    public Auditing removeAuditing(Auditing auditing) {
+        getAuditings().remove(auditing);
+        auditing.setAction(null);
+
+        return auditing;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -82,7 +91,7 @@ public class Action implements java.io.Serializable {
             return false;
         }
 
-        Action  compare = (Action) obj;
+        Action compare = (Action) obj;
         return compare.actionid.equals(this.actionid);
     }
 

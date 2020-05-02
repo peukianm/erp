@@ -20,13 +20,13 @@
     </h:head>
 
     <h:body>
-        <h:outputStylesheet name="css/default.css" />
+        <!-- <h:outputStylesheet name="css/default.css" />  -->
 
-        <p:idleMonitor timeout="1800000" onidle="PF('idleDialog').show()">  
+        <p:idleMonitor timeout="2000" onidle="PF('idleDialog').show()">  
             <p:ajax event="idle" listener="#{administrationAction.invalidateSession}"/>                  
         </p:idleMonitor>
 
-        <p:dialog header="#{bundle.attention}" resizable="false"  closable="false" 
+        <p:dialog header="#{bundle.attention}" resizable="false"  closable="true" 
                   widgetVar="idleDialog" modal="true" style="color: black;font-weight: bold;">  
             <h:form>                    
                 <table>
@@ -135,7 +135,8 @@
 
         <h:outputStylesheet name="css/nanoscroller.css" library="babylon-layout" />
         <h:outputStylesheet name="css/primeflex.css" library="babylon-layout" />
-        <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="babylon-layout" />
+       <!-- <h:outputStylesheet name="css/layout-#{guestPreferences.layout}.css" library="babylon-layout" /> -->
+        <h:outputStylesheet name="css/layout-lime.css" library="babylon-layout" />
         <h:outputStylesheet name="css/erp.css" library="babylon-layout" />
     </h:body>
 

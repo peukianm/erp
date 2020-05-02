@@ -1,89 +1,78 @@
 package erp.entities;
 
+import java.io.Serializable;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
 /**
- * Users entity.
+ * The persistent class for the USERS database table.
  *
- * @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "USERS", schema = "SKELETON")
-@SequenceGenerator(name = "SEQ_USERS", sequenceName = "USERS_SEQ", allocationSize = 1)
-public class Users implements java.io.Serializable {
+@Table(name = "USERS")
+@NamedQuery(name = "User.findAll", query = "SELECT u FROM Users u")
+public class Users implements Serializable {
 
-    // Fields
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @SequenceGenerator(name = "USERS_USERID_GENERATOR", sequenceName = "USERS_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_USERID_GENERATOR")
     private BigDecimal userid;
-    private Role role;
-    private Company company;
-    private String username;
-    private String password;
-    private String description;
-    private String name;
-    private String surname;
-    private String email;
-    private String phone;
-    private Timestamp createdTimestamp;
-    private Timestamp modifiedTimestamp;
-    private List<Userroles> userroleses = new ArrayList<Userroles>(0);
+
     private BigDecimal active;
-    
-    
-    // Constructors
-    /**
-     * default constructor
-     */
+
+    @Column(name = "CREATED_TIMESTAMP", length = 11, insertable = false, updatable = true)
+    private Timestamp createdTimestamp;
+
+    private String description;
+
+    private String email;
+
+    @Column(name = "MODIFIED_TIMESTAMP", length = 11, insertable = false, updatable = true)
+    private Timestamp modifiedTimestamp;
+
+    private String name;
+
+    private String password;
+
+    private String phone;
+
+    private String surname;
+
+    private String username;
+
+    //bi-directional many-to-one association to Auditing
+    @OneToMany(mappedBy = "users")
+    private List<Auditing> auditings;
+
+    //bi-directional many-to-one association to Userrole
+    @OneToMany(mappedBy = "users")
+    private List<Userroles> userroleses;
+
+    //bi-directional many-to-one association to Company
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COMPANYID")
+    private Company company;
+
+    //bi-directional many-to-one association to Department
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DEPARTMENTID")
+    private Department department;
+
+    //bi-directional many-to-one association to Role
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ROLEID")
+    private Role role;
+
     public Users() {
     }
 
-    /**
-     * minimal constructor
-     */
-    public Users(BigDecimal userid, String username, String password) {
-        this.userid = userid;
-        this.username = username;
-        this.password = password;
-    }
-
-    /**
-     * full constructor
-     */
-    public Users(BigDecimal userid, Role role, String username, String password, String description, String name, String surname, List<Userroles> userroleses, 
-            Company company, Timestamp createdTimestamp, Timestamp modifiedTimestamp) {
-        this.userid = userid;
-        this.role = role;
-        this.company = company;
-        this.username = username;
-        this.password = password;
-        this.description = description;
-        this.name = name;
-        this.surname = surname;
-        this.userroleses = userroleses;
-        this.createdTimestamp = createdTimestamp;
-        this.modifiedTimestamp = modifiedTimestamp;
-    }
-
-    // Property accessors
-    @Id
-    @Column(name = "USERID", unique = true, nullable = false, precision = 22, scale = 0)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_USERS")
     public BigDecimal getUserid() {
         return this.userid;
     }
@@ -91,9 +80,7 @@ public class Users implements java.io.Serializable {
     public void setUserid(BigDecimal userid) {
         this.userid = userid;
     }
-    
-    
-     @Column(name = "ACTIVE", precision = 22, scale = 0)
+
     public BigDecimal getActive() {
         return this.active;
     }
@@ -102,103 +89,6 @@ public class Users implements java.io.Serializable {
         this.active = active;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROLEID")
-    public Role getRole() {
-        return this.role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMPANYID",nullable=false)
-    public Company getCompany() {
-        return this.company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    @Column(name = "USERNAME", nullable = false, length = 100)
-    public String getUsername() {
-        return this.username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Column(name = "PASSWORD", nullable = false, length = 100)
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Column(name = "DESCRIPTION", length = 100)
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Column(name = "NAME", length = 80)
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Column(name = "SURNAME", length = 80)
-    public String getSurname() {
-        return this.surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-    
-    
-    @Column(name = "EMAIL", length = 200, nullable=false)
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
-    
-    @Column(name = "PHONE", length = 200)
-    public String getPhone() {
-        return this.phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-    
-    
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "users")
-    public List<Userroles> getUserroleses() {
-        return this.userroleses;
-    }
-
-    public void setUserroleses(List<Userroles> userroleses) {
-        this.userroleses = userroleses;
-    }
-
-    @Column(name = "CREATED_TIMESTAMP", length = 11, insertable = false, updatable = true)
     public Timestamp getCreatedTimestamp() {
         return this.createdTimestamp;
     }
@@ -207,7 +97,22 @@ public class Users implements java.io.Serializable {
         this.createdTimestamp = createdTimestamp;
     }
 
-    @Column(name = "MODIFIED_TIMESTAMP", length = 11, insertable = false, updatable = true)
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Timestamp getModifiedTimestamp() {
         return this.modifiedTimestamp;
     }
@@ -215,8 +120,145 @@ public class Users implements java.io.Serializable {
     public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
         this.modifiedTimestamp = modifiedTimestamp;
     }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhone() {
+        return this.phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getSurname() {
+        return this.surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<Auditing> getAuditings() {
+        return this.auditings;
+    }
+
+    public void setAuditings(List<Auditing> auditings) {
+        this.auditings = auditings;
+    }
+
+    public Auditing addAuditing(Auditing auditing) {
+        getAuditings().add(auditing);
+        auditing.setUsers(this);
+
+        return auditing;
+    }
+
+    public Auditing removeAuditing(Auditing auditing) {
+        getAuditings().remove(auditing);
+        auditing.setUsers(null);
+
+        return auditing;
+    }
+
+    public List<Userroles> getUserroleses() {
+        return this.userroleses;
+    }
+
+    public void setUserroleses(List<Userroles> userroleses) {
+        this.userroleses = userroleses;
+    }
+
+    public Userroles addUserrole(Userroles userrole) {
+        getUserroleses().add(userrole);
+        userrole.setUsers(this);
+        return userrole;
+    }
+
+    public Userroles removeUserrole(Userroles userrole) {
+        getUserroleses().remove(userrole);
+        userrole.setUsers(null);
+
+        return userrole;
+    }
+
+    public Company getCompany() {
+        return this.company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public Department getDepartment() {
+        return this.department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Role getRole() {
+        return this.role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
     
+    private List<Role> userRoles = new ArrayList<Role>(0);
     
+    @ManyToMany(cascade = CascadeType.REFRESH)
+    @JoinTable(name = "USERROLES",
+    joinColumns = {
+        @JoinColumn(name = "USERID")
+    },
+    inverseJoinColumns = {
+        @JoinColumn(name = "ROLEID")
+    })
+    public List<Role> getUserRoles() {
+        if (userRoles!=null) {
+//           Collections.sort(userRoles, new Comparator<Productspecification>() {
+//                public int compare(Productspecification one, Productspecification other) {
+//                    if (one.getOrdered()!=null && other.getOrdered()!=null)
+//                        return one.getOrdered().compareTo(other.getOrdered());
+//                    else if (one.getSpecification().getOrdered()!= null && other.getSpecification().getOrdered()!=null)
+//                        return one.getSpecification().getOrdered().compareTo(other.getSpecification().getOrdered());
+//                    else
+//                        return one.getSpecification().getName().compareTo(other.getSpecification().getName()); 
+//                }
+//            });
+        }
+        return userRoles;
+    }
+
+    public void setUserRoles(List<Role> userRoles) {
+        this.userRoles = userRoles;
+    }
+    
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -238,9 +280,7 @@ public class Users implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "User{id=" + userid + ", name=" + getName() + ", username=" + getUsername() + "}";
+        return "Users{id=" + userid + ", name=" + getName() + "}";
     }
-    
-    
-    
+
 }

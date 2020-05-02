@@ -38,15 +38,15 @@ public class SecurityFilter implements Filter {
             throws IOException, ServletException {
 
  
-        if (logger.isDebugEnabled()) {
-            logger.debug("sessionBean="+sessionBean);
-        }
-
-        if (sessionBean != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("user="+sessionBean.getUsers());
-            }
-        }
+//        if (logger.isDebugEnabled()) {
+//            logger.debug("sessionBean="+sessionBean);
+//        }
+//
+//        if (sessionBean != null) {
+//            if (logger.isDebugEnabled()) {
+//                logger.debug("user="+sessionBean.getUsers());
+//            }
+//        }
        
 
         HttpServletRequest hreq = (HttpServletRequest) request;
@@ -54,17 +54,17 @@ public class SecurityFilter implements Filter {
         HttpSession session = hreq.getSession();
         String checkforloginpage = hreq.getServletPath();
         
-         if (logger.isDebugEnabled()) {
-            logger.debug("checkforloginpage=" + checkforloginpage);
-        }
+//         if (logger.isDebugEnabled()) {
+//            logger.debug("checkforloginpage=" + checkforloginpage);
+//        }
 
         if (checkforloginpage == null) {
             checkforloginpage = "";
         }
-        
-        if (logger.isDebugEnabled()) {
-            logger.debug("hreq.getHeader(Faces-Request) ="+hreq.getHeader("Faces-Request"));
-        }
+//        
+//        if (logger.isDebugEnabled()) {
+//            logger.debug("hreq.getHeader(Faces-Request) ="+hreq.getHeader("Faces-Request"));
+//        }
         
         if ((request.getAttribute(FILTER_APPLIED) == null)
                 && (!checkforloginpage.endsWith("index.jsp"))

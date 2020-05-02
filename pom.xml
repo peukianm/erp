@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>erp</groupId>
+    <artifactId>ERP</artifactId>
+    <packaging>war</packaging>
+    <version>1.0.0</version>
+    <name>ERP</name>
+
+    <!-- Tomcat plugin -->
+    <plugin>
+     <groupId>org.apache.tomcat.maven</groupId>
+     <artifactId>tomcat7-maven-plugin</artifactId>
+     <version>2.2</version>
+     <configuration>
+      <url>http:// localhost:8080/manager/text</url>
+      <server>TomcatServer</server>
+      <username>admin</username>
+      <password>admin</password>
+     </configuration>
+    </plugin>
+
+    <dependencies>
+      <!-- https://mvnrepository.com/artifact/org.primefaces/primefaces -->
+      <dependency>
+          <groupId>org.primefaces</groupId>
+          <artifactId>primefaces</artifactId>
+          <version>6.2</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.omnifaces/omnifaces -->
+      <dependency>
+          <groupId>org.omnifaces</groupId>
+          <artifactId>omnifaces</artifactId>
+          <version>3.2</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa -->
+      <dependency>
+          <groupId>org.eclipse.persistence</groupId>
+          <artifactId>org.eclipse.persistence.jpa</artifactId>
+          <version>2.7.3</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+      <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+          <version>2.11.1</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.glassfish/javax.faces -->
+      <dependency>
+          <groupId>org.glassfish</groupId>
+          <artifactId>javax.faces</artifactId>
+          <version>2.3.2</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.primefaces.extensions/primefaces-extensions -->
+      <dependency>
+          <groupId>org.primefaces.extensions</groupId>
+          <artifactId>primefaces-extensions</artifactId>
+          <version>6.2.11</version>
+      </dependency>
+
+    </dependencies>
+
+    <properties>
+        <jetty.version>9.0.6.v20130930</jetty.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>

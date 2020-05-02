@@ -1,63 +1,43 @@
 package erp.entities;
 
+import java.io.Serializable;
+import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import java.util.List;
 
 /**
- * Role entity.
+ * The persistent class for the "ROLE" database table.
  *
- * @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "ROLE", schema = "SKELETON")
-public class Role implements java.io.Serializable {
+@Table(name = "\"ROLE\"")
+@NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r")
+public class Role implements Serializable {
 
-    // Fields
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @SequenceGenerator(name = "ROLE_ROLEID_GENERATOR", sequenceName = "ROLE_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROLE_ROLEID_GENERATOR")
     private BigDecimal roleid;
-    private String name;
-    private String description;
-    private BigDecimal ordered;
-    private Set<Userroles> userroleses = new HashSet<Userroles>(0);
-    private Set<Users> userses = new HashSet<Users>(0);
 
-    // Constructors
-    /**
-     * default constructor
-     */
+    private String description;
+
+    private String name;
+
+    private BigDecimal ordered;
+
+    //bi-directional many-to-one association to Userrole
+    @OneToMany(mappedBy = "role")
+    private List<Userroles> userroles;
+
+    //bi-directional many-to-one association to User
+    @OneToMany(mappedBy = "role")
+    private List<Users> users;
+
     public Role() {
     }
 
-    /**
-     * minimal constructor
-     */
-    public Role(BigDecimal roleid, String name) {
-        this.roleid = roleid;
-        this.name = name;
-    }
-
-    /**
-     * full constructor
-     */
-    public Role(BigDecimal roleid, String name, String description, BigDecimal ordered, Set<Userroles> userroleses, Set<Users> userses) {
-        this.roleid = roleid;
-        this.name = name;
-        this.description = description;
-        this.ordered = ordered;
-        this.userroleses = userroleses;
-        this.userses = userses;
-    }
-
-    // Property accessors
-    @Id
-    @Column(name = "ROLEID", unique = true, nullable = false, precision = 22, scale = 0)
     public BigDecimal getRoleid() {
         return this.roleid;
     }
@@ -66,16 +46,6 @@ public class Role implements java.io.Serializable {
         this.roleid = roleid;
     }
 
-    @Column(name = "NAME", nullable = false, length = 100)
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Column(name = "DESCRIPTION", length = 200)
     public String getDescription() {
         return this.description;
     }
@@ -84,7 +54,14 @@ public class Role implements java.io.Serializable {
         this.description = description;
     }
 
-    @Column(name = "ORDERED", precision = 22, scale = 0)
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public BigDecimal getOrdered() {
         return this.ordered;
     }
@@ -93,22 +70,48 @@ public class Role implements java.io.Serializable {
         this.ordered = ordered;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "role")
-    public Set<Userroles> getUserroleses() {
-        return this.userroleses;
+    public List<Userroles> getUserroles() {
+        return this.userroles;
     }
 
-    public void setUserroleses(Set<Userroles> userroleses) {
-        this.userroleses = userroleses;
+    public void setUserroles(List<Userroles> userroles) {
+        this.userroles = userroles;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "role")
-    public Set<Users> getUserses() {
-        return this.userses;
+    public Userroles addUserrole(Userroles userrole) {
+        getUserroles().add(userrole);
+        userrole.setRole(this);
+
+        return userrole;
     }
 
-    public void setUserses(Set<Users> userses) {
-        this.userses = userses;
+    public Userroles removeUserrole(Userroles userrole) {
+        getUserroles().remove(userrole);
+        userrole.setRole(null);
+
+        return userrole;
+    }
+
+    public List<Users> getUsers() {
+        return this.users;
+    }
+
+    public void setUsers(List<Users> users) {
+        this.users = users;
+    }
+
+    public Users addUser(Users user) {
+        getUsers().add(user);
+        user.setRole(this);
+
+        return user;
+    }
+
+    public Users removeUser(Users user) {
+        getUsers().remove(user);
+        user.setRole(null);
+
+        return user;
     }
 
     @Override
@@ -122,7 +125,6 @@ public class Role implements java.io.Serializable {
         }
 
         Role compare = (Role) obj;
-
         return compare.roleid.equals(this.roleid);
     }
 
@@ -133,6 +135,7 @@ public class Role implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "Role{" + "roleid=" + roleid + ", name=" + getName() + "}";
+        return "Role{id=" + roleid + ", name=" + getName() + "}";
     }
+
 }

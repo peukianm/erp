@@ -56,6 +56,10 @@ public class AdministrationAction implements Serializable {
 
     public String loginAction() {
         try {            
+            
+            if (logger.isDebugEnabled()) {
+                logger.debug("LOGIN ACTION!!!!!!");
+            }
             Users temp = null;
             List<Users> users = userDAO.findByProperty("username", userBean.getUsername());
             if (users == null || users.size() > 0) {                
@@ -111,6 +115,7 @@ public class AdministrationAction implements Serializable {
 //               
 
                 return mainPageForward(temp);
+                //return userAdmin();
             }
             return "";
         } catch (Exception e) {
@@ -158,6 +163,7 @@ public class AdministrationAction implements Serializable {
             return "";
         }
     }
+    
 
     public void invalidateSession() {
         FacesUtils.resetManagedBeanJSF2("sessionBean");
@@ -203,7 +209,7 @@ public class AdministrationAction implements Serializable {
             userBean.reset();
             sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
             sessionBean.setPageName(MessageBundleLoader.getMessage("userAdmin"));
-            return "userAdmin?faces-redirect=true ";
+            return "userMgt?faces-redirect=true ";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -942,6 +948,7 @@ public class AdministrationAction implements Serializable {
 
     public String logoutAction() {
         try {
+            System.out.println("LOGING OUT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             FacesUtils.resetManagedBeanJSF2("sessionBean");
             FacesUtils.invalidateSession();
             FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/login.jsf?faces-redirect=true");

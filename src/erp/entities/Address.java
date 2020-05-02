@@ -1,68 +1,40 @@
 package erp.entities;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
- * Address entity.
+ * The persistent class for the ADDRESS database table.
  *
- * @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "ADDRESS", schema = "SKELETON")
-@SequenceGenerator(name = "SEQ_ADDRESS", sequenceName = "ADDRESS_SEQ", allocationSize = 1)
-public class Address implements java.io.Serializable {
+@NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a")
+public class Address implements Serializable {
 
-    // Fields
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @SequenceGenerator(name = "ADDRESS_ADDRESSID_GENERATOR", sequenceName = "ADDRESS_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ADDRESS_ADDRESSID_GENERATOR")
     private BigDecimal addressid;
-    private Company company;
+
     private String address;
-    private String postalcode;
+
     private String city;
+
     private String country;
 
-    // Constructors
-    /**
-     * default constructor
-     */
+    private String postalcode;
+
+    //bi-directional many-to-one association to Company
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COMPANYID")
+    private Company company;
+
     public Address() {
     }
 
-    /**
-     * minimal constructor
-     */
-    public Address(BigDecimal addressid, Company company, String address, String city) {
-        this.addressid = addressid;
-        this.company = company;
-        this.address = address;
-        this.city = city;
-    }
-
-    /**
-     * full constructor
-     */
-    public Address(BigDecimal addressid, Company company, String address, String postalcode, String city, String country) {
-        this.addressid = addressid;
-        this.company = company;
-        this.address = address;
-        this.postalcode = postalcode;
-        this.city = city;
-        this.country = country;
-    }
-
-    // Property accessors
-    @Id
-    @Column(name = "ADDRESSID", unique = true, nullable = false, precision = 22, scale = 0)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_ADDRESS")
     public BigDecimal getAddressid() {
         return this.addressid;
     }
@@ -71,17 +43,6 @@ public class Address implements java.io.Serializable {
         this.addressid = addressid;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMPANYID", nullable = false)
-    public Company getCompany() {
-        return this.company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    @Column(name = "ADDRESS", nullable = false, length = 60)
     public String getAddress() {
         return this.address;
     }
@@ -90,16 +51,6 @@ public class Address implements java.io.Serializable {
         this.address = address;
     }
 
-    @Column(name = "POSTALCODE", length = 10)
-    public String getPostalcode() {
-        return this.postalcode;
-    }
-
-    public void setPostalcode(String postalcode) {
-        this.postalcode = postalcode;
-    }
-
-    @Column(name = "CITY", nullable = false, length = 60)
     public String getCity() {
         return this.city;
     }
@@ -108,13 +59,28 @@ public class Address implements java.io.Serializable {
         this.city = city;
     }
 
-    @Column(name = "COUNTRY", length = 60)
     public String getCountry() {
         return this.country;
     }
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getPostalcode() {
+        return this.postalcode;
+    }
+
+    public void setPostalcode(String postalcode) {
+        this.postalcode = postalcode;
+    }
+
+    public Company getCompany() {
+        return this.company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     @Override
@@ -128,10 +94,7 @@ public class Address implements java.io.Serializable {
         }
 
         Address compare = (Address) obj;
-        if (compare.addressid!=null)
-            return compare.addressid.equals(this.addressid);
-        else
-            return compare.address.equals(this.address);
+        return compare.addressid.equals(this.addressid);
     }
 
     @Override
@@ -141,6 +104,7 @@ public class Address implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "Address{id=" + addressid + ", Company=" + getCompany() + ", Address=" + getAddress() + "}";
+        return "Address{id=" + addressid + ", name=" + getAddress()+ "}";
     }
+
 }

@@ -41,7 +41,7 @@
             <var>bundle</var>
         </resource-bundle>
         <message-bundle>
-            erp.bundle.skeletonmsg
+            erp.bundle.erpmsg
         </message-bundle>                
     </application>
  

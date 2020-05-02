@@ -1,0 +1,515 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+    <!--<ui:define name="title">Dashboard</ui:define>-->
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <script type="text/javascript">
+            $(function () {
+                var ctx = document.getElementById("dashboard-chart").getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                        datasets: [{
+                                label: 'Sales',
+                                data: [12, 19, 3, 5, 2, 3, 9],
+                                borderColor: [
+                                    '#7E57C2',
+                                ],
+                                borderWidth: 3,
+                                borderDash: [5, 5],
+                                fill: false,
+                                pointRadius: 3
+                            }, {
+                                label: 'Income',
+                                data: [1, 2, 5, 3, 12, 7, 15],
+                                backgroundColor: [
+                                    'rgba(187,222,251,0.2)',
+                                ],
+                                borderColor: [
+                                    '#42A5F5',
+                                ],
+                                borderWidth: 3,
+                                fill: true
+                            },
+                            {
+                                label: 'Expenses',
+                                data: [7, 12, 15, 5, 3, 13, 21],
+                                borderColor: [
+                                    '#FFB300',
+                                ],
+                                borderWidth: 3,
+                                fill: false,
+                                pointRadius: [4, 6, 4, 12, 8, 0, 4]
+                            },
+                            {
+                                label: 'New Users',
+                                data: [3, 7, 2, 17, 15, 13, 19],
+                                borderColor: [
+                                    '#66BB6A',
+                                ],
+                                borderWidth: 3,
+                                fill: false
+                            }]
+                    },
+                    options: {
+                        responsive: true,
+                        hover: {
+                            mode: 'index'
+                        },
+                        scales: {
+                            xAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Month'
+                                    }
+                                }],
+                            yAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Value'
+                                    }
+                                }]
+                        }
+                    }
+                });
+            });
+        </script>
+    </ui:define>
+
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/userMgt">#{sessionBean.pageName}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <div class="overview-box sales">
+                        <i class="overview-icon fa fa-usd"></i>
+                        <span class="overview-title">Sales</span>
+                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                        <div class="overview-numbers">
+                            $ 92,440
+                        </div>
+                        <div class="overview-subinfo">
+                            21% more than yesterday
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <div class="overview-box views">
+                        <i class="overview-icon fa fa-search"></i>
+                        <span class="overview-title">Views</span>
+                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                        <div class="overview-numbers">
+                            7029
+                        </div>
+                        <div class="overview-subinfo">
+                            2% more than yesterday
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <div class="overview-box users">
+                        <i class="overview-icon fa fa-users"></i>
+                        <span class="overview-title">Users</span>
+                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                        <div class="overview-numbers">
+                            9522
+                        </div>
+                        <div class="overview-subinfo">
+                            7% more than yesterday
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <div class="overview-box checkin">
+                        <i class="overview-icon fa fa-map-pin"></i>
+                        <span class="overview-title">Check-Ins</span>
+                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                        <div class="overview-numbers">
+                            4211
+                        </div>
+                        <div class="overview-subinfo">
+                            18% more than yesterday
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-lg-8">
+                    <div class="card card-w-title statistics">
+                        <h1>Statistics</h1>
+                        <canvas id="dashboard-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-lg-4">
+                    <div class="card user-card">
+                        <div class="user-card-header">
+                            <p:graphicImage name="images/dashboard/bg-header.png" library="babylon-layout" class="profile-image" />
+                        </div>
+                        <div class="user-card-content">
+                            <p:graphicImage name="images/avatar.png" library="babylon-layout" class="profile-image" />
+                            <p:commandButton id="user-button" type="button" icon="fa fa-cog" />
+
+                            <p:menu overlay="true" trigger="user-button" my="left top" at="left bottom">
+                                <p:menuitem value="Save" icon="fa fa-check" url="#"/>
+                                <p:menuitem value="Update" icon="fa fa-refresh" url="#"/>
+                                <p:menuitem value="Delete" icon="fa fa-trash" url="#"/>
+                            </p:menu>
+
+                            <div class="user-card-name">
+                                <span>Arlene Welch</span>
+                            </div>
+
+                            <div class="user-detail">
+                                <ul>
+                                    <li>
+                                        <i class="fa fa-tasks fa-fw"></i>
+                                        <span class="project-title">Tasks</span>
+                                        <span class="project-detail">3 open</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 50%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-usd fa-fw"></i>
+                                        <span class="project-title">Revenue</span>
+                                        <span class="project-detail">+20%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 20%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-credit-card fa-fw"></i>
+                                        <span class="project-title">Payments</span>
+                                        <span class="project-detail">24 new</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 65%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-users fa-fw"></i>
+                                        <span class="project-title">Clients</span>
+                                        <span class="project-detail">+80%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 80%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-credit-card fa-fw"></i>
+                                        <span class="project-title">Sales</span>
+                                        <span class="project-detail">+45%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 45%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-line-chart fa-fw"></i>
+                                        <span class="project-title">Performance</span>
+                                        <span class="project-detail">+75%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 75%"></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-4 p-lg-4">
+                    <div class="card card-w-title tasks">
+                        <h1>Tasks</h1>
+                        <ul>
+                            <li>
+                                <p:selectBooleanCheckbox />
+                                <span>Sales Reports</span>
+                                <span class="task-badge red"></span>
+                            </li>
+                            <li>
+                                <p:selectBooleanCheckbox />
+                                <span>Pay Invoices</span>
+                                <span class="task-badge orange"></span>
+                            </li>
+                            <li>
+                                <p:selectBooleanCheckbox />
+                                <span>Kate's Birthday</span>
+                                <span class="task-badge orange"></span>
+                            </li>
+                            <li>
+                                <p:selectBooleanCheckbox />
+                                <span>Client Meeting</span>
+                                <span class="task-badge green"></span>
+                            </li>
+                            <li>
+                                <p:selectBooleanCheckbox />
+                                <span>New Themes</span>
+                                <span class="task-badge green"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+
+                <div class="p-col-12 p-md-4 p-lg-4">
+                    <div class="card card-w-title resolution-center ui-fluid">
+                        <h1>Support Request</h1>
+
+                        <p:outputLabel for="resolution-username" value="Username" /> 
+                        <p:inputText id="resolution-username"/>
+
+                        <p:outputLabel for="resolution-message" value="Message" /> 
+                        <p:inputTextarea id="resolution-message" rows="3" placeholder="Your Message" autoResize="false" />
+
+                        <div class="resolution-button-bar">
+                            <p:commandButton type="button" value="Save Draft" styleClass="secondary-button" icon="fa fa-plus"/>
+                            <p:commandButton type="button" value="Send" icon="fa fa-send"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-md-4 p-lg-4">
+                    <div class="card card-w-title team">
+                        <h1>Team</h1>
+                        <ul>
+                            <li>
+                                <p:graphicImage name="images/avatar.png" library="babylon-layout" />
+                                <div class="team-box">
+                                    <span class="team-member">Arlene Welch</span>
+                                    <span class="team-member-role">Design</span>
+                                </div>
+                                <a href="#">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
+                                <div class="team-box">
+                                    <span class="team-member">John Swisher</span>
+                                    <span class="team-member-role">Development</span>
+                                </div>
+                                <a href="#">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <p:graphicImage name="images/avatar-julia.png" library="babylon-layout" />
+                                <div class="team-box">
+                                    <span class="team-member">Warren Shaw</span>
+                                    <span class="team-member-role">Sales</span>
+                                </div>
+                                <a href="#">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <p:graphicImage name="images/avatar-kevin.png" library="babylon-layout" />
+                                <div class="team-box">
+                                    <span class="team-member">Kevin Lane</span>
+                                    <span class="team-member-role">Marketing</span>
+                                </div>
+                                <a href="#">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-xl-6">
+                    <div class="card card-w-title timeline">
+                        <h1>Timeline</h1>
+                        <ul>
+                            <li>
+                                <div class="activity-link"></div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-globe"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h3>Notes Added</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean blandit tortor a ipsum vehicula,
+                                        in semper sapien auctor.</p>
+                                    <div class="timeline-footer">
+                                        <i class="fa fa-clock-o"></i>
+                                        <span>3 Sep 2018 at 10:41</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="activity-link"></div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h3>Reminder Scheduled</h3>
+                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, 
+                                        totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                                    <div class="timeline-footer">
+                                        <i class="fa fa-clock-o"></i>
+                                        <span>4 Sep 2018 at 11:30</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="activity-link"></div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-picture-o"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="child">
+                                        <div>
+                                            <span>3 Photos Added to</span>
+                                            <span class="colorful">Album-23</span>
+                                        </div>
+                                        <p:graphicImage name="images/dashboard/image-1.png" library="babylon-layout" />
+                                        <p:graphicImage name="images/dashboard/image-2.png" library="babylon-layout" />
+                                        <p:graphicImage name="images/dashboard/image-3.png" library="babylon-layout" />
+                                        <div class="timeline-footer">
+                                            <i class="fa fa-clock-o"></i>
+                                            <span>9 Sep 2018 at 00:44</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="activity-link"></div>
+                                <div class="timeline-icon">
+                                    <i class="fa fa-picture-o"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="child">
+                                        <h3>Location Update</h3>
+                                        <p:graphicImage name="images/dashboard/antalya.png" library="babylon-layout" style="width:100%"/>
+                                        <div class="timeline-footer">
+                                            <i class="fa fa-clock-o"></i>
+                                            <span>16 Sep 2018 at 20:02</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-xl-6">
+                    <div class="card card-w-title global-sales ui-fluid">
+                        <h1>Global Sales</h1>
+                        <p:dataTable var="car" value="#{dtSelectionView.cars7}" selectionMode="single" reflow="true" paginatorPosition="bottom"
+                                     selection="#{dtSelectionView.selectedCar}" rowKey="#{car.id}" paginator="true" rows="5">
+
+                            <p:column headerText="Logo" style="width: 84px">
+                                <p:graphicImage name="demo/images/car/#{car.brand}.png" width="50"/> 
+                            </p:column>
+
+                            <p:column headerText="Id" sortBy="#{car.id}">
+                                <h:outputText value="#{car.id}" />
+                            </p:column>
+
+                            <p:column headerText="Year" sortBy="#{car.year}">
+                                <h:outputText value="#{car.year}" />
+                            </p:column>
+
+                            <p:column headerText="Brand" sortBy="#{car.brand}">
+                                <h:outputText value="#{car.brand}" />
+                            </p:column>
+
+                            <p:column headerText="Color" sortBy="#{car.color}">
+                                <h:outputText value="#{car.color}" />
+                            </p:column>
+
+                            <p:column headerText="View">
+                                <div class="ui-grid">
+                                    <div class="ui-g-6 ui-md-12">
+                                        <p:commandButton type="button" icon="fa fa-search" />
+                                    </div>
+                                    <div class="ui-g-6 ui-md-12">
+                                        <p:commandButton type="button" icon="fa fa-close" styleClass="danger-btn" />
+                                    </div>
+                                </div>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+
+                    <div class="card card-w-title live-support">
+                        <h1>Live Support</h1>
+                        <ul>
+                            <li>
+                                <div class="p-grid">
+                                    <div class="p-col-fixed">
+                                        <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
+                                    </div>
+                                    <div class="p-col">
+                                        <div class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Nam ac euismod justo, eget blandit purus.</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="p-grid">
+                                    <div class="p-col">
+                                        <div class="chat-message">Mauris malesuada quis risus ut consequat.
+                                            Maecenas ornare nunc risus, pulvinar euismod mi pellentesque eget.</div>
+                                    </div>
+                                    <div class="p-col-fixed">
+                                        <p:graphicImage name="images/avatar-julia.png" library="babylon-layout" />
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="p-grid">
+                                    <div class="p-col-fixed">
+                                        <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
+                                    </div>
+                                    <div class="p-col">
+                                        <div class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                            Nam ac euismod justo, eget blandit purus.</div> 
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="new-message">
+                            <div class="p-grid p-nogutter">
+                                <div class="p-col">
+                                    <input type="text" placeholder="Write a message.." />
+                                </div>
+                                <div class="p-col-fixed">
+                                    <p:commandButton type="button" value="Send" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12">
+                    <div class="card card-w-title">
+                        <h1>Schedule</h1>
+                        <p:schedule id="schedule" value="#{scheduleView.eventModel}" leftHeaderTemplate="prev,next"/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,127 +1,130 @@
 package erp.entities;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import javax.persistence.*;
+import java.util.Date;
 import java.sql.Timestamp;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 /**
- * Auditing entity. @author MyEclipse Persistence Tools
+ * The persistent class for the AUDITING database table.
+ *
  */
 @Entity
-@Table(name = "AUDITING", schema = "SKELETON")
-public class Auditing implements java.io.Serializable {
+@NamedQuery(name = "Auditing.findAll", query = "SELECT a FROM Auditing a")
+public class Auditing implements Serializable {
 
-	// Fields
+    private static final long serialVersionUID = 1L;
 
-	private BigDecimal auditingid;
-	private Action action;
-	private Company company;
-	private Users users;
-	private String comments;
-	private Timestamp actiondate;
-	private Timestamp actiontime;
+    @Id
+    @SequenceGenerator(name = "AUDITING_AUDITINGID_GENERATOR", sequenceName = "AUDITING_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AUDITING_AUDITINGID_GENERATOR")
+    private BigDecimal auditingid;
 
-	// Constructors
+    //@Temporal(TemporalType.DATE)
+    @Column(name = "ACTIONDATE", nullable = false, length = 7)
+    private Timestamp actiondate;
 
-	/** default constructor */
-	public Auditing() {
-	}
+    private Timestamp actiontime;
 
-	/** minimal constructor */
-	public Auditing(BigDecimal auditingid, Action action, Users users, Timestamp actiondate) {
-		this.auditingid = auditingid;
-		this.action = action;
-		this.users = users;
-		this.actiondate = actiondate;
-	}
+    private String comments;
 
-	/** full constructor */
-	public Auditing(BigDecimal auditingid, Action action, Company company, Users users,
-			String comments, Timestamp actiondate, Timestamp actiontime) {
-		this.auditingid = auditingid;
-		this.action = action;
-		this.company = company;
-		this.users = users;
-		this.comments = comments;
-		this.actiondate = actiondate;
-		this.actiontime = actiontime;
-	}
+    //bi-directional many-to-one association to Action
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ACTIONID")
+    private Action action;
 
-	// Property accessors
-	@Id
-	@Column(name = "AUDITINGID", unique = true, nullable = false, precision = 22, scale = 0)
-	public BigDecimal getAuditingid() {
-		return this.auditingid;
-	}
+    //bi-directional many-to-one association to Company
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COMPANYID")
+    private Company company;
 
-	public void setAuditingid(BigDecimal auditingid) {
-		this.auditingid = auditingid;
-	}
+    //bi-directional many-to-one association to User
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USERID")
+    private Users users;
 
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ACTIONID", nullable = false)
-	public Action getAction() {
-		return this.action;
-	}
+    public Auditing() {
+    }
 
-	public void setAction(Action action) {
-		this.action = action;
-	}
+    public BigDecimal getAuditingid() {
+        return this.auditingid;
+    }
 
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "COMPANYID")
-	public Company getCompany() {
-		return this.company;
-	}
+    public void setAuditingid(BigDecimal auditingid) {
+        this.auditingid = auditingid;
+    }
 
-	public void setCompany(Company company) {
-		this.company = company;
-	}
+    public Timestamp getActiondate() {
+        return this.actiondate;
+    }
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USERID", nullable = false)
-	public Users getUsers() {
-		return this.users;
-	}
+    public void setActiondate(Timestamp actiondate) {
+        this.actiondate = actiondate;
+    }
 
-	public void setUsers(Users users) {
-		this.users = users;
-	}
+    public Timestamp getActiontime() {
+        return this.actiontime;
+    }
 
-	@Column(name = "COMMENTS", length = 400)
-	public String getComments() {
-		return this.comments;
-	}
+    public void setActiontime(Timestamp actiontime) {
+        this.actiontime = actiontime;
+    }
 
-	public void setComments(String comments) {
-		this.comments = comments;
-	}
+    public String getComments() {
+        return this.comments;
+    }
 
-	//@Temporal(TemporalType.DATE)
-	@Column(name = "ACTIONDATE", nullable = false, length = 7)
-	public Timestamp getActiondate() {
-		return this.actiondate;
-	}
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
 
-	public void setActiondate(Timestamp actiondate) {
-		this.actiondate = actiondate;
-	}
+    public Action getAction() {
+        return this.action;
+    }
 
-	@Column(name = "ACTIONTIME", length = 11)
-	public Timestamp getActiontime() {
-		return this.actiontime;
-	}
+    public void setAction(Action action) {
+        this.action = action;
+    }
 
-	public void setActiontime(Timestamp actiontime) {
-		this.actiontime = actiontime;
-	}
+    public Company getCompany() {
+        return this.company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public Users getUsers() {
+        return this.users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof Auditing)) {
+            return false;
+        }
+
+        Auditing compare = (Auditing) obj;
+        return compare.auditingid.equals(this.auditingid);
+    }
+
+    @Override
+    public int hashCode() {
+        return auditingid != null ? this.getClass().hashCode() + auditingid.hashCode() : super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Audit{id=" + auditingid + ", user name=" + getUsers().getSurname() + "}";
+    }
 
 }

@@ -1,77 +1,73 @@
 package erp.entities;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
- * Actionscategory entity. @author MyEclipse Persistence Tools
+ * The persistent class for the ACTIONSCATEGORY database table.
+ *
  */
 @Entity
-@Table(name = "ACTIONSCATEGORY", schema = "SKELETON")
-public class Actionscategory implements java.io.Serializable {
+@NamedQuery(name = "Actionscategory.findAll", query = "SELECT a FROM Actionscategory a")
+public class Actionscategory implements Serializable {
 
-	// Fields
-	private BigDecimal categoryid;
-	private String name;
-	private Set<Action> actions = new HashSet<Action>(0);
+    private static final long serialVersionUID = 1L;
 
-	// Constructors
+    @Id
+    @SequenceGenerator(name = "ACTIONSCATEGORY_CATEGORYID_GENERATOR", sequenceName = "ACTIONSCATEGORY_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACTIONSCATEGORY_CATEGORYID_GENERATOR")
+    private BigDecimal categoryid;
 
-	/** default constructor */
-	public Actionscategory() {
-	}
+    private String name;
 
-	/** minimal constructor */
-	public Actionscategory(BigDecimal categoryid) {
-		this.categoryid = categoryid;
-	}
+    //bi-directional many-to-one association to Action
+    @OneToMany(mappedBy = "actionscategory")
+    private List<Action> actions;
 
-	/** full constructor */
-	public Actionscategory(BigDecimal categoryid, String name, Set<Action> actions) {
-		this.categoryid = categoryid;
-		this.name = name;
-		this.actions = actions;
-	}
+    public Actionscategory() {
+    }
 
-	// Property accessors
-	@Id
-	@Column(name = "CATEGORYID", unique = true, nullable = false, precision = 22, scale = 0)
-	public BigDecimal getCategoryid() {
-		return this.categoryid;
-	}
+    public BigDecimal getCategoryid() {
+        return this.categoryid;
+    }
 
-	public void setCategoryid(BigDecimal categoryid) {
-		this.categoryid = categoryid;
-	}
+    public void setCategoryid(BigDecimal categoryid) {
+        this.categoryid = categoryid;
+    }
 
-	@Column(name = "NAME", length = 4000)
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "actionscategory")
-	public Set<Action> getActions() {
-		return this.actions;
-	}
+    public List<Action> getActions() {
+        return this.actions;
+    }
 
-	public void setActions(Set<Action> actions) {
-		this.actions = actions;
-	}
-        
-        
-         @Override
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
+    }
+
+    public Action addAction(Action action) {
+        getActions().add(action);
+        action.setActionscategory(this);
+
+        return action;
+    }
+
+    public Action removeAction(Action action) {
+        getActions().remove(action);
+        action.setActionscategory(null);
+
+        return action;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -81,7 +77,7 @@ public class Actionscategory implements java.io.Serializable {
             return false;
         }
 
-        Actionscategory  compare = (Actionscategory) obj;
+        Actionscategory compare = (Actionscategory) obj;
         return compare.categoryid.equals(this.categoryid);
     }
 
@@ -92,7 +88,7 @@ public class Actionscategory implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "Actioncategory{id=" + categoryid + ", name=" + getName()  + "}";
+        return "Actioncategory{id=" + categoryid + ", name=" + getName() + "}";
     }
 
 }

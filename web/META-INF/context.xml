@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/erp">
+    <ResourceLink global="jdbc/OracleXE" name="jdbc/OracleXE" type="javax.sql.Datasource"/>    
+</Context>
