@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 
 import java.util.*;
 
@@ -285,7 +286,7 @@ public class FormatUtils {
     }
 
     public static Timestamp formatDateToTimestamp(java.util.Date date, String pattern) {
-        Timestamp timestamp = null;
+        Timestamp timestamp = null;       
         try {
             DateFormat df = new SimpleDateFormat(pattern);
             String dateString = df.format(date);
@@ -295,7 +296,8 @@ public class FormatUtils {
             return null;
         }
     }
-
+    
+    
     /**
      * Returns a string from the input timestamp in the designated format. Formats can be of the following types : <ul> <li> DD/MM/YYYY HH24:MI:SS <li>
      * DD/MM/YYYY <li> MM/DD/YYYY HH24:MI:SS <li> MM/DD/YYYY </ul?
