@@ -414,7 +414,8 @@ a {
     display: none; }
     .layout-wrapper .layout-menu-container .layout-profile .layout-profile-menu li a {
       display: block;
-      padding: 8px 4px;
+      font-size: 12px;
+      padding: 4px 2px;
       text-align: left;
       -moz-border-radius: 3px;
       -webkit-border-radius: 3px;
@@ -436,7 +437,7 @@ a {
     margin: 0; }
     .layout-wrapper .layout-menu-container .layout-menu li a {
       display: block;
-      padding: 8px 0;
+      padding: 4px 0;
       position: relative;
       -moz-border-radius: 3px;
       -webkit-border-radius: 3px;
@@ -617,7 +618,7 @@ a {
 .layout-wrapper .layout-main {
   padding-top: 60px; }
   .layout-wrapper .layout-main .layout-content {
-    padding: 16px; }
+    padding: 6px; }
 
 @media screen and (min-width: 897px) {
   .layout-wrapper.layout-static .layout-menu-container {
@@ -1157,7 +1158,7 @@ a {
     font-size: 32px; }
 
 .layout-dashboard .overview-box {
-  padding: 16px;
+  padding: 4px;
   color: #ffffff;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -1184,7 +1185,7 @@ a {
     margin-bottom: 12px;
     font-size: 18px; }
   .layout-dashboard .overview-box .overview-subinfo {
-    font-size: 13px;
+    font-size: 11px;
     border-left: 4px solid;
     margin-left: -16px;
     padding-left: 12px; }

@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
     <div class="layout-topbar">
         <h:link outcome="/dashboard" styleClass="layout-topbar-logo">
@@ -13,148 +13,64 @@
         <a id="topbar-menu-button" href="#">
             <i class="fa fa-ellipsis-v"></i>
         </a>
-
+                       
         <ul class="topbar-menu fadeInDown">
-            <ui:fragment rendered="#{guestPreferences.profileMode == 'popup' ? true : false}">
+            <li>
+                <a href="#">
+                    <i class="topbar-icon fa fa-fw  fa-sign-out"></i>
+                    <span class="topbar-item-name">#{bundle.disconnect}</span>   
+                </a>
+            </li>
+            <!--<ui:fragment rendered="true">-->
                 <li class="user-profile">
-                    <a href="#">
-                        <p:graphicImage name="images/avatar.png" library="babylon-layout" />
-                        <span class="topbar-item-name">Arlene Welch</span>
+                    
+                    <a href="#">                         
+                        <i class="topbar-icon fa fa-fw fa-user"></i>
+                        <span class="topbar-item-name">#{bundle.account}</span>                        
                     </a>
                     <ul>
                         <li>
                             <a href="#">
                                 <i class="fa fa-fw fa-user"></i>
-                                <span>Profile</span>
+                                <span>#{bundle.account}</span>
                             </a>
                         </li>
                         <li>
                             <a href="#">
                                 <i class="fa fa-fw fa-cog"></i>
-                                <span>Settings</span>
+                                <span>#{bundle.settings}</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="fa fa-fw fa-tasks"></i>
+                                <span>#{bundle.tasks}</span>
+                                <span class="topbar-submenuitem-badge">1</span>
                             </a>
                         </li>
                         <li>
                             <a href="#">
                                 <i class="fa fa-fw fa-envelope-o"></i>
-                                <span>Messages</span>
+                                <span>#{bundle.messages}</span>
+                                <span class="topbar-submenuitem-badge">4</span>
                             </a>
                         </li>
+
                         <li>
                             <a href="#">
-                                <i class="fa fa-fw fa-bell-o"></i>
-                                <span>Notifications</span>
+                                <i class="fa fa-fw  fa-sign-out"></i>
+                                <span>#{bundle.disconnect}</span>                                
                             </a>
-                        </li>
+                        </li>                       
                     </ul>
                 </li>
-            </ui:fragment>
-            <li>
-                <a href="#">
-                    <i class="topbar-icon fa fa-fw fa-calendar"></i>
-                    <span class="topbar-item-name">Notifications</span>
-                </a>
-                <ul>
-                    <li role="menuitem">
-                        <a href="#">
-                            <i class="fa fa-fw fa-tasks"></i>
-                            <span>Pending tasks</span>
-                            <span class="topbar-submenuitem-badge">6</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="#">
-                            <i class="fa fa-fw fa-calendar-check-o"></i>
-                            <span>Meeting today</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="">
-                            <i class="fa fa-fw fa-download"></i>
-                            <span>Download</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="#">
-                            <i class="fa fa-fw fa-plane"></i>
-                            <span>Book flight</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="topbar-icon fa fa-fw fa-inbox"></i>
-                    <span class="topbar-item-name">Messages</span>
-                    <span class="topbar-badge">8</span>
-                </a>
-                <ul>
-                    <li role="menuitem">
-                        <a href="#" class="topbar-message">
-                            <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
-                            <span>Give me a call</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="#" class="topbar-message">
-                            <p:graphicImage name="images/avatar-julia.png" library="babylon-layout" />
-                            <span>Reports attached</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="#" class="topbar-message">
-                            <p:graphicImage name="images/avatar-kevin.png" library="babylon-layout" />
-                            <span>About your invoice</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="#" class="topbar-message">
-                            <p:graphicImage name="images/avatar-julia.png" library="babylon-layout" />
-                            <span>Meeting today</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="#" class="topbar-message">
-                            <p:graphicImage name="images/avatar.png" library="babylon-layout" />
-                            <span>Out of office</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="#">
-                    <i class="topbar-icon fa fa-fw fa-cog"></i>
-                    <span class="topbar-item-name">Settings</span>
-                </a>
-                <ul>
-                    <li role="menuitem">
-                        <a href="#">
-                            <i class="fa fa-fw fa-paint-brush"></i>
-                            <span>Change Theme</span>
-                            <span class="topbar-submenuitem-badge">4</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="#">
-                            <i class="fa fa-fw fa-star-o"></i>
-                            <span>Favorites</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="#">
-                            <i class="fa fa-fw fa-lock"></i>
-                            <span>Lock Screen</span>
-                            <span class="topbar-submenuitem-badge">2</span>
-                        </a>
-                    </li>
-                    <li role="menuitem">
-                        <a href="#">
-                            <i class="fa fa-fw fa-picture-o"></i>
-                            <span>Wallpaper</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+            <!--</ui:fragment>-->
+            <div class="topbar-menu erp-topmenu-user"> 
+                
+                #{sessionBean.users.name} #{sessionBean.users.surname}
+                <br/>
+                #{sessionBean.users.company.abbrev}-#{sessionBean.users.role.name}
+            </div>
         </ul>
     </div>
 </ui:composition>
