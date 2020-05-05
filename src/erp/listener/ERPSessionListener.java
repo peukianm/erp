@@ -19,7 +19,7 @@ public class ERPSessionListener implements HttpSessionListener {
       System.out.println("-- SESSION CREATED invoked --");
       HttpSession session = se.getSession();
       System.out.println("session id: " + session.getId());
-      session.setMaxInactiveInterval(5);//in seconds
+      //session.setMaxInactiveInterval(5);//in seconds
   }
 
   @Override

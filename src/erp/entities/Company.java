@@ -43,6 +43,8 @@ public class Company implements Serializable {
     private Timestamp modifiedTimestamp;
 
     private String name;
+    
+    private String abbrev;
 
     private String phone1;
 
@@ -85,6 +87,14 @@ public class Company implements Serializable {
 
     public void setAfm(String afm) {
         this.afm = afm;
+    }
+    
+    public String getAbbrev() {
+        return this.abbrev;
+    }
+
+    public void setAbbrev(String abbrev) {
+        this.abbrev = abbrev;
     }
 
     public String getContactperson() {
