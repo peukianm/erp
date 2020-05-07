@@ -57,38 +57,34 @@
                     </ui:fragment> -->
 
                     <pb:menu>
-                        <p:submenu id="om_account" label="" icon="fa fa-fw fa-user">
-                            <p:submenu id="ggg" label="#{bundle.account}" icon="fa fa-fw fa-user">
-                                <p:menuitem id="om_account_acc" value="#{bundle.settings}" icon="fa fa-fw fa-cog" outcome="/dashboard" />
-                                <p:menuitem id="om_account_task" value="#{bundle.tasks}" icon="fa fa-fw fa-tasks" outcome="/dashboard" />
+                        <p:submenu id="om_account" label="#{bundle.userData}" icon="fa fa-fw fa-user">
+                            <p:submenu id="ggg" label="#{sessionBean.users.username}" icon="fa fa-fw fa-user">
+                                <p:menuitem id="om_account_acc" value="#{bundle.settings}" icon="fa fa-fw fa-cog" outcome="/dashboard" />                   
                                 <p:menuitem id="om_account_not" value="#{bundle.notifications}" icon="fa fa-fw fa-bell-o" outcome="/dashboard" />
                                 <p:menuitem id="om_account_mess" value="#{bundle.messages}" icon="fa fa-fw fa-envelope-o" outcome="/dashboard" />
-                                <p:menuitem id="om_account_dis" value="#{bundle.disconnect}" icon="fa fa-fw fa-sign-out" outcome="/dashboard" />
+                                <p:menuitem id="om_account_dis" value="#{bundle.disconnect}" onclick="PF('disconnectDlg').show()" icon="fa fa-fw fa-sign-out" />                                
                             </p:submenu>
                         </p:submenu>
 
                         <p:submenu id="om_homepage" label="#{bundle.homePage}" icon="fa fa-fw fa-home">
-                            <p:menuitem id="om_dashboard" value="Dashboard" icon="fa fa-fw fa-dashboard" outcome="/dashboard" />
+                            <p:menuitem id="om_dashboard" value="#{bundle.dashboard}" icon="fa fa-fw fa-dashboard" outcome="/dashboard" />
                         </p:submenu>
-                        <p:submenu id="om_customization" label="Customization" icon="fa fa-fw fa-magic">
-                            <p:submenu id="om_menulayouts" label="Menu Layouts" icon="fa fa-fw fa-desktop">
-                                <f:attribute name="badge" value="2" />
-                                <p:menuitem id="om_menulayouts_1" value="Static" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-static')}" ajax="false" />
-                                <p:menuitem id="om_menulayouts_2" value="Overlay" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-overlay')}" ajax="false" />
-                                <p:menuitem id="om_menulayouts_3" value="Horizontal" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-horizontal')}" ajax="false" />
-                                <p:menuitem id="om_menulayouts_4" value="Slim" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setMenuMode('layout-slim')}" ajax="false" />
-                                <p:menuitem id="om_menulayouts_5" value="Grouped Menu" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setGroupedMenu(true)}" ajax="false" />
-                                <p:menuitem id="om_menulayouts_6" value="Ungrouped Menu" icon="fa fa-fw fa-bars" actionListener="#{guestPreferences.setGroupedMenu(false)}" ajax="false" />
+                        <p:submenu id="om_services" label="#{bundle.services}" icon="fa fa-fw fa-magic">
+                            <p:submenu id="om_general" label="#{bundle.general}" icon="fa fa-fw fa-magic">                                
+                                <p:menuitem id="om_menulayouts_1" value="#{bundle.depAttedance}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
+                                <p:menuitem id="om_menulayouts_2" value="#{bundle.reqs}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
+                                <p:menuitem id="om_menulayouts_3" value="#{bundle.tasks}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
                             </p:submenu>
-                            <p:submenu id="om_customization_mode" label="Menu Colors" icon="fa fa-fw fa-list">
-                                <f:attribute name="badge" value="2" />
-                                <p:menuitem id="om_customization_mode_1" value="Light" icon="fa fa-fw fa-circle-o" actionListener="#{guestPreferences.setDarkMenu(false)}" ajax="false" />
-                                <p:menuitem id="om_customization_mode_2" value="Dark" icon="fa fa-fw fa-circle" actionListener="#{guestPreferences.setDarkMenu(true)}" ajax="false" />
+                            <p:submenu id="hrDep" label="#{bundle.hrDep}" icon="fa fa-fw fa-users">                               
+                                <p:menuitem id="companyAttedance" value="#{bundle.companyAttedance}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
+                                <p:menuitem id="companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
                             </p:submenu>
-                            <p:submenu id="om_userprofile_mode" label="User Profile" icon="fa fa-fw fa-user">
-                                <f:attribute name="badge" value="2" />
-                                <p:menuitem id="om_userprofile_mode_1" value="Popup" icon="fa fa-fw fa-user" actionListener="#{guestPreferences.setProfileMode('popup')}" ajax="false" />
-                                <p:menuitem id="om_userprofile_mode_2" value="Inline" icon="fa fa-fw fa-user" actionListener="#{guestPreferences.setProfileMode('inline')}" ajax="false" />
+                            <p:submenu id="om_userprofile_mode" label="#{bundle.itDep}" icon="fa fa-fw fa-desktop">
+                                <p:menuitem id="userMgt" value="#{bundle.userMgt}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
+                                <p:menuitem id="eqMgt" value="#{bundle.eqMgt}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
+                                <p:menuitem id="companyMgt" value="#{bundle.companyMgt}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
+                                <p:menuitem id="systemMgt" value="#{bundle.systemAdmin}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
+                               
                             </p:submenu>
 
                         </p:submenu>

@@ -87,7 +87,7 @@
     
     <filter>
         <filter-name>Character Encoding Filter</filter-name>
-        <filter-class>org.primefaces.babylon.filter.CharacterEncodingFilter</filter-class>
+        <filter-class>erp.filter.CharacterEncodingFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>Character Encoding Filter</filter-name>

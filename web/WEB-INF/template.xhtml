@@ -124,7 +124,7 @@
 
             <div class="layout-mask"></div>
 
-            <p:confirmDialog header="#{bundle.disconnect}" severity="alert" visible="false"  message="#{bundle.msgDisconnect}" widgetVar="disconnectDlg">	        
+            <p:confirmDialog id="disconnectDlgID" header="#{bundle.disconnect}" severity="alert" visible="false"  message="#{bundle.msgDisconnect}" widgetVar="disconnectDlg">	        
                 <h:form >                         
                     <p:commandButton  value="OK" action="#{administrationAction.logoutAction(0)}" ajax="false"  />
                     <p:commandButton type="button" value="#{bundle.cancel}" onclick="PF('disconnectDlg').hide()" />	                                                  

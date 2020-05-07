@@ -612,7 +612,7 @@ a {
   .layout-wrapper.layout-menu-dark .layout-menu-container .layout-menu li a:hover {
     background-color: #373737; }
   .layout-wrapper.layout-menu-dark .layout-menu-container .layout-menu li a.active-route .layout-menuitem-text, .layout-wrapper.layout-menu-dark .layout-menu-container .layout-menu li a.active-route .layout-menuitem-icon {
-    color: #00BCD4; }
+    /*color: #00BCD4;*/ }
   .layout-wrapper.layout-menu-dark .layout-menu-container .layout-menu > li > div {
     color: #757575; }
 .layout-wrapper .layout-main {
