@@ -9,7 +9,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
 
-import erp.entities.Userroles;
+import erp.entities.Userrole;
 import erp.util.EJBUtil;
 import erp.util.PersistenceHelper;
 
@@ -24,7 +24,7 @@ public class UserrolesConverter implements Converter {
             try {
                 BigDecimal number = new BigDecimal(submittedValue);
 
-                Userroles userrole = persistenceHelper.getEntityManager().find(Userroles.class, number);
+                Userrole userrole = persistenceHelper.getEntityManager().find(Userrole.class, number);
                 return userrole;
 
 
@@ -42,7 +42,7 @@ public class UserrolesConverter implements Converter {
                 return "";
             } else {
 
-                return String.valueOf(((Userroles) value).getId());
+                return String.valueOf(((Userrole) value).getId());
             }
         } catch (Exception e) {
             e.printStackTrace();

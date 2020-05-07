@@ -4,20 +4,24 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <!--<jta-data-source>jdbc/OracleHomeXE</jta-data-source>-->
         <jta-data-source>jdbc/OracleXE</jta-data-source>
-         <class>erp.entities.Action</class>
+        <class>erp.entities.Action</class>
         <class>erp.entities.Actionscategory</class>
         <class>erp.entities.Address</class>
         <class>erp.entities.Auditing</class>
         <class>erp.entities.Company</class>
-        <class>erp.entities.Role</class>
-        <class>erp.entities.Userroles</class>
-        <class>erp.entities.Users</class>
+        <class>erp.entities.Companysector</class>
         <class>erp.entities.Department</class>
-        <class>erp.entities.Equipment</class>
         <class>erp.entities.Departmenttype</class>
-        <class>erp.entities.Equipmenttype</class>
+        <class>erp.entities.Equipment</class>
         <class>erp.entities.Equipmentcategory</class>
         <class>erp.entities.Equipmentdepartment</class>
+        <class>erp.entities.Equipmenttype</class>
+        <class>erp.entities.Role</class>
+        <class>erp.entities.Sector</class>
+        <class>erp.entities.Sectordepartment</class>
+        <class>erp.entities.Staff</class>
+        <class>erp.entities.Userrole</class>
+        <class>erp.entities.Usr</class>
         
         <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>
         <properties>

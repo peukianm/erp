@@ -5,7 +5,7 @@ package erp.bean;
 
 import erp.entities.Company;
 import erp.entities.Role;
-import erp.entities.Users;
+import erp.entities.Usr;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,8 @@ public class UserBean implements Serializable{
     private SessionBean sessionBean;
     private java.lang.String username;
     private java.lang.String password;
-    private Users user ;
-    private List<Users> users = new ArrayList<Users>(0);
+    private Usr user ;
+    private List<Usr> users = new ArrayList<Usr>(0);
     private String searchByUsername;
     private String searchBySurname;
     private Role searchByRole;
@@ -85,19 +85,19 @@ public class UserBean implements Serializable{
         this.sessionBean = sessionBean;
     }
 
-    public Users getUser() {
+    public Usr getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(Usr user) {
         this.user = user;
     }
 
-    public List<Users> getUsers() {
+    public List<Usr> getUsers() {
         return users;
     }
 
-    public void setUsers(List<Users> users) {
+    public void setUsers(List<Usr> users) {
         this.users = users;
     }
 

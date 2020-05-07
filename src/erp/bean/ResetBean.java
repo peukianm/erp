@@ -5,7 +5,7 @@
 package erp.bean;
 
 import erp.dao.UsersDAO;
-import erp.entities.Users;
+import erp.entities.Usr;
 import erp.util.PersistenceHelper;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -35,7 +35,7 @@ public class ResetBean implements Serializable{
     private String rePassword;
     private String email;
     private String sessionid;
-    private Users user;
+    private Usr user;
     private String userid;
     private boolean show = false;
     
@@ -44,7 +44,7 @@ public class ResetBean implements Serializable{
     public void init() {        
         
         if (userid!=null && sessionid!=null) {            
-            user = (Users)persistenceHelper.find(Users.class, new BigDecimal(userid));
+            user = (Usr)persistenceHelper.find(Usr.class, new BigDecimal(userid));
             if (user.getPassword().equals(sessionid)){
                 show = true;
             } else {
@@ -84,11 +84,11 @@ public class ResetBean implements Serializable{
     
     
     
-    public Users getUser() {
+    public Usr getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(Usr user) {
         this.user = user;
     }
 

@@ -4,7 +4,7 @@
  */
 package erp.bean;
 
-import erp.entities.Userroles;
+import erp.entities.Userrole;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PreDestroy;
@@ -21,8 +21,8 @@ import javax.inject.Named;
 @ViewScoped
 public class RoleSelectionBean  implements Serializable {
     
-    private List<Userroles> userroles;
-    private Userroles selectedRole;
+    private List<Userrole> userroles;
+    private Userrole selectedRole;
     
     
     @PreDestroy
@@ -31,19 +31,19 @@ public class RoleSelectionBean  implements Serializable {
         selectedRole = null;                
     }
 
-    public List<Userroles> getUserroles() {
+    public List<Userrole> getUserroles() {
         return userroles;
     }
 
-    public void setUserroles(List<Userroles> userroles) {
+    public void setUserroles(List<Userrole> userroles) {
         this.userroles = userroles;
     }
 
-    public Userroles getSelectedRole() {
+    public Userrole getSelectedRole() {
         return selectedRole;
     }
 
-    public void setSelectedRole(Userroles selectedRole) {
+    public void setSelectedRole(Userrole selectedRole) {
         this.selectedRole = selectedRole;
     }
     

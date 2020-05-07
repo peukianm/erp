@@ -108,7 +108,7 @@ public class AddressDAO {
         }
     }
 
-    public Address findById(BigDecimal id) {
+    public Address findById(long id) {
         try {
             Address instance = getEntityManager().find(Address.class, id);
             return instance;

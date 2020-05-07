@@ -2,28 +2,33 @@ package erp.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 
 /**
- * The persistent class for the EQUIPMENTDEPARTMENT database table.
+ * The persistent class for the SECTORDEPARTMENT database table.
  * 
  */
 @Entity
-@NamedQuery(name="Equipmentdepartment.findAll", query="SELECT e FROM Equipmentdepartment e")
-public class Equipmentdepartment implements Serializable {
+@NamedQuery(name="Sectordepartment.findAll", query="SELECT s FROM Sectordepartment s")
+public class Sectordepartment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="EQUIPMENTDEPARTMENT_ID_GENERATOR", sequenceName="EQUIPMENTDEPARTMENT_SEQ")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="EQUIPMENTDEPARTMENT_ID_GENERATOR")
+	@SequenceGenerator(name="SECTORDEPARTMENT_ID_GENERATOR", sequenceName="SECTORDEPARTMENT_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SECTORDEPARTMENT_ID_GENERATOR")
 	private long id;
+
+	private BigDecimal active;
 
 	@Column(name="CREATED_TIMESTAMP")
 	private Timestamp createdTimestamp;
 
 	@Column(name="MODIFIED_TIMESTAMP")
 	private Timestamp modifiedTimestamp;
+
+	private BigDecimal ordered;
 
 	//bi-directional many-to-one association to Company
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -35,12 +40,12 @@ public class Equipmentdepartment implements Serializable {
 	@JoinColumn(name="DEPARTMENTID")
 	private Department department;
 
-	//bi-directional many-to-one association to Equipment
+	//bi-directional many-to-one association to Sector
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="EQUIPMENTID")
-	private Equipment equipment;
+	@JoinColumn(name="SECTORID")
+	private Sector sector;
 
-	public Equipmentdepartment() {
+	public Sectordepartment() {
 	}
 
 	public long getId() {
@@ -49,6 +54,14 @@ public class Equipmentdepartment implements Serializable {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public BigDecimal getActive() {
+		return this.active;
+	}
+
+	public void setActive(BigDecimal active) {
+		this.active = active;
 	}
 
 	public Timestamp getCreatedTimestamp() {
@@ -67,6 +80,14 @@ public class Equipmentdepartment implements Serializable {
 		this.modifiedTimestamp = modifiedTimestamp;
 	}
 
+	public BigDecimal getOrdered() {
+		return this.ordered;
+	}
+
+	public void setOrdered(BigDecimal ordered) {
+		this.ordered = ordered;
+	}
+
 	public Company getCompany() {
 		return this.company;
 	}
@@ -83,12 +104,12 @@ public class Equipmentdepartment implements Serializable {
 		this.department = department;
 	}
 
-	public Equipment getEquipment() {
-		return this.equipment;
+	public Sector getSector() {
+		return this.sector;
 	}
 
-	public void setEquipment(Equipment equipment) {
-		this.equipment = equipment;
+	public void setSector(Sector sector) {
+		this.sector = sector;
 	}
 
 }

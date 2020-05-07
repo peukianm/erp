@@ -1,7 +1,7 @@
 package erp.converter;
 
 
-import erp.entities.Users;
+import erp.entities.Usr;
 import java.math.BigDecimal;
 import javax.faces.application.FacesMessage;
 
@@ -23,7 +23,7 @@ public class UserConverter implements Converter {
         } else {
             try {
                 BigDecimal number = new BigDecimal(submittedValue);
-                Users user = persistenceHelper.getEntityManager().find(Users.class, number);
+                Usr user = persistenceHelper.getEntityManager().find(Usr.class, number);
                 return user;
 
             } catch (Exception exception) {
@@ -38,7 +38,7 @@ public class UserConverter implements Converter {
             if (value == null || value.equals("")) {
                 return "";
             } else {
-                return String.valueOf(((Users) value).getUserid());
+                return String.valueOf(((Usr) value).getUserid());
             }
         } catch (Exception e) {
             e.printStackTrace();

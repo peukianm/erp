@@ -56,7 +56,7 @@ public class UsersDAO {
      * @param entity Users entity to persist
      * @throws RuntimeException when the operation fails
      */
-    public void save(Users entity) {
+    public void save(Usr entity) {
 
         try {
             getEntityManager().persist(entity);
@@ -82,10 +82,10 @@ public class UsersDAO {
      * @param entity Users entity to delete
      * @throws RuntimeException when the operation fails
      */
-    public void delete(Users entity) {
+    public void delete(Usr entity) {
 
         try {
-            entity = getEntityManager().getReference(Users.class, entity.getUserid());
+            entity = getEntityManager().getReference(Usr.class, entity.getUserid());
             getEntityManager().remove(entity);
 
         } catch (RuntimeException re) {
@@ -110,10 +110,10 @@ public class UsersDAO {
      * @return Users the persisted Users entity instance, may not be the same
      * @throws RuntimeException if the operation fails
      */
-    public Users update(Users entity) {
+    public Usr update(Usr entity) {
 
         try {
-            Users result = getEntityManager().merge(entity);
+            Usr result = getEntityManager().merge(entity);
 
             return result;
         } catch (RuntimeException re) {
@@ -122,10 +122,10 @@ public class UsersDAO {
         }
     }
 
-    public Users findById(BigDecimal id) {
+    public Usr findById(long id) {
 
         try {
-            Users instance = getEntityManager().find(Users.class, id);
+            Usr instance = getEntityManager().find(Usr.class, id);
             return instance;
         } catch (RuntimeException re) {
             logger.error("Error on updating entity", re);
@@ -143,10 +143,10 @@ public class UsersDAO {
      * @return List<Users> found by query
      */
     @SuppressWarnings("unchecked")
-    public List<Users> findByProperty(String propertyName, final Object value, final int... rowStartIdxAndCount) {
+    public List<Usr> findByProperty(String propertyName, final Object value, final int... rowStartIdxAndCount) {
 
         try {
-            final String queryString = "select model from Users model where model." + propertyName + "= :propertyValue";
+            final String queryString = "select model from Usr model where model." + propertyName + "= :propertyValue";
             Query query = getEntityManager().createQuery(queryString);
             query.setParameter("propertyValue", value);
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
@@ -169,23 +169,23 @@ public class UsersDAO {
         }
     }
 
-    public List<Users> findByUsername(Object username, int... rowStartIdxAndCount) {
+    public List<Usr> findByUsername(Object username, int... rowStartIdxAndCount) {
         return findByProperty(USERNAME, username, rowStartIdxAndCount);
     }
 
-    public List<Users> findByPassword(Object password, int... rowStartIdxAndCount) {
+    public List<Usr> findByPassword(Object password, int... rowStartIdxAndCount) {
         return findByProperty(PASSWORD, password, rowStartIdxAndCount);
     }
 
-    public List<Users> findByDescription(Object description, int... rowStartIdxAndCount) {
+    public List<Usr> findByDescription(Object description, int... rowStartIdxAndCount) {
         return findByProperty(DESCRIPTION, description, rowStartIdxAndCount);
     }
 
-    public List<Users> findByName(Object name, int... rowStartIdxAndCount) {
+    public List<Usr> findByName(Object name, int... rowStartIdxAndCount) {
         return findByProperty(NAME, name, rowStartIdxAndCount);
     }
 
-    public List<Users> findBySurname(Object surname, int... rowStartIdxAndCount) {
+    public List<Usr> findBySurname(Object surname, int... rowStartIdxAndCount) {
         return findByProperty(SURNAME, surname, rowStartIdxAndCount);
     }
 
@@ -197,10 +197,10 @@ public class UsersDAO {
      * @return List<Users> all Users entities
      */
     @SuppressWarnings("unchecked")
-    public List<Users> findAll(final int... rowStartIdxAndCount) {
+    public List<Usr> findAll(final int... rowStartIdxAndCount) {
 
         try {
-            final String queryString = "select model from Users model";
+            final String queryString = "select model from Usr model";
             Query query = getEntityManager().createQuery(queryString);
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
                 int rowStartIdx = Math.max(0, rowStartIdxAndCount[0]);
@@ -224,19 +224,19 @@ public class UsersDAO {
         }
     }
 
-    public Users findUserExoterika(String username, String password) {
+    public Usr findUserExoterika(String username, String password) {
         try {
             //EntityManager em = EntityManagerHelper.getEntityManager();
 //			String sql = "Select NEW com.hosp.bean.UserBean(u.username,u.password,u.department)" +
 //			" from Users u where u.username like '" + username + "'  AND u.password like '"+password+"'";
 
-            String sql = "Select u from Users u where "
+            String sql = "Select u from Usr u where "
                     + " u.username like '" + username + "'  "
                     + " AND u.password like '" + password + "' "
                     + " AND u.role.roleid IN (6,7,8)";
 
             Query query = getEntityManager().createQuery(sql);
-            return (Users) query.getSingleResult();
+            return (Usr) query.getSingleResult();
 
         } catch (NoResultException nre) {
             return null;
@@ -248,18 +248,18 @@ public class UsersDAO {
         }
     }
 
-    public Users findUser(String username, String password) {
+    public Usr findUser(String username, String password) {
         try {
             //EntityManager em = EntityManagerHelper.getEntityManager();
 //			String sql = "Select NEW com.hosp.bean.UserBean(u.username,u.password,u.department)" +
 //			" from Users u where u.username like '" + username + "'  AND u.password like '"+password+"'";
 
-            String sql = "Select u from Users u where "
+            String sql = "Select u from Usr u where "
                     + " u.username like '" + username + "'  "
                     + " AND u.password like '" + password + "' ";
 
             Query query = getEntityManager().createQuery(sql);
-            return (Users) query.getSingleResult();
+            return (Usr) query.getSingleResult();
 
         } catch (NoResultException nre) {
             return null;
@@ -271,11 +271,11 @@ public class UsersDAO {
         }
     }
 
-    public List<Userroles> getUserRoles(Users user) {
+    public List<Userrole> getUserRoles(Usr user) {
         try {
             EntityManager em = getEntityManager();
-            String queryString = "Select ur from Userroles ur"
-                    + " where ur.users=:user "
+            String queryString = "Select ur from Userrole ur"
+                    + " where ur.usr=:user "
                     + " order by ur.role.ordered ASC ";
 
             Query query = em.createQuery(queryString);
@@ -299,11 +299,11 @@ public class UsersDAO {
     
     
     
-    public List<Users> fetchUserAutoCompleteUsername(String name) {
+    public List<Usr> fetchUserAutoCompleteUsername(String name) {
         try {
             name = name.trim();
 
-            String queryString = "Select user from Users  user  "
+            String queryString = "Select user from Usr  user  "
                     + " where (LOWER(user.username) like '" + ((String) name).toLowerCase() + "%'"
                     + " OR UPPER(user.username)  like '" + ((String) name).toUpperCase() + "%') "                    
                     + " order by user.username";
@@ -318,11 +318,11 @@ public class UsersDAO {
         }
     }
     
-    public List<Users> searchUser(Role role, Company company, String username, String surname){
+    public List<Usr> searchUser(Role role, Company company, String username, String surname){
 		try {
 			
-			String queryString = "Select u from Users u "
-                                + (role != null ? " JOIN u.userroleses userrole " : " " )
+			String queryString = "Select u from Usr u "
+                                + (role != null ? " JOIN u.userrole userrole " : " " )
                                 + " where u.userid IS NOT NULL "
                                 + (company != null ? " and u.company=:company " : " ")
                                 + (role != null ? " and userrole.role=:role " : " ")

@@ -1,6 +1,6 @@
 package erp.dao;
 
-import erp.entities.Userroles;
+import erp.entities.Userrole;
 import erp.util.EJBUtil;
 import erp.util.PersistenceHelper;
 import java.math.BigDecimal;
@@ -58,7 +58,7 @@ public class UserrolesDAO {
      * @param entity Userroles entity to persist
      * @throws RuntimeException when the operation fails
      */
-    public void save(Userroles entity) {
+    public void save(Userrole entity) {
         try {
             getEntityManager().persist(entity);
         } catch (RuntimeException re) {
@@ -82,9 +82,9 @@ public class UserrolesDAO {
      * @param entity Userroles entity to delete
      * @throws RuntimeException when the operation fails
      */
-    public void delete(Userroles entity) {
+    public void delete(Userrole entity) {
         try {
-            entity = getEntityManager().getReference(Userroles.class, entity.getId());
+            entity = getEntityManager().getReference(Userrole.class, entity.getId());
             getEntityManager().remove(entity);
         } catch (RuntimeException re) {
             logger.error("Error on saving entity", re);
@@ -108,9 +108,9 @@ public class UserrolesDAO {
      * @return Userroles the persisted Userroles entity instance, may not be the same
      * @throws RuntimeException if the operation fails
      */
-    public Userroles update(Userroles entity) {
+    public Userrole update(Userrole entity) {
         try {
-            Userroles result = getEntityManager().merge(entity);
+            Userrole result = getEntityManager().merge(entity);
             return result;
         } catch (RuntimeException re) {
             logger.error("Error on updating entity", re);
@@ -118,9 +118,9 @@ public class UserrolesDAO {
         }
     }
 
-    public Userroles findById(BigDecimal id) {
+    public Userrole findById(BigDecimal id) {
         try {
-            Userroles instance = getEntityManager().find(Userroles.class, id);
+            Userrole instance = getEntityManager().find(Userrole.class, id);
             return instance;
         } catch (RuntimeException re) {
             throw re;
@@ -137,7 +137,7 @@ public class UserrolesDAO {
      * @return List<Userroles> found by query
      */
     @SuppressWarnings("unchecked")
-    public List<Userroles> findByProperty(String propertyName, final Object value, final int... rowStartIdxAndCount) {
+    public List<Userrole> findByProperty(String propertyName, final Object value, final int... rowStartIdxAndCount) {
         try {
             final String queryString = "select model from Userroles model where model." + propertyName + "= :propertyValue";
             Query query = getEntityManager().createQuery(queryString);
@@ -169,7 +169,7 @@ public class UserrolesDAO {
      * @return List<Userroles> all Userroles entities
      */
     @SuppressWarnings("unchecked")
-    public List<Userroles> findAll(final int... rowStartIdxAndCount) {
+    public List<Userrole> findAll(final int... rowStartIdxAndCount) {
         try {
             final String queryString = "select model from Userroles model";
             Query query = getEntityManager().createQuery(queryString);

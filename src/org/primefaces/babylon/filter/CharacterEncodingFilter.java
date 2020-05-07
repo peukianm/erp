@@ -24,7 +24,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-public class CharacterEncodingFilter implements Filter {
+public class CharacterEncodingFilter  {
 
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 		req.setCharacterEncoding("UTF-8");

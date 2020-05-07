@@ -22,7 +22,7 @@ package erp.util;
 
 import erp.bean.ErrorBean;
 import erp.bean.SessionBean;
-import erp.entities.Users;
+import erp.entities.Usr;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
@@ -604,7 +604,7 @@ public class FacesUtils {
     }
     
     
-    public static void goError(Exception ex, Logger logger, Users user, String errorMsgKey) {
+    public static void goError(Exception ex, Logger logger, Usr user, String errorMsgKey) {
         try {
             logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
             if (user != null) {

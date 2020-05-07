@@ -117,7 +117,7 @@ public class ActionscategoryDAO {
         }
     }
 
-    public Actionscategory findById(BigDecimal id) {
+    public Actionscategory findById(long id) {
 
         try {
             Actionscategory instance = getEntityManager().find(Actionscategory.class, id);

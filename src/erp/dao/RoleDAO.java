@@ -133,7 +133,7 @@ public class RoleDAO {
         }
     }
 
-    public Role findById(BigDecimal id) {
+    public Role findById(long id) {
 
         try {
             Role instance = getEntityManager().find(Role.class, id);

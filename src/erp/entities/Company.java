@@ -7,256 +7,356 @@ import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+
 /**
  * The persistent class for the COMPANY database table.
- *
+ * 
  */
 @Entity
-@NamedQuery(name = "Company.findAll", query = "SELECT c FROM Company c")
+@NamedQuery(name="Company.findAll", query="SELECT c FROM Company c")
 public class Company implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
+	@Id
+	@SequenceGenerator(name="COMPANY_COMPANYID_GENERATOR", sequenceName="COMPANY_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="COMPANY_COMPANYID_GENERATOR")
+	private long companyid;
 
-    @Id
-    @SequenceGenerator(name = "COMPANY_COMPANYID_GENERATOR", sequenceName = "COMPANY_SEQ")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMPANY_COMPANYID_GENERATOR")
-    private BigDecimal companyid;
+	private String abbrev;
 
-    private BigDecimal active;
+	private BigDecimal active;
 
-    private String afm;
+	private String afm;
 
-    private String contactperson;
+	private String contactperson;
 
-    @Column(name = "CREATED_TIMESTAMP", length = 11, insertable = false, updatable = true)
-    private Timestamp createdTimestamp;
+	@Column(name="CREATED_TIMESTAMP")
+	private Timestamp createdTimestamp;
 
-    @Temporal(TemporalType.DATE)
-    private Date createddate;
+	@Temporal(TemporalType.DATE)
+	private Date createddate;
 
-    private String description;
+	private String description;
 
-    private String email;
+	private String email;
 
-    
-    @Column(name = "MODIFIED_TIMESTAMP", length = 11, insertable = false, updatable = true)
-    private Timestamp modifiedTimestamp;
+	@Column(name="MODIFIED_TIMESTAMP")
+	private Timestamp modifiedTimestamp;
 
-    private String name;
-    
-    private String abbrev;
+	private String name;
 
-    private String phone1;
+	private String phone1;
 
-    private String phone2;
+	private String phone2;
 
-    //bi-directional many-to-one association to Address
-    @OneToMany(mappedBy = "company")
-    private List<Address> addresses;
+	//bi-directional many-to-one association to Address
+	@OneToMany(mappedBy="company")
+	private List<Address> addresses;
 
-    //bi-directional many-to-one association to Auditing
-    @OneToMany(mappedBy = "company")
-    private List<Auditing> auditings;
+	//bi-directional many-to-one association to Auditing
+	@OneToMany(mappedBy="company")
+	private List<Auditing> auditings;
 
-    //bi-directional many-to-one association to User
-    @OneToMany(mappedBy = "company")
-    private List<Users> users;
+	//bi-directional many-to-many association to Sector
+	@ManyToMany
+	@JoinTable(
+		name="COMPANYSECTOR"
+		, joinColumns={
+			@JoinColumn(name="COMPANYID")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="SECTORID")
+			}
+		)
+	private List<Sector> sectors;
 
-    public Company() {
-    }
+	//bi-directional many-to-one association to Companysector
+	@OneToMany(mappedBy="company")
+	private List<Companysector> companysectors;
 
-    public BigDecimal getCompanyid() {
-        return this.companyid;
-    }
+	//bi-directional many-to-one association to Equipmentdepartment
+	@OneToMany(mappedBy="company")
+	private List<Equipmentdepartment> equipmentdepartments;
 
-    public void setCompanyid(BigDecimal companyid) {
-        this.companyid = companyid;
-    }
+	//bi-directional many-to-one association to Sectordepartment
+	@OneToMany(mappedBy="company")
+	private List<Sectordepartment> sectordepartments;
 
-    public BigDecimal getActive() {
-        return this.active;
-    }
+	//bi-directional many-to-one association to Staff
+	@OneToMany(mappedBy="company")
+	private List<Staff> staffs;
 
-    public void setActive(BigDecimal active) {
-        this.active = active;
-    }
+	//bi-directional many-to-one association to Usr
+	@OneToMany(mappedBy="company")
+	private List<Usr> usrs;
 
-    public String getAfm() {
-        return this.afm;
-    }
+	public Company() {
+	}
 
-    public void setAfm(String afm) {
-        this.afm = afm;
-    }
-    
-    public String getAbbrev() {
-        return this.abbrev;
-    }
+	public long getCompanyid() {
+		return this.companyid;
+	}
 
-    public void setAbbrev(String abbrev) {
-        this.abbrev = abbrev;
-    }
+	public void setCompanyid(long companyid) {
+		this.companyid = companyid;
+	}
 
-    public String getContactperson() {
-        return this.contactperson;
-    }
+	public String getAbbrev() {
+		return this.abbrev;
+	}
 
-    public void setContactperson(String contactperson) {
-        this.contactperson = contactperson;
-    }
+	public void setAbbrev(String abbrev) {
+		this.abbrev = abbrev;
+	}
 
-    public Timestamp getCreatedTimestamp() {
-        return this.createdTimestamp;
-    }
+	public BigDecimal getActive() {
+		return this.active;
+	}
 
-    public void setCreatedTimestamp(Timestamp createdTimestamp) {
-        this.createdTimestamp = createdTimestamp;
-    }
+	public void setActive(BigDecimal active) {
+		this.active = active;
+	}
 
-    public Date getCreateddate() {
-        return this.createddate;
-    }
+	public String getAfm() {
+		return this.afm;
+	}
 
-    public void setCreateddate(Date createddate) {
-        this.createddate = createddate;
-    }
+	public void setAfm(String afm) {
+		this.afm = afm;
+	}
 
-    public String getDescription() {
-        return this.description;
-    }
+	public String getContactperson() {
+		return this.contactperson;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setContactperson(String contactperson) {
+		this.contactperson = contactperson;
+	}
 
-    public String getEmail() {
-        return this.email;
-    }
+	public Timestamp getCreatedTimestamp() {
+		return this.createdTimestamp;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setCreatedTimestamp(Timestamp createdTimestamp) {
+		this.createdTimestamp = createdTimestamp;
+	}
 
-    public Timestamp getModifiedTimestamp() {
-        return this.modifiedTimestamp;
-    }
+	public Date getCreateddate() {
+		return this.createddate;
+	}
 
-    public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
-        this.modifiedTimestamp = modifiedTimestamp;
-    }
+	public void setCreateddate(Date createddate) {
+		this.createddate = createddate;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public String getDescription() {
+		return this.description;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getPhone1() {
-        return this.phone1;
-    }
+	public String getEmail() {
+		return this.email;
+	}
 
-    public void setPhone1(String phone1) {
-        this.phone1 = phone1;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getPhone2() {
-        return this.phone2;
-    }
+	public Timestamp getModifiedTimestamp() {
+		return this.modifiedTimestamp;
+	}
 
-    public void setPhone2(String phone2) {
-        this.phone2 = phone2;
-    }
+	public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
+		this.modifiedTimestamp = modifiedTimestamp;
+	}
 
-    public List<Address> getAddresses() {
-        return this.addresses;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public Address addAddress(Address address) {
-        getAddresses().add(address);
-        address.setCompany(this);
+	public String getPhone1() {
+		return this.phone1;
+	}
 
-        return address;
-    }
+	public void setPhone1(String phone1) {
+		this.phone1 = phone1;
+	}
 
-    public Address removeAddress(Address address) {
-        getAddresses().remove(address);
-        address.setCompany(null);
+	public String getPhone2() {
+		return this.phone2;
+	}
 
-        return address;
-    }
+	public void setPhone2(String phone2) {
+		this.phone2 = phone2;
+	}
 
-    public List<Auditing> getAuditings() {
-        return this.auditings;
-    }
+	public List<Address> getAddresses() {
+		return this.addresses;
+	}
 
-    public void setAuditings(List<Auditing> auditings) {
-        this.auditings = auditings;
-    }
+	public void setAddresses(List<Address> addresses) {
+		this.addresses = addresses;
+	}
 
-    public Auditing addAuditing(Auditing auditing) {
-        getAuditings().add(auditing);
-        auditing.setCompany(this);
+	public Address addAddress(Address address) {
+		getAddresses().add(address);
+		address.setCompany(this);
 
-        return auditing;
-    }
+		return address;
+	}
 
-    public Auditing removeAuditing(Auditing auditing) {
-        getAuditings().remove(auditing);
-        auditing.setCompany(null);
+	public Address removeAddress(Address address) {
+		getAddresses().remove(address);
+		address.setCompany(null);
 
-        return auditing;
-    }
+		return address;
+	}
 
-    public List<Users> getUsers() {
-        return this.users;
-    }
+	public List<Auditing> getAuditings() {
+		return this.auditings;
+	}
 
-    public void setUsers(List<Users> users) {
-        this.users = users;
-    }
+	public void setAuditings(List<Auditing> auditings) {
+		this.auditings = auditings;
+	}
 
-    public Users addUser(Users user) {
-        getUsers().add(user);
-        user.setCompany(this);
+	public Auditing addAuditing(Auditing auditing) {
+		getAuditings().add(auditing);
+		auditing.setCompany(this);
 
-        return user;
-    }
+		return auditing;
+	}
 
-    public Users removeUser(Users user) {
-        getUsers().remove(user);
-        user.setCompany(null);
+	public Auditing removeAuditing(Auditing auditing) {
+		getAuditings().remove(auditing);
+		auditing.setCompany(null);
 
-        return user;
-    }
+		return auditing;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
+	public List<Sector> getSectors() {
+		return this.sectors;
+	}
 
-        if (!(obj instanceof Company)) {
-            return false;
-        }
+	public void setSectors(List<Sector> sectors) {
+		this.sectors = sectors;
+	}
 
-        Company compare = (Company) obj;
-        return compare.companyid.equals(this.companyid);
-    }
+	public List<Companysector> getCompanysectors() {
+		return this.companysectors;
+	}
 
-    @Override
-    public int hashCode() {
-        return companyid != null ? this.getClass().hashCode() + companyid.hashCode() : super.hashCode();
-    }
+	public void setCompanysectors(List<Companysector> companysectors) {
+		this.companysectors = companysectors;
+	}
 
-    @Override
-    public String toString() {
-        return "Company{id=" + companyid + ", name=" + getName() + "}";
-    }
+	public Companysector addCompanysector(Companysector companysector) {
+		getCompanysectors().add(companysector);
+		companysector.setCompany(this);
+
+		return companysector;
+	}
+
+	public Companysector removeCompanysector(Companysector companysector) {
+		getCompanysectors().remove(companysector);
+		companysector.setCompany(null);
+
+		return companysector;
+	}
+
+	public List<Equipmentdepartment> getEquipmentdepartments() {
+		return this.equipmentdepartments;
+	}
+
+	public void setEquipmentdepartments(List<Equipmentdepartment> equipmentdepartments) {
+		this.equipmentdepartments = equipmentdepartments;
+	}
+
+	public Equipmentdepartment addEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
+		getEquipmentdepartments().add(equipmentdepartment);
+		equipmentdepartment.setCompany(this);
+
+		return equipmentdepartment;
+	}
+
+	public Equipmentdepartment removeEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
+		getEquipmentdepartments().remove(equipmentdepartment);
+		equipmentdepartment.setCompany(null);
+
+		return equipmentdepartment;
+	}
+
+	public List<Sectordepartment> getSectordepartments() {
+		return this.sectordepartments;
+	}
+
+	public void setSectordepartments(List<Sectordepartment> sectordepartments) {
+		this.sectordepartments = sectordepartments;
+	}
+
+	public Sectordepartment addSectordepartment(Sectordepartment sectordepartment) {
+		getSectordepartments().add(sectordepartment);
+		sectordepartment.setCompany(this);
+
+		return sectordepartment;
+	}
+
+	public Sectordepartment removeSectordepartment(Sectordepartment sectordepartment) {
+		getSectordepartments().remove(sectordepartment);
+		sectordepartment.setCompany(null);
+
+		return sectordepartment;
+	}
+
+	public List<Staff> getStaffs() {
+		return this.staffs;
+	}
+
+	public void setStaffs(List<Staff> staffs) {
+		this.staffs = staffs;
+	}
+
+	public Staff addStaff(Staff staff) {
+		getStaffs().add(staff);
+		staff.setCompany(this);
+
+		return staff;
+	}
+
+	public Staff removeStaff(Staff staff) {
+		getStaffs().remove(staff);
+		staff.setCompany(null);
+
+		return staff;
+	}
+
+	public List<Usr> getUsrs() {
+		return this.usrs;
+	}
+
+	public void setUsrs(List<Usr> usrs) {
+		this.usrs = usrs;
+	}
+
+	public Usr addUsr(Usr usr) {
+		getUsrs().add(usr);
+		usr.setCompany(this);
+
+		return usr;
+	}
+
+	public Usr removeUsr(Usr usr) {
+		getUsrs().remove(usr);
+		usr.setCompany(null);
+
+		return usr;
+	}
 
 }

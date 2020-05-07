@@ -14,7 +14,7 @@ import javax.faces.event.ActionEvent;
 import javax.persistence.EntityManager;
 
 
-import erp.entities.Users;
+import erp.entities.Usr;
 import erp.util.*;
 import javax.faces.bean.ManagedBean;
 //import javax.faces.bean.SessionScoped;
@@ -22,6 +22,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
+
 //@ManagedBean(name = "sessionBean")
 //@SessionScoped
 @Named(value = "sessionBean")
@@ -31,7 +32,7 @@ public class SessionBean implements Serializable {
     private java.lang.String pageName;
     private java.lang.String pageTitle;
     private java.lang.String pageCode = "LOGIN";
-    private Users users;
+    private Usr users;
    
     private String errorMsgKey = "errMsg_GeneralError";
     private Locale locale = null;
@@ -85,11 +86,11 @@ public class SessionBean implements Serializable {
         this.pageName = pageName;
     }
 
-    public Users getUsers() {
+    public Usr getUsers() {
         return users;
     }
 
-    public void setUsers(Users users) {
+    public void setUsers(Usr users) {
         this.users = users;
     }
 

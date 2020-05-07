@@ -24,9 +24,6 @@ import javax.transaction.UserTransaction;
 @Stateless
 public class PersistenceHelper  {
         
-//    EntityManagerFactory emf = Persistence.createEntityManagerFactory("erp");
-//    EntityManager entityManager = emf.createEntityManager();
-
     @PersistenceContext(unitName = "erp")
     private EntityManager entityManager;
     

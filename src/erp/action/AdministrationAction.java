@@ -4,7 +4,9 @@
 package erp.action;
 
 import erp.bean.*;
-import erp.dao.*;
+import erp.dao.ActionDAO;
+import erp.dao.AuditingDAO;
+import erp.dao.UsrDAO;
 import erp.entities.*;
 import erp.util.*;
 import java.io.IOException;
@@ -12,9 +14,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.UserTransaction;
 import org.apache.logging.log4j.Logger;
@@ -23,10 +27,17 @@ import org.primefaces.event.SelectEvent;
 
 public class AdministrationAction implements Serializable {
 
-    UsersDAO userDAO = new UsersDAO();
     private static final Logger logger = LogManager.getLogger(AdministrationAction.class);
 
-    //private SessionBean sessionBean = (SessionBean) FacesUtils.getManagedBean("sessionBean");
+    @EJB
+    UsrDAO userDAO;
+
+    @EJB
+    AuditingDAO auditingDAO;
+
+    @EJB
+    ActionDAO actionDAO;
+
     @Inject
     private SessionBean sessionBean;
 
@@ -48,28 +59,29 @@ public class AdministrationAction implements Serializable {
     @Inject
     ResetBean resetBean;
 
-    @Resource 
-    UserTransaction usrTransaction; 
-    
+    @Resource
+    UserTransaction usrTransaction;
+
     public AdministrationAction() {
     }
 
     public String loginAction() {
-        try {            
-            
+        try {
             if (logger.isDebugEnabled()) {
                 logger.debug("LOGIN ACTION!!!!!!");
             }
-            Users temp = null;
-            List<Users> users = userDAO.findByProperty("username", userBean.getUsername());
-            if (users == null || users.size() > 0) {                
-                if (ErpUtil.check(userBean.getPassword(), users.get(0).getPassword())) 
+            Usr temp = null;
+            List<Usr> users = userDAO.findByProperty("username", userBean.getUsername());
+            if (users == null || users.size() > 0) {
+                if (ErpUtil.check(userBean.getPassword(), users.get(0).getPassword())) {
                     temp = users.get(0);
-                else 
-                    temp = null;                
-            } else 
+                } else {
+                    temp = null;
+                }
+            } else {
                 temp = null;
-            
+            }
+
             if (temp == null) {
                 userBean.setPassword(null);
                 sessionBean.setErrorMsgKey("errMsg_InvalidCredentials");
@@ -77,10 +89,9 @@ public class AdministrationAction implements Serializable {
                 return "loginPage";
             }
 
-            List<Userroles> userroles = userDAO.getUserRoles(temp);
-            RoleSelectionBean roleSelectionBean = (RoleSelectionBean) FacesUtils.getManagedBean("roleSelectionBean");
+            List<Userrole> userroles = temp.getUserroles();
             roleSelectionBean.setUserroles(userroles);
-            temp.setUserroleses(userroles);
+            temp.setUserroles(userroles);
             sessionBean.setUsers(temp);
 
             if (userroles.size() > 1) {
@@ -88,16 +99,12 @@ public class AdministrationAction implements Serializable {
             } else if (userroles.size() == 1) {
                 temp.setRole(userroles.get(0).getRole());
 
-
 //                Server server = (Server)SessionManager.getManager().getSession("sdsdsddsd", HttpSession.class.getClassLoader());
 //            Session session = (Session) server.acquireClientSession();
 //                SessionFactory sessionFactory = new SessionFactory("default");
 //                Session session = sessionFactory.getSharedSession();
 //                UnitOfWork uow = session.acquireUnitOfWork();           
 //                uow.commit();
-
-               
-
 //               usrTransaction.begin();
 //                Company comp = new Company();
 //                comp.setName("1111111111111111111");
@@ -113,7 +120,6 @@ public class AdministrationAction implements Serializable {
 //                persistenceHelper.create(usr);
 //                usrTransaction.commit();
 //               
-
                 return mainPageForward(temp);
                 //return userAdmin();
             }
@@ -137,8 +143,8 @@ public class AdministrationAction implements Serializable {
 
     public String selectRole() {
         //RoleSelectionBean roleSelectionBean = (RoleSelectionBean) FacesUtils.getManagedBean("roleSelectionBean");
-        Userroles selectedRole = roleSelectionBean.getSelectedRole();
-        Users temp = sessionBean.getUsers();
+        Userrole selectedRole = roleSelectionBean.getSelectedRole();
+        Usr temp = sessionBean.getUsers();
         temp.setRole(selectedRole.getRole());
         sessionBean.setUsers(temp);
 
@@ -146,10 +152,16 @@ public class AdministrationAction implements Serializable {
 
     }
 
-    private String mainPageForward(Users temp) {
+    private String mainPageForward(Usr temp) {
         try {
-            if (temp.getRole().getRoleid().intValue() == 1 || temp.getRole().getRoleid().intValue() == 2 || temp.getRole().getRoleid().intValue() == 3) {
-                persistenceUtil.audit(temp, new BigDecimal(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")), null);
+            if (temp.getRole().getRoleid() == 1 || temp.getRole().getRoleid() == 2 || temp.getRole().getRoleid() == 3) {
+                //persistenceUtil.audit(temp, Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")), null);
+                Action action = actionDAO.get(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
+                Auditing audit = new Auditing(temp, temp.getCompany(), action, null,
+                        FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
+                        FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
+
+                auditingDAO.save(audit);
                 sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"));
                 sessionBean.setPageName(MessageBundleLoader.getMessage("homePage"));
                 //return "backend/main?faces-redirect=true";
@@ -163,7 +175,6 @@ public class AdministrationAction implements Serializable {
             return "";
         }
     }
-    
 
     public void invalidateSession() {
         FacesUtils.resetManagedBeanJSF2("sessionBean");
@@ -190,7 +201,6 @@ public class AdministrationAction implements Serializable {
 
     public String auditControl() {
         try {
-            //AuditBean auditBean = (AuditBean) FacesUtils.getManagedBean("auditBean");
             auditBean.reset();
             sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_AUDIT_CONTROL"));
             sessionBean.setPageName(MessageBundleLoader.getMessage("audit"));
@@ -205,7 +215,6 @@ public class AdministrationAction implements Serializable {
 
     public String userAdmin() {
         try {
-            //UserBean userBean = (UserBean) FacesUtils.getManagedBean("userBean");
             userBean.reset();
             sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
             sessionBean.setPageName(MessageBundleLoader.getMessage("userAdmin"));
@@ -218,12 +227,11 @@ public class AdministrationAction implements Serializable {
         }
     }
 
-    public List<Users> completeUser(String username) {
+    public List<Usr> completeUser(String username) {
         try {
             if (username != null && !username.trim().isEmpty() && username.trim().length() >= 1) {
                 username = username.trim();
-                UsersDAO userDAO = new UsersDAO();
-                List<Users> users = userDAO.fetchUserAutoCompleteUsername(username);
+                List<Usr> users = userDAO.fetchUserAutoCompleteUsername(username);
                 return users;
             } else {
                 return null;
@@ -239,7 +247,7 @@ public class AdministrationAction implements Serializable {
     public void autocompleteUsernameSelectUser(SelectEvent event) {
         try {
             //AuditBean auditBean = (AuditBean) FacesUtils.getManagedBean("auditBean");
-            Users user = auditBean.getSelectUser();
+            Usr user = auditBean.getSelectUser();
             auditBean.setSearchUser(user);
             auditBean.setSelectUser(null);
         } catch (Exception e) {
@@ -262,7 +270,6 @@ public class AdministrationAction implements Serializable {
 
     public void searchAudit() {
         try {
-//            AuditBean auditBean = (AuditBean) FacesUtils.getManagedBean("auditBean");
             Timestamp from = null;
             if (auditBean.getSearchFromActionDate() != null) {
                 from = FormatUtils.formatDateToTimestamp(auditBean.getSearchFromActionDate());
@@ -296,9 +303,7 @@ public class AdministrationAction implements Serializable {
 
     public void searchUser() {
         try {
-            //UserBean userBean = (UserBean) FacesUtils.getManagedBean("userBean");
-            UsersDAO dao = new UsersDAO();
-            List<Users> users = dao.searchUser(userBean.getSearchByRole(), userBean.getSearchByCompany(), userBean.getSearchByUsername(), userBean.getSearchBySurname());
+            List<Usr> users = userDAO.searchUser(userBean.getSearchByRole(), userBean.getSearchByCompany(), userBean.getSearchByUsername(), userBean.getSearchBySurname());
             userBean.setUsers(users);
         } catch (Exception e) {
             e.printStackTrace();
@@ -309,8 +314,7 @@ public class AdministrationAction implements Serializable {
 
     public void goInsertUser() {
         try {
-            //UserBean userBean = (UserBean) FacesUtils.getManagedBean("userBean");
-            Users user = new Users();
+            Usr user = new Usr();
             user.setActive(BigDecimal.ONE);
             userBean.setRoles(new ArrayList<Role>(0));
 
@@ -338,11 +342,10 @@ public class AdministrationAction implements Serializable {
 
     public void goUpdateUser() {
         try {
-//            UserBean userBean = (UserBean) FacesUtils.getManagedBean("userBean");
-            List<Userroles> userroles = userBean.getUser().getUserroleses();
+            List<Userrole> userroles = userBean.getUser().getUserroles();
             userBean.setRoles(new ArrayList<Role>(0));
             for (int i = 0; i < userroles.size(); i++) {
-                Userroles userrole = userroles.get(i);
+                Userrole userrole = userroles.get(i);
                 userBean.getRoles().add(userrole.getRole());
             }
 
@@ -362,12 +365,11 @@ public class AdministrationAction implements Serializable {
     }
 
     public String insertUser() {
-//        UserBean userBean = (UserBean) FacesUtils.getManagedBean("userBean");
         try {
             List<Role> roles = userBean.getRoles();
-            Users user = userBean.getUser();
+            Usr user = userBean.getUser();
 
-            List<Users> usrs = userDAO.findByProperty("username", userBean.getUser().getUsername().trim());
+            List<Usr> usrs = userDAO.findByProperty("username", userBean.getUser().getUsername().trim());
             if (usrs.size() == 1) {
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("useranameAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
@@ -384,11 +386,11 @@ public class AdministrationAction implements Serializable {
                 return "";
             }
 
-            List<Userroles> userroles = new ArrayList<Userroles>(0);
+            List<Userrole> userroles = new ArrayList<Userrole>(0);
             for (int i = 0; i < roles.size(); i++) {
                 Role role = roles.get(i);
-                Userroles userrole = new Userroles();
-                userrole.setUsers(user);
+                Userrole userrole = new Userrole();
+                userrole.setUsr(user);
                 userrole.setRole(role);
                 userroles.add(userrole);
             }
@@ -396,9 +398,9 @@ public class AdministrationAction implements Serializable {
             String hashedPassword = ErpUtil.getSaltedHash(userBean.getPassword());
 
             user.setPassword(hashedPassword);
-            user.setUserroleses(userroles);
+            user.setUserroles(userroles);
             persistenceHelper.create(user);
-            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_INSERTUSER")), "User " + user.getUsername() + " inserted");
+            persistenceUtil.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_INSERTUSER")), "User " + user.getUsername() + " inserted");
 
             FacesUtils.callRequestContext("createUserDialogWidget.hide()");
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("newUserInserted"));
@@ -412,12 +414,11 @@ public class AdministrationAction implements Serializable {
     }
 
     public void deleteUser() {
-//        UserBean userBean = (UserBean) FacesUtils.getManagedBean("userBean");        
         try {
-            Users user = userBean.getUser();
+            Usr user = userBean.getUser();
             user.setActive(BigDecimal.ZERO);
             user = persistenceHelper.editPersist(user);
-            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_DELETEUSER")), "User " + user.getUsername() + " removed");
+            persistenceUtil.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_DELETEUSER")), "User " + user.getUsername() + " removed");
 
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userDeleted"));
         } catch (Exception e) {
@@ -428,10 +429,9 @@ public class AdministrationAction implements Serializable {
     }
 
     public String updateUser() {
-//        UserBean userBean = (UserBean) FacesUtils.getManagedBean("userBean");
         try {
-            Users user = userBean.getUser();
-            List<Users> usrs = userDAO.findByProperty("username", userBean.getUser().getUsername().trim());
+            Usr user = userBean.getUser();
+            List<Usr> usrs = userDAO.findByProperty("username", userBean.getUser().getUsername().trim());
             if (usrs.size() == 1 && !usrs.get(0).equals(user)) {
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("useranameAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
@@ -455,27 +455,27 @@ public class AdministrationAction implements Serializable {
             }
 
             //removing
-            for (int i = 0; i < user.getUserroleses().size(); i++) {
-                Userroles userrole = user.getUserroleses().get(i);
+            for (int i = 0; i < user.getUserroles().size(); i++) {
+                Userrole userrole = user.getUserroles().get(i);
                 persistenceHelper.remove(userrole);
             }
-            user.setUserroleses(null);
+            user.setUserroles(null);
 
             //adding
             List<Role> roles = userBean.getRoles();
-            List<Userroles> userroles = new ArrayList<Userroles>(0);
+            List<Userrole> userroles = new ArrayList<Userrole>(0);
             for (int i = 0; i < roles.size(); i++) {
                 Role role = roles.get(i);
-                Userroles userrole = new Userroles();
-                userrole.setUsers(user);
+                Userrole userrole = new Userrole();
+                userrole.setUsr(user);
                 userrole.setRole(role);
                 userroles.add(userrole);
             }
 
-            user.setUserroleses(userroles);
+            user.setUserroles(userroles);
 
             user = persistenceHelper.editPersist(user);
-            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_UPDATEUSER")), "User " + user.getUsername() + " updated");
+            persistenceUtil.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEUSER")), "User " + user.getUsername() + " updated");
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
             FacesUtils.callRequestContext("updateUserDialogWidget.hide()");
             return userAdmin();
@@ -489,14 +489,13 @@ public class AdministrationAction implements Serializable {
     }
 
     public String resetPassword() {
-//        UserBean userBean = (UserBean) FacesUtils.getManagedBean("userBean");        
         try {
-            Users user = userBean.getUser();
+            Usr user = userBean.getUser();
             String hashedPassword = ErpUtil.getSaltedHash(userBean.getPassword());
             user.setPassword(hashedPassword);
 
             user = persistenceHelper.editPersist(user);
-            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
+            persistenceUtil.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
 
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
             FacesUtils.callRequestContext("updateUserDialogWidget.hide()");
@@ -512,7 +511,6 @@ public class AdministrationAction implements Serializable {
 
     public String goResetPasswordEmail() {
         try {
-            //ResetBean resetBean = (ResetBean)FacesUtils.getManagedBean("resetBean");                        
             sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_RESET_PASSWORD"));
             sessionBean.setPageName(MessageBundleLoader.getMessage("passwordReminder"));
             return "resetPassword?faces-redirect=true";
@@ -528,9 +526,9 @@ public class AdministrationAction implements Serializable {
         try {
             ResetBean resetBean = (ResetBean) FacesUtils.getManagedBean("resetBean");
             String email = resetBean.getEmail().trim();
-            List<Users> users = userDAO.findByProperty("email", email);
+            List<Usr> users = userDAO.findByProperty("email", email);
             if (users != null && users.size() == 1) {
-                Users user = users.get(0);
+                Usr user = users.get(0);
                 String username = user.getUsername();
                 String[] emails = new String[1];
                 emails[0] = user.getEmail();
@@ -563,12 +561,12 @@ public class AdministrationAction implements Serializable {
     public void resetPasswordEmail() {
         //ResetBean resetBean = (ResetBean) FacesUtils.getManagedBean("resetBean");        
         try {
-            Users user = resetBean.getUser();
+            Usr user = resetBean.getUser();
             String hashedPassword = ErpUtil.getSaltedHash(resetBean.getPassword());
             user.setPassword(hashedPassword);
 
             user = persistenceHelper.editPersist(user);
-            persistenceUtil.audit(user, new BigDecimal(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
+            persistenceUtil.audit(user, Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
 
         } catch (Exception e) {
@@ -578,352 +576,6 @@ public class AdministrationAction implements Serializable {
         }
     }
 
-//    public void updateItem() {
-//        TemplateEditorBean templateEditorBean = (TemplateEditorBean) FacesUtils.getManagedBean("templateEditorBean");
-//        UserTransaction userTransaction = null;
-//        try {
-//            Item item = templateEditorBean.getItem();
-//            userTransaction = persistenceHelper.getUserTransaction();
-//            userTransaction.begin();
-//            for (int i = 0; i < item.getItemspecifications().size(); i++) {
-//                Itemspecification is = item.getItemspecifications().get(i);
-//                persistenceHelper.remove(is);
-//            }
-//
-//            item.setItemspecifications(null);
-//            List<Specification> specs = templateEditorBean.getSpecificationPickList().getTarget();
-//            List<Itemspecification> ispecs = new ArrayList<Itemspecification>(0);
-//            for (int i = 0; i < specs.size(); i++) {
-//                Specification specification = specs.get(i);
-//                Itemspecification itemSpecification = new Itemspecification();
-//                itemSpecification.setSpecification(specification);
-//                itemSpecification.setActive(BigDecimal.ONE);
-//                itemSpecification.setItem(item);
-//                itemSpecification.setOrdered(new BigDecimal(i));
-//                ispecs.add(itemSpecification);
-//            }
-//            item.setItemspecifications(ispecs);
-//            item = persistenceHelper.editPersist(item);
-//            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_UPDATETEMPLATEPRODUCT")), "Protorype product " + item.getName() + " updated");
-//            userTransaction.commit();
-//
-//            templateEditorBean.reset();
-//            ApplicationBean applicationBean = (ApplicationBean) FacesUtils.getManagedBean("applicationBean");
-//            applicationBean.setItems(null);
-//
-//            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("prototypeProductUpdated"));
-//            FacesUtils.callRequestContext("updateItemDialogWidget.hide()");
-//
-//        } catch (Exception e) {
-//            try {
-//                userTransaction.rollback();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//            e.printStackTrace();
-//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-//            goError(e);
-//        }
-//    }
-//
-//    public void updateSpecification() {
-//        TemplateEditorBean templateEditorBean = (TemplateEditorBean) FacesUtils.getManagedBean("templateEditorBean");
-//        UserTransaction userTransaction = null;
-//        try {
-//            Specification specification = templateEditorBean.getSpecification();
-//            userTransaction = persistenceHelper.getUserTransaction();
-//            userTransaction.begin();
-//
-//
-//            if (templateEditorBean.isDimension()) {
-//                specification.setDimension(BigDecimal.ONE);
-//            } else {
-//                specification.setDimension(BigDecimal.ZERO);
-//            }
-//
-//            if (templateEditorBean.isColor()) {
-//                specification.setColor(BigDecimal.ONE);
-//            } else {
-//                specification.setColor(BigDecimal.ZERO);
-//            }
-//
-//            if (templateEditorBean.isFreetext()) {
-//                specification.setFreetext(BigDecimal.ONE);
-//            } else {
-//                specification.setFreetext(BigDecimal.ZERO);
-//            }
-//
-//            if (templateEditorBean.isMultiinsert()) {
-//                specification.setMultipleinsert(BigDecimal.ONE);
-//            } else {
-//                specification.setMultipleinsert(BigDecimal.ZERO);
-//            }
-//
-//            if (templateEditorBean.isMultivalue()) {
-//                specification.setMultiplevalues(BigDecimal.ONE);
-//            } else {
-//                specification.setMultiplevalues(BigDecimal.ZERO);
-//            }
-//
-//
-//            List<Svalue> svalues = templateEditorBean.getSvaluePickList().getTarget();            
-//            
-//            if (specification.getFreetext().equals(BigDecimal.ZERO)) {                
-//                if (svalues.size() == 0) {
-//                    sessionBean.setAlertMessage(MessageBundleLoader.getMessage("noValuesSelected"));
-//                    FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                    FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                    return;
-//                }
-//            }
-// 
-//            
-//            if (specification.getFreetext().equals(BigDecimal.ONE)) {                
-//                if (svalues.size() > 0) {
-//                    sessionBean.setAlertMessage(MessageBundleLoader.getMessage("valuesSelected"));
-//                    FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                    FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                    return;
-//                }
-//            }
-//            
-//             if (specification.getDimension().equals(BigDecimal.ONE)) { 
-//                 if (svalues.size() > 0) {
-//                    sessionBean.setAlertMessage(MessageBundleLoader.getMessage("dimensionSelected"));
-//                    FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                    FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                    return;
-//                }
-//             }
-//             
-//             
-//              if (specification.getDimension().equals(BigDecimal.ONE) && specification.getColor().equals(BigDecimal.ONE)) {                  
-//                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("dimensionColor"));
-//                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                return;                
-//             }
-//              
-//              
-//               if (specification.getMultiplevalues().equals(BigDecimal.ONE) && specification.getFreetext().equals(BigDecimal.ONE)) {                  
-//                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("multivaluesFreeText"));
-//                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                return;                
-//             }
-//              
-//            
-//            for (int i = 0; i < specification.getSpecificationvalues().size(); i++) {
-//                Specificationvalue specificationValue = specification.getSpecificationvalues().get(i);                
-//                persistenceHelper.remove(specificationValue);
-//            }
-//  
-//            specification.setSpecificationvalues(null);
-//            List<Specificationvalue> specificationvalues = new ArrayList<Specificationvalue>(0);
-//            for (int i = 0; i < svalues.size(); i++) {
-//                Svalue svalue = svalues.get(i);
-//                Specificationvalue specificationvalue = new Specificationvalue();
-//                specificationvalue.setActive(BigDecimal.ONE);
-//                specificationvalue.setSpecification(specification);
-//                specificationvalue.setSvalue(svalue);
-//                specificationvalue.setOrdered(new BigDecimal(i));
-//                specificationvalues.add(specificationvalue);
-//            }
-//            specification.setSpecificationvalues(specificationvalues);
-//
-//            specification = persistenceHelper.editPersist(specification);
-//            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_UPDATETEMPLATEPRODUCTSPEC")), "Prototype product specification " + specification.getName() + " updated");
-//            userTransaction.commit();
-//             
-//            templateEditorBean.reset();
-//            ApplicationBean applicationBean = (ApplicationBean) FacesUtils.getManagedBean("applicationBean");
-//            applicationBean.setSpecifications(null);
-//            applicationBean.setItems(null);
-//
-//            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("specificationUpdated"));
-//            FacesUtils.callRequestContext("updateSpecificationDialogWidget.hide()");
-//
-//        } catch (Exception e) {
-//            try {
-//                userTransaction.rollback();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//            e.printStackTrace();
-//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-//            goError(e);
-//        }
-//    }
-//    public void updateSvalue() {
-//        TemplateEditorBean templateEditorBean = (TemplateEditorBean) FacesUtils.getManagedBean("templateEditorBean");
-//        UserTransaction userTransaction = null;
-//        try {
-//            Svalue svalue = templateEditorBean.getSvalue();
-//            userTransaction = persistenceHelper.getUserTransaction();
-//            userTransaction.begin();
-//            
-//            
-//            svalue = persistenceHelper.editPersist(svalue);
-//            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_UPDATETEMPLATEPRODUCTSPECVALUE")), "Protorype product speccification value " + svalue.getName() + " updated");
-//            userTransaction.commit();
-//
-//            templateEditorBean.reset();
-//            ApplicationBean applicationBean = (ApplicationBean) FacesUtils.getManagedBean("applicationBean");
-//            applicationBean.setSvalues(null);
-//            applicationBean.setSpecifications(null);
-//            applicationBean.setItems(null);
-//
-//            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("specificationValueUpdated"));
-//            FacesUtils.callRequestContext("updateSvalueDialogWidget.hide()");
-//
-//        } catch (Exception e) {
-//            try {
-//                userTransaction.rollback();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//            e.printStackTrace();
-//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-//            goError(e);
-//        }
-//    }
-//    
-//    
-//    
-//
-//    public void removeItem() {
-//        TemplateEditorBean templateEditorBean = (TemplateEditorBean) FacesUtils.getManagedBean("templateEditorBean");
-//        UserTransaction userTransaction = null;
-//        try {
-//            Item item = templateEditorBean.getItem();
-//            
-//            ProductDAO dao = new ProductDAO();            
-//            List<Product> products = dao.findByProperty("item", item);
-//            if (products.size()>0) {
-//                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("itemInserted"));
-//                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                return;
-//            }
-//            
-//            userTransaction = persistenceHelper.getUserTransaction();
-//            userTransaction.begin();
-//            persistenceHelper.remove(item);
-//            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_DELETETEMPLATEPRODUCT")), "Prototype Product " + item.getName() + " deleted");
-//            userTransaction.commit();
-//
-//            templateEditorBean.reset();
-//            ApplicationBean applicationBean = (ApplicationBean) FacesUtils.getManagedBean("applicationBean");
-//            applicationBean.setItems(null);
-//
-//
-//            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("prototypeProductDeleted"));
-//            FacesUtils.updateHTMLComponnetWIthJS("");
-//        } catch (Exception e) {
-//            try {
-//                userTransaction.rollback();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//            e.printStackTrace();
-//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-//            goError(e);
-//        }
-//    }
-//
-//    public void removeSpecification() {
-//        TemplateEditorBean templateEditorBean = (TemplateEditorBean) FacesUtils.getManagedBean("templateEditorBean");
-//        UserTransaction userTransaction = null;
-//        try {
-//            Specification specification = templateEditorBean.getSpecification();
-//            
-//            ProductspecificationDAO dao = new ProductspecificationDAO();            
-//            List<Productspecification> productspecifications = dao.findByProperty("specification", specification);
-//            if (productspecifications.size()>0) {
-//                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("specificationValInserted"));
-//                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                return;
-//            }
-//            
-//            userTransaction = persistenceHelper.getUserTransaction();
-//            userTransaction.begin();
-//            persistenceHelper.remove(specification);
-//            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_DELETETEMPLATEPRODUCTSPEC")), "Prototype Product Specification " + specification.getName() + " deleted");
-//            userTransaction.commit();
-//
-//            templateEditorBean.reset();
-//            ApplicationBean applicationBean = (ApplicationBean) FacesUtils.getManagedBean("applicationBean");
-//            applicationBean.setSpecifications(null);
-//            applicationBean.setItems(null);
-//
-//            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("specificationDeleted"));
-//            FacesUtils.updateHTMLComponnetWIthJS("");
-//        } catch (Exception e) {
-//            try {
-//                userTransaction.rollback();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//            e.printStackTrace();
-//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-//            goError(e);
-//        }
-//    }
-//    
-//    
-//    
-//    
-//    public void removeSvalue() {
-//        TemplateEditorBean templateEditorBean = (TemplateEditorBean) FacesUtils.getManagedBean("templateEditorBean");
-//        UserTransaction userTransaction = null;
-//        try {
-//            Svalue svalue = templateEditorBean.getSvalue();
-//            ProductvalueDAO dao = new ProductvalueDAO();            
-//            List<Productvalue> productvalues = dao.findByProperty("svalue", svalue);
-//            if (productvalues.size()>0) {
-//                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("svalueInserted"));
-//                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                return;
-//            }
-//            
-//                    
-//            userTransaction = persistenceHelper.getUserTransaction();
-//            userTransaction.begin();
-//            
-//            
-////            Iterator itr = svalue.getSpecificationvalues().iterator();
-////            while (itr.hasNext()) {
-////                Specificationvalue sv = (Specificationvalue)itr.next();
-////                persistenceHelper.remove(sv);
-////            }
-//            
-//            
-//            persistenceHelper.remove(svalue);
-//            persistenceUtil.audit(sessionBean.getUsers(), new BigDecimal(SystemParameters.getInstance().getProperty("ACT_DELETETEMPLATEPRODUCTSPECVALUE")), "Prototype Product specification value " + svalue.getName() + " deleted");
-//            userTransaction.commit();
-//
-//            templateEditorBean.reset();
-//            ApplicationBean applicationBean = (ApplicationBean) FacesUtils.getManagedBean("applicationBean");
-//            applicationBean.setSvalues(null);
-//            applicationBean.setSpecifications(null);
-//            applicationBean.setItems(null);
-//
-//
-//            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("specificationValueDeleted"));
-//            FacesUtils.updateHTMLComponnetWIthJS("");
-//        } catch (Exception e) {
-//            try {
-//                userTransaction.rollback();
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//            e.printStackTrace();
-//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-//            goError(e);
-//        }
-//    }
     public void goError(Exception ex) {
         try {
             logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
@@ -940,7 +592,7 @@ public class AdministrationAction implements Serializable {
             errorBean.reset();
             errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
             //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
+            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/error.jsf?faces-redirect=true");
         } catch (IOException e) {
             e.printStackTrace();
         }

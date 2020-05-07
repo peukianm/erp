@@ -5,137 +5,125 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+
 /**
  * The persistent class for the "ROLE" database table.
- *
+ * 
  */
 @Entity
-@Table(name = "\"ROLE\"")
-@NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r")
+@Table(name="\"ROLE\"")
+@NamedQuery(name="Role.findAll", query="SELECT r FROM Role r")
 public class Role implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
+	@Id
+	@SequenceGenerator(name="ROLE_ROLEID_GENERATOR", sequenceName="ROLE_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ROLE_ROLEID_GENERATOR")
+	private long roleid;
 
-    @Id
-    @SequenceGenerator(name = "ROLE_ROLEID_GENERATOR", sequenceName = "ROLE_SEQ")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROLE_ROLEID_GENERATOR")
-    private BigDecimal roleid;
+	private String description;
 
-    private String description;
+	private String name;
 
-    private String name;
+	private BigDecimal ordered;
 
-    private BigDecimal ordered;
+	//bi-directional many-to-one association to Userrole
+	@OneToMany(mappedBy="role")
+	private List<Userrole> userroles;
 
-    //bi-directional many-to-one association to Userrole
-    @OneToMany(mappedBy = "role")
-    private List<Userroles> userroles;
+	//bi-directional many-to-one association to Usr
+	@OneToMany(mappedBy="role")
+	private List<Usr> usrs1;
 
-    //bi-directional many-to-one association to User
-    @OneToMany(mappedBy = "role")
-    private List<Users> users;
+	//bi-directional many-to-many association to Usr
+	@ManyToMany(mappedBy="roles")
+	private List<Usr> usrs2;
 
-    public Role() {
-    }
+	public Role() {
+	}
 
-    public BigDecimal getRoleid() {
-        return this.roleid;
-    }
+	public long getRoleid() {
+		return this.roleid;
+	}
 
-    public void setRoleid(BigDecimal roleid) {
-        this.roleid = roleid;
-    }
+	public void setRoleid(long roleid) {
+		this.roleid = roleid;
+	}
 
-    public String getDescription() {
-        return this.description;
-    }
+	public String getDescription() {
+		return this.description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public BigDecimal getOrdered() {
-        return this.ordered;
-    }
+	public BigDecimal getOrdered() {
+		return this.ordered;
+	}
 
-    public void setOrdered(BigDecimal ordered) {
-        this.ordered = ordered;
-    }
+	public void setOrdered(BigDecimal ordered) {
+		this.ordered = ordered;
+	}
 
-    public List<Userroles> getUserroles() {
-        return this.userroles;
-    }
+	public List<Userrole> getUserroles() {
+		return this.userroles;
+	}
 
-    public void setUserroles(List<Userroles> userroles) {
-        this.userroles = userroles;
-    }
+	public void setUserroles(List<Userrole> userroles) {
+		this.userroles = userroles;
+	}
 
-    public Userroles addUserrole(Userroles userrole) {
-        getUserroles().add(userrole);
-        userrole.setRole(this);
+	public Userrole addUserrole(Userrole userrole) {
+		getUserroles().add(userrole);
+		userrole.setRole(this);
 
-        return userrole;
-    }
+		return userrole;
+	}
 
-    public Userroles removeUserrole(Userroles userrole) {
-        getUserroles().remove(userrole);
-        userrole.setRole(null);
+	public Userrole removeUserrole(Userrole userrole) {
+		getUserroles().remove(userrole);
+		userrole.setRole(null);
 
-        return userrole;
-    }
+		return userrole;
+	}
 
-    public List<Users> getUsers() {
-        return this.users;
-    }
+	public List<Usr> getUsrs1() {
+		return this.usrs1;
+	}
 
-    public void setUsers(List<Users> users) {
-        this.users = users;
-    }
+	public void setUsrs1(List<Usr> usrs1) {
+		this.usrs1 = usrs1;
+	}
 
-    public Users addUser(Users user) {
-        getUsers().add(user);
-        user.setRole(this);
+	public Usr addUsrs1(Usr usrs1) {
+		getUsrs1().add(usrs1);
+		usrs1.setRole(this);
 
-        return user;
-    }
+		return usrs1;
+	}
 
-    public Users removeUser(Users user) {
-        getUsers().remove(user);
-        user.setRole(null);
+	public Usr removeUsrs1(Usr usrs1) {
+		getUsrs1().remove(usrs1);
+		usrs1.setRole(null);
 
-        return user;
-    }
+		return usrs1;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
+	public List<Usr> getUsrs2() {
+		return this.usrs2;
+	}
 
-        if (!(obj instanceof Role)) {
-            return false;
-        }
-
-        Role compare = (Role) obj;
-        return compare.roleid.equals(this.roleid);
-    }
-
-    @Override
-    public int hashCode() {
-        return roleid != null ? this.getClass().hashCode() + roleid.hashCode() : super.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Role{id=" + roleid + ", name=" + getName() + "}";
-    }
+	public void setUsrs2(List<Usr> usrs2) {
+		this.usrs2 = usrs2;
+	}
 
 }

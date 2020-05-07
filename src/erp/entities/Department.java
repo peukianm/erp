@@ -6,171 +6,223 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+
 /**
  * The persistent class for the DEPARTMENT database table.
- *
+ * 
  */
 @Entity
-@NamedQuery(name = "Department.findAll", query = "SELECT d FROM Department d")
+@NamedQuery(name="Department.findAll", query="SELECT d FROM Department d")
 public class Department implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
+	@Id
+	@SequenceGenerator(name="DEPARTMENT_DEPARTMENTID_GENERATOR", sequenceName="DEPARTMENT_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="DEPARTMENT_DEPARTMENTID_GENERATOR")
+	private long departmentid;
 
-    @Id
-    @SequenceGenerator(name = "DEPARTMENT_DEPARTMENTID_GENERATOR", sequenceName = "DEPARTMENT_SEQ")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DEPARTMENT_DEPARTMENTID_GENERATOR")
-    private BigDecimal departmentid;
+	private BigDecimal active;
 
-    private BigDecimal active;
+	@Column(name="CREATED_TIMESTAMP")
+	private Timestamp createdTimestamp;
 
-    @Column(name = "CREATED_TIMESTAMP", length = 11, insertable = false, updatable = true)
-    private Timestamp createdTimestamp;
+	private String description;
 
-    private String description;
+	@Column(name="MODIFIED_TIMESTAMP")
+	private Timestamp modifiedTimestamp;
 
-    @Column(name = "MODIFIED_TIMESTAMP", length = 11, insertable = false, updatable = true)
-    private Timestamp modifiedTimestamp;
+	private String name;
 
-    private String name;
+	//bi-directional many-to-one association to Departmenttype
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="TYPEID")
+	private Departmenttype departmenttype;
 
-    //bi-directional many-to-one association to Departmenttype
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "TYPEID")
-    private Departmenttype departmenttype;
+	//bi-directional many-to-many association to Equipment
+	@ManyToMany(mappedBy="departments")
+	private List<Equipment> equipments;
 
-    //bi-directional many-to-one association to Equipmentdepartment
-    @OneToMany(mappedBy = "department")
-    private List<Equipmentdepartment> equipmentdepartments;
+	//bi-directional many-to-one association to Equipmentdepartment
+	@OneToMany(mappedBy="department")
+	private List<Equipmentdepartment> equipmentdepartments;
 
-    //bi-directional many-to-one association to User
-    @OneToMany(mappedBy = "department")
-    private List<Users> users;
+	//bi-directional many-to-many association to Sector
+	@ManyToMany(mappedBy="departments")
+	private List<Sector> sectors;
 
-    public Department() {
-    }
+	//bi-directional many-to-one association to Sectordepartment
+	@OneToMany(mappedBy="department")
+	private List<Sectordepartment> sectordepartments;
 
-    public BigDecimal getDepartmentid() {
-        return this.departmentid;
-    }
+	//bi-directional many-to-one association to Staff
+	@OneToMany(mappedBy="department")
+	private List<Staff> staffs;
 
-    public void setDepartmentid(BigDecimal departmentid) {
-        this.departmentid = departmentid;
-    }
+	//bi-directional many-to-one association to Usr
+	@OneToMany(mappedBy="department")
+	private List<Usr> usrs;
 
-    public BigDecimal getActive() {
-        return this.active;
-    }
+	public Department() {
+	}
 
-    public void setActive(BigDecimal active) {
-        this.active = active;
-    }
+	public long getDepartmentid() {
+		return this.departmentid;
+	}
 
-    public Timestamp getCreatedTimestamp() {
-        return this.createdTimestamp;
-    }
+	public void setDepartmentid(long departmentid) {
+		this.departmentid = departmentid;
+	}
 
-    public void setCreatedTimestamp(Timestamp createdTimestamp) {
-        this.createdTimestamp = createdTimestamp;
-    }
+	public BigDecimal getActive() {
+		return this.active;
+	}
 
-    public String getDescription() {
-        return this.description;
-    }
+	public void setActive(BigDecimal active) {
+		this.active = active;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public Timestamp getCreatedTimestamp() {
+		return this.createdTimestamp;
+	}
 
-    public Timestamp getModifiedTimestamp() {
-        return this.modifiedTimestamp;
-    }
+	public void setCreatedTimestamp(Timestamp createdTimestamp) {
+		this.createdTimestamp = createdTimestamp;
+	}
 
-    public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
-        this.modifiedTimestamp = modifiedTimestamp;
-    }
+	public String getDescription() {
+		return this.description;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Timestamp getModifiedTimestamp() {
+		return this.modifiedTimestamp;
+	}
 
-    public Departmenttype getDepartmenttype() {
-        return this.departmenttype;
-    }
+	public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
+		this.modifiedTimestamp = modifiedTimestamp;
+	}
 
-    public void setDepartmenttype(Departmenttype departmenttype) {
-        this.departmenttype = departmenttype;
-    }
+	public String getName() {
+		return this.name;
+	}
 
-    public List<Equipmentdepartment> getEquipmentdepartments() {
-        return this.equipmentdepartments;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setEquipmentdepartments(List<Equipmentdepartment> equipmentdepartments) {
-        this.equipmentdepartments = equipmentdepartments;
-    }
+	public Departmenttype getDepartmenttype() {
+		return this.departmenttype;
+	}
 
-    public Equipmentdepartment addEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
-        getEquipmentdepartments().add(equipmentdepartment);
-        equipmentdepartment.setDepartment(this);
+	public void setDepartmenttype(Departmenttype departmenttype) {
+		this.departmenttype = departmenttype;
+	}
 
-        return equipmentdepartment;
-    }
+	public List<Equipment> getEquipments() {
+		return this.equipments;
+	}
 
-    public Equipmentdepartment removeEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
-        getEquipmentdepartments().remove(equipmentdepartment);
-        equipmentdepartment.setDepartment(null);
+	public void setEquipments(List<Equipment> equipments) {
+		this.equipments = equipments;
+	}
 
-        return equipmentdepartment;
-    }
+	public List<Equipmentdepartment> getEquipmentdepartments() {
+		return this.equipmentdepartments;
+	}
 
-    public List<Users> getUsers() {
-        return this.users;
-    }
+	public void setEquipmentdepartments(List<Equipmentdepartment> equipmentdepartments) {
+		this.equipmentdepartments = equipmentdepartments;
+	}
 
-    public void setUsers(List<Users> users) {
-        this.users = users;
-    }
+	public Equipmentdepartment addEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
+		getEquipmentdepartments().add(equipmentdepartment);
+		equipmentdepartment.setDepartment(this);
 
-    public Users addUser(Users user) {
-        getUsers().add(user);
-        user.setDepartment(this);
+		return equipmentdepartment;
+	}
 
-        return user;
-    }
+	public Equipmentdepartment removeEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
+		getEquipmentdepartments().remove(equipmentdepartment);
+		equipmentdepartment.setDepartment(null);
 
-    public Users removeUser(Users user) {
-        getUsers().remove(user);
-        user.setDepartment(null);
+		return equipmentdepartment;
+	}
 
-        return user;
-    }
+	public List<Sector> getSectors() {
+		return this.sectors;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
+	public void setSectors(List<Sector> sectors) {
+		this.sectors = sectors;
+	}
 
-        if (!(obj instanceof Department)) {
-            return false;
-        }
+	public List<Sectordepartment> getSectordepartments() {
+		return this.sectordepartments;
+	}
 
-        Department compare = (Department) obj;
-        return compare.departmentid.equals(this.departmentid);
-    }
+	public void setSectordepartments(List<Sectordepartment> sectordepartments) {
+		this.sectordepartments = sectordepartments;
+	}
 
-    @Override
-    public int hashCode() {
-        return departmentid != null ? this.getClass().hashCode() + departmentid.hashCode() : super.hashCode();
-    }
+	public Sectordepartment addSectordepartment(Sectordepartment sectordepartment) {
+		getSectordepartments().add(sectordepartment);
+		sectordepartment.setDepartment(this);
 
-    @Override
-    public String toString() {
-        return "Department{id=" + departmentid + ", name=" + getName() + "}";
-    }
+		return sectordepartment;
+	}
+
+	public Sectordepartment removeSectordepartment(Sectordepartment sectordepartment) {
+		getSectordepartments().remove(sectordepartment);
+		sectordepartment.setDepartment(null);
+
+		return sectordepartment;
+	}
+
+	public List<Staff> getStaffs() {
+		return this.staffs;
+	}
+
+	public void setStaffs(List<Staff> staffs) {
+		this.staffs = staffs;
+	}
+
+	public Staff addStaff(Staff staff) {
+		getStaffs().add(staff);
+		staff.setDepartment(this);
+
+		return staff;
+	}
+
+	public Staff removeStaff(Staff staff) {
+		getStaffs().remove(staff);
+		staff.setDepartment(null);
+
+		return staff;
+	}
+
+	public List<Usr> getUsrs() {
+		return this.usrs;
+	}
+
+	public void setUsrs(List<Usr> usrs) {
+		this.usrs = usrs;
+	}
+
+	public Usr addUsr(Usr usr) {
+		getUsrs().add(usr);
+		usr.setDepartment(this);
+
+		return usr;
+	}
+
+	public Usr removeUsr(Usr usr) {
+		getUsrs().remove(usr);
+		usr.setDepartment(null);
+
+		return usr;
+	}
 
 }
