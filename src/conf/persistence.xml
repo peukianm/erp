@@ -22,6 +22,12 @@
         <class>erp.entities.Staff</class>
         <class>erp.entities.Userrole</class>
         <class>erp.entities.Usr</class>
+        <class>erp.entities.Companytask</class>
+        <class>erp.entities.Emprank</class>
+        <class>erp.entities.Loggerdata</class>
+        <class>erp.entities.Scheduletask</class>
+        <class>erp.entities.Scheduletaskdetail</class>
+        <class>erp.entities.Workshift</class>
         
         <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>
         <properties>
