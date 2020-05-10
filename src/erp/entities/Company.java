@@ -71,7 +71,7 @@ public class Company implements Serializable {
 	private List<Scheduletask> scheduletasks;
 
 	//bi-directional many-to-many association to Sector
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.EAGER)
 	@JoinTable(
 		name="COMPANYSECTOR"
 		, joinColumns={
@@ -84,11 +84,11 @@ public class Company implements Serializable {
 	private List<Sector> sectors;
 
 	//bi-directional many-to-one association to Companysector
-	@OneToMany(mappedBy="company")
+	@OneToMany(mappedBy="company", fetch=FetchType.EAGER)
 	private List<Companysector> companysectors;
 
 	//bi-directional many-to-one association to Companytask
-	@OneToMany(mappedBy="company")
+	@OneToMany(mappedBy="company", fetch=FetchType.EAGER)
 	private List<Companytask> companytasks;
 
 	//bi-directional many-to-one association to Equipmentdepartment

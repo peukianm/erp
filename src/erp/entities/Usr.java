@@ -55,7 +55,7 @@ public class Usr implements Serializable {
 	private List<Loggerdata> loggerdata;
 
 	//bi-directional many-to-one association to Userrole
-	@OneToMany(mappedBy="usr")
+	@OneToMany(mappedBy="usr",fetch=FetchType.EAGER)
 	private List<Userrole> userroles;
 
 	//bi-directional many-to-one association to Company

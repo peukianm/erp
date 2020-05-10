@@ -20,20 +20,21 @@ public class Scheduletaskdetail implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SCHEDULETASKDETAILS_DETAILSID_GENERATOR")
 	private long detailsid;
 
-	private Timestamp createdtimestamp;
-
 	private String data1;
 
 	private String data2;
 
-	private Timestamp lastexecutiontime;
-
-	private Timestamp modifiedtimestamp;
+	private Timestamp executiontime;
 
 	//bi-directional many-to-one association to Companytask
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="CTASKID")
 	private Companytask companytask;
+
+	//bi-directional many-to-one association to Taskstatus
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="EXECUTIONSTATUS")
+	private Taskstatus taskstatus;
 
 	public Scheduletaskdetail() {
 	}
@@ -44,14 +45,6 @@ public class Scheduletaskdetail implements Serializable {
 
 	public void setDetailsid(long detailsid) {
 		this.detailsid = detailsid;
-	}
-
-	public Timestamp getCreatedtimestamp() {
-		return this.createdtimestamp;
-	}
-
-	public void setCreatedtimestamp(Timestamp createdtimestamp) {
-		this.createdtimestamp = createdtimestamp;
 	}
 
 	public String getData1() {
@@ -70,20 +63,12 @@ public class Scheduletaskdetail implements Serializable {
 		this.data2 = data2;
 	}
 
-	public Timestamp getLastexecutiontime() {
-		return this.lastexecutiontime;
+	public Timestamp getExecutiontime() {
+		return this.executiontime;
 	}
 
-	public void setLastexecutiontime(Timestamp lastexecutiontime) {
-		this.lastexecutiontime = lastexecutiontime;
-	}
-
-	public Timestamp getModifiedtimestamp() {
-		return this.modifiedtimestamp;
-	}
-
-	public void setModifiedtimestamp(Timestamp modifiedtimestamp) {
-		this.modifiedtimestamp = modifiedtimestamp;
+	public void setExecutiontime(Timestamp executiontime) {
+		this.executiontime = executiontime;
 	}
 
 	public Companytask getCompanytask() {
@@ -92,6 +77,14 @@ public class Scheduletaskdetail implements Serializable {
 
 	public void setCompanytask(Companytask companytask) {
 		this.companytask = companytask;
+	}
+
+	public Taskstatus getTaskstatus() {
+		return this.taskstatus;
+	}
+
+	public void setTaskstatus(Taskstatus taskstatus) {
+		this.taskstatus = taskstatus;
 	}
 
 }

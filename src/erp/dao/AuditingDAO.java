@@ -12,7 +12,6 @@ import erp.entities.Usr;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -80,7 +79,6 @@ public class AuditingDAO implements Serializable {
 
         try {
             final String queryString = "select model from Auditing model where model." + propertyName + "= :propertyValue";
-            System.out.println("EntityMgr=" + entityManager);
             Query query = entityManager.createQuery(queryString);
             query.setParameter("propertyValue", value);
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {

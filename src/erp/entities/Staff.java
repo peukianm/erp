@@ -60,27 +60,27 @@ public class Staff implements Serializable {
 	private String surname;
 
 	//bi-directional many-to-one association to Company
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="COMPANYID")
 	private Company company;
 
 	//bi-directional many-to-one association to Department
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="DEPARTMENTID")
 	private Department department;
 
 	//bi-directional many-to-one association to Emprank
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="RANKID")
 	private Emprank emprank;
 
 	//bi-directional many-to-one association to Sector
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="SECTORID")
 	private Sector sector;
 
 	//bi-directional many-to-one association to Workshift
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="SHIFTID")
 	private Workshift workshift;
 

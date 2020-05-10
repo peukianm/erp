@@ -1,6 +1,10 @@
 package erp.util;
 
+import erp.dao.ActionDAO;
+import erp.dao.SchedulerDAO;
 import erp.dao.UsrDAO;
+import erp.entities.Companytask;
+import erp.entities.Scheduletaskdetail;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +46,7 @@ import org.json.JSONObject;
 //import okhttp3.*;
 import java.sql.*;
 import java.util.Calendar;
+import javax.ejb.EJB;
 import okhttp3.*;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -51,6 +56,9 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
  *
  */
 public class TestFunct {
+
+    @EJB
+    SchedulerDAO schedulerDAO;
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static Response outpResponse;
@@ -72,7 +80,6 @@ public class TestFunct {
     private static int IPPagesCounter = 0;
     private static Boolean showAll = false;
 
-    
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +88,7 @@ public class TestFunct {
         try {
             // run3(); //Check printing activity
             // run4(); // Create random attendance files
-            readOro("C:\\tmp\\random5.xlsx");
+            //readOro("C:\\tmp\\random5.xlsx");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -91,8 +98,7 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    
+
     private static void dateManipulation() throws ParseException {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
@@ -119,10 +125,10 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//    private static void JPAConn() {
-//        EntityManager em = getEntityManager();
-//        UsrDAO dao = new UsrDAO();
-//    }
+    private static void JPAConn() {
+        EntityManager em = getEntityManager();
+        UsrDAO dao = new UsrDAO();
+    }
 
     private static void DBQueryUpadate(String sql) throws SQLException, Exception {
         java.sql.Connection conn = getConnectionXE();
@@ -132,7 +138,7 @@ public class TestFunct {
             System.out.println(rset.getString(1));
         }
 
-         sql = "Update lab_exams le set le.value=";
+        sql = "Update lab_exams le set le.value=";
         stmt.executeUpdate(sql);
     }
 
@@ -150,23 +156,38 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-    
+
     @SuppressWarnings("deprecation")
-    private static void readOro(String file) {
+    private void readOro(String file) {
+
         try {
+            long companyid = Long.parseLong(SystemParameters.getInstance().getProperty("Companyid"));
+            long taskid = Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS"));
+            Companytask ctask = schedulerDAO.findCtask(companyid, taskid);
 
-            FileInputStream excelFile = new FileInputStream(new File(file));
-            Workbook workbook = new XSSFWorkbook(excelFile);
-            Sheet datatypeSheet = workbook.getSheetAt(0);
+            int pointer1 = ctask.getTaskdata1() == null ? 0 : Integer.parseInt(ctask.getTaskdata1());
+            int pointer2 = ctask.getTaskdata2() == null ? 0 : Integer.parseInt(ctask.getTaskdata2());
+            int pointer3 = ctask.getTaskdata3() == null ? 0 : Integer.parseInt(ctask.getTaskdata3());
+            int pointer4 = ctask.getTaskdata4() == null ? 0 : Integer.parseInt(ctask.getTaskdata4());
 
-            datatypeSheet.forEach(row -> {
-                row.forEach(cell -> {
-                    getCellValue(cell);
+            File file1 = new File(SystemParameters.getInstance().getProperty("LOGGER1_PATH"));
+            File file2 = new File(SystemParameters.getInstance().getProperty("LOGGER2_PATH"));
+            File file3 = new File(SystemParameters.getInstance().getProperty("LOGGER3_PATH"));
+            File file4 = new File(SystemParameters.getInstance().getProperty("LOGGER4_PATH"));
+
+            for (int i = 1; i <= 4; i++) {
+                FileInputStream excelFile = new FileInputStream(new File(file));
+                Workbook workbook = new XSSFWorkbook(excelFile);
+                Sheet datatypeSheet = workbook.getSheetAt(0);
+
+                datatypeSheet.forEach(row -> {
+                    row.forEach(cell -> {
+                        getCellValue(cell);
+                    });
+                    System.out.println();
                 });
-                System.out.println();
-            });
-            workbook.close();
+                workbook.close();
+            }
 
 //            Iterator<Row> iterator = datatypeSheet.iterator();
 //            DataFormatter dataFormatter = new DataFormatter();
@@ -192,6 +213,15 @@ public class TestFunct {
         }
     }
 
+    
+    private void readLogersData(File file){
+        
+    }
+    
+    
+    
+    
+    
     private static Object getCellValue(Cell cell) {
         Object retValue = null;
         switch (cell.getCellType()) {
@@ -648,11 +678,11 @@ public class TestFunct {
 
     }
 
-//    public static EntityManager getEntityManager() {
-//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("erp");
-//        EntityManager manager = emf.createEntityManager();
-//        return manager;
-//    }
+    public static EntityManager getEntityManager() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("erp");
+        EntityManager manager = emf.createEntityManager();
+        return manager;
+    }
 
 }
 

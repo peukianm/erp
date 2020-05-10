@@ -25,23 +25,40 @@ public class Companytask implements Serializable {
 
 	private Timestamp createdtimestamp;
 
+	private Timestamp lastexecutiontime;
+
 	private Timestamp modifiedtimestamp;
 
 	private BigDecimal ordered;
 
+	private String taskdata1;
+
+	private String taskdata2;
+
+	private String taskdata3;
+
+	private String taskdata4;
+
+	private String taskdata5;
+
 	//bi-directional many-to-one association to Company
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="COMPANYID")
 	private Company company;
 
 	//bi-directional many-to-one association to Scheduletask
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="TASKID")
 	private Scheduletask scheduletask;
 
 	//bi-directional many-to-one association to Scheduletaskdetail
-	@OneToMany(mappedBy="companytask")
+	@OneToMany(mappedBy="companytask", fetch=FetchType.EAGER)
 	private List<Scheduletaskdetail> scheduletaskdetails;
+
+	//bi-directional many-to-one association to Taskstatus
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="LASTEXECUTIONSTATUTUS")
+	private Taskstatus taskstatus;
 
 	public Companytask() {
 	}
@@ -70,6 +87,14 @@ public class Companytask implements Serializable {
 		this.createdtimestamp = createdtimestamp;
 	}
 
+	public Timestamp getLastexecutiontime() {
+		return this.lastexecutiontime;
+	}
+
+	public void setLastexecutiontime(Timestamp lastexecutiontime) {
+		this.lastexecutiontime = lastexecutiontime;
+	}
+
 	public Timestamp getModifiedtimestamp() {
 		return this.modifiedtimestamp;
 	}
@@ -84,6 +109,46 @@ public class Companytask implements Serializable {
 
 	public void setOrdered(BigDecimal ordered) {
 		this.ordered = ordered;
+	}
+
+	public String getTaskdata1() {
+		return this.taskdata1;
+	}
+
+	public void setTaskdata1(String taskdata1) {
+		this.taskdata1 = taskdata1;
+	}
+
+	public String getTaskdata2() {
+		return this.taskdata2;
+	}
+
+	public void setTaskdata2(String taskdata2) {
+		this.taskdata2 = taskdata2;
+	}
+
+	public String getTaskdata3() {
+		return this.taskdata3;
+	}
+
+	public void setTaskdata3(String taskdata3) {
+		this.taskdata3 = taskdata3;
+	}
+
+	public String getTaskdata4() {
+		return this.taskdata4;
+	}
+
+	public void setTaskdata4(String taskdata4) {
+		this.taskdata4 = taskdata4;
+	}
+
+	public String getTaskdata5() {
+		return this.taskdata5;
+	}
+
+	public void setTaskdata5(String taskdata5) {
+		this.taskdata5 = taskdata5;
 	}
 
 	public Company getCompany() {
@@ -122,6 +187,14 @@ public class Companytask implements Serializable {
 		scheduletaskdetail.setCompanytask(null);
 
 		return scheduletaskdetail;
+	}
+
+	public Taskstatus getTaskstatus() {
+		return this.taskstatus;
+	}
+
+	public void setTaskstatus(Taskstatus taskstatus) {
+		this.taskstatus = taskstatus;
 	}
 
 }

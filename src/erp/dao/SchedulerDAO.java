@@ -5,7 +5,9 @@
  */
 package erp.dao;
 
-import erp.entities.Staff;
+import erp.entities.Companytask;
+import erp.entities.Scheduletaskdetail;
+import java.io.Serializable;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.ejb.Stateless;
@@ -18,41 +20,59 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author user
+ * @author peukianm
  */
 @Stateless
-public class staffDAO {
-     private static final Logger logger = LogManager.getLogger(staffDAO.class);
+public class SchedulerDAO implements Serializable {
+
+    private static final Logger logger = LogManager.getLogger(SchedulerDAO.class);
 
     @PersistenceContext(unitName = "erp")
     private EntityManager entityManager;
-    
-    public Staff get(long id) {
-        return entityManager.find(Staff.class, id);
+
+    public Scheduletaskdetail getScheduleTaskDetail(long id) {
+        return entityManager.find(Scheduletaskdetail.class, id);
     }
 
-    public List<Staff> getAll() {
-        Query query = entityManager.createQuery("SELECT e FROM Staff e");
+    public List<Scheduletaskdetail> getAll() {
+        Query query = entityManager.createQuery("SELECT e FROM Schesuletaskdetail e");
         return query.getResultList();
     }
 
-    public void save(Staff staff) {
-        entityManager.persist(staff);
+    public void saveTaskDetails(Scheduletaskdetail scheduletaskdetail) {
+        entityManager.persist(scheduletaskdetail);
     }
 
-    public void update(Staff staff) {
-        entityManager.merge(staff);
+    public void updateTaskDetails(Scheduletaskdetail scheduletaskdetail) {
+        entityManager.merge(scheduletaskdetail);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public Companytask findCtask(long companyid, long taskid) {
+
+        try {
+            final String queryString = "select model from Scheduletaskdetail model where "
+                    + " model.active = 1 and "
+                    + " model.companyid = " + companyid + " and "
+                    + " model.taskid = " + taskid ;
+            Query query = entityManager.createQuery(queryString);            
+            return (Companytask)query.getResultList().get(0);
+        } catch (RuntimeException re) {
+            logger.error("Error on getting findCtask entity", re);
+            throw re;
+        }
     }
 
-    public void delete(Staff staff) {
-        entityManager.remove(staff);
+    public void updateCtask(Companytask companyTask) {
+        entityManager.merge(companyTask);
     }
 
-    private void executeInsideTransaction(Consumer<EntityManager> staff) {
+  
+    private void executeInsideTransaction(Consumer<EntityManager> action) {
         EntityTransaction tx = entityManager.getTransaction();
         try {
             tx.begin();
-            staff.accept(entityManager);
+            action.accept(entityManager);
             tx.commit();
         } catch (RuntimeException e) {
             tx.rollback();
@@ -61,10 +81,10 @@ public class staffDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Staff> findByProperty(String propertyName, final Object value, final int... rowStartIdxAndCount) {
+    public List<Scheduletaskdetail> findByPropertyScheduletaskdetail(String propertyName, final Object value, final int... rowStartIdxAndCount) {
 
         try {
-            final String queryString = "select model from Staff model where model." + propertyName + "= :propertyValue";            
+            final String queryString = "select model from Scheduletaskdetail model where model." + propertyName + "= :propertyValue";
             Query query = entityManager.createQuery(queryString);
             query.setParameter("propertyValue", value);
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
@@ -87,11 +107,23 @@ public class staffDAO {
         }
     }
 
+    /**
+     * 
+     * @param
+    rowStartIdxAndCount Optional int varargs
+    . rowStartIdxAndCount 
+    [0] specifies the the row index in the query result
+    -set to begin collecting the
+    * results.rowStartIdxAndCount 
+    [1] specifies the the maximum count of results to return.
+     * @
+    return List<Auditing> all Auditing entities
 
+    */
     @SuppressWarnings("unchecked")
-    public List<Staff> findAll(final int... rowStartIdxAndCount) {
+    public List<Scheduletaskdetail> findAllScheduletaskdetail(final int... rowStartIdxAndCount) {
         try {
-            final String queryString = "select model from Staff model";
+            final String queryString = "select model from Scheduletaskdetail model";
             Query query = entityManager.createQuery(queryString);
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
                 int rowStartIdx = Math.max(0, rowStartIdxAndCount[0]);
@@ -111,5 +143,5 @@ public class staffDAO {
             logger.error("Error on finding entity", re);
             throw re;
         }
-    }  
+    }
 }
