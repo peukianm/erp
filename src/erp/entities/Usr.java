@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Usr.findAll", query="SELECT u FROM Usr u")
-public class Usr implements Serializable {
+public class Usr implements Serializable { 
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -42,32 +42,34 @@ public class Usr implements Serializable {
 	private String surname;
 
 	private String username;
+        
+        @Transient
+        private Role role;
 
 	//bi-directional many-to-one association to Auditing
 	@OneToMany(mappedBy="usr")
 	private List<Auditing> auditings;
+
+	//bi-directional many-to-one association to Loggerdata
+	@OneToMany(mappedBy="usr")
+	private List<Loggerdata> loggerdata;
 
 	//bi-directional many-to-one association to Userrole
 	@OneToMany(mappedBy="usr")
 	private List<Userrole> userroles;
 
 	//bi-directional many-to-one association to Company
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="COMPANYID")
 	private Company company;
 
 	//bi-directional many-to-one association to Department
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="DEPARTMENTID")
 	private Department department;
 
-	//bi-directional many-to-one association to Role
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="ROLEID")
-	private Role role;
-
 	//bi-directional many-to-many association to Role
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.EAGER )
 	@JoinTable(
 		name="USERROLE"
 		, joinColumns={
@@ -192,6 +194,28 @@ public class Usr implements Serializable {
 		return auditing;
 	}
 
+	public List<Loggerdata> getLoggerdata() {
+		return this.loggerdata;
+	}
+
+	public void setLoggerdata(List<Loggerdata> loggerdata) {
+		this.loggerdata = loggerdata;
+	}
+
+	public Loggerdata addLoggerdata(Loggerdata loggerdata) {
+		getLoggerdata().add(loggerdata);
+		loggerdata.setUsr(this);
+
+		return loggerdata;
+	}
+
+	public Loggerdata removeLoggerdata(Loggerdata loggerdata) {
+		getLoggerdata().remove(loggerdata);
+		loggerdata.setUsr(null);
+
+		return loggerdata;
+	}
+
 	public List<Userrole> getUserroles() {
 		return this.userroles;
 	}
@@ -230,20 +254,21 @@ public class Usr implements Serializable {
 		this.department = department;
 	}
 
-	public Role getRole() {
-		return this.role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
-	}
-
 	public List<Role> getRoles() {
 		return this.roles;
 	}
 
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
+	}
+        
+        
+        public Role getRole() {
+		return this.role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
 }

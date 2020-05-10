@@ -62,6 +62,10 @@ public class Department implements Serializable {
 	@OneToMany(mappedBy="department")
 	private List<Usr> usrs;
 
+	//bi-directional many-to-one association to Attendance
+	@OneToMany(mappedBy="department")
+	private List<Attendance> attendances;
+
 	public Department() {
 	}
 
@@ -223,6 +227,28 @@ public class Department implements Serializable {
 		usr.setDepartment(null);
 
 		return usr;
+	}
+
+	public List<Attendance> getAttendances() {
+		return this.attendances;
+	}
+
+	public void setAttendances(List<Attendance> attendances) {
+		this.attendances = attendances;
+	}
+
+	public Attendance addAttendance(Attendance attendance) {
+		getAttendances().add(attendance);
+		attendance.setDepartment(this);
+
+		return attendance;
+	}
+
+	public Attendance removeAttendance(Attendance attendance) {
+		getAttendances().remove(attendance);
+		attendance.setDepartment(null);
+
+		return attendance;
 	}
 
 }

@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 @NamedQuery(name="Auditing.findAll", query="SELECT a FROM Auditing a")
 public class Auditing implements Serializable {
 	private static final long serialVersionUID = 1L;
-        
+
         public Auditing(Usr user, Company company, Action action, String comments, Timestamp actioDate,  Timestamp actionTime){
             this.usr = user;
             this.company = company;

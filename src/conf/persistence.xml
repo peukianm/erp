@@ -27,8 +27,7 @@
         <class>erp.entities.Loggerdata</class>
         <class>erp.entities.Scheduletask</class>
         <class>erp.entities.Scheduletaskdetail</class>
-        <class>erp.entities.Workshift</class>
-        
+        <class>erp.entities.Workshift</class>     
         <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>
         <properties>
             <property name="eclipselink.jdbc.native-sql" value="true"/>

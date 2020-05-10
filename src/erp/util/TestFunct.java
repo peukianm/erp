@@ -119,10 +119,10 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private static void JPAConn() {
-        EntityManager em = getEntityManager();
-        UsrDAO dao = new UsrDAO();
-    }
+//    private static void JPAConn() {
+//        EntityManager em = getEntityManager();
+//        UsrDAO dao = new UsrDAO();
+//    }
 
     private static void DBQueryUpadate(String sql) throws SQLException, Exception {
         java.sql.Connection conn = getConnectionXE();
@@ -648,11 +648,11 @@ public class TestFunct {
 
     }
 
-    public static EntityManager getEntityManager() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("erp");
-        EntityManager manager = emf.createEntityManager();
-        return manager;
-    }
+//    public static EntityManager getEntityManager() {
+//        EntityManagerFactory emf = Persistence.createEntityManagerFactory("erp");
+//        EntityManager manager = emf.createEntityManager();
+//        return manager;
+//    }
 
 }
 

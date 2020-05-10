@@ -11,7 +11,7 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="\"ROLE\"")
+@Table(name="ROLE")
 @NamedQuery(name="Role.findAll", query="SELECT r FROM Role r")
 public class Role implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -31,13 +31,9 @@ public class Role implements Serializable {
 	@OneToMany(mappedBy="role")
 	private List<Userrole> userroles;
 
-	//bi-directional many-to-one association to Usr
-	@OneToMany(mappedBy="role")
-	private List<Usr> usrs1;
-
 	//bi-directional many-to-many association to Usr
 	@ManyToMany(mappedBy="roles")
-	private List<Usr> usrs2;
+	private List<Usr> usrs;
 
 	public Role() {
 	}
@@ -96,34 +92,12 @@ public class Role implements Serializable {
 		return userrole;
 	}
 
-	public List<Usr> getUsrs1() {
-		return this.usrs1;
+	public List<Usr> getUsrs() {
+		return this.usrs;
 	}
 
-	public void setUsrs1(List<Usr> usrs1) {
-		this.usrs1 = usrs1;
-	}
-
-	public Usr addUsrs1(Usr usrs1) {
-		getUsrs1().add(usrs1);
-		usrs1.setRole(this);
-
-		return usrs1;
-	}
-
-	public Usr removeUsrs1(Usr usrs1) {
-		getUsrs1().remove(usrs1);
-		usrs1.setRole(null);
-
-		return usrs1;
-	}
-
-	public List<Usr> getUsrs2() {
-		return this.usrs2;
-	}
-
-	public void setUsrs2(List<Usr> usrs2) {
-		this.usrs2 = usrs2;
+	public void setUsrs(List<Usr> usrs) {
+		this.usrs = usrs;
 	}
 
 }

@@ -82,7 +82,6 @@ public class UsrDAO implements Serializable {
 
         try {
             final String queryString = "select model from Usr model where model." + propertyName + "= :propertyValue";
-            System.out.println("EntityMgr=" + entityManager);
             Query query = entityManager.createQuery(queryString);
             query.setParameter("propertyValue", value);
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {

@@ -57,6 +57,19 @@ public class Company implements Serializable {
 	@OneToMany(mappedBy="company")
 	private List<Auditing> auditings;
 
+	//bi-directional many-to-many association to Scheduletask
+	@ManyToMany
+	@JoinTable(
+		name="COMPANYTASK"
+		, joinColumns={
+			@JoinColumn(name="COMPANYID")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="TASKID")
+			}
+		)
+	private List<Scheduletask> scheduletasks;
+
 	//bi-directional many-to-many association to Sector
 	@ManyToMany
 	@JoinTable(
@@ -74,9 +87,17 @@ public class Company implements Serializable {
 	@OneToMany(mappedBy="company")
 	private List<Companysector> companysectors;
 
+	//bi-directional many-to-one association to Companytask
+	@OneToMany(mappedBy="company")
+	private List<Companytask> companytasks;
+
 	//bi-directional many-to-one association to Equipmentdepartment
 	@OneToMany(mappedBy="company")
 	private List<Equipmentdepartment> equipmentdepartments;
+
+	//bi-directional many-to-one association to Loggerdata
+	@OneToMany(mappedBy="company")
+	private List<Loggerdata> loggerdata;
 
 	//bi-directional many-to-one association to Sectordepartment
 	@OneToMany(mappedBy="company")
@@ -89,6 +110,10 @@ public class Company implements Serializable {
 	//bi-directional many-to-one association to Usr
 	@OneToMany(mappedBy="company")
 	private List<Usr> usrs;
+
+	//bi-directional many-to-one association to Attendance
+	@OneToMany(mappedBy="company")
+	private List<Attendance> attendances;
 
 	public Company() {
 	}
@@ -241,6 +266,14 @@ public class Company implements Serializable {
 		return auditing;
 	}
 
+	public List<Scheduletask> getScheduletasks() {
+		return this.scheduletasks;
+	}
+
+	public void setScheduletasks(List<Scheduletask> scheduletasks) {
+		this.scheduletasks = scheduletasks;
+	}
+
 	public List<Sector> getSectors() {
 		return this.sectors;
 	}
@@ -271,6 +304,28 @@ public class Company implements Serializable {
 		return companysector;
 	}
 
+	public List<Companytask> getCompanytasks() {
+		return this.companytasks;
+	}
+
+	public void setCompanytasks(List<Companytask> companytasks) {
+		this.companytasks = companytasks;
+	}
+
+	public Companytask addCompanytask(Companytask companytask) {
+		getCompanytasks().add(companytask);
+		companytask.setCompany(this);
+
+		return companytask;
+	}
+
+	public Companytask removeCompanytask(Companytask companytask) {
+		getCompanytasks().remove(companytask);
+		companytask.setCompany(null);
+
+		return companytask;
+	}
+
 	public List<Equipmentdepartment> getEquipmentdepartments() {
 		return this.equipmentdepartments;
 	}
@@ -291,6 +346,28 @@ public class Company implements Serializable {
 		equipmentdepartment.setCompany(null);
 
 		return equipmentdepartment;
+	}
+
+	public List<Loggerdata> getLoggerdata() {
+		return this.loggerdata;
+	}
+
+	public void setLoggerdata(List<Loggerdata> loggerdata) {
+		this.loggerdata = loggerdata;
+	}
+
+	public Loggerdata addLoggerdata(Loggerdata loggerdata) {
+		getLoggerdata().add(loggerdata);
+		loggerdata.setCompany(this);
+
+		return loggerdata;
+	}
+
+	public Loggerdata removeLoggerdata(Loggerdata loggerdata) {
+		getLoggerdata().remove(loggerdata);
+		loggerdata.setCompany(null);
+
+		return loggerdata;
 	}
 
 	public List<Sectordepartment> getSectordepartments() {
@@ -357,6 +434,28 @@ public class Company implements Serializable {
 		usr.setCompany(null);
 
 		return usr;
+	}
+
+	public List<Attendance> getAttendances() {
+		return this.attendances;
+	}
+
+	public void setAttendances(List<Attendance> attendances) {
+		this.attendances = attendances;
+	}
+
+	public Attendance addAttendance(Attendance attendance) {
+		getAttendances().add(attendance);
+		attendance.setCompany(this);
+
+		return attendance;
+	}
+
+	public Attendance removeAttendance(Attendance attendance) {
+		getAttendances().remove(attendance);
+		attendance.setCompany(null);
+
+		return attendance;
 	}
 
 }

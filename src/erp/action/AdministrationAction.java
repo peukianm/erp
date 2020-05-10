@@ -59,28 +59,19 @@ public class AdministrationAction implements Serializable {
     @Inject
     ResetBean resetBean;
 
-    @Resource
-    UserTransaction usrTransaction;
-
     public AdministrationAction() {
     }
 
     public String loginAction() {
         try {
-            if (logger.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) 
                 logger.debug("LOGIN ACTION!!!!!!");
-            }
+            
             Usr temp = null;
             List<Usr> users = userDAO.findByProperty("username", userBean.getUsername());
-            if (users == null || users.size() > 0) {
-                if (ErpUtil.check(userBean.getPassword(), users.get(0).getPassword())) {
-                    temp = users.get(0);
-                } else {
-                    temp = null;
-                }
-            } else {
-                temp = null;
-            }
+            if (users.size() > 0 && ErpUtil.check(userBean.getPassword(), users.get(0).getPassword()))            
+                    temp = users.get(0);               
+           
 
             if (temp == null) {
                 userBean.setPassword(null);
@@ -90,8 +81,8 @@ public class AdministrationAction implements Serializable {
             }
 
             List<Userrole> userroles = temp.getUserroles();
-            roleSelectionBean.setUserroles(userroles);
-            temp.setUserroles(userroles);
+            //roleSelectionBean.setUserroles(userroles);
+            //temp.setUserroles(userroles);
             sessionBean.setUsers(temp);
 
             if (userroles.size() > 1) {
@@ -99,12 +90,7 @@ public class AdministrationAction implements Serializable {
             } else if (userroles.size() == 1) {
                 temp.setRole(userroles.get(0).getRole());
 
-//                Server server = (Server)SessionManager.getManager().getSession("sdsdsddsd", HttpSession.class.getClassLoader());
-//            Session session = (Session) server.acquireClientSession();
-//                SessionFactory sessionFactory = new SessionFactory("default");
-//                Session session = sessionFactory.getSharedSession();
-//                UnitOfWork uow = session.acquireUnitOfWork();           
-//                uow.commit();
+
 //               usrTransaction.begin();
 //                Company comp = new Company();
 //                comp.setName("1111111111111111111");
@@ -125,15 +111,6 @@ public class AdministrationAction implements Serializable {
             }
             return "";
         } catch (Exception e) {
-//            try {
-//                usrTransaction.rollback();
-//            } catch (IllegalStateException ex) {
-//                java.util.logging.Logger.getLogger(AdministrationAction.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (SecurityException ex) {
-//                java.util.logging.Logger.getLogger(AdministrationAction.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (SystemException ex) {
-//                java.util.logging.Logger.getLogger(AdministrationAction.class.getName()).log(Level.SEVERE, null, ex);
-//            }
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             goError(e);
@@ -246,7 +223,7 @@ public class AdministrationAction implements Serializable {
 
     public void autocompleteUsernameSelectUser(SelectEvent event) {
         try {
-            //AuditBean auditBean = (AuditBean) FacesUtils.getManagedBean("auditBean");
+
             Usr user = auditBean.getSelectUser();
             auditBean.setSearchUser(user);
             auditBean.setSelectUser(null);
@@ -330,7 +307,6 @@ public class AdministrationAction implements Serializable {
 
     public void goResetPasword() {
         try {
-            //UserBean userBean = (UserBean) FacesUtils.getManagedBean("userBean");
             FacesUtils.callRequestContext("resetPasswordDialogWidget.show()");
             FacesUtils.updateHTMLComponnetWIthJS("resetPasswordUserPanelID");
         } catch (Exception e) {

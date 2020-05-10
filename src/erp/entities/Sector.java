@@ -53,6 +53,10 @@ public class Sector implements Serializable {
 	@OneToMany(mappedBy="sector")
 	private List<Staff> staffs;
 
+	//bi-directional many-to-one association to Attendance
+	@OneToMany(mappedBy="sector")
+	private List<Attendance> attendances;
+
 	public Sector() {
 	}
 
@@ -160,6 +164,28 @@ public class Sector implements Serializable {
 		staff.setSector(null);
 
 		return staff;
+	}
+
+	public List<Attendance> getAttendances() {
+		return this.attendances;
+	}
+
+	public void setAttendances(List<Attendance> attendances) {
+		this.attendances = attendances;
+	}
+
+	public Attendance addAttendance(Attendance attendance) {
+		getAttendances().add(attendance);
+		attendance.setSector(this);
+
+		return attendance;
+	}
+
+	public Attendance removeAttendance(Attendance attendance) {
+		getAttendances().remove(attendance);
+		attendance.setSector(null);
+
+		return attendance;
 	}
 
 }
