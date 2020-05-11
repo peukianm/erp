@@ -82,30 +82,5 @@ public class PersistenceHelper  {
 
         return ((Long) q.getSingleResult()).intValue();
     }
-    //
-//    public void beginTransaction() {
-//        
-//        try {
-//            getUserTransaction().begin();            
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        } 
-//    }
-//
-//    public void commitTransaction() {
-//        try {
-//            getUserTransaction().commit();
-//        } catch (Exception ex) {           
-//            ex.printStackTrace();
-//        }
-//    }
-//    
-//    
-//    public void rollbackTransaction() {
-//        try {
-//            getUserTransaction().rollback();
-//        } catch (Exception ex) { 
-//            ex.printStackTrace();
-//        }
-//    }
+
 }

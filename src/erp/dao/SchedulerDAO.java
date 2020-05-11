@@ -6,7 +6,9 @@
 package erp.dao;
 
 import erp.entities.Attendance;
+import erp.entities.Company;
 import erp.entities.Companytask;
+import erp.entities.Scheduletask;
 import erp.entities.Scheduletaskdetail;
 import erp.entities.Staff;
 import java.io.Serializable;
@@ -40,16 +42,26 @@ public class SchedulerDAO implements Serializable {
         Query query = entityManager.createQuery("SELECT e FROM Schesuletaskdetail e");
         return query.getResultList();
     }
+    
+     public List<Staff> getAllStaff(boolean onlyActive) {
+        String sql = "SELECT e FROM Staff e "
+        + (onlyActive ? " where e.active = 1 " : " ");
+        Query query = entityManager.createQuery(sql);
+        return query.getResultList();
+    }
+    
 
     @SuppressWarnings("unchecked")
-    public Companytask findCtask(long companyid, long taskid) {
+    public Companytask findCtask(Company company, Scheduletask task) {
 
         try {
-            final String queryString = "select model from Scheduletaskdetail model where "
+            final String queryString = "select model from Companytask model where "
                     + " model.active = 1 and "
-                    + " model.companyid = " + companyid + " and "
-                    + " model.taskid = " + taskid;
+                    + " model.company = :company and "
+                    + " model.scheduletask = :task ";
             Query query = entityManager.createQuery(queryString);
+            query.setParameter("company", company);
+            query.setParameter("task", task);
             return (Companytask) query.getResultList().get(0);
         } catch (RuntimeException re) {
             logger.error("Error on getting findCtask entity", re);
@@ -62,9 +74,9 @@ public class SchedulerDAO implements Serializable {
 
         try {
             final String queryString = "select model from Staff model where "
-                    + " model.loggercode = " + loggerCode;
+                    + " model.loggercode = '" + loggerCode +"'";
             Query query = entityManager.createQuery(queryString);
-            return (Staff) query.getResultList().get(0);
+            return query.getResultList().size() == 0 ? null : (Staff) query.getResultList().get(0);
         } catch (RuntimeException re) {
             logger.error("Error on getting Staff from Code ", re);
             throw re;
@@ -76,14 +88,15 @@ public class SchedulerDAO implements Serializable {
 
         try {
             final String queryString = "select model from Attendance model where "
-                    + " WHERE model.entrance BETWEEN '" + previousDate + " 00:00:00' AND '" + currentDate + " 23:59:59' and "
+                    + " model.entrance BETWEEN '" + previousDate + " 00:00:00' AND '" + currentDate + " 23:59:59' and "
                     //+ " model.ended = 0 and "
-                    + " model.staff = " + staff
+                    + " model.staff = :staff "
                     + " order by model.entrance   ";
             Query query = entityManager.createQuery(queryString);
             query.setParameter("staff", staff);            
             return query.getResultList();
         } catch (RuntimeException re) {
+            re.printStackTrace();
             logger.error("Error on getting Staff from Code ", re);
             throw re;
         }

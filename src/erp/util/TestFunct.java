@@ -51,6 +51,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import okhttp3.*;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -61,7 +64,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
  */
 public class TestFunct {
 
-    @EJB
+    
     static SchedulerDAO schedulerDAO;
 
     //public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
@@ -90,6 +93,7 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static void main(String[] args) {
         try {
+
             // run3(); //Check printing activity
             // run4(); // Create random attendance files
             //readOro("C:\\tmp\\random5.xlsx");
@@ -176,7 +180,7 @@ public class TestFunct {
             Companytask ctask = null;//schedulerDAO.findCtask(companyid, taskid);
             System.out.println("");
 
-            File file1 = new File("c:\\temp\\random1.xlsx");//new File(SystemParameters.getInstance().getProperty("LOGGER1_PATH"));
+            File file1 = new File("e:\\temp\\comp2.xlsx");//new File(SystemParameters.getInstance().getProperty("LOGGER1_PATH"));
 
             //File file2 = new File(SystemParameters.getInstance().getProperty("LOGGER2_PATH"));
             //File file3 = new File(SystemParameters.getInstance().getProperty("LOGGER3_PATH"));
@@ -216,11 +220,16 @@ public class TestFunct {
                         break;
                     }
                     currentRow = iterator.next();
-                    LoggerData logerData = new LoggerData(currentRow.getCell(0).getNumericCellValue(), currentRow.getCell(1).getDateCellValue(), currentRow.getCell(2).getNumericCellValue());
+                    LoggerData logerData = new LoggerData(currentRow.getCell(0).getNumericCellValue(), currentRow.getCell(1).getDateCellValue(),
+                            currentRow.getCell(2).getNumericCellValue(), schedulerDAO.findStaffFromLoggerCode(String.valueOf(currentRow.getCell(0).getNumericCellValue())));
                     logerDataList.add(logerData);
                 }
                 workbook.close();
+                System.out.println(logerDataList.size());
                 Collections.sort(logerDataList);
+                updateAttendance(logerDataList);
+                calendar = Calendar.getInstance();
+                System.out.println(dateFormat.format(calendar.getTime()));
 
             }
         } catch (FileNotFoundException e) {
@@ -237,6 +246,7 @@ public class TestFunct {
             currentDate = FormatUtils.formatDate(loggerData.getDateTime());
             previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()));
             List<Attendance> temp = schedulerDAO.findAttendance(loggerData.getStaff(), currentDate, previousDate);
+
             if (temp != null) {
                 for (Attendance attendance : temp) {
                     if (attendance.getEnded().intValue() == 0) {

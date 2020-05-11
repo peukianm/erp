@@ -53,11 +53,11 @@ public class LoggerData implements Comparable<LoggerData> {
     this.dateTime = datetime;
   }
   
-  public LoggerData(double code, Date datetime, double status){
+  public LoggerData(double code, Date datetime, double status, Staff staff){
       this.code = code;
       this.status = status;
       this.dateTime = datetime;
-      
+      this.staff = staff;
   }
 
   @Override
