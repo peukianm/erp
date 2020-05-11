@@ -1,5 +1,5 @@
 /* Copyright 2004 for General Secretariat of the Council of the European Union (GSC). */
-/* This code belongs to the GSC.                                                      */
+ /* This code belongs to the GSC.                                                      */
 package erp.util;
 
 import java.sql.Timestamp;
@@ -10,9 +10,11 @@ import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
- * This class is generally used for date formating. There are 4 predefined types of date formats (defined as final static constants).
+ * This class is generally used for date formating. There are 4 predefined types
+ * of date formats (defined as final static constants).
  */
 public class FormatUtils {
 
@@ -65,7 +67,8 @@ public class FormatUtils {
     public static final int SATURDAY = 7;
 
     /**
-     * Defauls private constructor, this is a common pattern for every utility class.
+     * Defauls private constructor, this is a common pattern for every utility
+     * class.
      */
     private FormatUtils() {
         super();
@@ -286,7 +289,7 @@ public class FormatUtils {
     }
 
     public static Timestamp formatDateToTimestamp(java.util.Date date, String pattern) {
-        Timestamp timestamp = null;       
+        Timestamp timestamp = null;
         try {
             DateFormat df = new SimpleDateFormat(pattern);
             String dateString = df.format(date);
@@ -296,10 +299,11 @@ public class FormatUtils {
             return null;
         }
     }
-    
-    
+
     /**
-     * Returns a string from the input timestamp in the designated format. Formats can be of the following types : <ul> <li> DD/MM/YYYY HH24:MI:SS <li>
+     * Returns a string from the input timestamp in the designated format.
+     * Formats can be of the following types : <ul> <li> DD/MM/YYYY HH24:MI:SS
+     * <li>
      * DD/MM/YYYY <li> MM/DD/YYYY HH24:MI:SS <li> MM/DD/YYYY </ul?
      *
      *
@@ -310,7 +314,7 @@ public class FormatUtils {
      *
      *
      *
-
+     *
      *
      * @param timestamp is the epoc number to be used
      * @param format is the preferred format to be returned
@@ -415,13 +419,15 @@ public class FormatUtils {
     }
 
     /**
-     * Converts a Gregorian calendar object into an "oracle like" date string DD/MM/YYYY HH24:MI:SS
+     * Converts a Gregorian calendar object into an "oracle like" date string
+     * DD/MM/YYYY HH24:MI:SS
      *
      * @param gcal the Gregorian calendar object
      * @param europeanFormat true for european format, false for US format
      * @param discardTime true for discarding the time or false for the oposite.
      *
-     * @return the String representation of the Gregorian Calendar object (based on the specific parameters passed).
+     * @return the String representation of the Gregorian Calendar object (based
+     * on the specific parameters passed).
      */
     private static String gregorianCalendar2OracleDateString(java.util.GregorianCalendar gcal,
             boolean europeanFormat, boolean discardTime) {
@@ -452,11 +458,14 @@ public class FormatUtils {
     }
 
     /**
-     * This method finds the date after or before the current date. According to the number (numOfWorkingDays) that we provide.
+     * This method finds the date after or before the current date. According to
+     * the number (numOfWorkingDays) that we provide.
      *
-     * The flag (isForward) finds the date after (true) or the date before (false) today
+     * The flag (isForward) finds the date after (true) or the date before
+     * (false) today
      *
-     * The counted days are working days only. DAY_OF_WEEK - 1 --> SUNDAY DAY_OF_WEEK - 7 --> SATURDAY The previous two are ignored.
+     * The counted days are working days only. DAY_OF_WEEK - 1 --> SUNDAY
+     * DAY_OF_WEEK - 7 --> SATURDAY The previous two are ignored.
      *
      * @param numOfWorkingDays
      * @param isForward
@@ -467,14 +476,12 @@ public class FormatUtils {
         Date today = new Date();
         todayCal.setTime(today);
 
-
         while (numOfWorkingDays > 0) {
             if (isForward) {
                 todayCal.add(Calendar.DAY_OF_WEEK, 1);
             } else {
                 todayCal.add(Calendar.DAY_OF_WEEK, -1);
             }
-
 
             int dayOfWeek = todayCal.get(Calendar.DAY_OF_WEEK);
 
@@ -677,5 +684,10 @@ public class FormatUtils {
             modifiedStr = (new StringBuilder()).append(akerPart).append(",00").toString();
         }
         return modifiedStr;
+    }
+
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 }

@@ -1,10 +1,11 @@
 package erp.util;
 
-import erp.dao.ActionDAO;
+import erp.bean.LoggerData;
 import erp.dao.SchedulerDAO;
 import erp.dao.UsrDAO;
+import erp.entities.Attendance;
 import erp.entities.Companytask;
-import erp.entities.Scheduletaskdetail;
+import erp.entities.Staff;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -46,6 +48,8 @@ import org.json.JSONObject;
 //import okhttp3.*;
 import java.sql.*;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Iterator;
 import javax.ejb.EJB;
 import okhttp3.*;
 
@@ -58,9 +62,9 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 public class TestFunct {
 
     @EJB
-    SchedulerDAO schedulerDAO;
+    static SchedulerDAO schedulerDAO;
 
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    //public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static Response outpResponse;
 
     private static String IP = "";
@@ -89,6 +93,8 @@ public class TestFunct {
             // run3(); //Check printing activity
             // run4(); // Create random attendance files
             //readOro("C:\\tmp\\random5.xlsx");
+            //readOro();
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -158,54 +164,65 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressWarnings("deprecation")
-    private void readOro(String file) {
+    private static void readOro() {
 
         try {
-            long companyid = Long.parseLong(SystemParameters.getInstance().getProperty("Companyid"));
-            long taskid = Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS"));
-            Companytask ctask = schedulerDAO.findCtask(companyid, taskid);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+            Calendar calendar = Calendar.getInstance();
+            System.out.println(dateFormat.format(calendar.getTime()));
 
-            int pointer1 = ctask.getTaskdata1() == null ? 0 : Integer.parseInt(ctask.getTaskdata1());
-            int pointer2 = ctask.getTaskdata2() == null ? 0 : Integer.parseInt(ctask.getTaskdata2());
-            int pointer3 = ctask.getTaskdata3() == null ? 0 : Integer.parseInt(ctask.getTaskdata3());
-            int pointer4 = ctask.getTaskdata4() == null ? 0 : Integer.parseInt(ctask.getTaskdata4());
+            long companyid = 1;//Long.parseLong(SystemParameters.getInstance().getProperty("Companyid"));            
+            long taskid = 1;//Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS"));
+            Companytask ctask = null;//schedulerDAO.findCtask(companyid, taskid);
+            System.out.println("");
 
-            File file1 = new File(SystemParameters.getInstance().getProperty("LOGGER1_PATH"));
-            File file2 = new File(SystemParameters.getInstance().getProperty("LOGGER2_PATH"));
-            File file3 = new File(SystemParameters.getInstance().getProperty("LOGGER3_PATH"));
-            File file4 = new File(SystemParameters.getInstance().getProperty("LOGGER4_PATH"));
+            File file1 = new File("c:\\temp\\random1.xlsx");//new File(SystemParameters.getInstance().getProperty("LOGGER1_PATH"));
 
-            for (int i = 1; i <= 4; i++) {
-                FileInputStream excelFile = new FileInputStream(new File(file));
+            //File file2 = new File(SystemParameters.getInstance().getProperty("LOGGER2_PATH"));
+            //File file3 = new File(SystemParameters.getInstance().getProperty("LOGGER3_PATH"));
+            //File file4 = new File(SystemParameters.getInstance().getProperty("LOGGER4_PATH"));
+            File file = null;
+            List<LoggerData> logerDataList = new ArrayList<LoggerData>();
+            for (int i = 1; i <= 1; i++) {
+                if (i == 1) {
+                    file = file1;
+                }
+                FileInputStream excelFile = new FileInputStream(file);
                 Workbook workbook = new XSSFWorkbook(excelFile);
                 Sheet datatypeSheet = workbook.getSheetAt(0);
 
-                datatypeSheet.forEach(row -> {
-                    row.forEach(cell -> {
-                        getCellValue(cell);
-                    });
-                    System.out.println();
-                });
-                workbook.close();
-            }
-
-//            Iterator<Row> iterator = datatypeSheet.iterator();
-//            DataFormatter dataFormatter = new DataFormatter();
-//            while (iterator.hasNext()) {
-//                Row currentRow = iterator.next();
-//                Iterator<Cell> cellIterator = currentRow.iterator();
-//                while (cellIterator.hasNext()) {
-//                    Cell currentCell = cellIterator.next();
-//                    // getCellTypeEnum shown as deprecated for version 3.15
-//                    // getCellTypeEnum ill be renamed to getCellType starting from version 4.0
-//                    if (currentCell.getCellTypeEnum() == CellType.STRING) {
-//                        System.out.print(currentCell.getStringCellValue() + "ST");
-//                    } else if (currentCell.getCellTypeEnum() == CellType.NUMERIC) {
-//                        System.out.print(currentCell.getNumericCellValue() + "NU");
-//                    }
+                int pointer = 0;
+//                switch (i) {
+//                    case 1:
+//                        pointer = ctask.getTaskdata1() == null ? 0 : Integer.parseInt(ctask.getTaskdata1());
+//                        break;
+//                    case 2:
+//                        pointer = ctask.getTaskdata2() == null ? 0 : Integer.parseInt(ctask.getTaskdata2());
+//                        break;
+//                    case 3:
+//                        pointer = ctask.getTaskdata3() == null ? 0 : Integer.parseInt(ctask.getTaskdata3());
+//                        break;
+//                    default:
+//                        pointer = ctask.getTaskdata4() == null ? 0 : Integer.parseInt(ctask.getTaskdata4());
+//                        break;
 //                }
-//
-//            }
+
+                int counter = 0;
+                Row currentRow = null;
+                Iterator<Row> iterator = datatypeSheet.iterator();
+                while (iterator.hasNext()) {
+                    if (counter < pointer) {
+                        counter++;
+                        break;
+                    }
+                    currentRow = iterator.next();
+                    LoggerData logerData = new LoggerData(currentRow.getCell(0).getNumericCellValue(), currentRow.getCell(1).getDateCellValue(), currentRow.getCell(2).getNumericCellValue());
+                    logerDataList.add(logerData);
+                }
+                workbook.close();
+                Collections.sort(logerDataList);
+
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -213,15 +230,46 @@ public class TestFunct {
         }
     }
 
-    
-    private void readLogersData(File file){
-        
+    private static void updateAttendance(List<LoggerData> loggerDataList) {
+        String currentDate = "";
+        String previousDate = "";
+        for (LoggerData loggerData : loggerDataList) {
+            currentDate = FormatUtils.formatDate(loggerData.getDateTime());
+            previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()));
+            List<Attendance> temp = schedulerDAO.findAttendance(loggerData.getStaff(), currentDate, previousDate);
+            if (temp != null) {
+                for (Attendance attendance : temp) {
+                    if (attendance.getEnded().intValue() == 0) {
+                        if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 16) {
+                            Attendance newAttendance = new Attendance();
+                            newAttendance.setCompany(loggerData.getStaff().getCompany());
+                            newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                            newAttendance.setDepartment(loggerData.getStaff().getDepartment());
+                            newAttendance.setEnded(BigDecimal.ZERO);
+                            newAttendance.setStaff(loggerData.getStaff());
+                            newAttendance.setSector(loggerData.getStaff().getSector());
+                            schedulerDAO.saveAttendance(newAttendance);
+                        } else {
+                            attendance.setEnded(BigDecimal.ONE);
+                            attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                            schedulerDAO.updateAttendance(attendance);
+                        }
+                    }
+                }
+            } else {
+                Attendance newAttendance = new Attendance();
+                newAttendance.setCompany(loggerData.getStaff().getCompany());
+                newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                newAttendance.setDepartment(loggerData.getStaff().getDepartment());
+                newAttendance.setEnded(BigDecimal.ZERO);
+                newAttendance.setStaff(loggerData.getStaff());
+                newAttendance.setSector(loggerData.getStaff().getSector());
+                schedulerDAO.saveAttendance(newAttendance);
+            }
+        }
+
     }
-    
-    
-    
-    
-    
+
     private static Object getCellValue(Cell cell) {
         Object retValue = null;
         switch (cell.getCellType()) {
