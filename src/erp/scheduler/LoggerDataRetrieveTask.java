@@ -6,7 +6,9 @@ import erp.entities.Attendance;
 import erp.entities.Company;
 import erp.entities.Companytask;
 import erp.entities.Scheduletask;
+import erp.entities.Scheduletaskdetail;
 import erp.entities.Staff;
+import erp.entities.Taskstatus;
 import erp.util.FormatUtils;
 import erp.util.PersistenceHelper;
 import erp.util.SystemParameters;
@@ -15,10 +17,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -56,19 +60,28 @@ public class LoggerDataRetrieveTask {
     public void doSchedulerWork() throws InterruptedException {        
         Company company = (Company) persistenceHelper.find(Company.class, Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));        
         Scheduletask task = (Scheduletask) persistenceHelper.find(Scheduletask.class, Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));
-        Companytask cTask = schedulerDAO.findCtask(company, task);
-        if (!busy.compareAndSet(false, true) || cTask.getActive() == BigDecimal.ZERO) {
+        Companytask cTask = schedulerDAO.findCtask(company, task); 
+        Scheduletaskdetail taskDetails = null;
+        if (!busy.compareAndSet(false, true) || cTask.getActive() == BigDecimal.ZERO || cTask.getTaskstatus().getStatusid()!= Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE"))) {
             return;
         }
         try {
-            System.out.println("EXECUTION!!!!!!!!!!!!!!!!");
-
+            System.out.println("START TASK EXECUTION EXECUTION!!!!!!!!!!!!!!!!");
+            cTask.setLastexecutiontime(FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
+            schedulerDAO.setTaskStatus(cTask, Long.parseLong(SystemParameters.getInstance().getProperty("TASK_ONPROGRESS")));            
+            taskDetails = new Scheduletaskdetail();
+            taskDetails.setCompanytask(cTask);
+            
+            
+            
             taskMainBody(cTask);
+            
             //Thread.sleep(10000L);
         } catch (Exception ex) {
             ex.printStackTrace();
 
         } finally {
+            schedulerDAO.setTaskStatus(cTask, Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE")));
             busy.set(false);
         }
     }
@@ -80,7 +93,7 @@ public class LoggerDataRetrieveTask {
             Calendar calendar = Calendar.getInstance();
             System.out.println(dateFormat.format(calendar.getTime()));
 
-            File file1 = new File("e:\\temp\\comp1.xlsx");//new File(SystemParameters.getInstance().getProperty("LOGGER1_PATH"));
+            File file1 = new File();//new File(SystemParameters.getInstance().getProperty("LOGGER1_PATH"));
 
             //CHANGE
             //File file2 = new File(SystemParameters.getInstance().getProperty("LOGGER2_PATH"));
@@ -153,6 +166,9 @@ public class LoggerDataRetrieveTask {
             throw e;
         } catch (IOException e) {
             goError(e);
+            throw e;        
+        } catch (Exception e) {
+            goError(e);
             throw e;
         }
     }
@@ -163,11 +179,13 @@ public class LoggerDataRetrieveTask {
         int counter = 0;
         for (LoggerData loggerData : loggerDataList) {
             //if (counter>100) break;
-            currentDate = FormatUtils.formatDate(loggerData.getDateTime());
-            previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()));
-            System.out.println(currentDate+" "+previousDate);
-            List<Attendance> temp = schedulerDAO.findAttendance(loggerData.getStaff(), currentDate, previousDate);
+            currentDate = FormatUtils.formatDate(loggerData.getDateTime(),FormatUtils.TIMESTAMPDATEPATTERN);
+            previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()), FormatUtils.TIMESTAMPDATEPATTERN);
             
+            System.out.println(currentDate+" "+previousDate);
+           
+            List<Attendance> temp = schedulerDAO.findAttendance(loggerData.getStaff(), Timestamp.valueOf(previousDate+" 00:00:00"),  Timestamp.valueOf(currentDate+" 23:59:59"));
+            System.out.println(temp);
             if (temp.size()>0) {
                 for (Attendance attendance : temp) {
                     if (attendance.getEnded().intValue() == 0) {

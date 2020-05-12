@@ -35,6 +35,8 @@ public class ApplicationBean implements Serializable {
     List<Company> companies;
     List<Role> roles;
     List<Action> actions;
+       
+    
     @PostConstruct
     public void init() {}
 

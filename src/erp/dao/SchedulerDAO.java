@@ -11,7 +11,10 @@ import erp.entities.Companytask;
 import erp.entities.Scheduletask;
 import erp.entities.Scheduletaskdetail;
 import erp.entities.Staff;
+import erp.entities.Taskstatus;
+import erp.util.SystemParameters;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.ejb.Stateless;
@@ -42,14 +45,24 @@ public class SchedulerDAO implements Serializable {
         Query query = entityManager.createQuery("SELECT e FROM Schesuletaskdetail e");
         return query.getResultList();
     }
-    
-     public List<Staff> getAllStaff(boolean onlyActive) {
+
+    public List<Taskstatus> getAllTaskStatuses() {
+        Query query = entityManager.createQuery("SELECT e FROM Taskstatus e");
+        return query.getResultList();
+    }
+
+    public List<Staff> getAllStaff(boolean onlyActive) {
         String sql = "SELECT e FROM Staff e "
-        + (onlyActive ? " where e.active = 1 " : " ");
+                + (onlyActive ? " where e.active = 1 " : " ");
         Query query = entityManager.createQuery(sql);
         return query.getResultList();
     }
-    
+
+    public void setTaskStatus(Companytask task, long statusid) {
+        Taskstatus onProgress = (Taskstatus)find(Taskstatus.class, statusid);
+        task.setTaskstatus(onProgress);
+        updateCtask(task);
+    }
 
     @SuppressWarnings("unchecked")
     public Companytask findCtask(Company company, Scheduletask task) {
@@ -74,7 +87,7 @@ public class SchedulerDAO implements Serializable {
 
         try {
             final String queryString = "select model from Staff model where "
-                    + " model.loggercode = '" + loggerCode +"'";
+                    + " model.loggercode = '" + loggerCode + "'";
             Query query = entityManager.createQuery(queryString);
             return query.getResultList().size() == 0 ? null : (Staff) query.getResultList().get(0);
         } catch (RuntimeException re) {
@@ -84,16 +97,18 @@ public class SchedulerDAO implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Attendance> findAttendance(Staff staff, String previousDate, String currentDate) {
+    public List<Attendance> findAttendance(Staff staff, Timestamp previousDate, Timestamp currentDate) {
 
         try {
             final String queryString = "select model from Attendance model where "
-                    + " model.entrance BETWEEN '" + previousDate + " 00:00:00' AND '" + currentDate + " 23:59:59' and "
+                    + " model.entrance BETWEEN :previous AND :current and "
                     //+ " model.ended = 0 and "
                     + " model.staff = :staff "
                     + " order by model.entrance   ";
             Query query = entityManager.createQuery(queryString);
-            query.setParameter("staff", staff);            
+            query.setParameter("previous", previousDate);
+            query.setParameter("current", currentDate);
+            query.setParameter("staff", staff);
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -194,5 +209,9 @@ public class SchedulerDAO implements Serializable {
             tx.rollback();
             throw e;
         }
+    }
+
+  public Object find(Class entityClass, Object id) {
+        return entityManager.find(entityClass, id);
     }
 }

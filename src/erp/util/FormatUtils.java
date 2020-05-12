@@ -21,6 +21,7 @@ public class FormatUtils {
     public static final String DATEPATTERN = "dd/MM/yyyy";
     public static final String TIMEPATTERN = "HH:mm";
     public static final String FULLDATEPATTERN = "dd/MM/yyyy HH:mm";
+    public static final String TIMESTAMPDATEPATTERN = "yyyy-MM-dd";
     /**
      * European date format without time
      */

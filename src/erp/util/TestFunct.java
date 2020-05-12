@@ -245,7 +245,7 @@ public class TestFunct {
         for (LoggerData loggerData : loggerDataList) {
             currentDate = FormatUtils.formatDate(loggerData.getDateTime());
             previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()));
-            List<Attendance> temp = schedulerDAO.findAttendance(loggerData.getStaff(), currentDate, previousDate);
+            List<Attendance> temp = null ;//schedulerDAO.findAttendance(loggerData.getStaff(), currentDate, previousDate);
 
             if (temp != null) {
                 for (Attendance attendance : temp) {
