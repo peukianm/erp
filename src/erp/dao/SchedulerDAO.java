@@ -59,9 +59,14 @@ public class SchedulerDAO implements Serializable {
     }
 
     public void setTaskStatus(Companytask task, long statusid) {
-        Taskstatus onProgress = (Taskstatus)find(Taskstatus.class, statusid);
+        Taskstatus onProgress = (Taskstatus) find(Taskstatus.class, statusid);
         task.setTaskstatus(onProgress);
-        updateCtask(task);
+    }
+
+    public void setTaskDetailsStatus(Scheduletaskdetail taskDetails, long statusid) {
+        Taskstatus onProgress = (Taskstatus) find(Taskstatus.class, statusid);
+        taskDetails.setTaskstatus(onProgress);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -73,6 +78,8 @@ public class SchedulerDAO implements Serializable {
                     + " model.company = :company and "
                     + " model.scheduletask = :task ";
             Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            System.out.println("refreshing");
             query.setParameter("company", company);
             query.setParameter("task", task);
             return (Companytask) query.getResultList().get(0);
@@ -97,14 +104,14 @@ public class SchedulerDAO implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Attendance> findAttendance(Staff staff, Timestamp previousDate, Timestamp currentDate) {
+    public List<Attendance> findOpenAttendance(Staff staff, Timestamp previousDate, Timestamp currentDate) {
 
         try {
             final String queryString = "select model from Attendance model where "
                     + " model.entrance BETWEEN :previous AND :current and "
-                    //+ " model.ended = 0 and "
+                    + " model.ended = 0 and "
                     + " model.staff = :staff "
-                    + " order by model.entrance   ";
+                    + " order by model.entrance DESC  ";
             Query query = entityManager.createQuery(queryString);
             query.setParameter("previous", previousDate);
             query.setParameter("current", currentDate);
@@ -211,7 +218,7 @@ public class SchedulerDAO implements Serializable {
         }
     }
 
-  public Object find(Class entityClass, Object id) {
+    public Object find(Class entityClass, Object id) {
         return entityManager.find(entityClass, id);
     }
 }

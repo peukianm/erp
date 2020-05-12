@@ -24,7 +24,9 @@ public class Scheduletaskdetail implements Serializable {
 
 	private String data2;
 
-	private Timestamp executiontime;
+	private Timestamp startexecutiontime;
+        
+        private Timestamp endexecutiontime;
 
 	//bi-directional many-to-one association to Companytask
 	@ManyToOne(fetch=FetchType.EAGER)
@@ -63,12 +65,19 @@ public class Scheduletaskdetail implements Serializable {
 		this.data2 = data2;
 	}
 
-	public Timestamp getExecutiontime() {
-		return this.executiontime;
+	public Timestamp getStartExecutiontime() {
+		return this.startexecutiontime;
 	}
 
-	public void setExecutiontime(Timestamp executiontime) {
-		this.executiontime = executiontime;
+	public void setStartExecutiontime(Timestamp startexecutiontime) {
+		this.startexecutiontime = startexecutiontime;
+	}
+        public Timestamp getEndExecutiontime() {
+		return this.endexecutiontime;
+	}
+
+	public void setEndExecutiontime(Timestamp endexecutiontime) {
+		this.endexecutiontime = endexecutiontime;
 	}
 
 	public Companytask getCompanytask() {
