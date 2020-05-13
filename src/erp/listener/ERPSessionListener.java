@@ -16,14 +16,14 @@ import javax.servlet.http.*;
 public class ERPSessionListener implements HttpSessionListener {
   @Override
   public void sessionCreated(HttpSessionEvent se) {
-      System.out.println("-- SESSION CREATED invoked --");
+      //System.out.println("-- SESSION CREATED invoked --");
       HttpSession session = se.getSession();
-      System.out.println("session id: " + session.getId());
+      //System.out.println("session id: " + session.getId());
       //session.setMaxInactiveInterval(5);//in seconds
   }
 
   @Override
   public void sessionDestroyed(HttpSessionEvent se) {
-      System.out.println("-- SESSION DESTROYED invoked --");
+      //System.out.println("-- SESSION DESTROYED invoked --");
   }
 }

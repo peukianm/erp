@@ -5,6 +5,7 @@
  */
 package erp.scheduler;
 
+import erp.util.SystemParameters;
 import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -18,15 +19,15 @@ import javax.ejb.Singleton;
  * @author peukianm
  */
 @Singleton
-public class LoggerDataRetrieveTrigger {
+public class ERPScheduler {
     @EJB
     private LoggerDataRetrieveTask retrieverTask;
  
     @Lock(LockType.READ)
     @Schedule(second = "*/20", minute = "*", hour = "*", persistent = false)
     public void atSchedule() throws InterruptedException {
-        //System.out.println("START!!!!!!!!!!!!!!!!!");
-        retrieverTask.doSchedulerWork();
+        if (SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE").equals("true"))
+            retrieverTask.doSchedulerWork(false);
     }
     
 }

@@ -20,7 +20,7 @@ public class FormatUtils {
 
     public static final String DATEPATTERN = "dd/MM/yyyy";
     public static final String TIMEPATTERN = "HH:mm";
-    public static final String FULLDATEPATTERN = "dd/MM/yyyy HH:mm";
+    public static final String FULLDATEPATTERN = "dd/MM/yyyy HH:mm:ss";
     public static final String TIMESTAMPDATEPATTERN = "yyyy-MM-dd";
     /**
      * European date format without time
@@ -690,5 +690,38 @@ public class FormatUtils {
     public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
         long diffInMillies = date2.getTime() - date1.getTime();
         return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+
+    public static Map<TimeUnit, Long> computeDiff(Date date1, Date date2) {
+
+        long diffInMillies = date2.getTime() - date1.getTime();
+
+        //create the list
+        List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
+        Collections.reverse(units);
+
+        //create the result map of TimeUnit and difference
+        Map<TimeUnit, Long> result = new LinkedHashMap<TimeUnit, Long>();
+        long milliesRest = diffInMillies;
+
+        for (TimeUnit unit : units) {
+
+            //calculate difference in millisecond 
+            long diff = unit.convert(milliesRest, TimeUnit.MILLISECONDS);
+            long diffInMilliesForUnit = unit.toMillis(diff);
+            milliesRest = milliesRest - diffInMilliesForUnit;
+
+            //put the result in the map
+            result.put(unit, diff);
+        }
+
+        return result;
+    }
+
+    public static String splitSecondsToTime(long totalSecs) {
+        long hours = totalSecs / 3600;
+        long minutes = (totalSecs % 3600) / 60;
+        long seconds = totalSecs % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }

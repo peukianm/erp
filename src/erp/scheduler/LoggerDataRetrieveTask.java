@@ -56,55 +56,79 @@ public class LoggerDataRetrieveTask {
     final String TIMEPATTERN = "HH:mm:ss";
     final String FULLDATEPATTERN = "yyyy-MM-dd HH:mm:ss";
 
+    Taskstatus taskStatus;
+
     @Lock(LockType.READ)
-    public void doSchedulerWork() throws InterruptedException {
-        Company company = (Company) persistenceHelper.find(Company.class, Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
-        Scheduletask task = (Scheduletask) persistenceHelper.find(Scheduletask.class, Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));
+    public void doSchedulerWork(boolean force) throws InterruptedException {
+        Company company = (Company) persistenceHelper.find(Company.class, Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));
+        Scheduletask task = (Scheduletask) persistenceHelper.find(Scheduletask.class, Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         Companytask cTask = schedulerDAO.findCtask(company, task);
-       
         Scheduletaskdetail taskDetails = null;
         if (!busy.compareAndSet(false, true) || cTask.getActive() == BigDecimal.ZERO || cTask.getTaskstatus().getStatusid() != Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE"))) {
-            return;
+            if (!force) {
+                return;
+            }
         }
         try {
-            System.out.println("START TASK EXECUTION EXECUTION!!!!!!!!!!!!!!!!");
-
+            System.out.println("START TASK RETRIEVE DATA FROM LOGGERS !!!!!!!!!!!!!!!!");
             Timestamp startTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
+            logger.info("Starting Schedule Task "+ task.getName()+ " for Company "+ company.getAbbrev()+ " at "+ startTaskTime);
             cTask.setLastexecutiontime(startTaskTime);
-            schedulerDAO.setTaskStatus(cTask, Long.parseLong(SystemParameters.getInstance().getProperty("TASK_ONPROGRESS")));
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_ONPROGRESS")));
+            cTask.setTaskstatus(taskStatus);
             schedulerDAO.updateCtask(cTask);
+
             taskDetails = new Scheduletaskdetail();
             taskDetails.setCompanytask(cTask);
             taskDetails.setStartExecutiontime(startTaskTime);
 
             taskMainBody(cTask);
 
-            //Thread.sleep(10000L);
-        } catch (Exception ex) {
+            //SUCCESS!!!!!!!!!!!!!!!!!!
             Timestamp endTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
-            schedulerDAO.setTaskStatus(cTask, Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE")));
-            schedulerDAO.updateCtask(cTask);
+            long secs = FormatUtils.getDateDiff(taskDetails.getStartExecutiontime(), endTaskTime, TimeUnit.SECONDS);
+
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE")));
+            cTask.setTaskstatus(taskStatus);
+
             taskDetails.setEndExecutiontime(endTaskTime);
-            schedulerDAO.setTaskDetailsStatus(taskDetails, Long.parseLong(SystemParameters.getInstance().getProperty("TASK_ERROR")));
+            taskDetails.setExecutiontime(FormatUtils.splitSecondsToTime(secs));
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_SUCCESS")));
+            taskDetails.setTaskstatus(taskStatus);
+
             schedulerDAO.updateCtask(cTask);
             schedulerDAO.saveTaskDetails(taskDetails);
+
+            System.out.println("TASK DATA RETRIEVE FORM LOGGERS ENDED WITH SUCESSS in " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!!!");
+            logger.info("Starting Schedule Task "+ task.getName()+ " for Company "+ company.getAbbrev()+ " SUCCEDED at "+ endTaskTime + " in " + FormatUtils.splitSecondsToTime(secs));
+
+        } catch (Exception ex) {
+            Timestamp endTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
+            long secs = FormatUtils.getDateDiff(taskDetails.getStartExecutiontime(), endTaskTime, TimeUnit.SECONDS);
+
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE")));
+            cTask.setTaskstatus(taskStatus);
+
+            taskDetails.setEndExecutiontime(endTaskTime);
+            taskDetails.setExecutiontime(FormatUtils.splitSecondsToTime(secs));
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_ERROR")));
+            taskDetails.setTaskstatus(taskStatus);
+
+            schedulerDAO.updateCtask(cTask);
+            schedulerDAO.saveTaskDetails(taskDetails);
+            System.out.println("TASK DATA RETRIEVE FORM LOGGERS FAILED " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!");
+            logger.info("Starting Schedule Task "+ task.getName()+ " for Company "+ company.getAbbrev()+ " failed "+ endTaskTime);
             ex.printStackTrace();
 
         } finally {
-            Timestamp endTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
-            schedulerDAO.setTaskStatus(cTask, Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE")));
-            taskDetails.setEndExecutiontime(endTaskTime);
-            schedulerDAO.setTaskDetailsStatus(taskDetails, Long.parseLong(SystemParameters.getInstance().getProperty("TASK_SUCCESS")));
-            schedulerDAO.updateCtask(cTask);
-            schedulerDAO.saveTaskDetails(taskDetails);
-            //busy.set(false);
+            busy.set(false);
         }
     }
 
     public void taskMainBody(Companytask cTask) throws Exception {
 
         try {
-            int loggerscount = Integer.parseInt(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS"));
+            int loggerscount = Integer.parseInt(SystemParameters.getInstance().getProperty("COMPANYLOGGERS"));
             File file = null;
             List<LoggerData> logerDataList = new ArrayList<LoggerData>();
             for (int i = 1; i <= loggerscount; i++) {
@@ -142,6 +166,7 @@ public class LoggerDataRetrieveTask {
 
                 List<Staff> allStaff = schedulerDAO.getAllStaff(true);
                 while (iterator.hasNext()) {
+                    counter++;
                     currentRow = iterator.next();
                     String lc = String.valueOf((int) currentRow.getCell(0).getNumericCellValue());
                     staff = allStaff.stream().filter(stf -> lc
@@ -149,7 +174,6 @@ public class LoggerDataRetrieveTask {
                             .findAny()
                             .orElse(null);
 
-                    //System.out.println("staf=" + staff);
                     if (staff != null) {
                         LoggerData logerData = new LoggerData(currentRow.getCell(0).getNumericCellValue(),
                                 currentRow.getCell(1).getDateCellValue(),
@@ -157,10 +181,29 @@ public class LoggerDataRetrieveTask {
                         logerDataList.add(logerData);
                     }
                 }
+                switch (i) {
+                    case 1:
+                        cTask.setTaskdata1(String.valueOf(counter + pointer));
+                        System.out.println(counter + " new values from elogger data 1");
+                        break;
+                    case 2:
+                        cTask.setTaskdata2(String.valueOf(counter + pointer));
+                        System.out.println(counter + " new valued from elogger data 2");
+                        break;
+                    case 3:
+                        cTask.setTaskdata3(String.valueOf(counter + pointer));
+                        System.out.println(counter + " new valued from elogger data 3");
+                        break;
+                    default:
+                        cTask.setTaskdata4(String.valueOf(counter + pointer));
+                        System.out.println(counter + " new valued from elogger data 4");
+                        break;
+                }
+
                 workbook.close();
             }
 
-            System.out.println(logerDataList.size());
+            System.out.println("Total entries from all loggers=" + logerDataList.size());
             Collections.sort(logerDataList);
             updateAttendance(logerDataList);
         } catch (FileNotFoundException e) {
@@ -178,9 +221,6 @@ public class LoggerDataRetrieveTask {
     private void updateAttendance(List<LoggerData> loggerDataList) throws Exception {
         String currentDate = "";
         String previousDate = "";
-        int counter1 = 0;
-        int counter2 = 0;
-        int counter = 0;
         for (LoggerData loggerData : loggerDataList) {
             currentDate = FormatUtils.formatDate(loggerData.getDateTime(), FormatUtils.TIMESTAMPDATEPATTERN);
             previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()), FormatUtils.TIMESTAMPDATEPATTERN);
@@ -188,28 +228,21 @@ public class LoggerDataRetrieveTask {
             List<Attendance> temp = schedulerDAO.findOpenAttendance(loggerData.getStaff(), Timestamp.valueOf(previousDate + " 00:00:00"), Timestamp.valueOf(currentDate + " 23:59:59"));
             if (temp.size() > 0) {
                 Attendance attendance = temp.get(0);
-                //for (Attendance attendance : temp) {
-                   // if (attendance.getEnded().intValue() == 0) {
-                        if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 16) {
-                            counter1++;
-                            Attendance newAttendance = new Attendance();
-                            newAttendance.setCompany(loggerData.getStaff().getCompany());
-                            newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
-                            newAttendance.setDepartment(loggerData.getStaff().getDepartment());
-                            newAttendance.setEnded(BigDecimal.ZERO);
-                            newAttendance.setStaff(loggerData.getStaff());
-                            newAttendance.setSector(loggerData.getStaff().getSector());
-                            schedulerDAO.saveAttendance(newAttendance);
-                        } else {
-                            counter2++;
-                            attendance.setEnded(BigDecimal.ONE);
-                            attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
-                            schedulerDAO.updateAttendance(attendance);
-                        }
-                   // }
-               // }
+                if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 16) {
+                    Attendance newAttendance = new Attendance();
+                    newAttendance.setCompany(loggerData.getStaff().getCompany());
+                    newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                    newAttendance.setDepartment(loggerData.getStaff().getDepartment());
+                    newAttendance.setEnded(BigDecimal.ZERO);
+                    newAttendance.setStaff(loggerData.getStaff());
+                    newAttendance.setSector(loggerData.getStaff().getSector());
+                    schedulerDAO.saveAttendance(newAttendance);
+                } else {
+                    attendance.setEnded(BigDecimal.ONE);
+                    attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                    schedulerDAO.updateAttendance(attendance);
+                }
             } else {
-                counter1++;
                 Attendance newAttendance = new Attendance();
                 newAttendance.setCompany(loggerData.getStaff().getCompany());
                 newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
@@ -219,9 +252,7 @@ public class LoggerDataRetrieveTask {
                 newAttendance.setSector(loggerData.getStaff().getSector());
                 schedulerDAO.saveAttendance(newAttendance);
             }
-            counter++;
         }
-        System.out.println(counter + " " + counter1 + " " + counter2);
     }
 
     public void goError(Exception ex) {

@@ -58,15 +58,18 @@ public class SchedulerDAO implements Serializable {
         return query.getResultList();
     }
 
-    public void setTaskStatus(Companytask task, long statusid) {
-        Taskstatus onProgress = (Taskstatus) find(Taskstatus.class, statusid);
-        task.setTaskstatus(onProgress);
-    }
-
-    public void setTaskDetailsStatus(Scheduletaskdetail taskDetails, long statusid) {
-        Taskstatus onProgress = (Taskstatus) find(Taskstatus.class, statusid);
-        taskDetails.setTaskstatus(onProgress);
-
+//    public void setTaskStatus(Companytask task, long statusid) {
+//        Taskstatus onProgress = (Taskstatus) find(Taskstatus.class, statusid);
+//        task.setTaskstatus(onProgress);
+//    }
+//
+//    public void setTaskDetailsStatus(Scheduletaskdetail taskDetails, long statusid) {
+//        Taskstatus onProgress = (Taskstatus) find(Taskstatus.class, statusid);
+//        taskDetails.setTaskstatus(onProgress);
+//    }
+//    
+    public Taskstatus getTaskstatus(long statusid) {
+        return (Taskstatus) find(Taskstatus.class, statusid);
     }
 
     @SuppressWarnings("unchecked")
@@ -79,10 +82,11 @@ public class SchedulerDAO implements Serializable {
                     + " model.scheduletask = :task ";
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            System.out.println("refreshing");
             query.setParameter("company", company);
             query.setParameter("task", task);
-            return (Companytask) query.getResultList().get(0);
+            Companytask ctask = (Companytask)query.getResultList().get(0);
+            entityManager.refresh(ctask);
+            return ctask ;
         } catch (RuntimeException re) {
             logger.error("Error on getting findCtask entity", re);
             throw re;

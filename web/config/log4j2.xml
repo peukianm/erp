@@ -15,7 +15,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="erp" level="error" />
+        <Logger name="erp" level="debug" />
         <Root level="debug">   
             <AppenderRef ref="STDOUT" />
             <AppenderRef ref="FILE" />
