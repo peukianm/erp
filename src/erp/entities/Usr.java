@@ -62,6 +62,13 @@ public class Usr implements Serializable {
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="COMPANYID")
 	private Company company;
+        
+        //bi-directional many-to-one association to Company
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="STAFFID")
+	private Staff staff;
+        
+        
 
 	//bi-directional many-to-one association to Department
 	@ManyToOne(fetch=FetchType.EAGER)
@@ -269,6 +276,13 @@ public class Usr implements Serializable {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+        public Staff getStaff() {
+		return this.staff;
+	}
+
+	public void setStaff(Staff staff) {
+		this.staff = staff;
 	}
 
 }

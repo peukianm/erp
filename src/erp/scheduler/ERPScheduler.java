@@ -26,7 +26,9 @@ public class ERPScheduler {
     @Lock(LockType.READ)
     @Schedule(second = "*/20", minute = "*", hour = "*", persistent = false)
     public void atSchedule() throws InterruptedException {
+        System.out.println(SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE"));
         if (SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE").equals("true"))
+            System.out.println("MESA");
             retrieverTask.doSchedulerWork(false);
     }
     
