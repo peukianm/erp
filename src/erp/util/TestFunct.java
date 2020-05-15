@@ -98,6 +98,8 @@ public class TestFunct {
             // run4(); // Create random attendance files
             //readOro("C:\\tmp\\random5.xlsx");
             //readOro();
+            
+            System.out.println(LocalDate.now()+" das ");
 
         } catch (Exception e) {
             // TODO Auto-generated catch block

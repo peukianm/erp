@@ -5,6 +5,7 @@
  */
 package erp.bean;
 
+import erp.dao.StaffDAO;
 import erp.entities.Attendance;
 import erp.entities.Usr;
 import java.io.Serializable;
@@ -26,13 +27,13 @@ public class DashboardView implements Serializable {
     private SessionBean sessionBean;
     
     @Inject
-    private StaffDAO staffDao
+    private StaffDAO staffDao;
 
     private Attendance dayAttendance;
+    String entryTime="N/A";
+    String exitTime="N/A";
 
     public Attendance getDayAttendance() {
-        Usr user = sessionBean.getUsers();
-        
         return dayAttendance;
     }
 
@@ -42,6 +43,8 @@ public class DashboardView implements Serializable {
 
     @PostConstruct
     public void init() {
+        Usr user = sessionBean.getUsers();
+        dayAttendance = staffDao.getDayAttendance(user.getStaff(), false);                                    
     }
 
     @PreDestroy

@@ -13,6 +13,7 @@ import erp.entities.Scheduletask;
 import erp.entities.Scheduletaskdetail;
 import erp.entities.Staff;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -45,10 +46,31 @@ public class StaffDAO {
     }
 
     @SuppressWarnings("unchecked")
+    public Attendance getDayAttendance(Staff staff, boolean onlyEnded) {
+        try {
+            final String queryString = "select model from Attendance model where "
+                    + " model.entrance BETWEEN '"+LocalDate.now()+" 00:00:00' AND '"+LocalDate.now()+" 23:59:59'  "
+                    + (onlyEnded ? " and model.ended = 1 " : " ")
+                    + " and model.staff = :staff "
+                    + " order by model.entrance ASC  ";
+            Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.retrieveMode", "BYPASS");
+            //query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setParameter("staff", staff);
+            return (Attendance)query.getSingleResult() ;
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getDayAttendance ", re);
+            throw re;
+        }
+    }
+    
+
+    @SuppressWarnings("unchecked")
     public List<Attendance> StaffApperence(Company company, Timestamp startDate, Timestamp endDate, Staff staff, Department department) {
         try {
             final String queryString = "select model from Attendance model where "
-                    + " model.company = :company  " 
+                    + " model.company = :company  "
                     + (startDate != null ? " and model.entrance = :entrance  " : " ")
                     + (endDate != null ? " and model.exit = :exit  " : " ")
                     + (staff != null ? " and model.staff = :staff  " : " ")
@@ -58,21 +80,28 @@ public class StaffDAO {
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             query.setParameter("company", company);
-            
-            if (startDate!=null)  query.setParameter("entrance", startDate);
-            if (endDate!=null)  query.setParameter("exit", endDate);
-            if (staff!=null)  query.setParameter("staff", staff);
-            if (department!=null)  query.setParameter("department", department);
-            
-            List<Attendance> attendances = query.getResultList();
-            if (attendances.size() == 0)
-                return null;
-            foreach (int i = 0; i < attendances.size; i++) {
-                Object object = arr[i];
-                
+
+            if (startDate != null) {
+                query.setParameter("entrance", startDate);
             }
-            entityManager.refresh(ctask);
-            return ctask;
+            if (endDate != null) {
+                query.setParameter("exit", endDate);
+            }
+            if (staff != null) {
+                query.setParameter("staff", staff);
+            }
+            if (department != null) {
+                query.setParameter("department", department);
+            }
+
+            List<Attendance> attendances = query.getResultList();
+            if (attendances.size() == 0) {
+                return null;
+            }
+
+            attendances.forEach(a -> entityManager.refresh(a));
+
+            return attendances;
         } catch (RuntimeException re) {
             logger.error("Error on getting findCtask entity", re);
             throw re;
