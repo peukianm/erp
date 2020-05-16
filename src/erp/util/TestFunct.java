@@ -100,6 +100,8 @@ public class TestFunct {
             //readOro();
             
             System.out.println(LocalDate.now()+" das ");
+            Timestamp ter = new Timestamp(13131323);
+            System.out.println(ter.toString());
 
         } catch (Exception e) {
             // TODO Auto-generated catch block

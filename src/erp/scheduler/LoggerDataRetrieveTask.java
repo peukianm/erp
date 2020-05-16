@@ -62,77 +62,72 @@ public class LoggerDataRetrieveTask {
         Scheduletask task = (Scheduletask) persistenceHelper.find(Scheduletask.class, Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         Companytask cTask = schedulerDAO.findCtask(company, task);
         Scheduletaskdetail taskDetails = null;
+        System.out.println(force + " " + cTask.getTaskstatus().getStatusid() + ""+busy);
         if (!force) {
-            if (!busy.compareAndSet(false, true) || cTask.getActive() == BigDecimal.ZERO
+            if (busy.get() || cTask.getActive() == BigDecimal.ZERO
                     || cTask.getTaskstatus().getStatusid() != Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE"))) {
                 return;
             }
         }
-    
+
         try {
+            busy.set(true);
             System.out.println("START TASK RETRIEVE DATA FROM LOGGERS !!!!!!!!!!!!!!!!");
-        Timestamp startTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
-        logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " at " + startTaskTime);
-        cTask.setLastexecutiontime(startTaskTime);
-        taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_ONPROGRESS")));
-        cTask.setTaskstatus(taskStatus);
-        schedulerDAO.updateCtask(cTask);
+            Timestamp startTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
+            logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " at " + startTaskTime);
+            cTask.setLastexecutiontime(startTaskTime);
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_ONPROGRESS")));
+            cTask.setTaskstatus(taskStatus);
+            schedulerDAO.updateCtask(cTask);
 
-        taskDetails = new Scheduletaskdetail();
-        taskDetails.setCompanytask(cTask);
-        taskDetails.setStartExecutiontime(startTaskTime);
+            taskDetails = new Scheduletaskdetail();
+            taskDetails.setCompanytask(cTask);
+            taskDetails.setStartExecutiontime(startTaskTime);
 
-        taskMainBody(cTask);
+            taskMainBody(cTask);
 
-        //SUCCESS!!!!!!!!!!!!!!!!!!
-        Timestamp endTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
-        long secs = FormatUtils.getDateDiff(taskDetails.getStartExecutiontime(), endTaskTime, TimeUnit.SECONDS);
-
-        taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE")));
-        cTask.setTaskstatus(taskStatus);
-
-        taskDetails.setEndExecutiontime(endTaskTime);
-        taskDetails.setExecutiontime(FormatUtils.splitSecondsToTime(secs));
-        taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_SUCCESS")));
-        taskDetails.setTaskstatus(taskStatus);
-
-        schedulerDAO.updateCtask(cTask);
-        schedulerDAO.saveTaskDetails(taskDetails);
-
-        System.out.println("TASK DATA RETRIEVE FORM LOGGERS ENDED WITH SUCESSS in " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!!!");
-        logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " SUCCEDED at " + endTaskTime + " in " + FormatUtils.splitSecondsToTime(secs));
-
-    }
-    catch (Exception ex
-
-    
-        ) {
+            //SUCCESS!!!!!!!!!!!!!!!!!!
             Timestamp endTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
-        long secs = FormatUtils.getDateDiff(taskDetails.getStartExecutiontime(), endTaskTime, TimeUnit.SECONDS);
+            long secs = FormatUtils.getDateDiff(taskDetails.getStartExecutiontime(), endTaskTime, TimeUnit.SECONDS);
 
-        taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE")));
-        cTask.setTaskstatus(taskStatus);
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE")));
+            cTask.setTaskstatus(taskStatus);
 
-        taskDetails.setEndExecutiontime(endTaskTime);
-        taskDetails.setExecutiontime(FormatUtils.splitSecondsToTime(secs));
-        taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_ERROR")));
-        taskDetails.setTaskstatus(taskStatus);
+            taskDetails.setEndExecutiontime(endTaskTime);
+            taskDetails.setExecutiontime(FormatUtils.splitSecondsToTime(secs));
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_SUCCESS")));
+            taskDetails.setTaskstatus(taskStatus);
 
-        schedulerDAO.updateCtask(cTask);
-        schedulerDAO.saveTaskDetails(taskDetails);
-        System.out.println("TASK DATA RETRIEVE FORM LOGGERS FAILED " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!");
-        logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " failed " + endTaskTime);
-        ex.printStackTrace();
+            schedulerDAO.updateCtask(cTask);
+            schedulerDAO.saveTaskDetails(taskDetails);
 
-    }
+            System.out.println("TASK DATA RETRIEVE FORM LOGGERS ENDED WITH SUCESSS in " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!!!");
+            logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " SUCCEDED at " + endTaskTime + " in " + FormatUtils.splitSecondsToTime(secs));
 
-    
-        finally {
+        } catch (Exception ex) {
+            Timestamp endTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
+            long secs = FormatUtils.getDateDiff(taskDetails.getStartExecutiontime(), endTaskTime, TimeUnit.SECONDS);
+
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE")));
+            cTask.setTaskstatus(taskStatus);
+
+            taskDetails.setEndExecutiontime(endTaskTime);
+            taskDetails.setExecutiontime(FormatUtils.splitSecondsToTime(secs));
+            taskStatus = schedulerDAO.getTaskstatus(Long.parseLong(SystemParameters.getInstance().getProperty("TASK_ERROR")));
+            taskDetails.setTaskstatus(taskStatus);
+
+            schedulerDAO.updateCtask(cTask);
+            schedulerDAO.saveTaskDetails(taskDetails);
+            System.out.println("TASK DATA RETRIEVE FORM LOGGERS FAILED " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!");
+            logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " failed " + endTaskTime);
+            ex.printStackTrace();
+
+        } finally {
             busy.set(false);
+        }
     }
-}
 
-public void taskMainBody(Companytask cTask) throws Exception {
+    public void taskMainBody(Companytask cTask) throws Exception {
 
         try {
             int loggerscount = Integer.parseInt(SystemParameters.getInstance().getProperty("COMPANYLOGGERS"));

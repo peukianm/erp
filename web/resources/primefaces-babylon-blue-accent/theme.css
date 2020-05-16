@@ -184,7 +184,7 @@ body :-ms-input-placeholder {
   color: #909090; }
 body .ui-inputfield {
   color: #212121;
-  font-size: 14px;
+  font-size: 12px;
   background: #f5f5f5;
   padding: 0.429em;
   border: 1px solid #E0E0E0;
@@ -416,8 +416,8 @@ body .ui-radiobutton {
 body .ui-selectonelistbox,
 body .ui-selectmanymenu {
   padding: 0;
-  width: auto;
-  min-width: 12em;
+  /*width: auto;*/
+  min-width: 15em;
   background-color: #ffffff; }
   body .ui-selectonelistbox .ui-selectlistbox-filter-container,
   body .ui-selectmanymenu .ui-selectlistbox-filter-container {
@@ -470,7 +470,7 @@ body .ui-selectmanymenu {
       body .ui-selectmanymenu .ui-selectlistbox-listcontainer .ui-selectlistbox-list .ui-selectlistbox-item {
         border: 0 none;
         margin: 0;
-        padding: 0.429em 0.857em;
+        padding: 0.100em 0.157em;
         background-color: transparent;
         color: #212121;
         -moz-border-radius: 0;

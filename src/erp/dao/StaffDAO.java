@@ -11,6 +11,7 @@ import erp.entities.Companytask;
 import erp.entities.Department;
 import erp.entities.Scheduletask;
 import erp.entities.Scheduletaskdetail;
+import erp.entities.Sector;
 import erp.entities.Staff;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -44,6 +45,21 @@ public class StaffDAO {
         Query query = entityManager.createQuery(sql);
         return query.getResultList();
     }
+    
+     public List<Department> getSectorDepartments(Company company, Sector sector) {
+         System.out.println(sector);
+         String sql = "SELECT model.department FROM Sectordepartment model where "
+                + " model.company = :company "
+                + " and model.active = 1 "
+                +(sector != null ? " and model.sector = :sector " : " ");
+         
+        
+        Query query = entityManager.createQuery(sql);
+        query.setParameter("company", company);
+        if (sector != null) 
+                query.setParameter("sector", sector); 
+        return query.getResultList();
+    }
 
     @SuppressWarnings("unchecked")
     public Attendance getDayAttendance(Staff staff, boolean onlyEnded) {
@@ -52,12 +68,17 @@ public class StaffDAO {
                     + " model.entrance BETWEEN '"+LocalDate.now()+" 00:00:00' AND '"+LocalDate.now()+" 23:59:59'  "
                     + (onlyEnded ? " and model.ended = 1 " : " ")
                     + " and model.staff = :staff "
-                    + " order by model.entrance ASC  ";
+                    + " order by model.id DESC  ";
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.retrieveMode", "BYPASS");
             //query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             query.setParameter("staff", staff);
-            return (Attendance)query.getSingleResult() ;
+            List<Attendance> ats = query.getResultList();
+            if (ats.isEmpty())
+                return null;
+            else {
+                return ats.get(0);
+            }            
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on getDayAttendance ", re);

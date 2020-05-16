@@ -1195,7 +1195,7 @@ a {
       color: #BBDEFB; }
     .layout-dashboard .overview-box.sales .overview-subinfo {
       border-color: #BBDEFB;
-      color: #BBDEFB; }
+      /*color: #BBDEFB;*/ }
   .layout-dashboard .overview-box.views {
     background-color: #7E57C2; }
     .layout-dashboard .overview-box.views .overview-icon {

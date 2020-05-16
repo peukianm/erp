@@ -2,20 +2,15 @@ package erp.dao;
 
 
 import erp.entities.Company;
+import erp.entities.Department;
 
-import erp.util.EJBUtil;
-import erp.util.PersistenceHelper;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set; 
-import java.util.logging.Level;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.persistence.config.CacheUsage;
-import org.eclipse.persistence.config.QueryHints;
 
 
 /**
@@ -23,23 +18,32 @@ import org.eclipse.persistence.config.QueryHints;
  * must be handled externally by senders of these methods or must be manually added to each of these methods for data to be persisted to the JPA datastore.
  *
  * @see erp.entities.Company
- * @author MyEclipse Persistence Tools
+ * @author peukianm
  */
+@Stateless
 public class CompanyDAO {
-    // property constants
- 
-    public static final String NAME = "name";
-    public static final String DESCRIPTION = "description";
-    public static final String EMAIL = "email";
-    public static final String AFM = "afm";
-    public static final String CONTACTPERSON = "contactperson";
-    public static final String PHONE1 = "phone1";
-    public static final String PHONE2 = "phone2";
-    private static final Logger logger = LogManager.getLogger(CompanyDAO.class);
+     private static final Logger logger = LogManager.getLogger(CompanyDAO.class);
 
-    private EntityManager getEntityManager() {
-        PersistenceHelper persistenceHelper = EJBUtil.lookupPersistenceHelperBean();
-        return persistenceHelper.getEntityManager();
+    @PersistenceContext(unitName = "erp")
+    private EntityManager entityManager;
+
+    public Company getCompany(long id) {
+        return entityManager.find(Company.class, id);
+    }
+
+    public List<Company> getAllStaff(boolean onlyActive) {
+        String sql = "SELECT e FROM Company e "
+                + (onlyActive ? " where e.active = 1 " : " ");
+        Query query = entityManager.createQuery(sql);
+        return query.getResultList();
+    }
+    
+        public List<Department> getAllDepartment(boolean onlyActive) {
+        String sql = "SELECT e FROM Department e "
+                + (onlyActive ? " where e.active = 1 " : " ")
+                + " order by e.name ";
+        Query query = entityManager.createQuery(sql);
+        return query.getResultList();
     }
 
     /**
@@ -59,7 +63,7 @@ public class CompanyDAO {
      */
     public void save(Company entity) {
         try {
-            getEntityManager().persist(entity);
+            entityManager.persist(entity);
 
         } catch (RuntimeException re) {
             logger.error("Error on saving entity", re);
@@ -84,8 +88,8 @@ public class CompanyDAO {
      */
     public void delete(Company entity) {
         try {
-            entity = getEntityManager().getReference(Company.class, entity.getCompanyid());
-            getEntityManager().remove(entity);
+            entity = entityManager.getReference(Company.class, entity.getCompanyid());
+            entityManager.remove(entity);
         } catch (RuntimeException re) {
             logger.error("Error on deleting entity", re);
             throw re;
@@ -110,7 +114,7 @@ public class CompanyDAO {
      */
     public Company update(Company entity) {
         try {
-            Company result = getEntityManager().merge(entity);
+            Company result = entityManager.merge(entity);
             return result;
         } catch (RuntimeException re) {
             logger.error("Error on updating entity", re);
@@ -120,7 +124,7 @@ public class CompanyDAO {
 
     public Company findById(long id) {
         try {
-            Company instance = getEntityManager().find(Company.class, id);
+            Company instance = entityManager.find(Company.class, id);
             return instance;
         } catch (RuntimeException re) {
             logger.error("Error on finding entity", re);
@@ -141,7 +145,7 @@ public class CompanyDAO {
     public List<Company> findByProperty(String propertyName, final Object value, final int... rowStartIdxAndCount) {
         try {
             final String queryString = "select model from Company model where model." + propertyName + "= :propertyValue";
-            Query query = getEntityManager().createQuery(queryString);
+            Query query = entityManager.createQuery(queryString);
             query.setParameter("propertyValue", value);
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
                 int rowStartIdx = Math.max(0, rowStartIdxAndCount[0]);
@@ -164,33 +168,6 @@ public class CompanyDAO {
         }
     }
 
-    public List<Company> findByName(Object name, int... rowStartIdxAndCount) {
-        return findByProperty(NAME, name, rowStartIdxAndCount);
-    }
-
-    public List<Company> findByDescription(Object description, int... rowStartIdxAndCount) {
-        return findByProperty(DESCRIPTION, description, rowStartIdxAndCount);
-    }
-
-    public List<Company> findByEmail(Object email, int... rowStartIdxAndCount) {
-        return findByProperty(EMAIL, email, rowStartIdxAndCount);
-    }
-
-    public List<Company> findByAfm(Object afm, int... rowStartIdxAndCount) {
-        return findByProperty(AFM, afm, rowStartIdxAndCount);
-    }
-
-    public List<Company> findByContactperson(Object contactperson, int... rowStartIdxAndCount) {
-        return findByProperty(CONTACTPERSON, contactperson, rowStartIdxAndCount);
-    }
-
-    public List<Company> findByPhone1(Object phone1, int... rowStartIdxAndCount) {
-        return findByProperty(PHONE1, phone1, rowStartIdxAndCount);
-    }
-
-    public List<Company> findByPhone2(Object phone2, int... rowStartIdxAndCount) {
-        return findByProperty(PHONE2, phone2, rowStartIdxAndCount);
-    }
 
     /**
      * Find all Company entities.
@@ -203,7 +180,7 @@ public class CompanyDAO {
     public List<Company> findAll(final int... rowStartIdxAndCount) {
         try {
             final String queryString = "select model from Company model";
-            Query query = getEntityManager().createQuery(queryString);
+            Query query = entityManager.createQuery(queryString);
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
                 int rowStartIdx = Math.max(0, rowStartIdxAndCount[0]);
                 if (rowStartIdx > 0) {
@@ -222,20 +199,6 @@ public class CompanyDAO {
             logger.error("Error on finding entity", re);
             throw re;
         }
-    }
-    
-    
-    @SuppressWarnings("unchecked")
-    public List<Company> getAllCompanies(boolean showOnlyEnable) {
-        try {
-            Query query = getEntityManager().createQuery("Select c from Company c "                    
-                     + (showOnlyEnable ? " where c.active= 1  " : " "));            
-            
-            List<Company> companies = query.getResultList();                        
-            return companies;
-        } catch (RuntimeException re) {
-            throw re;
-        }
-    }   
+    }  
     
 }

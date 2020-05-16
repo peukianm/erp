@@ -11,7 +11,9 @@ import erp.dao.SchedulerDAO;
 
 import erp.entities.Action;
 import erp.entities.Company;
+import erp.entities.Department;
 import erp.entities.Role;
+import erp.entities.Sector;
 import erp.entities.Staff;
 
 import erp.util.SystemParameters;
@@ -34,18 +36,42 @@ public class ApplicationBean implements Serializable {
     String propertyValue;
     List<Company> companies;
     List<Role> roles;
+    List<Sector> sectors;
+    List<Department> departments;
     List<Action> actions;
-       
-    
-    @PostConstruct
-    public void init() {}
 
+    @Inject
+    CompanyDAO companyDAO;
+
+    @PostConstruct
+    public void init() {
+    }
+
+
+    public List<Department> getDepartments() {
+        if (departments == null) {
+            departments = companyDAO.getAllDepartment(true);
+        }
+        return departments;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
+
+    public List<Sector> getSectors() {
+        return sectors;
+    }
+
+    public void setSectors(List<Sector> sectors) {
+        this.sectors = sectors;
+    }
 
     public String getPropertyValue(String key) {
         propertyValue = SystemParameters.getInstance().getProperty(key);
         return propertyValue;
     }
-          
+
     public List<Company> getCompanies() {
         if (companies == null) {
             CompanyDAO dao = new CompanyDAO();
@@ -56,8 +82,7 @@ public class ApplicationBean implements Serializable {
 
     public void setCompanies(List<Company> companies) {
         this.companies = companies;
-    }    
-   
+    }
 
     public List<Role> getRoles() {
         if (roles == null) {
@@ -70,14 +95,11 @@ public class ApplicationBean implements Serializable {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
-    
-   
-   
+
     public void resetCompanies() {
         this.companies = null;
     }
-      
-    
+
     public List<Action> getActions() {
         if (actions == null) {
             ActionDAO dao = new ActionDAO();
@@ -89,5 +111,5 @@ public class ApplicationBean implements Serializable {
     public void setActions(List<Action> actions) {
         this.actions = actions;
     }
-    
+
 }

@@ -94,29 +94,29 @@
                     <div class="overview-box sales">
                         <i class="overview-icon fa fa-barcode"></i>
                         <span class="overview-title">#{bundle.attendance}</span>
-                        
-                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
-                        
+                        <b> <p:spacer width="10" /> #{dbView.attendanceDate}</b>
+                        <!-- <i class="overview-arrow fa fa-chevron-circle-up"></i> -->
+
                         <div class="overview-subinfo">
                             <!--<span style="font-size: 15px; color: #ffffff;">DATE</span>  -->
-                            <div style="text-align:left;"> <b>#{bundle.entryTime}: 07:30</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.exitTime}:  N/A</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.entryTime}: #{dbView.entryTime}</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.exitTime}:  #{dbView.exitTime}</b></div> 
                         </div>
                     </div>
                 </div>
-                 <br/>
+                <br/>
                 <div class="p-col-12 p-lg-6 p-xl-3">
                     <div class="overview-box views">
                         <i class="overview-icon fa fa-search"></i>
                         <span class="overview-title">#{bundle.reqs}</span>
                         <i class="overview-arrow fa fa-chevron-circle-up"></i>
-                       <!--<div class="overview-numbers">
-                            #{bundle.openReqs}
-                        </div> -->
+                        <!--<div class="overview-numbers">
+                        #{bundle.openReqs}
+                    </div> -->
                         <div class="overview-subinfo">
                             <!--<span style="font-size: 15px; color: #ffffff;">YEAR</span> --> 
-                            <div style="text-align:left;"> <b>#{bundle.openReqs}: 1</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.totalReqs}: 15</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.openReqs}: N/A</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.totalReqs}: N/A</b></div> 
                         </div>
                     </div>
                 </div>
@@ -130,8 +130,8 @@
                         </div>-->
                         <div class="overview-subinfo">
                             <span style="font-size: 15px; color: #ffffff;"></span> 
-                            <div style="text-align:left;"> <b>#{bundle.openTask}: 1</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.closedTask}: 15</b></div>
+                            <div style="text-align:left;"> <b>#{bundle.openTask}: N/A</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.closedTask}: N/A</b></div>
                         </div>
                     </div>
                 </div>
@@ -145,19 +145,72 @@
                         </div>-->
                         <div class="overview-subinfo">
                             <span style="font-size: 15px; color: #ffffff;"></span> 
-                            <div style="text-align:left;"> <b>#{bundle.todayEvents}: 1</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.weekEvents}: 15</b></div>
+                            <div style="text-align:left;"> <b>#{bundle.todayEvents}: N/A</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.weekEvents}: N/A</b></div>
                         </div>
                     </div>
                 </div>
 
+
+
+
+
+
+
+                <!--          ΕΠΙΛΟΓΗ ΠΡΟΣΩΠΙΚΟΥ ΔΙΩ !!!!!!!!!!!!!!!!!!!!! -->
+                <p:messages>
+                    <p:autoUpdate />
+                </p:messages>
                 <div class="p-col-12 p-lg-8">
-                    <div class="card card-w-title statistics">
-                        <h1>Statistics</h1>
-                        <canvas id="dashboard-chart"></canvas>
-                    </div>
+                    <h:form id="searchStaffForm">
+                        <div class="card card-w-title statistics">
+                            <h1>Επιλογή Προσωπικού</h1>
+                            <table>
+                                <tr>
+                                    <td style="vertical-align: top">
+                                        <p:outputLabel style="font-weight: bold;" for="selectSector" value="Sector" />  
+                                        <p:selectManyMenu value="#{dbView.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
+                                            <p:ajax listener="#{dbView.onSectorChange}" update="selectDepartment" />                                            
+                                            <f:selectItems value="#{sessionBean.users.company.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
+                                        </p:selectManyMenu>
+                                    </td>
+                                    <td>
+                                        <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="Department" />  
+                                        <p:selectManyMenu value="#{dbView.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
+                                            <p:ajax listener="#{dbView.onDepartmentChange}" update="selectSector" />
+                                            <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        </p:selectManyMenu>
+                                    </td>
+                                    <td style="text-align: right;">
+
+                                        <p:outputLabel style="font-weight: bold;" for="fromAttendanceDate" value="From Date:" />
+                                        <br/>         
+                                        <p:outputLabel style="font-weight: bold;" for="toAttendanceDate" value="To Date:" />  
+                                    </td>
+                                    <td>
+                                        <p:calendar locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" 
+                                                    pattern="dd/MM/yyyy" value="#{dbView.fromAttendanceDate}" id="fromAttendanceDate"/>
+                                        <br/>
+                                        <p:calendar locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" 
+                                                    pattern="dd/MM/yyyy" value="#{dbView.toAttendanceDate}" id="toAttendanceDate"/>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p:commandButton value="#{bundle.search}" action="#{dbView.reset()}" update="searchStaffForm"  />
+                            <p:commandButton  value="#{bundle.reset}" action="#{dbView.reset()}"  ajax="false" />
+                        </div>
+                    </h:form>
                 </div>
 
+
+
+
+
+
+
+
+                <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
                 <div class="p-col-12 p-lg-4">
                     <div class="card user-card">
                         <div class="user-card-header">
@@ -232,6 +285,26 @@
                         </div>
                     </div>
                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 <div class="p-col-12 p-md-4 p-lg-4">
                     <div class="card card-w-title tasks">
