@@ -6,6 +6,7 @@ package erp.action;
 import erp.bean.*;
 import erp.dao.ActionDAO;
 import erp.dao.AuditingDAO;
+import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
 import erp.entities.*;
 import erp.util.*;
@@ -38,6 +39,9 @@ public class AdministrationAction implements Serializable {
     @EJB
     ActionDAO actionDAO;
 
+    @EJB
+    StaffDAO staffDAO;
+
     @Inject
     private SessionBean sessionBean;
 
@@ -64,14 +68,15 @@ public class AdministrationAction implements Serializable {
 
     public String loginAction() {
         try {
-            if (logger.isDebugEnabled()) 
+            if (logger.isDebugEnabled()) {
                 logger.debug("LOGIN ACTION!!!!!!");
-            
+            }
+
             Usr temp = null;
             List<Usr> users = userDAO.findByProperty("username", userBean.getUsername());
-            if (users.size() > 0 && ErpUtil.check(userBean.getPassword(), users.get(0).getPassword()))            
-                    temp = users.get(0);               
-           
+            if (users.size() > 0 && ErpUtil.check(userBean.getPassword(), users.get(0).getPassword())) {
+                temp = users.get(0);
+            }
 
             if (temp == null) {
                 userBean.setPassword(null);
@@ -89,7 +94,6 @@ public class AdministrationAction implements Serializable {
                 FacesUtils.callRequestContext("PF('selectRoleDialog').show()");
             } else if (userroles.size() == 1) {
                 temp.setRole(userroles.get(0).getRole());
-
 
 //               usrTransaction.begin();
 //                Company comp = new Company();
@@ -175,6 +179,9 @@ public class AdministrationAction implements Serializable {
         String propertyValue = SystemParameters.getInstance().getProperty(key);
         return propertyValue;
     }
+
+    
+
 
     public String auditControl() {
         try {

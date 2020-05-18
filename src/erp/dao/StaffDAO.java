@@ -128,5 +128,23 @@ public class StaffDAO {
             throw re;
         }
     }
+    
+        public List<Staff> fetchStaffAutoCompleteSurname(String surname) {
+        try {
+            surname = surname.trim();
+            String queryString = "Select staff from Staff staff  "
+                    + " where (LOWER(staff.surname) like '" + ((String) surname).toLowerCase() + "%'"
+                    + " OR UPPER(staff.surname)  like '" + ((String) surname).toUpperCase() + "%') "                    
+                    + " order by staff.surname";
+
+            Query query = entityManager.createQuery(queryString);
+            
+            query.setMaxResults(20);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            logger.error("Error on finding entity", re);
+            throw re;
+        }
+    }
 
 }
