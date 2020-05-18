@@ -165,29 +165,39 @@
                 <div class="p-col-12 p-xl-6">    
                     <h:form id="searchStaffForm">
                         <div class="card card-w-title statistics">
-                            <h1>Επιλογή Προσωπικού</h1>
+                            <h1>Επιλογή Προσωπικού <span style="float: right;font-size:10px">Ενημέρωση Ωρομετρητές:<i>#{dbView.lastExecution}</i></span></h1>
                             <table>
                                 <tr>
                                     <td style="vertical-align: top">
                                         <p:outputLabel style="font-weight: bold;" for="selectSector" value="Sector" />  
-                                        <p:selectManyMenu value="#{dbView.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
-                                            <p:ajax listener="#{dbView.onSectorChange}" update="selectDepartment basicId" />                                            
+                                        <p:selectManyMenu disabled="#{!dbView.enableSector}"  value="#{dbView.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
+                                            <p:ajax listener="#{dbView.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass)" />                                            
                                             <f:selectItems value="#{sessionBean.users.company.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
+
                                     </td>
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="Department" />  
-                                        <p:selectManyMenu value="#{dbView.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
-                                            <p:ajax listener="#{dbView.onDepartmentChange}" update="selectSector basicId " />
-                                            <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        <p:selectManyMenu disabled="#{!dbView.enableDepartment}" value="#{dbView.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
+                                            <p:ajax listener="#{dbView.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass)" />
+                                            <f:selectItems value="#{dbView.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <p:panel id="depsID"  styleClass="depsIDtyleclass" visible="#{dbView.selectedDepartments.size() gt 0}" header="Selected Deps" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                            <p:repeat value="#{dbView.selectedDepartments}" var="dep" varStatus="depStatus" >
+                                                #{dep.name} <p:spacer width="10px"/>                                          
+                                            </p:repeat>
+                                        </p:panel>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="fromAttendanceDate" value="From:" /><p:spacer width="20" height="20" />
                                         <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
-                                                    pattern="dd/MM/yyyy" value="#{dbView.fromAttendanceDate}" id="fromAttendanceDate"/>
+                                                     pattern="dd/MM/yyyy" value="#{dbView.fromAttendanceDate}" id="fromAttendanceDate"/>
                                     </td>
                                     <td>          
                                         <p:outputLabel style="font-weight: bold;" for="toAttendanceDate" value="To:" /><p:spacer width="20" height="20" />
@@ -199,10 +209,10 @@
                                     <td colspan="2">
 
                                         <p:outputLabel style="font-weight: bold;" for="staffComplete" value="Select Staff:" /><p:spacer width="20" height="20" />
-                                        <p:autoComplete widgetVar="acStaff" minQueryLength="3" queryDelay="1000" scrollHeight="300" id="staffComplete" value="#{dbView.searchStaff}" completeMethod="#{dbView.completeStaff}" size="60" required="false"  
+                                        <p:autoComplete disabled="#{!dbView.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="1000" scrollHeight="300" id="staffComplete" value="#{dbView.searchStaff}" completeMethod="#{dbView.completeStaff}" size="60" required="false"  
                                                         var="staff" itemLabel="#{staff.surname} #{staff.name}  #{staff.department.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter" list="#{dbView.availableStaff}" />
-                                            <p:ajax event="itemSelect" listener="#{dbView.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment"  />  
+                                            <p:ajax event="itemSelect" listener="#{dbView.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass)"  />  
                                         </p:autoComplete>
                                         <br/><br/>
                                         <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbView.selectedStaff.size() gt 0}" header="Selected Users" style="padding: 0em 0em;font-weight: 800;font-size: 11px;">
@@ -217,7 +227,7 @@
                                     </td>
                                 </tr>           
                             </table>
-                           
+
                             <p:commandButton value="#{bundle.search}" action="#{dbView.reset()}" update="searchStaffForm"  />
                             <p:commandButton  value="#{bundle.reset}" action="#{dbView.resetSearchStaffForm()}"  ajax="false" />
                         </div>
@@ -325,7 +335,7 @@
 
 
 
-
+<!--
 
 
                 <div class="p-col-12 p-md-4 p-lg-4">
@@ -362,7 +372,6 @@
                 </div>
 
 
-
                 <div class="p-col-12 p-md-4 p-lg-4">
                     <div class="card card-w-title resolution-center ui-fluid">
                         <h1>Support Request</h1>
@@ -379,6 +388,9 @@
                         </div>
                     </div>
                 </div>
+-->
+
+<!--
 
                 <div class="p-col-12 p-md-4 p-lg-4">
                     <div class="card card-w-title team">
@@ -440,6 +452,11 @@
                     </div>
                 </div>
 
+-->
+
+
+
+<!--
                 <div class="p-col-12 p-xl-6">
                     <div class="card card-w-title timeline">
                         <h1>Timeline</h1>
@@ -604,13 +621,14 @@
                         </div>
                     </div>
                 </div>
-
+-->
+<!--
                 <div class="p-col-12">
                     <div class="card card-w-title">
                         <h1>Schedule</h1>
                         <p:schedule id="schedule" value="#{scheduleView.eventModel}" leftHeaderTemplate="prev,next"/>
                     </div>
-                </div>
+                </div>  -->
             </div>
 
         </div>

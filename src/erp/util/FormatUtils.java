@@ -244,6 +244,14 @@ public class FormatUtils {
             return "";
         }
     }
+    public static String formatTimeStamp(Timestamp date, String patern) {
+        if (date != null) {
+            DateFormat df = new SimpleDateFormat(patern);
+            return df.format(date);
+        } else {
+            return "";
+        }
+    }
 
     public static String formatDate(Date date, String patern) {
         if (date != null) {

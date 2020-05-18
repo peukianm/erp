@@ -15,6 +15,7 @@ import erp.entities.Staff;
 import erp.entities.Usr;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
+import erp.util.SystemParameters;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -46,28 +47,42 @@ public class DashboardView implements Serializable {
 
     @Inject
     private StaffDAO staffDao;
+    
+     @Inject
+    private ApplicationBean applicationBean;
 
     private Attendance dayAttendance;
     private String entryTime = "N/A";
     private String exitTime = "N/A";
     private String attendanceDate = "N/A";
     
+     private List<Department> departments;
+
     private List<Department> selectedDepartments;
     private List<Sector> selectedSectors;
-    
+
     private Date fromAttendanceDate;
     private Date toAttendanceDate;
 
     private List<Staff> selectedStaff = new ArrayList<>(0);
-    ;
+
     private Staff searchStaff;
     private List<Staff> availableStaff;
 
+    private Boolean enableDepartment;
+    private Boolean enableSector;
+    private Boolean enableStaff;
+    
+    private String lastExecution;
+
+    Usr user;
+
     @PostConstruct
     public void init() {
+        user = sessionBean.getUsers();
         fromAttendanceDate = new java.util.Date();
         toAttendanceDate = new java.util.Date();
-        Usr user = sessionBean.getUsers();
+        System.out.println("User=" + user.getStaff().getEmprank().getRankid() + " " + user.getStaff().getDepartment().getName() + " " + user.getStaff().getSector().getName());
         dayAttendance = staffDao.getDayAttendance(user.getStaff(), false);
         if (dayAttendance != null) {
             attendanceDate = dayAttendance.getEntrance().toString().substring(0, 10);
@@ -76,23 +91,91 @@ public class DashboardView implements Serializable {
                 exitTime = dayAttendance.getExit().toString().substring(11, 16);
             }
         }
+        departments = applicationBean.getDepartments();
+        System.out.println("Starting switch");
+        switch ((int) user.getRole().getRoleid()) {
+            case 1:
+                enableDepartment = true;
+                enableSector = true;
+                enableStaff = true;               
+                break;
+            case 2:
+                enableDepartment = true;
+                enableSector = true;
+                enableStaff = true;
+                break;
+            case 3: {
+                switch ((int) user.getStaff().getEmprank().getRankid()) {
+                    case 15: //YPALLHLOI
+                    case 16:
+                    case 17:
+                    case 6:
+                    case 7:
+                    case 8: {
+                        enableDepartment = false;
+                        enableSector = false;
+                        enableStaff = false;
+                        selectedStaff = new ArrayList<>(0);
+                        selectedStaff.add(user.getStaff());
+                        break;
+                    }
+                    case 3: //DIEYYHYNTES
+                    case 14:
+                    case 13:
+                    case 11: {
+                        System.out.println("INSIDE DIEUYNTES");
+                        enableDepartment = true;
+                        enableSector = false;
+                        enableStaff = true;
+                        selectedSectors = new ArrayList<>(0);
+                        selectedSectors.add(user.getStaff().getSector());
+                        departments = staffDao.getSectorDepartments(user.getCompany(), user.getStaff().getSector());
+                        break;
+                    }
+                    case 12://PROISTAMENOI
+                    case 10:
+                    case 9: {
+                        System.out.println("INSIDE PROSTAMENOI");
+                        enableDepartment = false;
+                        enableSector = false;
+                        enableStaff = true;
+                        selectedDepartments = new ArrayList<>(0);
+                        selectedDepartments.add(user.getStaff().getDepartment());
+                        break;
+                    }
+                }
+            }
+        }
+        
+        lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
+
+//        if (user.getStaff().getDepartment().getDepartmentid() == 67 || user.getStaff().getDepartment().getDepartmentid() == 64) { //Prosopokou Plhroforikh
+//            enableDepartment = true;
+//            enableSector = true;
+//            enableStaff = true;
+//            selectedSectors = new ArrayList<>(0);
+//            selectedDepartments = new ArrayList<>(0);
+//
+//        }
+        System.out.println(enableSector);
+        System.out.println(enableDepartment);
+        System.out.println(enableStaff);
     }
 
     @PreDestroy
     public void reset() {
 
     }
-    
-    public void resetSearchStaffForm(){
+
+    public void resetSearchStaffForm() {
         selectedStaff = new ArrayList<>(0);
         selectedDepartments = null;
         selectedSectors = null;
-        
+
         fromAttendanceDate = new java.util.Date();
         toAttendanceDate = new java.util.Date();
-        
+
     }
-    
 
     public void onSectorChange() {
         try {
@@ -105,7 +188,7 @@ public class DashboardView implements Serializable {
                 });
 
             } else {
-                selectedDepartments = new ArrayList<Department>();
+                selectedDepartments = new ArrayList<>();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,9 +212,17 @@ public class DashboardView implements Serializable {
 
     public List<Staff> completeStaff(String surname) {
         try {
+            user = sessionBean.getUsers();
             if (surname != null && !surname.trim().isEmpty() && surname.trim().length() >= 1) {
                 surname = surname.trim();
-                availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname);
+
+                if (enableSector) {
+                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, null, null);
+                } else if (enableDepartment) {
+                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getStaff().getSector(), null);
+                } else {
+                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getStaff().getSector(), user.getStaff().getDepartment());
+                }
                 return availableStaff;
             } else {
                 return null;
@@ -146,18 +237,60 @@ public class DashboardView implements Serializable {
 
     public void removeStaff(int index) {
         try {
-            
+
             System.out.println(index);
             System.out.println(selectedStaff.size());
-            if (selectedStaff!= null && selectedStaff.size()>0 && selectedStaff.size()>index) {
+            if (selectedStaff != null && selectedStaff.size() > 0 && selectedStaff.size() > index) {
                 selectedStaff.remove(index);
-            }  
+            }
             System.out.println(selectedStaff.size());
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             goError(e);
         }
+    }
+
+    public String getLastExecution() {
+        return lastExecution;
+    }
+
+    public void setLastExecution(String lastExecution) {
+        this.lastExecution = lastExecution;
+    }
+
+    
+    public List<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
+
+    
+    public Boolean getEnableDepartment() {
+        return enableDepartment;
+    }
+
+    public void setEnableDepartment(Boolean enableDepartment) {
+        this.enableDepartment = enableDepartment;
+    }
+
+    public Boolean getEnableSector() {
+        return enableSector;
+    }
+
+    public void setEnableSector(Boolean enableSector) {
+        this.enableSector = enableSector;
+    }
+
+    public Boolean getEnableStaff() {
+        return enableStaff;
+    }
+
+    public void setEnableStaff(Boolean enableStaff) {
+        this.enableStaff = enableStaff;
     }
 
     public Staff getSearchStaff() {

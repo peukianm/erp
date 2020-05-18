@@ -13,10 +13,13 @@ import erp.entities.Scheduletask;
 import erp.entities.Scheduletaskdetail;
 import erp.entities.Sector;
 import erp.entities.Staff;
+import erp.util.FormatUtils;
+import erp.util.SystemParameters;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -34,6 +37,9 @@ public class StaffDAO {
 
     @PersistenceContext(unitName = "erp")
     private EntityManager entityManager;
+    
+    @Inject
+    SchedulerDAO schedulerDAO;
 
     public Staff getStatff(long id) {
         return entityManager.find(Staff.class, id);
@@ -60,6 +66,12 @@ public class StaffDAO {
                 query.setParameter("sector", sector); 
         return query.getResultList();
     }
+     
+     public String getTaskLastExecutionTime(Company company, Long taskID){
+         Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);
+          Companytask cTask = schedulerDAO.findCtask(company, task);
+          return FormatUtils.formatTimeStamp(cTask.getLastexecutiontime(), FormatUtils.FULLDATEPATTERN);
+     }
 
     @SuppressWarnings("unchecked")
     public Attendance getDayAttendance(Staff staff, boolean onlyEnded) {
@@ -129,15 +141,23 @@ public class StaffDAO {
         }
     }
     
-        public List<Staff> fetchStaffAutoCompleteSurname(String surname) {
+        public List<Staff> fetchStaffAutoCompleteSurname(String surname, Sector sector, Department department) {
         try {
             surname = surname.trim();
             String queryString = "Select staff from Staff staff  "
                     + " where (LOWER(staff.surname) like '" + ((String) surname).toLowerCase() + "%'"
                     + " OR UPPER(staff.surname)  like '" + ((String) surname).toUpperCase() + "%') "                    
+                    + (department != null ? " and staff.department = :department  " : " ")
+                    + (sector != null ? " and staff.sector = :sector  " : " ")
                     + " order by staff.surname";
 
             Query query = entityManager.createQuery(queryString);
+            if (department != null) {
+                query.setParameter("department", department);
+            }
+            if (sector != null) {
+                query.setParameter("sector", sector);
+            }
             
             query.setMaxResults(20);
             return query.getResultList();
