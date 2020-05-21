@@ -9,7 +9,7 @@ import erp.entities.Staff;
 import java.util.Date;
 
 /**
- *
+ * 
  * @author peukianm
  */
 public class LoggerData implements Comparable<LoggerData> {

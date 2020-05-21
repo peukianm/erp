@@ -10,12 +10,9 @@ import erp.entities.Company;
 import erp.entities.Companytask;
 import erp.entities.Department;
 import erp.entities.Scheduletask;
-import erp.entities.Scheduletaskdetail;
 import erp.entities.Sector;
 import erp.entities.Staff;
 import erp.util.FormatUtils;
-import erp.util.SystemParameters;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -53,7 +50,6 @@ public class StaffDAO {
     }
     
      public List<Department> getSectorDepartments(Company company, Sector sector) {
-         System.out.println(sector);
          String sql = "SELECT model.department FROM Sectordepartment model where "
                 + " model.company = :company "
                 + " and model.active = 1 "
@@ -100,39 +96,35 @@ public class StaffDAO {
     
 
     @SuppressWarnings("unchecked")
-    public List<Attendance> StaffApperence(Company company, Timestamp startDate, Timestamp endDate, Staff staff, Department department) {
+    public List<Attendance> staffApperence(Company company, String startDate, String endDate, Staff staff, Sector sector, Department department) {
         try {
             final String queryString = "select model from Attendance model where "
                     + " model.company = :company  "
-                    + (startDate != null ? " and model.entrance = :entrance  " : " ")
-                    + (endDate != null ? " and model.exit = :exit  " : " ")
+                    + " and model.entrance BETWEEN '"+startDate+" 00:00:00' AND '"+endDate+" 23:59:59'  "
                     + (staff != null ? " and model.staff = :staff  " : " ")
                     + (department != null ? " and model.department = :department  " : " ")
+                    + (sector != null ? " and model.sector = :sector  " : " ")
                     + " order by model.staff.surname ";
 
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             query.setParameter("company", company);
 
-            if (startDate != null) {
-                query.setParameter("entrance", startDate);
-            }
-            if (endDate != null) {
-                query.setParameter("exit", endDate);
-            }
             if (staff != null) {
                 query.setParameter("staff", staff);
             }
             if (department != null) {
                 query.setParameter("department", department);
             }
-
-            List<Attendance> attendances = query.getResultList();
-            if (attendances.size() == 0) {
-                return null;
+            if (sector != null) {
+                query.setParameter("sector", sector);
             }
 
-            attendances.forEach(a -> entityManager.refresh(a));
+            List<Attendance> attendances = query.getResultList();
+            
+//            if (attendances.isEmpty()) 
+//                return null;
+//            attendances.forEach(a -> entityManager.refresh(a));
 
             return attendances;
         } catch (RuntimeException re) {

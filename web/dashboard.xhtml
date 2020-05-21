@@ -1,10 +1,44 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml" xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions">
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
 
     <!--<ui:define name="title">Dashboard</ui:define>-->
 
     <ui:define name="head">
         <h:outputScript name="chartjs/chart.js" library="demo" />
+        <style type="text/css">
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
+                position: relative;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
+            }
+            .myclass table {
+                table-layout: auto !important;
+            }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 20px;
+                height: 20px;
+                text-align: right;
+                margin: 0px 0 0 2px !important;
+            }
+
+        </style>
         <script type="text/javascript">
             $(function () {
                 var ctx = document.getElementById("dashboard-chart").getContext('2d');
@@ -165,11 +199,13 @@
                 <div class="p-col-12 p-xl-6">    
                     <h:form id="searchStaffForm">
                         <div class="card card-w-title statistics">
-                            <h1>Επιλογή Προσωπικού <span style="float: right;font-size:10px">Ενημέρωση Ωρομετρητές:<i>#{dbView.lastExecution}</i></span></h1>
-                            <table>
+                            <div class="erp-panel-titlebar">
+                                #{bundle.selectPersonel} <span style="float: right;font-size:8px">#{bundle.loggersUpdate}:<i>#{dbView.lastExecution}</i></span>
+                            </div>
+                            <table style="width: 100%">
                                 <tr>
                                     <td style="vertical-align: top">
-                                        <p:outputLabel style="font-weight: bold;" for="selectSector" value="Sector" />  
+                                        <p:outputLabel style="font-weight: bold;" for="selectSector" value="#{bundle.sector}" />  
                                         <p:selectManyMenu disabled="#{!dbView.enableSector}"  value="#{dbView.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
                                             <p:ajax listener="#{dbView.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass)" />                                            
                                             <f:selectItems value="#{sessionBean.users.company.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
@@ -177,16 +213,17 @@
 
                                     </td>
                                     <td>
-                                        <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="Department" />  
+                                        <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.department}" />  
                                         <p:selectManyMenu disabled="#{!dbView.enableDepartment}" value="#{dbView.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
                                             <p:ajax listener="#{dbView.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass)" />
                                             <f:selectItems value="#{dbView.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
+                                        <br/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <p:panel id="depsID"  styleClass="depsIDtyleclass" visible="#{dbView.selectedDepartments.size() gt 0}" header="Selected Deps" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                        <p:panel id="depsID"  styleClass="depsIDtyleclass" visible="#{dbView.selectedDepartments.size() gt 0}" header="#{bundle.departmentSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
                                             <p:repeat value="#{dbView.selectedDepartments}" var="dep" varStatus="depStatus" >
                                                 #{dep.name} <p:spacer width="10px"/>                                          
                                             </p:repeat>
@@ -195,12 +232,12 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <p:outputLabel style="font-weight: bold;" for="fromAttendanceDate" value="From:" /><p:spacer width="20" height="20" />
+                                        <p:outputLabel style="font-weight: bold;" for="fromAttendanceDate" value="#{bundle.from}:" /><p:spacer width="20" height="20" />
                                         <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
                                                      pattern="dd/MM/yyyy" value="#{dbView.fromAttendanceDate}" id="fromAttendanceDate"/>
                                     </td>
                                     <td>          
-                                        <p:outputLabel style="font-weight: bold;" for="toAttendanceDate" value="To:" /><p:spacer width="20" height="20" />
+                                        <p:outputLabel style="font-weight: bold;" for="toAttendanceDate" value="#{bundle.to}:" /><p:spacer width="20" height="20" />
                                         <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
                                                     pattern="dd/MM/yyyy" value="#{dbView.toAttendanceDate}" id="toAttendanceDate"/>
                                     </td>
@@ -208,14 +245,14 @@
                                 <tr>
                                     <td colspan="2">
 
-                                        <p:outputLabel style="font-weight: bold;" for="staffComplete" value="Select Staff:" /><p:spacer width="20" height="20" />
-                                        <p:autoComplete disabled="#{!dbView.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="1000" scrollHeight="300" id="staffComplete" value="#{dbView.searchStaff}" completeMethod="#{dbView.completeStaff}" size="60" required="false"  
+                                        <p:outputLabel style="font-weight: bold;" for="staffComplete" value="#{bundle.selectStaff}:" /><p:spacer width="20" height="20" />
+                                        <p:autoComplete disabled="#{!dbView.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staffComplete" value="#{dbView.searchStaff}" completeMethod="#{dbView.completeStaff}" size="60" required="false"  
                                                         var="staff" itemLabel="#{staff.surname} #{staff.name}  #{staff.department.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
-                                            <o:converter converterId="omnifaces.ListConverter" list="#{dbView.availableStaff}" />
+                                            <o:converter converterId="omnifaces.ListConverter"  list="#{dbView.availableStaff}" />
                                             <p:ajax event="itemSelect" listener="#{dbView.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass)"  />  
                                         </p:autoComplete>
                                         <br/><br/>
-                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbView.selectedStaff.size() gt 0}" header="Selected Users" style="padding: 0em 0em;font-weight: 800;font-size: 11px;">
+                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbView.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 800;font-size: 11px;">
                                             <p:repeat value="#{dbView.selectedStaff}" var="staff" varStatus="myVarStatus">
                                                 #{staff.surname} #{staff.name} - #{staff.department.name} 
                                                 <p:commandButton  process="@this" update="@(.basicstyleclass)" action="#{dbView.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
@@ -228,7 +265,7 @@
                                 </tr>           
                             </table>
 
-                            <p:commandButton value="#{bundle.search}" action="#{dbView.reset()}" update="searchStaffForm"  />
+                            <p:commandButton value="#{bundle.search}" action="#{administrationAction.fetchAttendances}" update="searchStaffForm viewAttendanceResults"  />
                             <p:commandButton  value="#{bundle.reset}" action="#{dbView.resetSearchStaffForm()}"  ajax="false" />
                         </div>
                     </h:form>
@@ -245,75 +282,122 @@
                 <!--<div class="p-col-12 p-lg-4">-->
                 <div class="p-col-12 p-xl-6">    
                     <div class="card user-card">
-                        <div class="user-card-header">
-                            <p:graphicImage name="images/dashboard/bg-header.png" library="babylon-layout" class="profile-image" />
-                        </div>
+
                         <div class="user-card-content">
-                            <p:graphicImage name="images/avatar.png" library="babylon-layout" class="profile-image" />
-                            <p:commandButton id="user-button" type="button" icon="fa fa-cog" />
-
-                            <p:menu overlay="true" trigger="user-button" my="left top" at="left bottom">
-                                <p:menuitem value="Save" icon="fa fa-check" url="#"/>
-                                <p:menuitem value="Update" icon="fa fa-refresh" url="#"/>
-                                <p:menuitem value="Delete" icon="fa fa-trash" url="#"/>
-                            </p:menu>
-
-                            <div class="user-card-name">
-                                <span>Arlene Welch</span>
+                            <div class="erp-panel-titlebar">
+                                #{bundle.personelAttendances}
                             </div>
+                            <h:form id="viewAttendanceResults">
+                                <p:dataTable id="tbl" var="attendance" value="#{dbView.attendances}" styleClass="myclass"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 10px;    padding: 0.1em 0.2em ;  ">
 
-                            <div class="user-detail">
-                                <ul>
-                                    <li>
-                                        <i class="fa fa-tasks fa-fw"></i>
-                                        <span class="project-title">Tasks</span>
-                                        <span class="project-detail">3 open</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 50%"></div>
+                                    <f:facet name="{Exporters}">
+                                        <div style="float:right;">
+
+
+                                            <p:commandLink id="pdf" ajax="false">
+                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle=" #{bundle.personelAttendances}" orientation="Landscape"
+                                                             facetBackground="#F88017" facetFontSize="15" facetFontColor="#0000ff"
+                                                             cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+
+                                            
+
+                                            <p:commandLink id="xlsx" ajax="false">
+                                                <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" #{bundle.personelAttendances}"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
+                                                              cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+
+                                          <!--  <h:commandLink>
+                                                <p:graphicImage name="images/xlsx.png" library="babylon-layout" width="4"/>
+                                                <p:dataExporter type="xlsxstream" target="tbl" fileName="cars" />
+                                            </h:commandLink>
+
+                                            <h:commandLink>
+                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" width="4" />
+                                                <p:dataExporter type="pdf" target="tbl" fileName="cars" />
+                                            </h:commandLink> 
+
+                                            <h:commandLink>
+                                                <p:graphicImage name="images/csv.png" library="babylon-layout" width="4"/>
+                                                <p:dataExporter type="csv" target="tbl" fileName="cars" />
+                                            </h:commandLink>
+
+                                            <h:commandLink>
+                                                <p:graphicImage name="images/xml.png" library="babylon-layout" width="4"/>
+                                                <p:dataExporter type="xml" target="tbl" fileName="cars" />
+                                            </h:commandLink>
+
+                                             <h:commandLink>
+                                                 <p:graphicImage name="/demo/images/keyboardpencil.png" width="24"/>
+                                                 <p:dataExporter type="text" target="tbl" fileName="cars" exporter="#{dataExporterView.textExporter}"/>
+                                             </h:commandLink> -->
                                         </div>
-                                    </li>
-                                    <li>
-                                        <i class="fa fa-usd fa-fw"></i>
-                                        <span class="project-title">Revenue</span>
-                                        <span class="project-detail">+20%</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 20%"></div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <i class="fa fa-credit-card fa-fw"></i>
-                                        <span class="project-title">Payments</span>
-                                        <span class="project-detail">24 new</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 65%"></div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <i class="fa fa-users fa-fw"></i>
-                                        <span class="project-title">Clients</span>
-                                        <span class="project-detail">+80%</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 80%"></div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <i class="fa fa-credit-card fa-fw"></i>
-                                        <span class="project-title">Sales</span>
-                                        <span class="project-detail">+45%</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 45%"></div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <i class="fa fa-line-chart fa-fw"></i>
-                                        <span class="project-title">Performance</span>
-                                        <span class="project-detail">+75%</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 75%"></div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+
+                                    </f:facet>
+
+                                    <p:column sortBy="#{attendance.name}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.fullName}" />
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.name}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{attendance.date}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.date}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.date}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{attendance.entrance}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.entryTime}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.entrance}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.exitTime}" />
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.exit}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{attendance.duration}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.workTime}" />
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.duration}" />
+                                    </p:column>
+                                </p:dataTable>
+
+                                <!--<h3>#{bundle.exportPageData}</h3>
+                                <h:commandLink>
+                                    <p:graphicImage name="images/xlsx.png" library="babylon-layout" width="4"/>
+                                    <p:dataExporter type="xlsxstream" target="tbl" fileName="cars" />
+                                </h:commandLink>
+                                <h:commandLink>
+                                    <p:graphicImage name="images/pdf.png" library="babylon-layout" />
+                                    <p:dataExporter type="pdf" target="tbl" fileName="parousies" pageOnly="true" />
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <p:graphicImage name="images/csv.png" library="babylon-layout" />
+                                    <p:dataExporter type="csv" target="tbl" fileName="parousies" pageOnly="true" />
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <p:graphicImage name="images/xml.png" library="babylon-layout" />
+                                    <p:dataExporter type="xml" target="tbl" fileName="parousies" pageOnly="true" />
+                                </h:commandLink> --> 
+                            </h:form>
                         </div>
                     </div>
                 </div>
@@ -335,300 +419,300 @@
 
 
 
-<!--
-
-
-                <div class="p-col-12 p-md-4 p-lg-4">
-                    <div class="card card-w-title tasks">
-                        <h1>Tasks</h1>
-                        <ul>
-                            <li>
-                                <p:selectBooleanCheckbox />
-                                <span>Sales Reports</span>
-                                <span class="task-badge red"></span>
-                            </li>
-                            <li>
-                                <p:selectBooleanCheckbox />
-                                <span>Pay Invoices</span>
-                                <span class="task-badge orange"></span>
-                            </li>
-                            <li>
-                                <p:selectBooleanCheckbox />
-                                <span>Kate's Birthday</span>
-                                <span class="task-badge orange"></span>
-                            </li>
-                            <li>
-                                <p:selectBooleanCheckbox />
-                                <span>Client Meeting</span>
-                                <span class="task-badge green"></span>
-                            </li>
-                            <li>
-                                <p:selectBooleanCheckbox />
-                                <span>New Themes</span>
-                                <span class="task-badge green"></span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-
-                <div class="p-col-12 p-md-4 p-lg-4">
-                    <div class="card card-w-title resolution-center ui-fluid">
-                        <h1>Support Request</h1>
-
-                        <p:outputLabel for="resolution-username" value="Username" /> 
-                        <p:inputText id="resolution-username"/>
-
-                        <p:outputLabel for="resolution-message" value="Message" /> 
-                        <p:inputTextarea id="resolution-message" rows="3" placeholder="Your Message" autoResize="false" />
-
-                        <div class="resolution-button-bar">
-                            <p:commandButton type="button" value="Save Draft" styleClass="secondary-button" icon="fa fa-plus"/>
-                            <p:commandButton type="button" value="Send" icon="fa fa-send"/>
-                        </div>
-                    </div>
-                </div>
--->
-
-<!--
-
-                <div class="p-col-12 p-md-4 p-lg-4">
-                    <div class="card card-w-title team">
-                        <h1>Team</h1>
-                        <ul>
-                            <li>
-                                <p:graphicImage name="images/avatar.png" library="babylon-layout" />
-                                <div class="team-box">
-                                    <span class="team-member">Arlene Welch</span>
-                                    <span class="team-member-role">Design</span>
-                                </div>
-                                <a href="#">
-                                    <i class="fa fa-github"></i>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
-                                <div class="team-box">
-                                    <span class="team-member">John Swisher</span>
-                                    <span class="team-member-role">Development</span>
-                                </div>
-                                <a href="#">
-                                    <i class="fa fa-github"></i>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <p:graphicImage name="images/avatar-julia.png" library="babylon-layout" />
-                                <div class="team-box">
-                                    <span class="team-member">Warren Shaw</span>
-                                    <span class="team-member-role">Sales</span>
-                                </div>
-                                <a href="#">
-                                    <i class="fa fa-github"></i>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <p:graphicImage name="images/avatar-kevin.png" library="babylon-layout" />
-                                <div class="team-box">
-                                    <span class="team-member">Kevin Lane</span>
-                                    <span class="team-member-role">Marketing</span>
-                                </div>
-                                <a href="#">
-                                    <i class="fa fa-github"></i>
-                                </a>
-                                <a href="#">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
--->
-
-
-
-<!--
-                <div class="p-col-12 p-xl-6">
-                    <div class="card card-w-title timeline">
-                        <h1>Timeline</h1>
-                        <ul>
-                            <li>
-                                <div class="activity-link"></div>
-                                <div class="timeline-icon">
-                                    <i class="fa fa-globe"></i>
-                                </div>
-                                <div class="timeline-content">
-                                    <h3>Notes Added</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean blandit tortor a ipsum vehicula,
-                                        in semper sapien auctor.</p>
-                                    <div class="timeline-footer">
-                                        <i class="fa fa-clock-o"></i>
-                                        <span>3 Sep 2018 at 10:41</span>
+                <!--
+                
+                
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <div class="card card-w-title tasks">
+                                        <h1>Tasks</h1>
+                                        <ul>
+                                            <li>
+                                                <p:selectBooleanCheckbox />
+                                                <span>Sales Reports</span>
+                                                <span class="task-badge red"></span>
+                                            </li>
+                                            <li>
+                                                <p:selectBooleanCheckbox />
+                                                <span>Pay Invoices</span>
+                                                <span class="task-badge orange"></span>
+                                            </li>
+                                            <li>
+                                                <p:selectBooleanCheckbox />
+                                                <span>Kate's Birthday</span>
+                                                <span class="task-badge orange"></span>
+                                            </li>
+                                            <li>
+                                                <p:selectBooleanCheckbox />
+                                                <span>Client Meeting</span>
+                                                <span class="task-badge green"></span>
+                                            </li>
+                                            <li>
+                                                <p:selectBooleanCheckbox />
+                                                <span>New Themes</span>
+                                                <span class="task-badge green"></span>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
-                            </li>
-                            <li>
-                                <div class="activity-link"></div>
-                                <div class="timeline-icon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <div class="timeline-content">
-                                    <h3>Reminder Scheduled</h3>
-                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, 
-                                        totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                                    <div class="timeline-footer">
-                                        <i class="fa fa-clock-o"></i>
-                                        <span>4 Sep 2018 at 11:30</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="activity-link"></div>
-                                <div class="timeline-icon">
-                                    <i class="fa fa-picture-o"></i>
-                                </div>
-                                <div class="timeline-content">
-                                    <div class="child">
-                                        <div>
-                                            <span>3 Photos Added to</span>
-                                            <span class="colorful">Album-23</span>
-                                        </div>
-                                        <p:graphicImage name="images/dashboard/image-1.png" library="babylon-layout" />
-                                        <p:graphicImage name="images/dashboard/image-2.png" library="babylon-layout" />
-                                        <p:graphicImage name="images/dashboard/image-3.png" library="babylon-layout" />
-                                        <div class="timeline-footer">
-                                            <i class="fa fa-clock-o"></i>
-                                            <span>9 Sep 2018 at 00:44</span>
+                
+                
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <div class="card card-w-title resolution-center ui-fluid">
+                                        <h1>Support Request</h1>
+                
+                                        <p:outputLabel for="resolution-username" value="Username" /> 
+                                        <p:inputText id="resolution-username"/>
+                
+                                        <p:outputLabel for="resolution-message" value="Message" /> 
+                                        <p:inputTextarea id="resolution-message" rows="3" placeholder="Your Message" autoResize="false" />
+                
+                                        <div class="resolution-button-bar">
+                                            <p:commandButton type="button" value="Save Draft" styleClass="secondary-button" icon="fa fa-plus"/>
+                                            <p:commandButton type="button" value="Send" icon="fa fa-send"/>
                                         </div>
                                     </div>
                                 </div>
-                            </li>
-                            <li>
-                                <div class="activity-link"></div>
-                                <div class="timeline-icon">
-                                    <i class="fa fa-picture-o"></i>
+                -->
+
+                <!--
+                
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <div class="card card-w-title team">
+                                        <h1>Team</h1>
+                                        <ul>
+                                            <li>
+                                                <p:graphicImage name="images/avatar.png" library="babylon-layout" />
+                                                <div class="team-box">
+                                                    <span class="team-member">Arlene Welch</span>
+                                                    <span class="team-member-role">Design</span>
+                                                </div>
+                                                <a href="#">
+                                                    <i class="fa fa-github"></i>
+                                                </a>
+                                                <a href="#">
+                                                    <i class="fa fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
+                                                <div class="team-box">
+                                                    <span class="team-member">John Swisher</span>
+                                                    <span class="team-member-role">Development</span>
+                                                </div>
+                                                <a href="#">
+                                                    <i class="fa fa-github"></i>
+                                                </a>
+                                                <a href="#">
+                                                    <i class="fa fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <p:graphicImage name="images/avatar-julia.png" library="babylon-layout" />
+                                                <div class="team-box">
+                                                    <span class="team-member">Warren Shaw</span>
+                                                    <span class="team-member-role">Sales</span>
+                                                </div>
+                                                <a href="#">
+                                                    <i class="fa fa-github"></i>
+                                                </a>
+                                                <a href="#">
+                                                    <i class="fa fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <p:graphicImage name="images/avatar-kevin.png" library="babylon-layout" />
+                                                <div class="team-box">
+                                                    <span class="team-member">Kevin Lane</span>
+                                                    <span class="team-member-role">Marketing</span>
+                                                </div>
+                                                <a href="#">
+                                                    <i class="fa fa-github"></i>
+                                                </a>
+                                                <a href="#">
+                                                    <i class="fa fa-twitter"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div class="timeline-content">
-                                    <div class="child">
-                                        <h3>Location Update</h3>
-                                        <p:graphicImage name="images/dashboard/antalya.png" library="babylon-layout" style="width:100%"/>
-                                        <div class="timeline-footer">
-                                            <i class="fa fa-clock-o"></i>
-                                            <span>16 Sep 2018 at 20:02</span>
+                
+                -->
+
+
+
+                <!--
+                                <div class="p-col-12 p-xl-6">
+                                    <div class="card card-w-title timeline">
+                                        <h1>Timeline</h1>
+                                        <ul>
+                                            <li>
+                                                <div class="activity-link"></div>
+                                                <div class="timeline-icon">
+                                                    <i class="fa fa-globe"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <h3>Notes Added</h3>
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean blandit tortor a ipsum vehicula,
+                                                        in semper sapien auctor.</p>
+                                                    <div class="timeline-footer">
+                                                        <i class="fa fa-clock-o"></i>
+                                                        <span>3 Sep 2018 at 10:41</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="activity-link"></div>
+                                                <div class="timeline-icon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <h3>Reminder Scheduled</h3>
+                                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, 
+                                                        totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                                                    <div class="timeline-footer">
+                                                        <i class="fa fa-clock-o"></i>
+                                                        <span>4 Sep 2018 at 11:30</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="activity-link"></div>
+                                                <div class="timeline-icon">
+                                                    <i class="fa fa-picture-o"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <div class="child">
+                                                        <div>
+                                                            <span>3 Photos Added to</span>
+                                                            <span class="colorful">Album-23</span>
+                                                        </div>
+                                                        <p:graphicImage name="images/dashboard/image-1.png" library="babylon-layout" />
+                                                        <p:graphicImage name="images/dashboard/image-2.png" library="babylon-layout" />
+                                                        <p:graphicImage name="images/dashboard/image-3.png" library="babylon-layout" />
+                                                        <div class="timeline-footer">
+                                                            <i class="fa fa-clock-o"></i>
+                                                            <span>9 Sep 2018 at 00:44</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="activity-link"></div>
+                                                <div class="timeline-icon">
+                                                    <i class="fa fa-picture-o"></i>
+                                                </div>
+                                                <div class="timeline-content">
+                                                    <div class="child">
+                                                        <h3>Location Update</h3>
+                                                        <p:graphicImage name="images/dashboard/antalya.png" library="babylon-layout" style="width:100%"/>
+                                                        <div class="timeline-footer">
+                                                            <i class="fa fa-clock-o"></i>
+                                                            <span>16 Sep 2018 at 20:02</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                
+                                <div class="p-col-12 p-xl-6">
+                                    <div class="card card-w-title global-sales ui-fluid">
+                                        <h1>Global Sales</h1>
+                                        <p:dataTable var="car" value="#{dtSelectionView.cars7}" selectionMode="single" reflow="true" paginatorPosition="bottom"
+                                                     selection="#{dtSelectionView.selectedCar}" rowKey="#{car.id}" paginator="true" rows="5">
+                
+                                            <p:column headerText="Logo" style="width: 84px">
+                                                <p:graphicImage name="demo/images/car/#{car.brand}.png" width="50"/> 
+                                            </p:column>
+                
+                                            <p:column headerText="Id" sortBy="#{car.id}">
+                                                <h:outputText value="#{car.id}" />
+                                            </p:column>
+                
+                                            <p:column headerText="Year" sortBy="#{car.year}">
+                                                <h:outputText value="#{car.year}" />
+                                            </p:column>
+                
+                                            <p:column headerText="Brand" sortBy="#{car.brand}">
+                                                <h:outputText value="#{car.brand}" />
+                                            </p:column>
+                
+                                            <p:column headerText="Color" sortBy="#{car.color}">
+                                                <h:outputText value="#{car.color}" />
+                                            </p:column>
+                
+                                            <p:column headerText="View">
+                                                <div class="ui-grid">
+                                                    <div class="ui-g-6 ui-md-12">
+                                                        <p:commandButton type="button" icon="fa fa-search" />
+                                                    </div>
+                                                    <div class="ui-g-6 ui-md-12">
+                                                        <p:commandButton type="button" icon="fa fa-close" styleClass="danger-btn" />
+                                                    </div>
+                                                </div>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </div>
+                
+                                    <div class="card card-w-title live-support">
+                                        <h1>Live Support</h1>
+                                        <ul>
+                                            <li>
+                                                <div class="p-grid">
+                                                    <div class="p-col-fixed">
+                                                        <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
+                                                    </div>
+                                                    <div class="p-col">
+                                                        <div class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                                            Nam ac euismod justo, eget blandit purus.</div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="p-grid">
+                                                    <div class="p-col">
+                                                        <div class="chat-message">Mauris malesuada quis risus ut consequat.
+                                                            Maecenas ornare nunc risus, pulvinar euismod mi pellentesque eget.</div>
+                                                    </div>
+                                                    <div class="p-col-fixed">
+                                                        <p:graphicImage name="images/avatar-julia.png" library="babylon-layout" />
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="p-grid">
+                                                    <div class="p-col-fixed">
+                                                        <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
+                                                    </div>
+                                                    <div class="p-col">
+                                                        <div class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                                            Nam ac euismod justo, eget blandit purus.</div> 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                
+                                        <div class="new-message">
+                                            <div class="p-grid p-nogutter">
+                                                <div class="p-col">
+                                                    <input type="text" placeholder="Write a message.." />
+                                                </div>
+                                                <div class="p-col-fixed">
+                                                    <p:commandButton type="button" value="Send" />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="p-col-12 p-xl-6">
-                    <div class="card card-w-title global-sales ui-fluid">
-                        <h1>Global Sales</h1>
-                        <p:dataTable var="car" value="#{dtSelectionView.cars7}" selectionMode="single" reflow="true" paginatorPosition="bottom"
-                                     selection="#{dtSelectionView.selectedCar}" rowKey="#{car.id}" paginator="true" rows="5">
-
-                            <p:column headerText="Logo" style="width: 84px">
-                                <p:graphicImage name="demo/images/car/#{car.brand}.png" width="50"/> 
-                            </p:column>
-
-                            <p:column headerText="Id" sortBy="#{car.id}">
-                                <h:outputText value="#{car.id}" />
-                            </p:column>
-
-                            <p:column headerText="Year" sortBy="#{car.year}">
-                                <h:outputText value="#{car.year}" />
-                            </p:column>
-
-                            <p:column headerText="Brand" sortBy="#{car.brand}">
-                                <h:outputText value="#{car.brand}" />
-                            </p:column>
-
-                            <p:column headerText="Color" sortBy="#{car.color}">
-                                <h:outputText value="#{car.color}" />
-                            </p:column>
-
-                            <p:column headerText="View">
-                                <div class="ui-grid">
-                                    <div class="ui-g-6 ui-md-12">
-                                        <p:commandButton type="button" icon="fa fa-search" />
+                -->
+                <!--
+                                <div class="p-col-12">
+                                    <div class="card card-w-title">
+                                        <h1>Schedule</h1>
+                                        <p:schedule id="schedule" value="#{scheduleView.eventModel}" leftHeaderTemplate="prev,next"/>
                                     </div>
-                                    <div class="ui-g-6 ui-md-12">
-                                        <p:commandButton type="button" icon="fa fa-close" styleClass="danger-btn" />
-                                    </div>
-                                </div>
-                            </p:column>
-                        </p:dataTable>
-                    </div>
-
-                    <div class="card card-w-title live-support">
-                        <h1>Live Support</h1>
-                        <ul>
-                            <li>
-                                <div class="p-grid">
-                                    <div class="p-col-fixed">
-                                        <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
-                                    </div>
-                                    <div class="p-col">
-                                        <div class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Nam ac euismod justo, eget blandit purus.</div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="p-grid">
-                                    <div class="p-col">
-                                        <div class="chat-message">Mauris malesuada quis risus ut consequat.
-                                            Maecenas ornare nunc risus, pulvinar euismod mi pellentesque eget.</div>
-                                    </div>
-                                    <div class="p-col-fixed">
-                                        <p:graphicImage name="images/avatar-julia.png" library="babylon-layout" />
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="p-grid">
-                                    <div class="p-col-fixed">
-                                        <p:graphicImage name="images/avatar-john.png" library="babylon-layout" />
-                                    </div>
-                                    <div class="p-col">
-                                        <div class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                            Nam ac euismod justo, eget blandit purus.</div> 
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-
-                        <div class="new-message">
-                            <div class="p-grid p-nogutter">
-                                <div class="p-col">
-                                    <input type="text" placeholder="Write a message.." />
-                                </div>
-                                <div class="p-col-fixed">
-                                    <p:commandButton type="button" value="Send" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
--->
-<!--
-                <div class="p-col-12">
-                    <div class="card card-w-title">
-                        <h1>Schedule</h1>
-                        <p:schedule id="schedule" value="#{scheduleView.eventModel}" leftHeaderTemplate="prev,next"/>
-                    </div>
-                </div>  -->
+                                </div>  -->
             </div>
 
         </div>

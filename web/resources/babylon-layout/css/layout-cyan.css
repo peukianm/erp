@@ -1077,14 +1077,14 @@ a {
 .card {
   border-radius: 3px;
   background: #ffffff;
-  padding: 8px;
+  padding: 2px;
   margin-bottom: 16px;
-  border: 1px solid #EEEEEE;
+  border: 1px solid #E0E0E0;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px; }
   .card.card-w-title {
-    padding-bottom: 16px; }
+    padding-bottom: 8px; }
   .card.no-gutter {
     margin-bottom: 0; }
   .card h1 {
@@ -1339,7 +1339,7 @@ a {
     background: #ffe0ee; }
     .layout-dashboard .user-card .user-card-header img {
       width: 100%;
-      height: 100%; }
+      height: 45%; }
   .layout-dashboard .user-card .user-card-content img {
     width: 60px;
     height: 60px;

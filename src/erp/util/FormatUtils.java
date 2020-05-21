@@ -11,6 +11,8 @@ import java.time.LocalTime;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is generally used for date formating. There are 4 predefined types
@@ -285,16 +287,16 @@ public class FormatUtils {
         }
     }
 
-    public static Timestamp formatDateToTimestamp(java.util.Date date) throws Exception {
+    public static Timestamp formatDateToTimestamp(java.util.Date date)  {
         Timestamp timestamp = null;
         try {
             DateFormat df = new SimpleDateFormat(DATEPATTERN);
             String dateString = df.format(date);
             timestamp = new Timestamp(df.parse(dateString).getTime());
             return timestamp;
-        } catch (RuntimeException e) {
-            throw e;
-        }
+        } catch (Exception e) {
+            return null;
+        } 
     }
 
     public static Timestamp formatDateToTimestamp(java.util.Date date, String pattern) {

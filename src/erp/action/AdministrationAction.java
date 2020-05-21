@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -62,6 +63,9 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     ResetBean resetBean;
+
+    @Inject
+    DashboardView dbView;
 
     public AdministrationAction() {
     }
@@ -180,8 +184,73 @@ public class AdministrationAction implements Serializable {
         return propertyValue;
     }
 
-    
+    public void fetchAttendances() {
+        try {
+            List<AttendanceBean> retValue = new ArrayList<>(0);
+            if (!dbView.getSelectedSectors().isEmpty()) {
+                dbView.getSelectedSectors().forEach((temp) -> {
+                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbView.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                            FormatUtils.formatDate(dbView.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, temp, null);
+                    attendances.forEach((temp1) -> {
+                        AttendanceBean bean = new AttendanceBean();
+                        bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                        bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
+                        bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
+                        if (temp1.getExit() != null) {
+                            bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
+                        }
+                        if (temp1.getExit() != null) {
+                            bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
+                                    temp1.getExit(), TimeUnit.SECONDS)));
+                        }
+                        retValue.add(bean);
+                    });
+                });
 
+            } else if (!dbView.getSelectedDepartments().isEmpty()) {
+                dbView.getSelectedDepartments().forEach((temp) -> {
+                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbView.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                            FormatUtils.formatDate(dbView.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, null, temp);
+                    attendances.forEach((temp1) -> {
+                        AttendanceBean bean = new AttendanceBean();
+                        bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                        bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
+                        bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
+                        if (temp1.getExit() != null) {
+                            bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
+                        }
+                        if (temp1.getExit() != null) {
+                            bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
+                                    temp1.getExit(), TimeUnit.SECONDS)));
+                        }
+                        retValue.add(bean);
+                    });
+                });
+
+            } else if (!dbView.getSelectedStaff().isEmpty()) {
+                dbView.getSelectedStaff().forEach((temp) -> {
+                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbView.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                            FormatUtils.formatDate(dbView.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), temp, null, null);
+                    attendances.forEach((temp1) -> {
+                        AttendanceBean bean = new AttendanceBean();
+                        bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                        bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
+                        bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
+                        if (temp1.getExit() != null) {
+                            bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
+                        }
+                        if (temp1.getExit() != null) {
+                            bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
+                                    temp1.getExit(), TimeUnit.SECONDS)));
+                        }
+                        retValue.add(bean);
+                    });
+                });
+            }
+            dbView.setAttendances(retValue);
+        } catch (Exception e) {
+        }
+    }
 
     public String auditControl() {
         try {

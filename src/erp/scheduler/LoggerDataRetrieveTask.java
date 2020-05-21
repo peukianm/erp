@@ -62,7 +62,6 @@ public class LoggerDataRetrieveTask {
         Scheduletask task = (Scheduletask) persistenceHelper.find(Scheduletask.class, Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         Companytask cTask = schedulerDAO.findCtask(company, task);
         Scheduletaskdetail taskDetails = null;
-        System.out.println(force + " " + cTask.getTaskstatus().getStatusid() + ""+busy);
         if (!force) {
             if (busy.get() || cTask.getActive() == BigDecimal.ZERO
                     || cTask.getTaskstatus().getStatusid() != Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE"))) {

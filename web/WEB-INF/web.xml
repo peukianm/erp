@@ -4,7 +4,7 @@
 <web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">         
-    <display-name>Hospital ERP</display-name>
+    <display-name>InnovAv - CoI</display-name>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
@@ -18,7 +18,7 @@
     </context-param>
     <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>babylon-#{guestPreferences.theme}</param-value>
+        <param-value>babylon-blue-accent</param-value>
     </context-param>
     <context-param>
         <param-name>primefaces.FONT_AWESOME</param-name>
@@ -72,14 +72,16 @@
         <dispatcher>ERROR</dispatcher>
         <dispatcher>ASYNC</dispatcher><!-- Servlet 3.0 w/ disabled auto-initialization only; not supported in 2.5 -->
     </filter-mapping>
-    <filter>
+    
+    
+<!--    <filter>
         <filter-name>Security Page Filter</filter-name>
         <filter-class>erp.filter.SecurityFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>Security Page Filter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    </filter-mapping>-->
     
     
     
@@ -120,7 +122,7 @@
       
     <!-- ADDED!!!!!!!  -->
     <session-config>
-        <session-timeout>30</session-timeout>
+        <session-timeout>120</session-timeout>
     </session-config>
      <error-page>
          <error-code>500</error-code>

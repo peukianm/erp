@@ -1,5 +1,10 @@
 package erp.util;
 
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfWriter;
 import erp.bean.LoggerData;
 import erp.dao.SchedulerDAO;
 import erp.dao.UsrDAO;
@@ -101,7 +106,7 @@ public class TestFunct {
             
             System.out.println(LocalDate.now()+" das ");
             Timestamp ter = new Timestamp(13131323);
-            System.out.println(ter.toString());
+           openPDF();
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -113,6 +118,45 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+   
+    private static void openPDF (){
+        Document document = new Document();
+        
+        try {
+            
+            // step 2: creation of the writer-object
+            PdfWriter.getInstance(document, new FileOutputStream("E:\\temp\\unicode.pdf"));
+            
+            // step 3: we open the document
+            document.open();
+            
+            // step 4: we add content to the document
+            BaseFont bfComic = BaseFont.createFont("c:\\windows\\fonts\\verdana.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            com.lowagie.text.Font font1 = new com.lowagie.text.Font(bfComic, 12);
+             
+            BaseFont bfComic1 = BaseFont.createFont("c:\\windows\\fonts\\candara.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+            com.lowagie.text.Font font2 = new com.lowagie.text.Font(bfComic1, 12);
+            
+            FontFactory.registerDirectories();
+            com.lowagie.text.Font font3 = FontFactory.getFont("verdana.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 12, 4);
+            
+            
+                       
+            String text1 = "This is ΠΕΥΚΙΑΝΑΚΗΣ  \u0393\u0394\u03b6 'Comic'.";
+            String text2 = "Some greek characters: \u0393\u0394\u03b6 ΠΕΥΚΙΑΝΑΚΗΣ ssaddfsad121213";
+            String text3 = "Some cyrillic characters: \u0418\u044f ΠΕΥΚΙΑΝΑΚΗΣ ασδασδ \u0393\u0394\u03b6 ";
+            document.add(new com.lowagie.text.Paragraph(text1, font1));
+            document.add(new com.lowagie.text.Paragraph(text2, font2));
+            document.add(new com.lowagie.text.Paragraph(text3, font3));
+        }
+        catch(Exception de ) {
+            System.err.println(de.getMessage());
+        }
+
+        // step 5: we close the document
+        document.close();
+    
+    }
     private static void dateManipulation() throws ParseException {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();

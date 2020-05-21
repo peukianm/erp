@@ -5,7 +5,6 @@
  */
 package erp.bean;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import erp.action.AdministrationAction;
 import erp.dao.StaffDAO;
 import erp.entities.Attendance;
@@ -18,8 +17,6 @@ import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,16 +44,16 @@ public class DashboardView implements Serializable {
 
     @Inject
     private StaffDAO staffDao;
-    
-     @Inject
+
+    @Inject
     private ApplicationBean applicationBean;
 
     private Attendance dayAttendance;
     private String entryTime = "N/A";
     private String exitTime = "N/A";
     private String attendanceDate = "N/A";
-    
-     private List<Department> departments;
+
+    private List<Department> departments;
 
     private List<Department> selectedDepartments;
     private List<Sector> selectedSectors;
@@ -72,8 +69,10 @@ public class DashboardView implements Serializable {
     private Boolean enableDepartment;
     private Boolean enableSector;
     private Boolean enableStaff;
-    
+
     private String lastExecution;
+    
+    private List<AttendanceBean> attendances = new ArrayList<>(0);
 
     Usr user;
 
@@ -82,7 +81,6 @@ public class DashboardView implements Serializable {
         user = sessionBean.getUsers();
         fromAttendanceDate = new java.util.Date();
         toAttendanceDate = new java.util.Date();
-        System.out.println("User=" + user.getStaff().getEmprank().getRankid() + " " + user.getStaff().getDepartment().getName() + " " + user.getStaff().getSector().getName());
         dayAttendance = staffDao.getDayAttendance(user.getStaff(), false);
         if (dayAttendance != null) {
             attendanceDate = dayAttendance.getEntrance().toString().substring(0, 10);
@@ -92,12 +90,11 @@ public class DashboardView implements Serializable {
             }
         }
         departments = applicationBean.getDepartments();
-        System.out.println("Starting switch");
         switch ((int) user.getRole().getRoleid()) {
             case 1:
                 enableDepartment = true;
                 enableSector = true;
-                enableStaff = true;               
+                enableStaff = true;
                 break;
             case 2:
                 enableDepartment = true;
@@ -123,7 +120,6 @@ public class DashboardView implements Serializable {
                     case 14:
                     case 13:
                     case 11: {
-                        System.out.println("INSIDE DIEUYNTES");
                         enableDepartment = true;
                         enableSector = false;
                         enableStaff = true;
@@ -135,7 +131,6 @@ public class DashboardView implements Serializable {
                     case 12://PROISTAMENOI
                     case 10:
                     case 9: {
-                        System.out.println("INSIDE PROSTAMENOI");
                         enableDepartment = false;
                         enableSector = false;
                         enableStaff = true;
@@ -146,20 +141,17 @@ public class DashboardView implements Serializable {
                 }
             }
         }
-        
+
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
 
-//        if (user.getStaff().getDepartment().getDepartmentid() == 67 || user.getStaff().getDepartment().getDepartmentid() == 64) { //Prosopokou Plhroforikh
-//            enableDepartment = true;
-//            enableSector = true;
-//            enableStaff = true;
-//            selectedSectors = new ArrayList<>(0);
-//            selectedDepartments = new ArrayList<>(0);
-//
-//        }
-        System.out.println(enableSector);
-        System.out.println(enableDepartment);
-        System.out.println(enableStaff);
+        if (user.getStaff().getDepartment().getDepartmentid() == 67 || user.getStaff().getDepartment().getDepartmentid() == 64) { //Prosopokou Plhroforikh
+            enableDepartment = true;
+            enableSector = true;
+            enableStaff = true;
+            selectedSectors = new ArrayList<>(0);
+            selectedDepartments = new ArrayList<>(0);
+
+        }
     }
 
     @PreDestroy
@@ -174,6 +166,7 @@ public class DashboardView implements Serializable {
 
         fromAttendanceDate = new java.util.Date();
         toAttendanceDate = new java.util.Date();
+        attendances = new ArrayList<>(0);
 
     }
 
@@ -195,6 +188,12 @@ public class DashboardView implements Serializable {
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             goError(e);
         }
+    }
+
+    public void onDepartmentChange() {
+        selectedSectors = new ArrayList<Sector>();
+        selectedStaff = new ArrayList<Staff>(0);
+        searchStaff = null;
     }
 
     public void autocompleteSurnameSelectStaff(SelectEvent event) {
@@ -237,13 +236,9 @@ public class DashboardView implements Serializable {
 
     public void removeStaff(int index) {
         try {
-
-            System.out.println(index);
-            System.out.println(selectedStaff.size());
             if (selectedStaff != null && selectedStaff.size() > 0 && selectedStaff.size() > index) {
                 selectedStaff.remove(index);
             }
-            System.out.println(selectedStaff.size());
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -251,6 +246,19 @@ public class DashboardView implements Serializable {
         }
     }
 
+    
+    
+    
+    
+    public List<AttendanceBean> getAttendances() {
+        return attendances;
+    }
+
+    public void setAttendances(List<AttendanceBean> attendances) {
+        this.attendances = attendances;
+    }
+
+    
     public String getLastExecution() {
         return lastExecution;
     }
@@ -259,7 +267,6 @@ public class DashboardView implements Serializable {
         this.lastExecution = lastExecution;
     }
 
-    
     public List<Department> getDepartments() {
         return departments;
     }
@@ -268,7 +275,6 @@ public class DashboardView implements Serializable {
         this.departments = departments;
     }
 
-    
     public Boolean getEnableDepartment() {
         return enableDepartment;
     }
@@ -315,12 +321,6 @@ public class DashboardView implements Serializable {
 
     public void setSelectedStaff(List<Staff> selectedStaff) {
         this.selectedStaff = selectedStaff;
-    }
-
-    public void onDepartmentChange() {
-        selectedSectors = new ArrayList<Sector>();
-        selectedStaff = new ArrayList<Staff>(0);
-        searchStaff = null;
     }
 
     public Date getFromAttendanceDate() {

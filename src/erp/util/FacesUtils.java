@@ -47,7 +47,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.component.datatable.DataTable;
-import org.primefaces.context.RequestContext;
+//import org.primefaces.context.RequestContext;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +60,7 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.PrimeFaces;
 
 /**
  * JSF utilities.
@@ -73,6 +75,7 @@ public class FacesUtils {
     public static final double NOCLOSEDDRUG = 1;
     public static final double CLOSEDDRUGS = 0;
     private static Properties buildProperties = null;
+    ;
 
     /**
      * Get servlet context.
@@ -585,17 +588,20 @@ public class FacesUtils {
     }
 
     public static void callRequestContext(String command) {
-        RequestContext context = RequestContext.getCurrentInstance();
-        context.execute(command);
+//        RequestContext context = RequestContext.getCurrentInstance();
+//        context.execute(command);
+        PrimeFaces.current().executeScript(command);
     }
 
     public static void updateHTMLComponnetWIthJS(String components) {
-        RequestContext context = RequestContext.getCurrentInstance();
-        context.update(components);
+//        RequestContext context = RequestContext.getCurrentInstance();
+//        context.update(components);
+        PrimeFaces.current().ajax().update(components);
     }
 
-    public static void addRequestContextCallBaclParam(String argName, Object argValue, RequestContext context) {
-        context.addCallbackParam(argName, argValue);
+    public static void addRequestContextCallBaclParam(String argName, Object argValue) {
+        //context.addCallbackParam(argName, argValue);
+         PrimeFaces.current().ajax().addCallbackParam(argName,argValue);
     }
     
     public static void addGrowlMessage(String msg1, String msg2) {
