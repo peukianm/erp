@@ -363,7 +363,7 @@ a {
       display: block;
       text-align: left;
       height: 60px;
-      padding-left: 12px; }
+      padding-left: 4px; }
       .layout-wrapper .layout-menu-container .layout-menu-logo a img {
         margin-top: 15px;
         height: 30px; }
@@ -1054,7 +1054,7 @@ a {
   background-color: #ffffff;
   border-top: 1px solid #e8e8e8; }
   .layout-footer img {
-    height: 30px; }
+    height: 60px; }
   .layout-footer .footer-icons {
     text-align: right; }
     .layout-footer .footer-icons a {
@@ -1673,7 +1673,7 @@ a {
     .login-body .login-content img {
       display: inline-block;
       margin-bottom: 160px;
-      width: 200px; }
+      /*width: 200px;*/ }
     .login-body .login-content h1 {
       font-size: 28px;
       font-weight: 500;

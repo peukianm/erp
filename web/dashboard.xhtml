@@ -37,6 +37,11 @@
                 text-align: right;
                 margin: 0px 0 0 2px !important;
             }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
 
         </style>
         <script type="text/javascript">
@@ -304,40 +309,40 @@
                                                              cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
 
-                                            
+
 
                                             <p:commandLink id="xlsx" ajax="false">
                                                 <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
                                                 <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" #{bundle.personelAttendances}"
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
-                                                              cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
+                                                             cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
 
-                                          <!--  <h:commandLink>
-                                                <p:graphicImage name="images/xlsx.png" library="babylon-layout" width="4"/>
-                                                <p:dataExporter type="xlsxstream" target="tbl" fileName="cars" />
-                                            </h:commandLink>
-
-                                            <h:commandLink>
-                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" width="4" />
-                                                <p:dataExporter type="pdf" target="tbl" fileName="cars" />
-                                            </h:commandLink> 
-
-                                            <h:commandLink>
-                                                <p:graphicImage name="images/csv.png" library="babylon-layout" width="4"/>
-                                                <p:dataExporter type="csv" target="tbl" fileName="cars" />
-                                            </h:commandLink>
-
-                                            <h:commandLink>
-                                                <p:graphicImage name="images/xml.png" library="babylon-layout" width="4"/>
-                                                <p:dataExporter type="xml" target="tbl" fileName="cars" />
-                                            </h:commandLink>
-
-                                             <h:commandLink>
-                                                 <p:graphicImage name="/demo/images/keyboardpencil.png" width="24"/>
-                                                 <p:dataExporter type="text" target="tbl" fileName="cars" exporter="#{dataExporterView.textExporter}"/>
-                                             </h:commandLink> -->
+                                            <!--  <h:commandLink>
+                                                  <p:graphicImage name="images/xlsx.png" library="babylon-layout" width="4"/>
+                                                  <p:dataExporter type="xlsxstream" target="tbl" fileName="cars" />
+                                              </h:commandLink>
+  
+                                              <h:commandLink>
+                                                  <p:graphicImage name="images/pdf.png" library="babylon-layout" width="4" />
+                                                  <p:dataExporter type="pdf" target="tbl" fileName="cars" />
+                                              </h:commandLink> 
+  
+                                              <h:commandLink>
+                                                  <p:graphicImage name="images/csv.png" library="babylon-layout" width="4"/>
+                                                  <p:dataExporter type="csv" target="tbl" fileName="cars" />
+                                              </h:commandLink>
+  
+                                              <h:commandLink>
+                                                  <p:graphicImage name="images/xml.png" library="babylon-layout" width="4"/>
+                                                  <p:dataExporter type="xml" target="tbl" fileName="cars" />
+                                              </h:commandLink>
+  
+                                               <h:commandLink>
+                                                   <p:graphicImage name="/demo/images/keyboardpencil.png" width="24"/>
+                                                   <p:dataExporter type="text" target="tbl" fileName="cars" exporter="#{dataExporterView.textExporter}"/>
+                                               </h:commandLink> -->
                                         </div>
 
                                     </f:facet>
