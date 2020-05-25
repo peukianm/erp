@@ -4,17 +4,14 @@
  */
 package erp.bean;
 
-import erp.dao.ActionDAO;
 import erp.dao.CompanyDAO;
-import erp.dao.RoleDAO;
-import erp.dao.SchedulerDAO;
+import erp.dao.UsrDAO;
 
 import erp.entities.Action;
 import erp.entities.Company;
 import erp.entities.Department;
 import erp.entities.Role;
 import erp.entities.Sector;
-import erp.entities.Staff;
 
 import erp.util.SystemParameters;
 import java.io.Serializable;
@@ -43,10 +40,12 @@ public class ApplicationBean implements Serializable {
     @Inject
     CompanyDAO companyDAO;
 
+    @Inject
+    UsrDAO userDAO;
+
     @PostConstruct
     public void init() {
     }
-
 
     public List<Department> getDepartments() {
         if (departments == null) {
@@ -74,8 +73,7 @@ public class ApplicationBean implements Serializable {
 
     public List<Company> getCompanies() {
         if (companies == null) {
-            CompanyDAO dao = new CompanyDAO();
-            companies = dao.findByProperty("active", BigDecimal.ONE);
+            companies = companyDAO.findByProperty("active", BigDecimal.ONE);
         }
         return companies;
     }
@@ -86,8 +84,7 @@ public class ApplicationBean implements Serializable {
 
     public List<Role> getRoles() {
         if (roles == null) {
-            RoleDAO dao = new RoleDAO();
-            roles = dao.findAll();
+            roles = userDAO.getAllRoles();
         }
         return roles;
     }
@@ -102,8 +99,7 @@ public class ApplicationBean implements Serializable {
 
     public List<Action> getActions() {
         if (actions == null) {
-            ActionDAO dao = new ActionDAO();
-            actions = dao.findAll();
+            actions = userDAO.getAllActions();
         }
         return actions;
     }

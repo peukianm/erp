@@ -5,6 +5,7 @@
  */
 package erp.dao;
 
+import erp.entities.Action;
 import erp.entities.Company;
 import erp.entities.Role;
 import erp.entities.Usr;
@@ -12,10 +13,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
+import javax.persistence.*;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
@@ -29,32 +29,92 @@ import org.apache.logging.log4j.Logger;
 public class UsrDAO implements Serializable {
 
     private static final Logger logger = LogManager.getLogger(UsrDAO.class);
-    
+
     @PersistenceContext(unitName = "erp")
     private EntityManager entityManager;
 
-// PersistenceHelper persistenceHelper = EJBUtil.lookupPersistenceHelperBean();
-// EntityManager entityManager = persistenceHelper.getEntityManager();
-    
     public Usr get(long id) {
-        return entityManager.find(Usr.class, id);
+        try {
+            return entityManager.find(Usr.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting User entity", re);
+            throw re;
+        }
     }
 
     public List<Usr> getAll() {
-        Query query = entityManager.createQuery("SELECT e FROM Usr e");
-        return query.getResultList();
+        try {
+            Query query = entityManager.createQuery("SELECT e FROM Usr e");
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all users ", re);
+            throw re;
+        }
+    }
+
+    public List<Role> getAllRoles() {
+        try {
+            Query query = entityManager.createQuery("SELECT e FROM Role e");
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all roles ", re);
+            throw re;
+        }
+    }
+
+    public List<Action> getAllActions() {
+        try {
+            Query query = entityManager.createQuery("SELECT e FROM Action e");
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all actions ", re);
+            throw re;
+        }
+    }
+
+    public Action getAction(long id) {
+        try {
+            return entityManager.find(Action.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Action ", re);
+            throw re;
+        }
     }
 
     public void save(Usr user) {
-        entityManager.persist(user);   
+        try {
+            entityManager.persist(user);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on saving user entity", re);
+            throw re;
+        }
+
     }
 
     public void update(Usr user) {
-        entityManager.merge(user);
+        try {
+            entityManager.merge(user);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on updating user", re);
+            throw re;
+        }
     }
 
     public void delete(Usr user) {
-        entityManager.remove(user);
+        try {
+            entityManager.remove(user);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on deleting User entity", re);
+            throw re;
+        }
     }
 
     private void executeInsideTransaction(Consumer<EntityManager> action) {
@@ -91,7 +151,8 @@ public class UsrDAO implements Serializable {
             }
             return query.getResultList();
         } catch (RuntimeException re) {
-            logger.error("Error on updating entity", re);
+            re.printStackTrace();
+            logger.error("Error on finding entity", re);
             throw re;
         }
     }
@@ -108,6 +169,8 @@ public class UsrDAO implements Serializable {
         } catch (NoResultException | NonUniqueResultException nre) {
             return null;
         } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on finding user entity", re);
             throw re;
 
         }
@@ -123,10 +186,10 @@ public class UsrDAO implements Serializable {
                     + " order by user.username";
 
             Query query = entityManager.createQuery(queryString);
-
             query.setMaxResults(20);
             return query.getResultList();
         } catch (RuntimeException re) {
+            re.printStackTrace();
             logger.error("Error on finding entity", re);
             throw re;
         }
@@ -156,6 +219,8 @@ public class UsrDAO implements Serializable {
 
             return query.getResultList();
         } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on searching entity", re);
             throw re;
         }
     }

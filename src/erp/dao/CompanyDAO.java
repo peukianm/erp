@@ -1,6 +1,5 @@
 package erp.dao;
 
-
 import erp.entities.Company;
 import erp.entities.Department;
 
@@ -12,44 +11,68 @@ import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
- * A data access object (DAO) providing persistence and search support for Company entities. Transaction control of the save(), update() and delete() operations
- * must be handled externally by senders of these methods or must be manually added to each of these methods for data to be persisted to the JPA datastore.
+ * A data access object (DAO) providing persistence and search support for
+ * Company entities. Transaction control of the save(), update() and delete()
+ * operations must be handled externally by senders of these methods or must be
+ * manually added to each of these methods for data to be persisted to the JPA
+ * datastore.
  *
  * @see erp.entities.Company
  * @author peukianm
  */
 @Stateless
 public class CompanyDAO {
-     private static final Logger logger = LogManager.getLogger(CompanyDAO.class);
+
+    private static final Logger logger = LogManager.getLogger(CompanyDAO.class);
 
     @PersistenceContext(unitName = "erp")
     private EntityManager entityManager;
 
     public Company getCompany(long id) {
-        return entityManager.find(Company.class, id);
+        try {
+            return entityManager.find(Company.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Company entity", re);
+            throw re;
+        }
     }
 
     public List<Company> getAllStaff(boolean onlyActive) {
-        String sql = "SELECT e FROM Company e "
-                + (onlyActive ? " where e.active = 1 " : " ");
-        Query query = entityManager.createQuery(sql);
-        return query.getResultList();
+        try {
+            String sql = "SELECT e FROM Company e "
+                    + (onlyActive ? " where e.active = 1 " : " ");
+            Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all staff entity", re);
+            throw re;
+        }
     }
-    
-        public List<Department> getAllDepartment(boolean onlyActive) {
-        String sql = "SELECT e FROM Department e "
-                + (onlyActive ? " where e.active = 1 " : " ")
-                + " order by e.name ";
-        Query query = entityManager.createQuery(sql);
-        return query.getResultList();
+
+    public List<Department> getAllDepartment(boolean onlyActive) {
+        try {
+            String sql = "SELECT e FROM Department e "
+                    + (onlyActive ? " where e.active = 1 " : " ")
+                    + " order by e.name ";
+            Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all departments", re);
+            throw re;
+        }
+
     }
 
     /**
-     * Perform an initial save of a previously unsaved Company entity. All subsequent persist actions of this entity should use the #update() method. This
-     * operation must be performed within the a database transaction context for the entity's data to be permanently saved to the persistence store, i.e.,
-     * database. This method uses the      {@link javax.persistence.EntityManager#persist(Object)
+     * Perform an initial save of a previously unsaved Company entity. All
+     * subsequent persist actions of this entity should use the #update()
+     * method. This operation must be performed within the a database
+     * transaction context for the entity's data to be permanently saved to the
+     * persistence store, i.e., database. This method uses the null null     {@link javax.persistence.EntityManager#persist(Object)
 	 * EntityManager#persist} operation.
      *
      * <pre>
@@ -66,14 +89,17 @@ public class CompanyDAO {
             entityManager.persist(entity);
 
         } catch (RuntimeException re) {
-            logger.error("Error on saving entity", re);
+            re.printStackTrace();
+            logger.error("Error on saving company", re);
             throw re;
         }
     }
 
     /**
-     * Delete a persistent Company entity. This operation must be performed within the a database transaction context for the entity's data to be permanently
-     * deleted from the persistence store, i.e., database. This method uses the {@link javax.persistence.EntityManager#remove(Object)
+     * Delete a persistent Company entity. This operation must be performed
+     * within the a database transaction context for the entity's data to be
+     * permanently deleted from the persistence store, i.e., database. This
+     * method uses the {@link javax.persistence.EntityManager#remove(Object)
      * EntityManager#delete} operation.
      *
      * <pre>
@@ -91,16 +117,21 @@ public class CompanyDAO {
             entity = entityManager.getReference(Company.class, entity.getCompanyid());
             entityManager.remove(entity);
         } catch (RuntimeException re) {
-            logger.error("Error on deleting entity", re);
+            re.printStackTrace();
+            logger.error("Error on deleting company", re);
             throw re;
         }
     }
 
     /**
-     * Persist a previously saved Company entity and return it or a copy of it to the sender. A copy of the Company entity parameter is returned when the JPA
-     * persistence mechanism has not previously been tracking the updated entity. This operation must be performed within the a database transaction context for
-     * the entity's data to be permanently saved to the persistence store, i.e., database. This method uses the
-     * {@link javax.persistence.EntityManager#merge(Object) EntityManager#merge} operation.
+     * Persist a previously saved Company entity and return it or a copy of it
+     * to the sender. A copy of the Company entity parameter is returned when
+     * the JPA persistence mechanism has not previously been tracking the
+     * updated entity. This operation must be performed within the a database
+     * transaction context for the entity's data to be permanently saved to the
+     * persistence store, i.e., database. This method uses the
+     * {@link javax.persistence.EntityManager#merge(Object) EntityManager#merge}
+     * operation.
      *
      * <pre>
      * EntityManagerHelper.beginTransaction();
@@ -109,7 +140,8 @@ public class CompanyDAO {
      * </pre>
      *
      * @param entity Company entity to update
-     * @return Company the persisted Company entity instance, may not be the same
+     * @return Company the persisted Company entity instance, may not be the
+     * same
      * @throws RuntimeException if the operation fails
      */
     public Company update(Company entity) {
@@ -117,7 +149,8 @@ public class CompanyDAO {
             Company result = entityManager.merge(entity);
             return result;
         } catch (RuntimeException re) {
-            logger.error("Error on updating entity", re);
+            re.printStackTrace();
+            logger.error("Error on updating company", re);
             throw re;
         }
     }
@@ -127,7 +160,8 @@ public class CompanyDAO {
             Company instance = entityManager.find(Company.class, id);
             return instance;
         } catch (RuntimeException re) {
-            logger.error("Error on finding entity", re);
+            re.printStackTrace();
+            logger.error("Error on finding company", re);
             throw re;
         }
     }
@@ -137,8 +171,10 @@ public class CompanyDAO {
      *
      * @param propertyName the name of the Company property to query
      * @param value the property value to match
-     * @param rowStartIdxAndCount Optional int varargs. rowStartIdxAndCount[0] specifies the the row index in the query result-set to begin collecting the
-     * results. rowStartIdxAndCount[1] specifies the the maximum number of results to return.
+     * @param rowStartIdxAndCount Optional int varargs. rowStartIdxAndCount[0]
+     * specifies the the row index in the query result-set to begin collecting
+     * the results. rowStartIdxAndCount[1] specifies the the maximum number of
+     * results to return.
      * @return List<Company> found by query
      */
     @SuppressWarnings("unchecked")
@@ -163,17 +199,19 @@ public class CompanyDAO {
             //return query.setHint(QueryHints.CACHE_USAGE, CacheUsage.DoNotCheckCache).getResultList();
             return query.getResultList();
         } catch (RuntimeException re) {
+            re.printStackTrace();
             logger.error("Error on finding entity", re);
             throw re;
         }
     }
 
-
     /**
      * Find all Company entities.
      *
-     * @param rowStartIdxAndCount Optional int varargs. rowStartIdxAndCount[0] specifies the the row index in the query result-set to begin collecting the
-     * results. rowStartIdxAndCount[1] specifies the the maximum count of results to return.
+     * @param rowStartIdxAndCount Optional int varargs. rowStartIdxAndCount[0]
+     * specifies the the row index in the query result-set to begin collecting
+     * the results. rowStartIdxAndCount[1] specifies the the maximum count of
+     * results to return.
      * @return List<Company> all Company entities
      */
     @SuppressWarnings("unchecked")
@@ -196,9 +234,10 @@ public class CompanyDAO {
             }
             return query.getResultList();
         } catch (RuntimeException re) {
-            logger.error("Error on finding entity", re);
+            re.printStackTrace();
+            logger.error("Error on finding all entities", re);
             throw re;
         }
-    }  
-    
+    }
+
 }

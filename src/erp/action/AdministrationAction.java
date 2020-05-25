@@ -4,7 +4,6 @@
 package erp.action;
 
 import erp.bean.*;
-import erp.dao.ActionDAO;
 import erp.dao.AuditingDAO;
 import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
@@ -18,11 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.UserTransaction;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.primefaces.event.SelectEvent;
@@ -36,9 +32,6 @@ public class AdministrationAction implements Serializable {
 
     @EJB
     AuditingDAO auditingDAO;
-
-    @EJB
-    ActionDAO actionDAO;
 
     @EJB
     StaffDAO staffDAO;
@@ -104,7 +97,6 @@ public class AdministrationAction implements Serializable {
 //                comp.setName("1111111111111111111");
 //                comp.setActive(BigDecimal.ONE);
 //                persistenceHelper.create(comp);
-//                             
 //                Users usr = new Users();
 //                //usr.setActive(BigDecimal.ONE);
 //                usr.setUsername("Username1");
@@ -141,7 +133,7 @@ public class AdministrationAction implements Serializable {
         try {
             if (temp.getRole().getRoleid() == 1 || temp.getRole().getRoleid() == 2 || temp.getRole().getRoleid() == 3) {
                 //persistenceUtil.audit(temp, Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")), null);
-                Action action = actionDAO.get(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
+                Action action = userDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
                 Auditing audit = new Auditing(temp, temp.getCompany(), action, null,
                         FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
                         FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
@@ -150,7 +142,7 @@ public class AdministrationAction implements Serializable {
                 sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"));
                 sessionBean.setPageName(MessageBundleLoader.getMessage("homePage"));
                 //return "backend/main?faces-redirect=true";
-                return "dashboard?faces-redirect=true";
+                return "insertUser?faces-redirect=true";
             }
             return "";
         } catch (Exception e) {

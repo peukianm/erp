@@ -4,7 +4,6 @@
  */
 package erp.bean;
 
-import erp.dao.UsersDAO;
 import erp.entities.Usr;
 import erp.util.PersistenceHelper;
 import java.io.Serializable;

@@ -34,31 +34,67 @@ public class AuditingDAO implements Serializable {
     private EntityManager entityManager;
 
     public Auditing get(long id) {
-        return entityManager.find(Auditing.class, id);
+        try {
+            return entityManager.find(Auditing.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Audit entity", re);
+            throw re;
+        }
     }
 
     public List<Auditing> getAll() {
-        Query query = entityManager.createQuery("SELECT e FROM Auditing e");
-        return query.getResultList();
+        try {
+            Query query = entityManager.createQuery("SELECT e FROM Auditing e");
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all audits entity", re);
+            throw re;
+        }
     }
 
     public void save(Auditing auditing) {
-        entityManager.persist(auditing);
+        try {
+            entityManager.persist(auditing);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on saving Audit entity", re);
+            throw re;
+        }
         //executeInsideTransaction(entityManager -> entityManager.persist(auditing));
     }
 
     public void update(Auditing auditing, String[] params) {
-        entityManager.merge(auditing);
+        try {
+            entityManager.merge(auditing);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on update Audit entity", re);
+            throw re;
+        }
         //executeInsideTransaction(entityManager -> entityManager.merge(auditing));
     }
 
     public void update(Auditing auditing) {
-        entityManager.merge(auditing);
+        try {
+            entityManager.merge(auditing);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on update Audit entity", re);
+            throw re;
+        }
         //executeInsideTransaction(entityManager -> entityManager.merge(auditing));
     }
 
     public void delete(Auditing auditing) {
-        entityManager.remove(auditing);
+        try {
+            entityManager.remove(auditing);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on deleting audit entity", re);
+            throw re;
+        }
         //executeInsideTransaction(entityManager -> entityManager.remove(auditing));
     }
 
@@ -96,26 +132,23 @@ public class AuditingDAO implements Serializable {
             }
             return query.getResultList();
         } catch (RuntimeException re) {
-            logger.error("Error on updating entity", re);
+            re.printStackTrace();
+            logger.error("Error on finding entity", re);
             throw re;
         }
     }
 
     /**
-     * Find all Auditing entities
-    .
+     * Find all Auditing entities .
      *
-     * @param
-    rowStartIdxAndCount Optional int varargs
-    . rowStartIdxAndCount 
-    [0] specifies the the row index in the query result
-    -set to begin collecting the
-    * results.rowStartIdxAndCount 
-    [1] specifies the the maximum count of results to return.
+     * @param rowStartIdxAndCount Optional int varargs . rowStartIdxAndCount [0]
+     * specifies the the row index in the query result -set to begin collecting
+     * the results.rowStartIdxAndCount [1] specifies the the maximum count of
+     * results to return.
      * @
-    return List<Auditing> all Auditing entities
-
-    */
+     * return List<Auditing> all Auditing entities
+     *
+     */
     @SuppressWarnings("unchecked")
     public List<Auditing> findAll(final int... rowStartIdxAndCount) {
         try {
@@ -136,6 +169,7 @@ public class AuditingDAO implements Serializable {
             }
             return query.getResultList();
         } catch (RuntimeException re) {
+            re.printStackTrace();
             logger.error("Error on finding entity", re);
             throw re;
         }
@@ -173,6 +207,8 @@ public class AuditingDAO implements Serializable {
 
             return query.getResultList();
         } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on searching audit ", re);
             throw re;
         }
     }

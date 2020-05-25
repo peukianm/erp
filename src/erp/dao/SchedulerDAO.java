@@ -38,38 +38,60 @@ public class SchedulerDAO implements Serializable {
     private EntityManager entityManager;
 
     public Scheduletaskdetail getScheduleTaskDetail(long id) {
-        return entityManager.find(Scheduletaskdetail.class, id);
+        try {
+            return entityManager.find(Scheduletaskdetail.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Scheduledetail entity", re);
+            throw re;
+        }
+
     }
 
     public List<Scheduletaskdetail> getAllScheduletaskdetail() {
-        Query query = entityManager.createQuery("SELECT e FROM Schesuletaskdetail e");
-        return query.getResultList();
+
+        try {
+            Query query = entityManager.createQuery("SELECT e FROM Schesuletaskdetail e");
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all ScheduleTaskDetails entity", re);
+            throw re;
+        }
     }
 
     public List<Taskstatus> getAllTaskStatuses() {
-        Query query = entityManager.createQuery("SELECT e FROM Taskstatus e");
-        return query.getResultList();
+        try {
+            Query query = entityManager.createQuery("SELECT e FROM Taskstatus e");
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all Task Statuses entity", re);
+            throw re;
+        }
     }
 
     public List<Staff> getAllStaff(boolean onlyActive) {
-        String sql = "SELECT e FROM Staff e "
-                + (onlyActive ? " where e.active = 1 " : " ");
-        Query query = entityManager.createQuery(sql);
-        return query.getResultList();
+        try {
+            String sql = "SELECT e FROM Staff e "
+                    + (onlyActive ? " where e.active = 1 " : " ");
+            Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting allSTaff entity", re);
+            throw re;
+        }
     }
 
-//    public void setTaskStatus(Companytask task, long statusid) {
-//        Taskstatus onProgress = (Taskstatus) find(Taskstatus.class, statusid);
-//        task.setTaskstatus(onProgress);
-//    }
-//
-//    public void setTaskDetailsStatus(Scheduletaskdetail taskDetails, long statusid) {
-//        Taskstatus onProgress = (Taskstatus) find(Taskstatus.class, statusid);
-//        taskDetails.setTaskstatus(onProgress);
-//    }
-//    
     public Taskstatus getTaskstatus(long statusid) {
-        return (Taskstatus) find(Taskstatus.class, statusid);
+        try {
+            return (Taskstatus) find(Taskstatus.class, statusid);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Task Status entity", re);
+            throw re;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -84,10 +106,11 @@ public class SchedulerDAO implements Serializable {
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             query.setParameter("company", company);
             query.setParameter("task", task);
-            Companytask ctask = (Companytask)query.getResultList().get(0);
+            Companytask ctask = (Companytask) query.getResultList().get(0);
             entityManager.refresh(ctask);
-            return ctask ;
+            return ctask;
         } catch (RuntimeException re) {
+            re.printStackTrace();
             logger.error("Error on getting findCtask entity", re);
             throw re;
         }
@@ -102,6 +125,7 @@ public class SchedulerDAO implements Serializable {
             Query query = entityManager.createQuery(queryString);
             return query.getResultList().size() == 0 ? null : (Staff) query.getResultList().get(0);
         } catch (RuntimeException re) {
+            re.printStackTrace();
             logger.error("Error on getting Staff from Code ", re);
             throw re;
         }
@@ -129,23 +153,54 @@ public class SchedulerDAO implements Serializable {
     }
 
     public void saveAttendance(Attendance attendance) {
-        entityManager.persist(attendance);
+        try {
+            entityManager.persist(attendance);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on saving entity", re);
+            throw re;
+        }
     }
 
     public void updateAttendance(Attendance attendance) {
-        entityManager.merge(attendance);
+
+        try {
+            entityManager.merge(attendance);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on updating entity", re);
+            throw re;
+        }
     }
 
     public void updateCtask(Companytask companyTask) {
-        entityManager.merge(companyTask);
+        try {
+            entityManager.merge(companyTask);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on updating entity", re);
+            throw re;
+        }
     }
 
     public void saveTaskDetails(Scheduletaskdetail scheduletaskdetail) {
-        entityManager.persist(scheduletaskdetail);
+        try {
+            entityManager.persist(scheduletaskdetail);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on saving entity", re);
+            throw re;
+        }
     }
 
     public void updateTaskDetails(Scheduletaskdetail scheduletaskdetail) {
-        entityManager.merge(scheduletaskdetail);
+        try {
+            entityManager.merge(scheduletaskdetail);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on updating entity", re);
+            throw re;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -223,6 +278,12 @@ public class SchedulerDAO implements Serializable {
     }
 
     public Object find(Class entityClass, Object id) {
-        return entityManager.find(entityClass, id);
+        try {
+            return entityManager.find(entityClass, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on gfinding Generic class", re);
+            throw re;
+        }
     }
 }

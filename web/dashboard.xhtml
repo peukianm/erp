@@ -270,7 +270,8 @@
                                 </tr>           
                             </table>
 
-                            <p:commandButton value="#{bundle.search}" action="#{administrationAction.fetchAttendances}" update="searchStaffForm viewAttendanceResults"  />
+                            <p:commandButton value="#{bundle.search}" action="#{administrationAction.fetchAttendances}" update="searchStaffForm viewAttendanceResults"  />  
+                            <p:spacer width="10" />
                             <p:commandButton  value="#{bundle.reset}" action="#{dbView.resetSearchStaffForm()}"  ajax="false" />
                         </div>
                     </h:form>
@@ -305,7 +306,7 @@
                                                 <p:graphicImage name="images/pdf.png" library="babylon-layout" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
                                                 <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle=" #{bundle.personelAttendances}" orientation="Landscape"
-                                                             facetBackground="#F88017" facetFontSize="15" facetFontColor="#0000ff"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
                                                              cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
 
