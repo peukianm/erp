@@ -59,6 +59,9 @@ public class ApplicationBean implements Serializable {
     }
 
     public List<Sector> getSectors() {
+        if (sectors == null) {
+            sectors = companyDAO.getAllSector();
+        }
         return sectors;
     }
 

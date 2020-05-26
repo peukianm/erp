@@ -1,0 +1,385 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <!--<ui:define name="title">Dashboard</ui:define>-->
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <style type="text/css">
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
+                position: relative;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
+            }
+            .myclass table {
+                table-layout: auto !important;
+            }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 20px;
+                height: 20px;
+                text-align: right;
+                margin: 0px 0 0 2px !important;
+            }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
+
+        </style>
+        <script type="text/javascript">
+            $(function () {
+                var ctx = document.getElementById("dashboard-chart").getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                        datasets: [{
+                                label: 'Sales',
+                                data: [12, 19, 3, 5, 2, 3, 9],
+                                borderColor: [
+                                    '#7E57C2',
+                                ],
+                                borderWidth: 3,
+                                borderDash: [5, 5],
+                                fill: false,
+                                pointRadius: 3
+                            }, {
+                                label: 'Income',
+                                data: [1, 2, 5, 3, 12, 7, 15],
+                                backgroundColor: [
+                                    'rgba(187,222,251,0.2)',
+                                ],
+                                borderColor: [
+                                    '#42A5F5',
+                                ],
+                                borderWidth: 3,
+                                fill: true
+                            },
+                            {
+                                label: 'Expenses',
+                                data: [7, 12, 15, 5, 3, 13, 21],
+                                borderColor: [
+                                    '#FFB300',
+                                ],
+                                borderWidth: 3,
+                                fill: false,
+                                pointRadius: [4, 6, 4, 12, 8, 0, 4]
+                            },
+                            {
+                                label: 'New Users',
+                                data: [3, 7, 2, 17, 15, 13, 19],
+                                borderColor: [
+                                    '#66BB6A',
+                                ],
+                                borderWidth: 3,
+                                fill: false
+                            }]
+                    },
+                    options: {
+                        responsive: true,
+                        hover: {
+                            mode: 'index'
+                        },
+                        scales: {
+                            xAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Month'
+                                    }
+                                }],
+                            yAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Value'
+                                    }
+                                }]
+                        }
+                    }
+                });
+            });
+        </script>
+    </ui:define>
+
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/dashboard">#{sessionBean.pageName}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <div class="overview-box sales">
+                        <i class="overview-icon fa fa-barcode"></i>
+                        <span class="overview-title">#{bundle.attendance}</span>
+                        <b> <p:spacer width="10" /> #{dbView.attendanceDate}</b>
+                        <!-- <i class="overview-arrow fa fa-chevron-circle-up"></i> -->
+
+                        <div class="overview-subinfo">
+                            <!--<span style="font-size: 15px; color: #ffffff;">DATE</span>  -->
+                            <div style="text-align:left;"> <b>#{bundle.entryTime}: #{dbView.entryTime}</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.exitTime}:  #{dbView.exitTime}</b></div> 
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <div class="overview-box views">
+                        <i class="overview-icon fa fa-search"></i>
+                        <span class="overview-title">#{bundle.reqs}</span>
+                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                        <!--<div class="overview-numbers">
+                        #{bundle.openReqs}
+                    </div> -->
+                        <div class="overview-subinfo">
+                            <!--<span style="font-size: 15px; color: #ffffff;">YEAR</span> --> 
+                            <div style="text-align:left;"> <b>#{bundle.openReqs}: N/A</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.totalReqs}: N/A</b></div> 
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <div class="overview-box users">
+                        <i class="overview-icon fa fa-tasks"></i>
+                        <span class="overview-title">#{bundle.tasks}</span>
+                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                        <!--<div class="overview-numbers">
+                            9522
+                        </div>-->
+                        <div class="overview-subinfo">
+                            <span style="font-size: 15px; color: #ffffff;"></span> 
+                            <div style="text-align:left;"> <b>#{bundle.openTask}: N/A</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.closedTask}: N/A</b></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12 p-lg-6 p-xl-3">
+                    <div class="overview-box checkin">
+                        <i class="overview-icon fa fa-calendar"></i>
+                        <span class="overview-title">#{bundle.calendar}</span>
+                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
+                        <!--<div class="overview-numbers">
+                            4211
+                        </div>-->
+                        <div class="overview-subinfo">
+                            <span style="font-size: 15px; color: #ffffff;"></span> 
+                            <div style="text-align:left;"> <b>#{bundle.todayEvents}: N/A</b></div> 
+                            <div style="text-align:left;"> <b>#{bundle.weekEvents}: N/A</b></div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+                <!--          ΚΡΙΤΗΡΙΑ ΑΝΑΖΗΤΗΣΗ ΠΡΟΣΩΠΙΚΟΥ !!!!!!!!!!!!!!!!!!!!! -->
+                <p:messages>
+                    <p:autoUpdate />
+                </p:messages>
+                <!--<div class="p-col-12 p-lg-8">-->
+                <div class="p-col-12 p-xl-6">    
+                    <h:form id="searchUserForm">
+                        <div class="card card-w-title statistics">
+                            <div class="erp-panel-titlebar">
+                                Αναζήτηση Χρηστών 
+                            </div>
+                            <table style="width: 100%">
+                                <tr>
+                                    <td>
+                                        <p:outputLabel style="" for="userComplete" value="Επιλογή Χρήστη:" />
+                                    </td>
+
+                                    <td colspan="3">                                        
+                                        <p:autoComplete widgetVar="acUser" minQueryLength="2" queryDelay="300" scrollHeight="300" id="userComplete" value="#{dbUsers.searchUser}" completeMethod="#{dbUsers.completeUser}" size="70" required="false"  
+                                                        var="user" itemLabel="#{user.username} #{user.surname} #{user.name}" itemValue="#{user}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
+                                            <o:converter converterId="omnifaces.ListConverter"  list="#{dbUsers.availableUsers}" />
+                                            <p:ajax event="itemSelect" listener="#{dbUsers.autocompleteUsernameSelectUser}" update="userComplete viewUserResults"  />  
+                                        </p:autoComplete>
+                                    </td>
+                                </tr>  
+                                <tr>
+                                    <td>
+                                        <p:outputLabel value="#{bundle.surname}:" style="" for="userSurname" />
+                                    </td>
+                                    <td>                                       
+                                        <p:inputText size="16" value="#{dbUsers.surname}" id="userSurname" />
+                                    </td>
+                                    <td>
+                                        <p:outputLabel style="" for="selectCompany" value="#{bundle.company}:" />
+                                    </td>
+                                    <td>                                        
+                                        <p:selectOneMenu   value="#{dbUsers.selectedCompany}" id="selectCompany" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.companies}" var="company" itemLabel="#{company.name}" itemValue="#{company}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <p:outputLabel style="" for="selectRole" value="#{bundle.role}" />
+                                    </td>
+                                    <td>                                       
+                                        <p:selectOneMenu   value="#{dbUsers.selectedRole}" id="selectRole" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.roles}" var="role" itemLabel="#{role.name}" itemValue="#{role}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                    </td>
+                                    <td>
+                                        <p:outputLabel value="#{bundle.active}:" style="" for="userActive" />
+                                    </td>
+                                    <td>
+                                        <p:selectBooleanButton id="userActive" value="#{dbUsers.active}" onLabel="Yes" offLabel="No" 
+                                                               onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p:outputLabel style="" for="selectSector" value="#{bundle.sector}:" />    
+                                    </td>
+                                    <td>                                        
+                                        <p:selectOneMenu   value="#{dbUsers.selectedSector}" id="selectSector" converter="omnifaces.SelectItemsConverter" >                                                                                      
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                    </td>
+                                    <td>
+                                        <p:outputLabel style="" for="selectDepartment" value="#{bundle.department}:" />  
+                                    </td>
+                                    <td>                                         
+                                        <p:selectOneMenu  value="#{dbUsers.selectedDepartment}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                                                                          
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                    </td>
+                                </tr>
+
+
+                            </table>
+
+                            <p:commandButton value="#{bundle.search}" action="#{administrationAction.fetchUsers}" update="searchUserForm viewUserResults"  />  
+                            <p:spacer width="10" />
+                            <p:commandButton  value="#{bundle.reset}" action="#{dbUsers.resetSearchUsersForm}"  ajax="false" />
+                        </div>
+                    </h:form>
+                </div>
+
+
+
+
+
+
+
+
+                <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <!--<div class="p-col-12 p-lg-4">-->
+                <div class="p-col-12 p-xl-6">    
+                    <div class="card user-card">
+
+                        <div class="user-card-content">
+                            <div class="erp-panel-titlebar">
+                                Λίστα Χρηστών
+                            </div>
+                            <h:form id="viewUserResults">
+                                <p:dataTable id="tbl" var="user" value="#{dbUsers.searchUsers}" styleClass="myclass"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 10px;    padding: 0.1em 0.2em ;  ">
+
+                                    <f:facet name="{Exporters}">
+                                        <div style="float:right;">
+
+
+                                            <p:commandLink id="pdf" ajax="false">
+                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle="Λίστα Χρηστών" orientation="Landscape"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
+                                                             cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+
+
+
+                                            <p:commandLink id="xlsx" ajax="false">
+                                                <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" Λίστα Χρηστών"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
+                                                             cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+                                        </div>
+
+                                    </f:facet>
+
+                                    <p:column sortBy="#{user.username}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.username}" />
+                                        </f:facet>
+                                        <h:outputText value="#{user.username}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{user.surname}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.surname}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{user.surname} #{user.name}" />
+                                    </p:column>
+
+                                    <p:column >
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.role}"/>
+                                        </f:facet>
+                                        <ui:repeat var="userrole" value="#{user.userroles}">
+                                            <h:outputText value="#{userrole.role.name}" /> <br/>
+                                        </ui:repeat>
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.company}" />
+                                        </f:facet>
+                                        <h:outputText value="#{user.company.abbrev}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{user.department.name}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.department}" />
+                                        </f:facet>
+                                        <h:outputText value="#{user.department.name}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

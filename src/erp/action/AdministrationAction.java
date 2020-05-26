@@ -59,6 +59,9 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     DashboardView dbView;
+    
+     @Inject
+    DashboardUsers dbUsers;
 
     public AdministrationAction() {
     }
@@ -142,7 +145,7 @@ public class AdministrationAction implements Serializable {
                 sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"));
                 sessionBean.setPageName(MessageBundleLoader.getMessage("homePage"));
                 //return "backend/main?faces-redirect=true";
-                return "insertUser?faces-redirect=true";
+                return "dashboardU?faces-redirect=true";
             }
             return "";
         } catch (Exception e) {
@@ -174,6 +177,18 @@ public class AdministrationAction implements Serializable {
     public String getPropertyValue(String key) {
         String propertyValue = SystemParameters.getInstance().getProperty(key);
         return propertyValue;
+    }
+
+    public void fetchUsers() {
+        try {
+            List<Usr> users = userDAO.searchUser(dbUsers.getSelectedRole(), null, dbUsers.getSelectedDepartment(), 
+                                                dbUsers.getSelectedSector(), dbUsers.getSurname(), dbUsers.getActive());
+            dbUsers.setSearchUsers(users);
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            goError(e);
+        }
     }
 
     public void fetchAttendances() {
@@ -241,6 +256,9 @@ public class AdministrationAction implements Serializable {
             }
             dbView.setAttendances(retValue);
         } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            goError(e);
         }
     }
 
@@ -345,18 +363,7 @@ public class AdministrationAction implements Serializable {
             return "";
         }
     }
-
-    public void searchUser() {
-        try {
-            List<Usr> users = userDAO.searchUser(userBean.getSearchByRole(), userBean.getSearchByCompany(), userBean.getSearchByUsername(), userBean.getSearchBySurname());
-            userBean.setUsers(users);
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-        }
-    }
-
+    
     public void goInsertUser() {
         try {
             Usr user = new Usr();

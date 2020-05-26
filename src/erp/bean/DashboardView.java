@@ -37,7 +37,7 @@ import org.primefaces.event.SelectEvent;
 @ViewScoped
 public class DashboardView implements Serializable {
 
-    private static final Logger logger = LogManager.getLogger(AdministrationAction.class);
+    private static final Logger logger = LogManager.getLogger(DashboardView.class);
 
     @Inject
     private SessionBean sessionBean;

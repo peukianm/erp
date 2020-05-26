@@ -7,455 +7,479 @@ import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
-
 /**
  * The persistent class for the COMPANY database table.
- * 
+ *
  */
 @Entity
-@NamedQuery(name="Company.findAll", query="SELECT c FROM Company c")
+@NamedQuery(name = "Company.findAll", query = "SELECT c FROM Company c")
 public class Company implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@SequenceGenerator(name="COMPANY_COMPANYID_GENERATOR", sequenceName="COMPANY_SEQ")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="COMPANY_COMPANYID_GENERATOR")
-	private long companyid;
+    private static final long serialVersionUID = 1L;
 
-	private String abbrev;
+    @Id
+    @SequenceGenerator(name = "COMPANY_COMPANYID_GENERATOR", sequenceName = "COMPANY_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMPANY_COMPANYID_GENERATOR")
+    private long companyid;
 
-	private BigDecimal active;
+    private String abbrev;
 
-	private String afm;
+    private BigDecimal active;
 
-	private String contactperson;
+    private String afm;
 
-	@Column(name="CREATED_TIMESTAMP")
-	private Timestamp createdTimestamp;
+    private String contactperson;
 
-	@Temporal(TemporalType.DATE)
-	private Date createddate;
+    @Column(name = "CREATED_TIMESTAMP")
+    private Timestamp createdTimestamp;
 
-	private String description;
+    @Temporal(TemporalType.DATE)
+    private Date createddate;
 
-	private String email;
+    private String description;
 
-	@Column(name="MODIFIED_TIMESTAMP")
-	private Timestamp modifiedTimestamp;
+    private String email;
 
-	private String name;
+    @Column(name = "MODIFIED_TIMESTAMP")
+    private Timestamp modifiedTimestamp;
 
-	private String phone1;
+    private String name;
 
-	private String phone2;
+    private String phone1;
 
-	//bi-directional many-to-one association to Address
-	@OneToMany(mappedBy="company")
-	private List<Address> addresses;
+    private String phone2;
 
-	//bi-directional many-to-one association to Auditing
-	@OneToMany(mappedBy="company")
-	private List<Auditing> auditings;
+    //bi-directional many-to-one association to Address
+    @OneToMany(mappedBy = "company")
+    private List<Address> addresses;
 
-	//bi-directional many-to-many association to Scheduletask
-	@ManyToMany
-	@JoinTable(
-		name="COMPANYTASK"
-		, joinColumns={
-			@JoinColumn(name="COMPANYID")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="TASKID")
-			}
-		)
-	private List<Scheduletask> scheduletasks;
+    //bi-directional many-to-one association to Auditing
+    @OneToMany(mappedBy = "company")
+    private List<Auditing> auditings;
 
-	//bi-directional many-to-many association to Sector
-	@ManyToMany(fetch=FetchType.EAGER)
-	@JoinTable(
-		name="COMPANYSECTOR"
-		, joinColumns={
-			@JoinColumn(name="COMPANYID")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="SECTORID")
-			}
-		)
-	private List<Sector> sectors;
+    //bi-directional many-to-many association to Scheduletask
+    @ManyToMany
+    @JoinTable(
+            name = "COMPANYTASK",
+             joinColumns = {
+                @JoinColumn(name = "COMPANYID")
+            },
+             inverseJoinColumns = {
+                @JoinColumn(name = "TASKID")
+            }
+    )
+    private List<Scheduletask> scheduletasks;
 
-	//bi-directional many-to-one association to Companysector
-	@OneToMany(mappedBy="company", fetch=FetchType.EAGER)
-	private List<Companysector> companysectors;
+    //bi-directional many-to-many association to Sector
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "COMPANYSECTOR",
+             joinColumns = {
+                @JoinColumn(name = "COMPANYID")
+            },
+             inverseJoinColumns = {
+                @JoinColumn(name = "SECTORID")
+            }
+    )
+    private List<Sector> sectors;
 
-	//bi-directional many-to-one association to Companytask
-	@OneToMany(mappedBy="company", fetch=FetchType.EAGER)
-	private List<Companytask> companytasks;
+    //bi-directional many-to-one association to Companysector
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    private List<Companysector> companysectors;
 
-	//bi-directional many-to-one association to Equipmentdepartment
-	@OneToMany(mappedBy="company")
-	private List<Equipmentdepartment> equipmentdepartments;
+    //bi-directional many-to-one association to Companytask
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    private List<Companytask> companytasks;
 
-	//bi-directional many-to-one association to Loggerdata
-	@OneToMany(mappedBy="company")
-	private List<Loggerdata> loggerdata;
+    //bi-directional many-to-one association to Equipmentdepartment
+    @OneToMany(mappedBy = "company")
+    private List<Equipmentdepartment> equipmentdepartments;
 
-	//bi-directional many-to-one association to Sectordepartment
-	@OneToMany(mappedBy="company")
-	private List<Sectordepartment> sectordepartments;
+    //bi-directional many-to-one association to Loggerdata
+    @OneToMany(mappedBy = "company")
+    private List<Loggerdata> loggerdata;
 
-	//bi-directional many-to-one association to Staff
-	@OneToMany(mappedBy="company")
-	private List<Staff> staffs;
+    //bi-directional many-to-one association to Sectordepartment
+    @OneToMany(mappedBy = "company")
+    private List<Sectordepartment> sectordepartments;
 
-	//bi-directional many-to-one association to Usr
-	@OneToMany(mappedBy="company")
-	private List<Usr> usrs;
+    //bi-directional many-to-one association to Staff
+    @OneToMany(mappedBy = "company")
+    private List<Staff> staffs;
 
-	//bi-directional many-to-one association to Attendance
-	@OneToMany(mappedBy="company")
-	private List<Attendance> attendances;
+    //bi-directional many-to-one association to Usr
+    @OneToMany(mappedBy = "company")
+    private List<Usr> usrs;
 
-	public Company() {
-	}
-
-	public long getCompanyid() {
-		return this.companyid;
-	}
-
-	public void setCompanyid(long companyid) {
-		this.companyid = companyid;
-	}
-
-	public String getAbbrev() {
-		return this.abbrev;
-	}
-
-	public void setAbbrev(String abbrev) {
-		this.abbrev = abbrev;
-	}
-
-	public BigDecimal getActive() {
-		return this.active;
-	}
+    //bi-directional many-to-one association to Attendance
+    @OneToMany(mappedBy = "company")
+    private List<Attendance> attendances;
 
-	public void setActive(BigDecimal active) {
-		this.active = active;
-	}
+    public Company() {
+    }
 
-	public String getAfm() {
-		return this.afm;
-	}
+    public long getCompanyid() {
+        return this.companyid;
+    }
 
-	public void setAfm(String afm) {
-		this.afm = afm;
-	}
+    public void setCompanyid(long companyid) {
+        this.companyid = companyid;
+    }
 
-	public String getContactperson() {
-		return this.contactperson;
-	}
+    public String getAbbrev() {
+        return this.abbrev;
+    }
 
-	public void setContactperson(String contactperson) {
-		this.contactperson = contactperson;
-	}
+    public void setAbbrev(String abbrev) {
+        this.abbrev = abbrev;
+    }
 
-	public Timestamp getCreatedTimestamp() {
-		return this.createdTimestamp;
-	}
+    public BigDecimal getActive() {
+        return this.active;
+    }
 
-	public void setCreatedTimestamp(Timestamp createdTimestamp) {
-		this.createdTimestamp = createdTimestamp;
-	}
+    public void setActive(BigDecimal active) {
+        this.active = active;
+    }
 
-	public Date getCreateddate() {
-		return this.createddate;
-	}
+    public String getAfm() {
+        return this.afm;
+    }
 
-	public void setCreateddate(Date createddate) {
-		this.createddate = createddate;
-	}
+    public void setAfm(String afm) {
+        this.afm = afm;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public String getContactperson() {
+        return this.contactperson;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setContactperson(String contactperson) {
+        this.contactperson = contactperson;
+    }
 
-	public String getEmail() {
-		return this.email;
-	}
+    public Timestamp getCreatedTimestamp() {
+        return this.createdTimestamp;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setCreatedTimestamp(Timestamp createdTimestamp) {
+        this.createdTimestamp = createdTimestamp;
+    }
 
-	public Timestamp getModifiedTimestamp() {
-		return this.modifiedTimestamp;
-	}
+    public Date getCreateddate() {
+        return this.createddate;
+    }
 
-	public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
-		this.modifiedTimestamp = modifiedTimestamp;
-	}
+    public void setCreateddate(Date createddate) {
+        this.createddate = createddate;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getPhone1() {
-		return this.phone1;
-	}
+    public String getEmail() {
+        return this.email;
+    }
 
-	public void setPhone1(String phone1) {
-		this.phone1 = phone1;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getPhone2() {
-		return this.phone2;
-	}
+    public Timestamp getModifiedTimestamp() {
+        return this.modifiedTimestamp;
+    }
 
-	public void setPhone2(String phone2) {
-		this.phone2 = phone2;
-	}
+    public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
+        this.modifiedTimestamp = modifiedTimestamp;
+    }
 
-	public List<Address> getAddresses() {
-		return this.addresses;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setAddresses(List<Address> addresses) {
-		this.addresses = addresses;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Address addAddress(Address address) {
-		getAddresses().add(address);
-		address.setCompany(this);
+    public String getPhone1() {
+        return this.phone1;
+    }
 
-		return address;
-	}
+    public void setPhone1(String phone1) {
+        this.phone1 = phone1;
+    }
 
-	public Address removeAddress(Address address) {
-		getAddresses().remove(address);
-		address.setCompany(null);
+    public String getPhone2() {
+        return this.phone2;
+    }
 
-		return address;
-	}
+    public void setPhone2(String phone2) {
+        this.phone2 = phone2;
+    }
 
-	public List<Auditing> getAuditings() {
-		return this.auditings;
-	}
+    public List<Address> getAddresses() {
+        return this.addresses;
+    }
 
-	public void setAuditings(List<Auditing> auditings) {
-		this.auditings = auditings;
-	}
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
 
-	public Auditing addAuditing(Auditing auditing) {
-		getAuditings().add(auditing);
-		auditing.setCompany(this);
+    public Address addAddress(Address address) {
+        getAddresses().add(address);
+        address.setCompany(this);
 
-		return auditing;
-	}
+        return address;
+    }
 
-	public Auditing removeAuditing(Auditing auditing) {
-		getAuditings().remove(auditing);
-		auditing.setCompany(null);
+    public Address removeAddress(Address address) {
+        getAddresses().remove(address);
+        address.setCompany(null);
 
-		return auditing;
-	}
+        return address;
+    }
 
-	public List<Scheduletask> getScheduletasks() {
-		return this.scheduletasks;
-	}
+    public List<Auditing> getAuditings() {
+        return this.auditings;
+    }
 
-	public void setScheduletasks(List<Scheduletask> scheduletasks) {
-		this.scheduletasks = scheduletasks;
-	}
+    public void setAuditings(List<Auditing> auditings) {
+        this.auditings = auditings;
+    }
 
-	public List<Sector> getSectors() {
-		return this.sectors;
-	}
+    public Auditing addAuditing(Auditing auditing) {
+        getAuditings().add(auditing);
+        auditing.setCompany(this);
 
-	public void setSectors(List<Sector> sectors) {
-		this.sectors = sectors;
-	}
+        return auditing;
+    }
 
-	public List<Companysector> getCompanysectors() {
-		return this.companysectors;
-	}
+    public Auditing removeAuditing(Auditing auditing) {
+        getAuditings().remove(auditing);
+        auditing.setCompany(null);
 
-	public void setCompanysectors(List<Companysector> companysectors) {
-		this.companysectors = companysectors;
-	}
+        return auditing;
+    }
 
-	public Companysector addCompanysector(Companysector companysector) {
-		getCompanysectors().add(companysector);
-		companysector.setCompany(this);
+    public List<Scheduletask> getScheduletasks() {
+        return this.scheduletasks;
+    }
 
-		return companysector;
-	}
+    public void setScheduletasks(List<Scheduletask> scheduletasks) {
+        this.scheduletasks = scheduletasks;
+    }
 
-	public Companysector removeCompanysector(Companysector companysector) {
-		getCompanysectors().remove(companysector);
-		companysector.setCompany(null);
+    public List<Sector> getSectors() {
+        return this.sectors;
+    }
 
-		return companysector;
-	}
+    public void setSectors(List<Sector> sectors) {
+        this.sectors = sectors;
+    }
 
-	public List<Companytask> getCompanytasks() {
-		return this.companytasks;
-	}
+    public List<Companysector> getCompanysectors() {
+        return this.companysectors;
+    }
 
-	public void setCompanytasks(List<Companytask> companytasks) {
-		this.companytasks = companytasks;
-	}
+    public void setCompanysectors(List<Companysector> companysectors) {
+        this.companysectors = companysectors;
+    }
 
-	public Companytask addCompanytask(Companytask companytask) {
-		getCompanytasks().add(companytask);
-		companytask.setCompany(this);
+    public Companysector addCompanysector(Companysector companysector) {
+        getCompanysectors().add(companysector);
+        companysector.setCompany(this);
 
-		return companytask;
-	}
+        return companysector;
+    }
 
-	public Companytask removeCompanytask(Companytask companytask) {
-		getCompanytasks().remove(companytask);
-		companytask.setCompany(null);
+    public Companysector removeCompanysector(Companysector companysector) {
+        getCompanysectors().remove(companysector);
+        companysector.setCompany(null);
 
-		return companytask;
-	}
+        return companysector;
+    }
 
-	public List<Equipmentdepartment> getEquipmentdepartments() {
-		return this.equipmentdepartments;
-	}
+    public List<Companytask> getCompanytasks() {
+        return this.companytasks;
+    }
 
-	public void setEquipmentdepartments(List<Equipmentdepartment> equipmentdepartments) {
-		this.equipmentdepartments = equipmentdepartments;
-	}
+    public void setCompanytasks(List<Companytask> companytasks) {
+        this.companytasks = companytasks;
+    }
 
-	public Equipmentdepartment addEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
-		getEquipmentdepartments().add(equipmentdepartment);
-		equipmentdepartment.setCompany(this);
+    public Companytask addCompanytask(Companytask companytask) {
+        getCompanytasks().add(companytask);
+        companytask.setCompany(this);
 
-		return equipmentdepartment;
-	}
+        return companytask;
+    }
 
-	public Equipmentdepartment removeEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
-		getEquipmentdepartments().remove(equipmentdepartment);
-		equipmentdepartment.setCompany(null);
+    public Companytask removeCompanytask(Companytask companytask) {
+        getCompanytasks().remove(companytask);
+        companytask.setCompany(null);
 
-		return equipmentdepartment;
-	}
+        return companytask;
+    }
 
-	public List<Loggerdata> getLoggerdata() {
-		return this.loggerdata;
-	}
+    public List<Equipmentdepartment> getEquipmentdepartments() {
+        return this.equipmentdepartments;
+    }
 
-	public void setLoggerdata(List<Loggerdata> loggerdata) {
-		this.loggerdata = loggerdata;
-	}
+    public void setEquipmentdepartments(List<Equipmentdepartment> equipmentdepartments) {
+        this.equipmentdepartments = equipmentdepartments;
+    }
 
-	public Loggerdata addLoggerdata(Loggerdata loggerdata) {
-		getLoggerdata().add(loggerdata);
-		loggerdata.setCompany(this);
+    public Equipmentdepartment addEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
+        getEquipmentdepartments().add(equipmentdepartment);
+        equipmentdepartment.setCompany(this);
 
-		return loggerdata;
-	}
+        return equipmentdepartment;
+    }
 
-	public Loggerdata removeLoggerdata(Loggerdata loggerdata) {
-		getLoggerdata().remove(loggerdata);
-		loggerdata.setCompany(null);
+    public Equipmentdepartment removeEquipmentdepartment(Equipmentdepartment equipmentdepartment) {
+        getEquipmentdepartments().remove(equipmentdepartment);
+        equipmentdepartment.setCompany(null);
 
-		return loggerdata;
-	}
+        return equipmentdepartment;
+    }
 
-	public List<Sectordepartment> getSectordepartments() {
-		return this.sectordepartments;
-	}
+    public List<Loggerdata> getLoggerdata() {
+        return this.loggerdata;
+    }
 
-	public void setSectordepartments(List<Sectordepartment> sectordepartments) {
-		this.sectordepartments = sectordepartments;
-	}
+    public void setLoggerdata(List<Loggerdata> loggerdata) {
+        this.loggerdata = loggerdata;
+    }
 
-	public Sectordepartment addSectordepartment(Sectordepartment sectordepartment) {
-		getSectordepartments().add(sectordepartment);
-		sectordepartment.setCompany(this);
+    public Loggerdata addLoggerdata(Loggerdata loggerdata) {
+        getLoggerdata().add(loggerdata);
+        loggerdata.setCompany(this);
 
-		return sectordepartment;
-	}
+        return loggerdata;
+    }
 
-	public Sectordepartment removeSectordepartment(Sectordepartment sectordepartment) {
-		getSectordepartments().remove(sectordepartment);
-		sectordepartment.setCompany(null);
+    public Loggerdata removeLoggerdata(Loggerdata loggerdata) {
+        getLoggerdata().remove(loggerdata);
+        loggerdata.setCompany(null);
 
-		return sectordepartment;
-	}
+        return loggerdata;
+    }
 
-	public List<Staff> getStaffs() {
-		return this.staffs;
-	}
+    public List<Sectordepartment> getSectordepartments() {
+        return this.sectordepartments;
+    }
 
-	public void setStaffs(List<Staff> staffs) {
-		this.staffs = staffs;
-	}
+    public void setSectordepartments(List<Sectordepartment> sectordepartments) {
+        this.sectordepartments = sectordepartments;
+    }
 
-	public Staff addStaff(Staff staff) {
-		getStaffs().add(staff);
-		staff.setCompany(this);
+    public Sectordepartment addSectordepartment(Sectordepartment sectordepartment) {
+        getSectordepartments().add(sectordepartment);
+        sectordepartment.setCompany(this);
 
-		return staff;
-	}
+        return sectordepartment;
+    }
 
-	public Staff removeStaff(Staff staff) {
-		getStaffs().remove(staff);
-		staff.setCompany(null);
+    public Sectordepartment removeSectordepartment(Sectordepartment sectordepartment) {
+        getSectordepartments().remove(sectordepartment);
+        sectordepartment.setCompany(null);
 
-		return staff;
-	}
+        return sectordepartment;
+    }
 
-	public List<Usr> getUsrs() {
-		return this.usrs;
-	}
+    public List<Staff> getStaffs() {
+        return this.staffs;
+    }
 
-	public void setUsrs(List<Usr> usrs) {
-		this.usrs = usrs;
-	}
+    public void setStaffs(List<Staff> staffs) {
+        this.staffs = staffs;
+    }
 
-	public Usr addUsr(Usr usr) {
-		getUsrs().add(usr);
-		usr.setCompany(this);
+    public Staff addStaff(Staff staff) {
+        getStaffs().add(staff);
+        staff.setCompany(this);
 
-		return usr;
-	}
+        return staff;
+    }
 
-	public Usr removeUsr(Usr usr) {
-		getUsrs().remove(usr);
-		usr.setCompany(null);
+    public Staff removeStaff(Staff staff) {
+        getStaffs().remove(staff);
+        staff.setCompany(null);
 
-		return usr;
-	}
+        return staff;
+    }
 
-	public List<Attendance> getAttendances() {
-		return this.attendances;
-	}
+    public List<Usr> getUsrs() {
+        return this.usrs;
+    }
 
-	public void setAttendances(List<Attendance> attendances) {
-		this.attendances = attendances;
-	}
+    public void setUsrs(List<Usr> usrs) {
+        this.usrs = usrs;
+    }
 
-	public Attendance addAttendance(Attendance attendance) {
-		getAttendances().add(attendance);
-		attendance.setCompany(this);
+    public Usr addUsr(Usr usr) {
+        getUsrs().add(usr);
+        usr.setCompany(this);
 
-		return attendance;
-	}
+        return usr;
+    }
 
-	public Attendance removeAttendance(Attendance attendance) {
-		getAttendances().remove(attendance);
-		attendance.setCompany(null);
+    public Usr removeUsr(Usr usr) {
+        getUsrs().remove(usr);
+        usr.setCompany(null);
 
-		return attendance;
-	}
+        return usr;
+    }
+
+    public List<Attendance> getAttendances() {
+        return this.attendances;
+    }
+
+    public void setAttendances(List<Attendance> attendances) {
+        this.attendances = attendances;
+    }
+
+    public Attendance addAttendance(Attendance attendance) {
+        getAttendances().add(attendance);
+        attendance.setCompany(this);
+
+        return attendance;
+    }
+
+    public Attendance removeAttendance(Attendance attendance) {
+        getAttendances().remove(attendance);
+        attendance.setCompany(null);
+
+        return attendance;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof Department)) {
+            return false;
+        }
+
+        Company compare = (Company) obj;
+        return compare.companyid == (this.companyid);
+    }
+
+    @Override
+    public int hashCode() {
+        return companyid != 0 ? this.getClass().hashCode() + Long.hashCode(companyid) : super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Company{id=" + companyid + ", name=" + getName() + "}";
+    }
 
 }

@@ -5,99 +5,123 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 /**
  * The persistent class for the "ROLE" database table.
- * 
+ *
  */
 @Entity
-@Table(name="ROLE")
-@NamedQuery(name="Role.findAll", query="SELECT r FROM Role r")
+@Table(name = "ROLE")
+@NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r")
 public class Role implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@SequenceGenerator(name="ROLE_ROLEID_GENERATOR", sequenceName="ROLE_SEQ")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ROLE_ROLEID_GENERATOR")
-	private long roleid;
+    private static final long serialVersionUID = 1L;
 
-	private String description;
+    @Id
+    @SequenceGenerator(name = "ROLE_ROLEID_GENERATOR", sequenceName = "ROLE_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ROLE_ROLEID_GENERATOR")
+    private long roleid;
 
-	private String name;
+    private String description;
 
-	private BigDecimal ordered;
+    private String name;
 
-	//bi-directional many-to-one association to Userrole
-	@OneToMany(mappedBy="role")
-	private List<Userrole> userroles;
+    private BigDecimal ordered;
 
-	//bi-directional many-to-many association to Usr
-	@ManyToMany(mappedBy="roles")
-	private List<Usr> usrs;
+    //bi-directional many-to-one association to Userrole
+    @OneToMany(mappedBy = "role")
+    private List<Userrole> userroles;
 
-	public Role() {
-	}
+    //bi-directional many-to-many association to Usr
+    @ManyToMany(mappedBy = "roles")
+    private List<Usr> usrs;
 
-	public long getRoleid() {
-		return this.roleid;
-	}
+    public Role() {
+    }
 
-	public void setRoleid(long roleid) {
-		this.roleid = roleid;
-	}
+    public long getRoleid() {
+        return this.roleid;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public void setRoleid(long roleid) {
+        this.roleid = roleid;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public BigDecimal getOrdered() {
-		return this.ordered;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setOrdered(BigDecimal ordered) {
-		this.ordered = ordered;
-	}
+    public BigDecimal getOrdered() {
+        return this.ordered;
+    }
 
-	public List<Userrole> getUserroles() {
-		return this.userroles;
-	}
+    public void setOrdered(BigDecimal ordered) {
+        this.ordered = ordered;
+    }
 
-	public void setUserroles(List<Userrole> userroles) {
-		this.userroles = userroles;
-	}
+    public List<Userrole> getUserroles() {
+        return this.userroles;
+    }
 
-	public Userrole addUserrole(Userrole userrole) {
-		getUserroles().add(userrole);
-		userrole.setRole(this);
+    public void setUserroles(List<Userrole> userroles) {
+        this.userroles = userroles;
+    }
 
-		return userrole;
-	}
+    public Userrole addUserrole(Userrole userrole) {
+        getUserroles().add(userrole);
+        userrole.setRole(this);
 
-	public Userrole removeUserrole(Userrole userrole) {
-		getUserroles().remove(userrole);
-		userrole.setRole(null);
+        return userrole;
+    }
 
-		return userrole;
-	}
+    public Userrole removeUserrole(Userrole userrole) {
+        getUserroles().remove(userrole);
+        userrole.setRole(null);
 
-	public List<Usr> getUsrs() {
-		return this.usrs;
-	}
+        return userrole;
+    }
 
-	public void setUsrs(List<Usr> usrs) {
-		this.usrs = usrs;
-	}
+    public List<Usr> getUsrs() {
+        return this.usrs;
+    }
+
+    public void setUsrs(List<Usr> usrs) {
+        this.usrs = usrs;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof Role)) {
+            return false;
+        }
+
+        Role compare = (Role) obj;
+        return compare.roleid == (this.roleid);
+    }
+
+    @Override
+    public int hashCode() {
+        return roleid != 0 ? this.getClass().hashCode() + Long.hashCode(roleid) : super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Role{id=" + roleid + ", name=" + getName() + "}";
+    }
 
 }

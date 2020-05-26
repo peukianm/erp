@@ -7,7 +7,9 @@ package erp.dao;
 
 import erp.entities.Action;
 import erp.entities.Company;
+import erp.entities.Department;
 import erp.entities.Role;
+import erp.entities.Sector;
 import erp.entities.Usr;
 import java.io.Serializable;
 import java.util.List;
@@ -195,18 +197,19 @@ public class UsrDAO implements Serializable {
         }
     }
 
-    public List<Usr> searchUser(Role role, Company company, String username, String surname) {
+    public List<Usr> searchUser(Role role, Company company, Department department, Sector sector, String surname, boolean active) {
         try {
 
             String queryString = "Select u from Usr u "
                     + (role != null ? " JOIN u.userrole userrole " : " ")
                     + " where u.userid IS NOT NULL "
                     + (company != null ? " and u.company=:company " : " ")
-                    + (role != null ? " and userrole.role=:role " : " ")
-                    + (username != null ? " and (LOWER(u.username) like '" + ((String) username).toLowerCase() + "%'"
-                            + " OR UPPER(u.username)  like '" + ((String) username).toUpperCase() + "%') " : " ")
+                    + (department != null ? " and u.department=:department " : " ")
+                    + (sector != null ? " and u.sector=:sector " : " ")
+                    + (role != null ? " and userrole.role=:role " : " ")                   
                     + (surname != null ? " and (LOWER(u.surname) like '" + ((String) surname).toLowerCase() + "%'"
                             + " OR UPPER(u.surname)  like '" + ((String) surname).toUpperCase() + "%') " : " ")
+                     + (active ? " and u.active=1 " : " and u.active=0 ")
                     + " order by u.username DESC";
 
             Query query = entityManager.createQuery(queryString);
@@ -215,6 +218,12 @@ public class UsrDAO implements Serializable {
             }
             if (role != null) {
                 query.setParameter("role", role);
+            }
+            if (department != null) {
+                query.setParameter("department", department);
+            }
+             if (sector != null) {
+                query.setParameter("sector", sector);
             }
 
             return query.getResultList();

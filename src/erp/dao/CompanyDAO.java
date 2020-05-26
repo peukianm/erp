@@ -2,6 +2,7 @@ package erp.dao;
 
 import erp.entities.Company;
 import erp.entities.Department;
+import erp.entities.Sector;
 
 import java.util.List;
 import javax.ejb.Stateless;
@@ -62,6 +63,20 @@ public class CompanyDAO {
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on getting all departments", re);
+            throw re;
+        }
+
+    }
+    
+        public List<Sector> getAllSector() {
+        try {
+            String sql = "SELECT e FROM Sector e "                    
+                    + " order by e.name ";
+            Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all sectors", re);
             throw re;
         }
 
