@@ -72,6 +72,9 @@ public class DashboardUsers implements Serializable {
 
     List<Usr> searchUsers = new ArrayList<>(0);
 
+    String showUsers = "";
+    String showNewUser = "hidden='true'";
+
     @PostConstruct
     public void init() {
         System.out.println("INITIALIZE DB USERS BEAN");
@@ -128,6 +131,27 @@ public class DashboardUsers implements Serializable {
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             goError(e);
         }
+    }
+
+    public void goAddNewUser() {
+         showUsers = "hidden='true'";
+         showNewUser = "";
+    }
+
+    public String getShowUsers() {
+        return showUsers;
+    }
+
+    public void setShowUsers(String showUsers) {
+        this.showUsers = showUsers;
+    }
+
+    public String getShowNewUser() {
+        return showNewUser;
+    }
+
+    public void setShowNewUser(String showNewUser) {
+        this.showNewUser = showNewUser;
     }
 
     public List<Usr> getAvailableUsers() {

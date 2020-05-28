@@ -45,78 +45,32 @@
 
         </style>
         <script type="text/javascript">
-            $(function () {
-                var ctx = document.getElementById("dashboard-chart").getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                        datasets: [{
-                                label: 'Sales',
-                                data: [12, 19, 3, 5, 2, 3, 9],
-                                borderColor: [
-                                    '#7E57C2',
-                                ],
-                                borderWidth: 3,
-                                borderDash: [5, 5],
-                                fill: false,
-                                pointRadius: 3
-                            }, {
-                                label: 'Income',
-                                data: [1, 2, 5, 3, 12, 7, 15],
-                                backgroundColor: [
-                                    'rgba(187,222,251,0.2)',
-                                ],
-                                borderColor: [
-                                    '#42A5F5',
-                                ],
-                                borderWidth: 3,
-                                fill: true
-                            },
-                            {
-                                label: 'Expenses',
-                                data: [7, 12, 15, 5, 3, 13, 21],
-                                borderColor: [
-                                    '#FFB300',
-                                ],
-                                borderWidth: 3,
-                                fill: false,
-                                pointRadius: [4, 6, 4, 12, 8, 0, 4]
-                            },
-                            {
-                                label: 'New Users',
-                                data: [3, 7, 2, 17, 15, 13, 19],
-                                borderColor: [
-                                    '#66BB6A',
-                                ],
-                                borderWidth: 3,
-                                fill: false
-                            }]
-                    },
-                    options: {
-                        responsive: true,
-                        hover: {
-                            mode: 'index'
-                        },
-                        scales: {
-                            xAxes: [{
-                                    display: true,
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Month'
-                                    }
-                                }],
-                            yAxes: [{
-                                    display: true,
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Value'
-                                    }
-                                }]
-                        }
-                    }
-                });
-            });
+            function showUsers() {
+                var x = document.getElementById("showUsersDivID");
+                if (x.style.display === "none") {
+                    x.style.display = "block";
+                }
+                x = document.getElementById("showNewUserDivID");
+                x.style.display = "none";
+//                } else {
+//                    x.style.display = "none";
+//                }
+            }
+            function showNewUser() {                
+                var x = document.getElementById("showNewUserDivID");
+                x.hidden = 'false';
+                if (x.style.display === "none") {
+                    alert('display');
+                    x.style.display = "block";
+                }
+                x = document.getElementById("showUsersDivID");
+                x.style.display = "none";
+//                } else {
+//                    x.style.display = "none";
+//                }
+            }
+
+
         </script>
     </ui:define>
 
@@ -197,9 +151,6 @@
 
 
                 <!--          ΚΡΙΤΗΡΙΑ ΑΝΑΖΗΤΗΣΗ ΠΡΟΣΩΠΙΚΟΥ !!!!!!!!!!!!!!!!!!!!! -->
-                <p:messages>
-                    <p:autoUpdate />
-                </p:messages>
                 <!--<div class="p-col-12 p-lg-8">-->
                 <div class="p-col-12 p-xl-6">    
                     <h:form id="searchUserForm">
@@ -288,6 +239,8 @@
                             <p:commandButton value="#{bundle.search}" action="#{administrationAction.fetchUsers}" update="searchUserForm viewUserResults"  />  
                             <p:spacer width="10" />
                             <p:commandButton  value="#{bundle.reset}" action="#{dbUsers.resetSearchUsersForm}"  ajax="false" />
+                            <p:spacer width="10" />createUserDivID showUsersDivID
+                            <p:commandButton onclick="showNewUser()" value="#{bundle.newUser}" action="#{dbUsers.goAddNewUser}"  process="@none" update="searchUserForm viewUserResults" />
                         </div>
                     </h:form>
                 </div>
@@ -300,18 +253,25 @@
 
 
                 <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-                <!--<div class="p-col-12 p-lg-4">-->
-                <div class="p-col-12 p-xl-6">    
-                    <div class="card user-card">
+                <div class="p-col-12 p-xl-6">  
 
-                        <div class="user-card-content">
+                    <div id="showNewUserDivID" class="card user-card">
+                        <div  style="display: none" class="user-card-content" id="createUserDivID" >
+                            <div class="erp-panel-titlebar">
+                                Νεος Χρήστης
+                            </div>
+                            <h:form id="newUser">                                       
+                            </h:form>
+                        </div>
+
+                        <div id="showUsersDivID" class="user-card-content">
                             <div class="erp-panel-titlebar">
                                 Λίστα Χρηστών
                             </div>
-                            <h:form id="viewUserResults">
+                            <h:form id="viewUserResults" >
                                 <p:dataTable id="tbl" var="user" value="#{dbUsers.searchUsers}" styleClass="myclass"
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 10px;    padding: 0.1em 0.2em ;  ">
+                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 11px;    padding: 0.1em 0.2em ;  ">
 
                                     <f:facet name="{Exporters}">
                                         <div style="float:right;">
@@ -324,9 +284,6 @@
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
                                                              cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
-
-
-
                                             <p:commandLink id="xlsx" ajax="false">
                                                 <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
@@ -377,8 +334,15 @@
                                 </p:dataTable>
                             </h:form>
                         </div>
-                    </div>
-                </div>
+                    </div>                                        
+                </div> 
+
+
+
+
+
+
+
             </div>
         </div>
     </ui:define>
