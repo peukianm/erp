@@ -25,6 +25,7 @@ public class UserBean implements Serializable{
 
     @Inject
     private SessionBean sessionBean;
+    
     private java.lang.String username;
     private java.lang.String password;
     private Usr user ;

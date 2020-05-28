@@ -45,32 +45,18 @@
 
         </style>
         <script type="text/javascript">
-            function showUsers() {
-                var x = document.getElementById("showUsersDivID");
-                if (x.style.display === "none") {
-                    x.style.display = "block";
-                }
-                x = document.getElementById("showNewUserDivID");
-                x.style.display = "none";
-//                } else {
-//                    x.style.display = "none";
-//                }
-            }
-            function showNewUser() {                
+            function showNewUser() {
                 var x = document.getElementById("showNewUserDivID");
-                x.hidden = 'false';
-                if (x.style.display === "none") {
-                    alert('display');
-                    x.style.display = "block";
-                }
-                x = document.getElementById("showUsersDivID");
-                x.style.display = "none";
-//                } else {
-//                    x.style.display = "none";
-//                }
+                var z = document.getElementById("showUsersDivID");
+                z.style.display = "none";
+                x.style.display = "block";
             }
-
-
+            function showUsers() {
+                var x = document.getElementById("showNewUserDivID");
+                var z = document.getElementById("showUsersDivID");
+                z.style.display = "block";
+                x.style.display = "none";
+            }
         </script>
     </ui:define>
 
@@ -239,8 +225,8 @@
                             <p:commandButton value="#{bundle.search}" action="#{administrationAction.fetchUsers}" update="searchUserForm viewUserResults"  />  
                             <p:spacer width="10" />
                             <p:commandButton  value="#{bundle.reset}" action="#{dbUsers.resetSearchUsersForm}"  ajax="false" />
-                            <p:spacer width="10" />createUserDivID showUsersDivID
-                            <p:commandButton onclick="showNewUser()" value="#{bundle.newUser}" action="#{dbUsers.goAddNewUser}"  process="@none" update="searchUserForm viewUserResults" />
+                            <p:spacer width="10" />
+                            <p:commandButton value="#{bundle.newUser}" action="#"  process="@none" update="@none" />
                         </div>
                     </h:form>
                 </div>
@@ -254,88 +240,78 @@
 
                 <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
                 <div class="p-col-12 p-xl-6">  
-
-                    <div id="showNewUserDivID" class="card user-card">
-                        <div  style="display: none" class="user-card-content" id="createUserDivID" >
-                            <div class="erp-panel-titlebar">
-                                Νεος Χρήστης
-                            </div>
-                            <h:form id="newUser">                                       
-                            </h:form>
+                    <div id="showUsersDivID" style="display: block" class="user-card-content">
+                        <div class="erp-panel-titlebar">
+                            #{bundle.usersList}
                         </div>
+                        <h:form id="viewUserResults" >
+                            <p:dataTable id="tbl" var="user" value="#{dbUsers.searchUsers}" styleClass="myclass"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                         paginator="true" rows="20" style="margin-bottom:10px;font-size: 11px;    padding: 0.1em 0.2em ;  ">
 
-                        <div id="showUsersDivID" class="user-card-content">
-                            <div class="erp-panel-titlebar">
-                                Λίστα Χρηστών
-                            </div>
-                            <h:form id="viewUserResults" >
-                                <p:dataTable id="tbl" var="user" value="#{dbUsers.searchUsers}" styleClass="myclass"
-                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 11px;    padding: 0.1em 0.2em ;  ">
-
-                                    <f:facet name="{Exporters}">
-                                        <div style="float:right;">
+                                <f:facet name="{Exporters}">
+                                    <div style="float:right;">
 
 
-                                            <p:commandLink id="pdf" ajax="false">
-                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" />
-                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
-                                                <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle="Λίστα Χρηστών" orientation="Landscape"
-                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
-                                                             cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
-                                            </p:commandLink>
-                                            <p:commandLink id="xlsx" ajax="false">
-                                                <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
-                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
-                                                <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" Λίστα Χρηστών"
-                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
-                                                             cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
-                                            </p:commandLink>
-                                        </div>
+                                        <p:commandLink id="pdf" ajax="false">
+                                            <p:graphicImage name="images/pdf.png" library="babylon-layout" />
+                                            <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                            <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle="Λίστα Χρηστών" orientation="Landscape"
+                                                         facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
+                                                         cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
+                                        </p:commandLink>
+                                        <p:commandLink id="xlsx" ajax="false">
+                                            <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
+                                            <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                            <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" Λίστα Χρηστών"
+                                                         facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
+                                                         cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
+                                        </p:commandLink>
+                                    </div>
 
+                                </f:facet>
+
+                                <p:column sortBy="#{user.username}" >
+                                    <f:facet name="header">
+                                        <h:outputText value="#{bundle.username}" />
                                     </f:facet>
+                                    <h:outputText value="#{user.username}" />
+                                </p:column>
 
-                                    <p:column sortBy="#{user.username}" >
-                                        <f:facet name="header">
-                                            <h:outputText value="#{bundle.username}" />
-                                        </f:facet>
-                                        <h:outputText value="#{user.username}" />
-                                    </p:column>
+                                <p:column sortBy="#{user.surname}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{bundle.surname}"/>
+                                    </f:facet>
+                                    <h:outputText value="#{user.surname} #{user.name}" />
+                                </p:column>
 
-                                    <p:column sortBy="#{user.surname}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{bundle.surname}"/>
-                                        </f:facet>
-                                        <h:outputText value="#{user.surname} #{user.name}" />
-                                    </p:column>
+                                <p:column exportable="false">
+                                    <f:facet name="header" >
+                                        <h:outputText value="#{bundle.role}"/>
+                                    </f:facet>
+                                    <ui:repeat var="userrole" value="#{user.userroles}">
+                                        <h:outputText value="#{userrole.role.name}" /> <br/>
+                                    </ui:repeat>
+                                </p:column>
 
-                                    <p:column exportable="false">
-                                        <f:facet name="header" >
-                                            <h:outputText value="#{bundle.role}"/>
-                                        </f:facet>
-                                        <ui:repeat var="userrole" value="#{user.userroles}">
-                                            <h:outputText value="#{userrole.role.name}" /> <br/>
-                                        </ui:repeat>
-                                    </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="#{bundle.company}" />
+                                    </f:facet>
+                                    <h:outputText value="#{user.company.abbrev}" />
+                                </p:column>
 
-                                    <p:column>
-                                        <f:facet name="header">
-                                            <h:outputText value="#{bundle.company}" />
-                                        </f:facet>
-                                        <h:outputText value="#{user.company.abbrev}" />
-                                    </p:column>
-
-                                    <p:column sortBy="#{user.department.name}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{bundle.department}" />
-                                        </f:facet>
-                                        <h:outputText value="#{user.department.name}" />
-                                    </p:column>
-                                </p:dataTable>
-                            </h:form>
-                        </div>
-                    </div>                                        
-                </div> 
+                                <p:column sortBy="#{user.department.name}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{bundle.department}" />
+                                    </f:facet>
+                                    <h:outputText value="#{user.department.name}" />
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </div>
+                </div>                                        
+            </div> 
 
 
 
@@ -343,7 +319,7 @@
 
 
 
-            </div>
+        </div>
         </div>
     </ui:define>
-</ui:composition>
+</ui:composition> 

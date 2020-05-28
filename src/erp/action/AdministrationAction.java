@@ -145,7 +145,7 @@ public class AdministrationAction implements Serializable {
                 sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"));
                 sessionBean.setPageName(MessageBundleLoader.getMessage("homePage"));
                 //return "backend/main?faces-redirect=true";
-                return "dashboardU?faces-redirect=true";
+                return "insertUser?faces-redirect=true";
             }
             return "";
         } catch (Exception e) {
