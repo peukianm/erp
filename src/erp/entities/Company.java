@@ -464,7 +464,7 @@ public class Company implements Serializable {
             return false;
         }
 
-        if (!(obj instanceof Department)) {
+        if (!(obj instanceof Company)) {
             return false;
         }
 

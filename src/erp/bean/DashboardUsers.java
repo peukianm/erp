@@ -67,11 +67,10 @@ public class DashboardUsers implements Serializable {
     private Company selectedCompany;
     private String surname;
     private boolean active = true;
-    
-    List<Usr> availableUsers;
-    
-    List<Usr> searchUsers = new ArrayList<>(0);
 
+    List<Usr> availableUsers;
+
+    List<Usr> searchUsers = new ArrayList<>(0);
 
     @PostConstruct
     public void init() {
@@ -93,6 +92,13 @@ public class DashboardUsers implements Serializable {
     }
 
     public void resetSearchUsersForm() {
+        searchUser = null;
+        selectedDepartment = null;
+        selectedSector = null;
+        selectedRole = null;
+        selectedCompany = null;
+        surname = null;
+        active = true;
     }
 
     public List<Usr> completeUser(String username) {
@@ -132,7 +138,6 @@ public class DashboardUsers implements Serializable {
         this.availableUsers = availableUsers;
     }
 
-    
     public boolean getActive() {
         return active;
     }
@@ -140,8 +145,7 @@ public class DashboardUsers implements Serializable {
     public void setActive(boolean active) {
         this.active = active;
     }
-    
-    
+
     public String getSurname() {
         return surname;
     }
@@ -166,7 +170,6 @@ public class DashboardUsers implements Serializable {
         this.searchUsers = searchUsers;
     }
 
-        
     public Usr getSearchUser() {
         return searchUser;
     }
@@ -199,8 +202,6 @@ public class DashboardUsers implements Serializable {
         this.selectedRole = selectedRole;
     }
 
-    
-    
     public String getEntryTime() {
         return entryTime;
     }

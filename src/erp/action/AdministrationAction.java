@@ -181,7 +181,7 @@ public class AdministrationAction implements Serializable {
 
     public void fetchUsers() {
         try {
-            List<Usr> users = userDAO.searchUser(dbUsers.getSelectedRole(), null, dbUsers.getSelectedDepartment(), 
+            List<Usr> users = userDAO.searchUser(dbUsers.getSelectedRole(), dbUsers.getSelectedCompany(), dbUsers.getSelectedDepartment(), 
                                                 dbUsers.getSelectedSector(), dbUsers.getSurname(), dbUsers.getActive());
             dbUsers.setSearchUsers(users);
         } catch (Exception e) {
