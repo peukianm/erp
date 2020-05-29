@@ -5,9 +5,14 @@
  */
 package erp.bean;
 
+import erp.dao.StaffDAO;
 import erp.entities.Company;
+import erp.entities.Department;
 import erp.entities.Role;
 import erp.entities.Staff;
+import erp.util.FacesUtils;
+import erp.util.MessageBundleLoader;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -15,6 +20,8 @@ import javax.annotation.PreDestroy;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -23,9 +30,13 @@ import javax.inject.Named;
 @Named("insertUser")
 @ViewScoped
 public class InsertUser implements Serializable {
+    private static final Logger logger = LogManager.getLogger(InsertUser.class);
+    
+    @Inject
+    private SessionBean sessionBean;
 
     @Inject
-    private ApplicationBean applicationBean;
+    private StaffDAO staffDao;
 
     String name;
     String surname;
@@ -37,6 +48,8 @@ public class InsertUser implements Serializable {
     List<Role> selectedRoles;
     Staff staff;
     Company company;
+    Department department;
+    List<Staff> availableStaff;
 
     @PostConstruct
     public void init() {
@@ -44,6 +57,39 @@ public class InsertUser implements Serializable {
 
     @PreDestroy
     public void reset() {
+    }
+
+    public List<Staff> completeStaff(String surname) {
+        try {
+            if (surname != null && !surname.trim().isEmpty() && surname.trim().length() >= 1) {
+                surname = surname.trim();
+                availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, null, null);
+                return availableStaff;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            goError(e);
+            return null;
+        }
+    }
+
+    public List<Staff> getAvailableStaff() {
+        return availableStaff;
+    }
+
+    public void setAvailableStaff(List<Staff> availableStaff) {
+        this.availableStaff = availableStaff;
+    }
+    
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public String getEmail() {
@@ -124,6 +170,28 @@ public class InsertUser implements Serializable {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+    
+    public void goError(Exception ex) {
+        try {
+            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
+            if (sessionBean.getUsers() != null) {
+                logger.error("User=" + sessionBean.getUsers().getUsername());
+            }
+            logger.error("Cause=" + ex.getCause());
+            logger.error("Class=" + ex.getClass());
+            logger.error("Message=" + ex.getLocalizedMessage());
+            logger.error(ex, ex);
+            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
+
+            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
+            errorBean.reset();
+            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
+            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
+            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/error.jsf?faces-redirect=true");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -44,4 +44,7 @@ and open the template in the editor.
     color: #ffffff;
     padding: 8px 14px;
     font-weight: 700;
-    }
+}
+.erp-display-block {
+    display: block;
+}

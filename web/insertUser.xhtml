@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" 
+      xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions" >
 
     <h:head>
         <f:facet name="first">
@@ -10,6 +11,14 @@
             <meta name="apple-mobile-web-app-capable" content="yes" />
         </f:facet>
         <title>PrimeFaces Babylon</title>
+        <style type="text/css">
+            .data-review {
+                position: relative;
+                background-image: linear-gradient(to right, rgba(48, 63, 70, 0.15) 23%, rgba(116, 144, 157, 0.15) 60%);
+                padding: 24px 48px;
+                margin-top: 114px !important; 
+            }    
+        </style>
         <script type="text/javascript">
             //<![CDATA[
             var Wizard = {
@@ -62,6 +71,12 @@
                 Wizard.init();
             });
             //]]>
+            function updateSummary()
+            {
+               // alert('updating');
+                //$("#summary").load(window.location.href + " #summary");
+                $("#summary").load(" #summary > *");
+            }
         </script>
     </h:head>
 
@@ -84,12 +99,8 @@
                                 <p:graphicImage name="images/extensions/bg-header.png" library="babylon-layout" />
                             </div>
                             <div class="banner-image banner-2">
-                                <h1>Προσθήκη στοιχείων προφίλ</h1>
+                                <h1>Δημιουργία Νέου Χρήστη</h1>
                                 <p:graphicImage name="images/extensions/bg-header-2.png" library="babylon-layout" />
-                            </div>
-                            <div class="banner-image banner-3">
-                                <h1>Complete Your Registration with Payment</h1>
-                                <p:graphicImage name="images/extensions/bg-header-3.png" library="babylon-layout" />
                             </div>
                         </div>
                         <div class="wizard-card-tabs">
@@ -98,10 +109,7 @@
                             </div>
                             <div class="wizard-card-tab tier-tab">
                                 Στοιχεία προφίλ
-                            </div>
-                            <div class="wizard-card-tab payment-tab">
-                                PAYMENT
-                            </div>
+                            </div>                            
                         </div>
                     </div>
                     <div class="wizard-card-content register active-content">
@@ -112,14 +120,20 @@
                             </div>
                             <div class="wizard-forms-wrapper p-grid p-nogutter">
                                 <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="Όνομα Χρήστη" for="username" styleClass="form-label" />
-                                    <p:inputText id="username" />
+                                    <p:outputLabel value="Όνομα Χρήστη" for="unm" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:inputText id="unm"  value="#{insertUser.username}"/>
 
 
-                                    <p:outputLabel value="Κωδικός" for="password" styleClass="form-label" />
-                                    <p:password id="password" value="#{insertUser.password}" />
+                                    <p:outputLabel value="Κωδικός" for="pwds" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:password id="pwds" value="#{insertUser.password}" />
 
-                                    <p:outputLabel value="Επιλογή Εταιρίας" for="company" styleClass="form-label" />
+                                    <p:outputLabel value="Επιλογή Εταιρίας" for="company" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
                                     <p:selectOneMenu   value="#{insertUser.company}" id="company" converter="omnifaces.SelectItemsConverter" >                                                                                     
                                         <f:selectItem itemLabel="" itemValue=""  />
                                         <f:selectItems value="#{applicationBean.companies}" var="company" itemLabel="#{company.name}" itemValue="#{company}"   />						                                                                                                                                    
@@ -127,24 +141,30 @@
 
                                 </div>
                                 <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="email" for="email" styleClass="form-label" />
-                                    <p:inputText id="email" value="#{insertUser.email}" />
+                                    <p:outputLabel value="email" for="emll" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:inputText id="emll" value="#{insertUser.email}" /> 
 
-                                    <p:outputLabel value="Επαλήθευση κωδικού" for="repassword" styleClass="form-label" />
-                                    <p:password id="repassword" value="#{insertUser.repassword}"  />
+                                    <p:outputLabel value="Επαλήθευση κωδικού" for="rpwd" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:password id="rpwd" value="#{insertUser.repassword}"  />
 
-                                    <p:outputLabel value="Επιλογή Ρόλου" for="role" styleClass="form-label" />
-                                    <p:selectManyMenu value="#{insertUser.selectedRoles}" id="role" converter="omnifaces.SelectItemsConverter" >                                                                          
-                                        <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                    <p:outputLabel value="Επιλογή Ρόλου" for="role" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:selectManyMenu value="#{insertUser.selectedRoles}" id="role" converter="omnifaces.SelectItemsConverter" style="width: 100%;">                                                                          
+                                        <f:selectItems value="#{applicationBean.roles}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                     </p:selectManyMenu>
                                 </div>
                             </div>
                             <div class="wizard-button">
-                                <p:commandButton value="CONTINUE" styleClass="continue-button" />
+                                <p:commandButton value="CONTINUE" styleClass="continue-button" onclick="updateSummary()"/>
                             </div>
                         </h:form>
                     </div>
-                    <div class="wizard-card-content register tier">
+                    <div class="wizard-card-content register tier" style="padding:1px 1px !important; min-height:275px !important;">
                         <h:form>
                             <div class="warning">
                                 <i class="fa fa-exclamation-circle"></i>
@@ -152,122 +172,60 @@
                             </div>
                             <div class="wizard-forms-wrapper p-grid p-nogutter">
                                 <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="Όνομα" for="name" styleClass="form-label" />
-                                    <p:inputText id="name" />
+                                    <p:outputLabel value="Όνομα" for="nm" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>    
+                                    <p:inputText id="nm" value="#{insertUser.name}" />
 
 
-                                    <p:outputLabel value="τηλέφωνο" for="phone" styleClass="form-label" />
-                                    <p:password id="phone" />
-
-                                    <p:outputLabel value="Επιλογή Εργαζομενου" for="staff" styleClass="form-label" />
-                                    <p:selectOneMenu id="staff" style="margin-bottom:10px;">
-                                        <f:selectItem itemLabel="Where did you hear Babylon" itemValue="" />
-                                        <f:selectItem itemLabel="Blogs" itemValue="Blogs" />
-                                    </p:selectOneMenu>
-
+                                    <p:outputLabel value="τηλέφωνο" for="phone" styleClass="form-label erp-display-block" />
+                                    <p:password id="phone" value="#{insertUser.phone}" />
 
                                 </div>
                                 <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="Επίθετο" for="surname" styleClass="form-label" />
-                                    <p:inputText id="surname" />
+                                    <p:outputLabel value="Επίθετο" for="snm" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:inputText id="snm" value="#{insertUser.surname}" />
 
-                                    <p:outputLabel value="XXXXXXXXXXX" for="xxx" styleClass="form-label" />
-                                    <p:password id="xxx" />
-
-                                    <p:outputLabel value="xx" for="xx" styleClass="form-label" />
-                                    <p:password id="xx" />
-
+                                    <p:outputLabel value="Επιλογή Εργαζομενου" for="staff" styleClass="form-label erp-display-block" />
+                                    <p:autoComplete widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staff" value="#{insertUser.staff}" completeMethod="#{insertUser.completeStaff}" size="60" required="false"  
+                                                    var="staff" itemLabel="#{staff.surname} #{staff.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
+                                        <o:converter converterId="omnifaces.ListConverter"  list="#{insertUser.availableStaff}" />                                         
+                                    </p:autoComplete>
+                                </div>
+                                <div class="p-col-12 p-md-6 wizard-forms">
+                                    <p:outputLabel value="#{bundle.department}" for="department" styleClass="form-label erp-display-block" />                                    
+                                    <p:selectOneMenu   value="#{insertUser.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                        <f:selectItem itemLabel="" itemValue=""  />
+                                        <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                    </p:selectOneMenu >
                                 </div>
                             </div>
-                            <div class="wizard-button">
-                                <p:commandButton value="CONTINUE" styleClass="continue-button" />
-                            </div>
-                        </h:form>
-                    </div>
-                    <div class="wizard-card-content payment">
-                        <h:form>
-                            <div class="wizard-forms-wrapper">
-                                <div class="wizard-forms ">
-                                    <p:outputPanel styleClass="customPanel">
-                                        <p:selectOneRadio id="customRadio" layout="custom">
-                                            <f:selectItem itemLabel="" itemValue="Credit" />
-                                            <f:selectItem itemLabel="" itemValue="Paypal" />
-                                        </p:selectOneRadio>
 
-                                        <p:panelGrid styleClass="ui-noborder" columns="4" layout="grid"
-                                                     columnClasses="ui-lg-1 ui-md-1 ui-g-1,ui-lg-5 ui-md-5 ui-g-11,ui-lg-1 ui-md-1 ui-g-1,ui-lg-5 ui-md-5 ui-g-11 ">
-                                            <p:radioButton id="opt1" for="customRadio" itemIndex="0" />
-                                            <h:panelGroup styleClass="credits">
-                                                <p:graphicImage name="images/extensions/asset-mastercard.png"
-                                                                library="babylon-layout" />
-                                                <p:graphicImage name="images/extensions/asset-visa.png"
-                                                                library="babylon-layout" />
-                                                <p:graphicImage name="images/extensions/asset-amex.png"
-                                                                library="babylon-layout" />
-                                            </h:panelGroup>
-
-                                            <p:radioButton id="opt2" for="customRadio" itemIndex="1" />
-                                            <h:panelGroup styleClass="paypal">
-                                                <p:graphicImage name="images/extensions/asset-paypal.png"
-                                                                library="babylon-layout" />
-                                            </h:panelGroup>
-                                        </p:panelGrid>
-                                    </p:outputPanel>
-                                    <p:outputLabel value="Cardholder Name" for="name" styleClass="form-label" />
-                                    <p:inputText id="name" />
-                                    <div class="numbers p-grid">
-                                        <div class="p-col-12 p-md-6">
-                                            <p:outputLabel value="Cardholder Number" for="number" styleClass="form-label" />
-                                            <p:inputMask id="number" value="#{maskView.date}" mask="9999-9999-9999-9999" />
-
-                                        </div>
-                                        <div class="p-col-6 p-md-3">
-                                            <p:outputLabel value="Date" for="date" styleClass="form-label" />
-                                            <p:inputMask id="date" value="#{maskView.date}" mask="99/99" />
-                                        </div>
-                                        <div class="p-col-6 p-md-3">
-                                            <p:outputLabel value="CCV" for="ccv" styleClass="form-label" />
-                                            <p:inputMask id="ccv" value="#{maskView.date}" mask="999" />
-                                        </div>
-
-                                    </div>
-                                    <p:selectManyCheckbox layout="responsive" columns="1">
-                                        <f:selectItem itemLabel=" Save credit card information for future usage"
-                                                      itemValue="SaveInfo" />
-                                    </p:selectManyCheckbox>
-                                </div>
-                            </div>
-                            <div class="wizard-button">
-                                <div class="order-summary order-default selected-order">
-                                    <p>ORDER SUMMARY</p>
-                                    <h1>$00.00</h1>
-                                    <span>Please select one tier.</span>
-                                </div>
-                                <div class="order-summary order-beginner">
-                                    <p>ORDER SUMMARY</p>
-                                    <h1>$5.00</h1>
-                                    <span>Babylon Beginner Membership.</span>
-                                </div>
-                                <div class="order-summary order-professional">
-                                    <p>ORDER SUMMARY</p>
-                                    <h1>$10.00</h1>
-                                    <span>Babylon Professional Membership.</span>
-                                </div>
-                                <div class="order-summary order-enterprise">
-                                    <p>ORDER SUMMARY</p>
-                                    <h1>$20.00</h1>
-                                    <span>Babylon Enterprise Membership.</span>
+                            <div  class="wizard-button">
+                                <div id="summary" class="order-summary order-default selected-order">
+                                    <p>Περιληψη Εισαγωγής</p>
+                                    <h1>#{insertUser.username}</h1>
+                                    <span>#{insertUser.name} #{insertUser.surname} - #{insertUser.company!=null?insertUser.company.name : ""}</span>
                                 </div>
                                 <p:commandButton value="COMPLETE ORDER" />
                             </div>
+
+
+                            <!--<div class="wizard-button">
+                                <p:commandButton value="CONTINUE" styleClass="continue-button" />
+                            </div>-->
                         </h:form>
                     </div>
+
                 </div>
             </div>
 
         </div>
 
         <h:outputStylesheet name="css/layout-orange.css" library="babylon-layout" />
+        <h:outputStylesheet name="css/erp.css" library="babylon-layout" />
         <h:outputStylesheet name="css/primeflex.css" library="babylon-layout" />
 
     </h:body>
