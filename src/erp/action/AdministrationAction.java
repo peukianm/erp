@@ -142,10 +142,11 @@ public class AdministrationAction implements Serializable {
                         FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
 
                 auditingDAO.save(audit);
-                sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"));
-                sessionBean.setPageName(MessageBundleLoader.getMessage("homePage"));
+                sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
+                sessionBean.setPageName(MessageBundleLoader.getMessage("usersPage"));
+                sessionBean.setPageTitle("/dashboardUsers");
                 //return "backend/main?faces-redirect=true";
-                return "insertUser?faces-redirect=true";
+                return "dashboardUsers?faces-redirect=true";
             }
             return "";
         } catch (Exception e) {

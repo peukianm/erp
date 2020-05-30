@@ -49,4 +49,29 @@
         <phase-listener>org.omnifaces.eventlistener.ResetInputAjaxActionListener</phase-listener>
     </lifecycle>
     
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>insertUser</from-outcome>
+            <to-view-id>/insertUser.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>dashboardUsers</from-outcome>
+            <to-view-id>/dashboardUsers.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>dashboardAttendance</from-outcome>
+            <to-view-id>/dashboardAttendance.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>dashboard</from-outcome>
+            <to-view-id>/dashboardUsers.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
+    
 </faces-config>

@@ -12,6 +12,7 @@ import erp.entities.Role;
 import erp.entities.Staff;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
+import erp.util.SystemParameters;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
@@ -30,8 +31,9 @@ import org.apache.logging.log4j.Logger;
 @Named("insertUser")
 @ViewScoped
 public class InsertUser implements Serializable {
+
     private static final Logger logger = LogManager.getLogger(InsertUser.class);
-    
+
     @Inject
     private SessionBean sessionBean;
 
@@ -53,6 +55,8 @@ public class InsertUser implements Serializable {
 
     @PostConstruct
     public void init() {
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_INSERT_USER"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("insertUser"));
     }
 
     @PreDestroy
@@ -83,7 +87,7 @@ public class InsertUser implements Serializable {
     public void setAvailableStaff(List<Staff> availableStaff) {
         this.availableStaff = availableStaff;
     }
-    
+
     public Department getDepartment() {
         return department;
     }
@@ -171,7 +175,7 @@ public class InsertUser implements Serializable {
     public void setCompany(Company company) {
         this.company = company;
     }
-    
+
     public void goError(Exception ex) {
         try {
             logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());

@@ -3,7 +3,7 @@
 
     <div class="layout-menu-container">
         <div class="layout-menu-logo">
-            <h:link outcome="/dashboard">
+            <h:link outcome="#{sessionBean.pageTitle}">
                 <p:graphicImage name="images/#{guestPreferences.darkLogo ? 'logo-black.png' : 'logo-white.png'}" library="babylon-layout" />
             </h:link>
         </div>
@@ -59,15 +59,15 @@
                     <pb:menu>
                         <p:submenu id="om_account" label="#{bundle.userData}" icon="fa fa-fw fa-user">
                             <p:submenu id="ggg" label="#{sessionBean.users.username}" icon="fa fa-fw fa-user">
-                                <p:menuitem id="om_account_acc" value="#{bundle.settings}" icon="fa fa-fw fa-cog" outcome="/dashboard" />                   
-                                <p:menuitem id="om_account_not" value="#{bundle.notifications}" icon="fa fa-fw fa-bell-o" outcome="/dashboard" />
-                                <p:menuitem id="om_account_mess" value="#{bundle.messages}" icon="fa fa-fw fa-envelope-o" outcome="/dashboard" />
+                                <p:menuitem id="om_account_acc" value="#{bundle.settings}" icon="fa fa-fw fa-cog" outcome="dashboard" />                   
+                                <p:menuitem id="om_account_not" value="#{bundle.notifications}" icon="fa fa-fw fa-bell-o" outcome="dashboard" />
+                                <p:menuitem id="om_account_mess" value="#{bundle.messages}" icon="fa fa-fw fa-envelope-o" outcome="dashboard" />
                                 <p:menuitem id="om_account_dis" value="#{bundle.disconnect}" onclick="PF('disconnectDlg').show()" icon="fa fa-fw fa-sign-out" />                                
                             </p:submenu>
                         </p:submenu>
 
                         <p:submenu id="om_homepage" label="#{bundle.homePage}" icon="fa fa-fw fa-home">
-                            <p:menuitem id="om_dashboard" value="#{bundle.dashboard}" icon="fa fa-fw fa-dashboard" outcome="/dashboard" />
+                            <p:menuitem id="om_dashboard" value="#{bundle.dashboard}" icon="fa fa-fw fa-dashboard" outcome="dashboard" />
                         </p:submenu>
                         <p:submenu id="om_services" label="#{bundle.services}" icon="fa fa-fw fa-magic">
                             <p:submenu id="om_general" label="#{bundle.general}" icon="fa fa-fw fa-magic">                                
