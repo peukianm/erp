@@ -76,7 +76,7 @@ public class ApplicationBean implements Serializable {
 
     public List<Company> getCompanies() {
         if (companies == null) {
-            companies = companyDAO.findByProperty("active", BigDecimal.ONE);
+            companies = companyDAO.getAllCompanies(true);
         }
         return companies;
     }

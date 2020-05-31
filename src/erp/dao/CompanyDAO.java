@@ -68,9 +68,24 @@ public class CompanyDAO {
 
     }
     
-        public List<Sector> getAllSector() {
+        public List<Company> getAllCompanies(boolean onlyActive) {
         try {
-            String sql = "SELECT e FROM Sector e "                    
+            String sql = "SELECT e FROM Company e "
+                    + (onlyActive ? " where e.active = 1 " : " ")
+                    + " order by e.name ";
+            Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all companies", re);
+            throw re;
+        }
+
+    }
+
+    public List<Sector> getAllSector() {
+        try {
+            String sql = "SELECT e FROM Sector e "
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
             return query.getResultList();
@@ -87,7 +102,7 @@ public class CompanyDAO {
      * subsequent persist actions of this entity should use the #update()
      * method. This operation must be performed within the a database
      * transaction context for the entity's data to be permanently saved to the
-     * persistence store, i.e., database. This method uses the null null     {@link javax.persistence.EntityManager#persist(Object)
+     * persistence store, i.e., database. This method uses the null null null     {@link javax.persistence.EntityManager#persist(Object)
 	 * EntityManager#persist} operation.
      *
      * <pre>

@@ -6,18 +6,19 @@
 package erp.bean;
 
 import erp.dao.StaffDAO;
-import erp.entities.Company;
-import erp.entities.Department;
+import erp.dao.UsrDAO;
 import erp.entities.Role;
 import erp.entities.Staff;
+import erp.entities.Usr;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
-import erp.util.SystemParameters;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,9 +29,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author peukianm
  */
-@Named("insertUser")
+@Named("updateUser")
 @ViewScoped
-public class InsertUser implements Serializable {
+public class UpdateUser implements Serializable {
 
     private static final Logger logger = LogManager.getLogger(InsertUser.class);
 
@@ -40,23 +41,51 @@ public class InsertUser implements Serializable {
     @Inject
     private StaffDAO staffDao;
 
-    String name;
-    String surname;
-    String username;
-    String password;
-    String repassword;
-    String phone;
-    String email;
+    @Inject
+    private UsrDAO userDao;
+
     List<Role> selectedRoles;
     Staff staff;
-    Company company;
-    Department department;
+
     List<Staff> availableStaff;
 
-    @PostConstruct
-    public void init() {
+    Usr user;
+
+    boolean active;
+    String userID;
+
+    public String getUserID() {
+        return userID;
     }
 
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public void init() {
+        if (userID == null) {
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noUserSelected"));
+            FacesUtils.redirectWithNavigationID("dashboardUsers");
+        }
+        user = userDao.get(Long.parseLong(userID));
+        if (user == null) {
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("invalidUserSelected"));
+            FacesUtils.redirectWithNavigationID("dashboardUsers");
+        }
+
+        if (user.getActive().equals(BigDecimal.ONE)) {
+            active = true;
+        } else {
+            active = false;
+        }
+        setUser(user);
+
+    }
+
+    @PostConstruct
+    public void pc (){
+    }
+    
     @PreDestroy
     public void reset() {
     }
@@ -78,6 +107,14 @@ public class InsertUser implements Serializable {
         }
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public List<Staff> getAvailableStaff() {
         return availableStaff;
     }
@@ -86,68 +123,12 @@ public class InsertUser implements Serializable {
         this.availableStaff = availableStaff;
     }
 
-    public Department getDepartment() {
-        return department;
+    public Usr getUser() {
+        return user;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRepassword() {
-        return repassword;
-    }
-
-    public void setRepassword(String repassword) {
-        this.repassword = repassword;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setUser(Usr user) {
+        this.user = user;
     }
 
     public List<Role> getSelectedRoles() {
@@ -164,14 +145,6 @@ public class InsertUser implements Serializable {
 
     public void setStaff(Staff staff) {
         this.staff = staff;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
     }
 
     public void goError(Exception ex) {

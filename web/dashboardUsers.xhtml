@@ -43,6 +43,13 @@
                 width: 245px;
             }
 
+            .btn-list {
+                float: right; 
+                width: 26px  !important;  
+                height: 26px  !important; 
+                margin: 0px 4px 0 0  !important;
+            }
+
         </style>
         <script type="text/javascript">
             function showNewUser() {
@@ -67,6 +74,7 @@
     </ui:define>
 
     <ui:define name="content">
+        <p:growl id="growl" showDetail="false" sticky="false" life="2000"  />  
         <div class="layout-dashboard">
             <div class="p-grid">
                 <div class="p-col-12 p-lg-6 p-xl-3">
@@ -129,11 +137,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
-
 
 
                 <!--          ΚΡΙΤΗΡΙΑ ΑΝΑΖΗΤΗΣΗ ΠΡΟΣΩΠΙΚΟΥ !!!!!!!!!!!!!!!!!!!!! -->
@@ -302,12 +305,24 @@
                                         <h:outputText value="#{user.company.abbrev}" />
                                     </p:column>
 
-                                    <p:column sortBy="#{user.department.name}">
+                                    <p:column headerText="#{bundle.actions}" >
+                                        <p:commandButton id="bt1" icon="pi pi-search"  title="#{bundle.view}"  onclick="viewUserWidget.show()" class="btn-list" >
+                                            <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />
+                                        </p:commandButton>
+                                       <p:commandButton  icon="pi pi-pencil" action="#{administrationAction.goUpdateUser(user.userid)}"  class="btn-list" title="#{bundle.updateUser}"  /> 
+                                       <!-- <p:linkButton icon="pi pi-pencil" outcome="updateUser?userID=#{user.userid}"  class="btn-list" /> -->
+                                          
+                                        <p:commandButton  icon="pi pi-trash" action="#{administrationAction.goResetPasword()}"  class="btn-list" update="" title="#{bundle.resetPassword}">
+                                            <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />                                
+                                        </p:commandButton>
+                                    </p:column>  
+
+                                    <!--<p:column sortBy="#{user.department.name}">
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.department}" />
                                         </f:facet>
                                         <h:outputText value="#{user.department.name}" />
-                                    </p:column>
+                                    </p:column> -->
                                 </p:dataTable>
                             </h:form>
                         </div>

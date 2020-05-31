@@ -39,7 +39,7 @@ public class Staff implements Serializable {
 
     private String city;
 
-    @Column(name = "CREATED_TIMESTAMP")
+    @Column(name = "CREATED_TIMESTAMP", insertable = false, updatable = true)
     private Timestamp createdTimestamp;
 
     private String cteamid;
@@ -48,7 +48,7 @@ public class Staff implements Serializable {
 
     private String loggercode;
 
-    @Column(name = "MODIFIED_TIMESTAMP")
+    @Column(name = "MODIFIED_TIMESTAMP", insertable = false, updatable = true)
     private Timestamp modifiedTimestamp;
 
     private String name;

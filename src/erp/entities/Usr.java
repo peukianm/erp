@@ -17,20 +17,20 @@ public class Usr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USR_USERID_GENERATOR", sequenceName="USR_SEQ")
+	@SequenceGenerator(name="USR_USERID_GENERATOR", sequenceName="USERS_SEQ")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USR_USERID_GENERATOR")
 	private long userid;
 
 	private BigDecimal active;
 
-	@Column(name="CREATED_TIMESTAMP")
+	@Column(name="CREATED_TIMESTAMP", insertable = false, updatable = true)
 	private Timestamp createdTimestamp;
 
 	private String description;
 
 	private String email;
 
-	@Column(name="MODIFIED_TIMESTAMP")
+	@Column(name="MODIFIED_TIMESTAMP", insertable = false, updatable = true)
 	private Timestamp modifiedTimestamp;
 
 	private String name;

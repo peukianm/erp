@@ -21,7 +21,10 @@
     </h:head>
 
     <h:body>
-        <!-- <h:outputStylesheet name="css/default.css" />  -->
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+            <p:graphicImage name="images/ajaxloadingbar.gif" library="babylon-layout"  />
+        </p:dialog> 
 
         <p:idleMonitor timeout="1800000" onidle="PF('idleDialog').show()">  
             <p:ajax event="idle" listener="#{administrationAction.invalidateSession}"/>                  
@@ -37,38 +40,7 @@
             </h:form>
         </p:dialog>
 
-        <h:form id="alertMsgForm"> 
-            <p:confirmDialog  message="#{sessionBean.alertMessage}" header="#{bundle.warning}" severity="alert" 
-                              widgetVar="alertMessageDialog">                    
-                <h:panelGroup layout="block"  id="primeAlertPanel" >
-                    <p:commandButton type="button" value="OK" oncomplete="PF('alertMessageDialog').hide()" styleClass="centered"  />    	                      	                      
-                </h:panelGroup>
-            </p:confirmDialog>
-
-            <p:dialog  header="#{bundle.warning}" severity="alert" modal="true" resizable="false"  widgetVar="alertMessageDlg"  visible="#{sessionBean.showGeneralDialog}" >                    
-                <p:panel widgetVar="primePanel">
-                    <table>
-                        <tr>
-                            <td style="text-align: center">
-                                <h:outputLabel value="#{sessionBean.alertMessage}"/>
-                            </td>
-                        </tr>                    
-                        <tr>
-                            <td style="text-align: center">
-                                <p:commandButton  update=":alertMsgForm" value="OK" action="#{administrationAction.closeAlertDlg}"/>
-                            </td>
-                        </tr>    	                      	                      
-                    </table>
-                </p:panel>
-            </p:dialog> 
-
-            <p:confirmDialog global="true">  
-                <p:commandButton value="#{bundle.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>  
-                <p:commandButton value="#{bundle.no}" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>       
-            </p:confirmDialog>  
-        </h:form>
-
-        <p:dialog  header="#{bundle.warning}" severity="alert" modal="true" resizable="false"  widgetVar="generalAlertWidget" >                    
+        <p:dialog  header="#{bundle.warning}" modal="true" resizable="false"  widgetVar="generalAlertWidget" >                    
             <p:panel widgetVar="alertPanelWidget" id="alertPanel">
                 <table>
                     <tr>
@@ -99,11 +71,6 @@
                     </div>
                 </div> 
                 <div class="layout-content" style="min-height:300px">
-                    
-                    
-                    
-                    
-                    
                     <ui:insert name="content"></ui:insert>
                 </div>
             </div>
@@ -130,7 +97,8 @@
 
             <div class="layout-mask"></div>
 
-            <p:confirmDialog id="disconnectDlgID" header="#{bundle.disconnect}" severity="alert" visible="false"  message="#{bundle.msgDisconnect}" widgetVar="disconnectDlg">	        
+            <p:confirmDialog id="disconnectDlgID" header="#{bundle.disconnect}" global="true" showEffect="fade" hideEffect="fade" 
+                             message="#{bundle.msgDisconnect}" widgetVar="disconnectDlg">	        
                 <h:form >                         
                     <p:commandButton  value="OK" action="#{administrationAction.logoutAction(0)}" ajax="false"  />
                     <p:commandButton type="button" value="#{bundle.cancel}" onclick="PF('disconnectDlg').hide()" />	                                                  
@@ -140,10 +108,10 @@
         </div>
 
         <h:outputStylesheet name="css/nanoscroller.css" library="babylon-layout" />
-        <h:outputStylesheet name="css/primeflex.css" library="babylon-layout" />
-       <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <h:outputStylesheet name="css/primeflex.css" library="babylon-layout" />         
         <h:outputStylesheet name="css/layout-cyan.css" library="babylon-layout" />
         <h:outputStylesheet name="css/erp.css" library="babylon-layout" />
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />      
     </h:body>
 
 </html>
