@@ -389,6 +389,28 @@ public class AdministrationAction implements Serializable {
             return "";
         }
     }
+    
+        public String resetPassword() {
+        try {
+            Usr user = updateUser.getUser();
+            String hashedPassword = ErpUtil.getSaltedHash(updateUser.getPassword());
+            user.setPassword(hashedPassword);
+
+            userDAO.update(user);
+            
+            auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
+            
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
+            FacesUtils.callRequestContext("PF('updateUserDialogWidget').hide()");
+            return "";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            goError(e);
+            return "";
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -514,7 +536,7 @@ public class AdministrationAction implements Serializable {
 
     public void goResetPasword() {
         try {
-            FacesUtils.callRequestContext("resetPasswordDialogWidget.show()");
+            FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').show()");
             FacesUtils.updateHTMLComponnetWIthJS("resetPasswordUserPanelID");
         } catch (Exception e) {
             e.printStackTrace();
@@ -597,26 +619,7 @@ public class AdministrationAction implements Serializable {
 //            return "";
 //        }
 //    }
-    public String resetPassword() {
-        try {
-            Usr user = userBean.getUser();
-            String hashedPassword = ErpUtil.getSaltedHash(userBean.getPassword());
-            user.setPassword(hashedPassword);
 
-            user = persistenceHelper.editPersist(user);
-            persistenceUtil.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
-
-            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
-            FacesUtils.callRequestContext("updateUserDialogWidget.hide()");
-            return userAdmin();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
-        }
-    }
 
     public String goResetPasswordEmail() {
         try {

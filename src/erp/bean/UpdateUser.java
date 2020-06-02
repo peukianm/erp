@@ -48,19 +48,11 @@ public class UpdateUser implements Serializable {
     Staff staff;
 
     List<Staff> availableStaff;
-
     Usr user;
 
     boolean active;
     String userID;
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
+    String password;
 
     public void init() {
         if (userID == null) {
@@ -83,9 +75,9 @@ public class UpdateUser implements Serializable {
     }
 
     @PostConstruct
-    public void pc (){
+    public void pc() {
     }
-    
+
     @PreDestroy
     public void reset() {
     }
@@ -105,6 +97,22 @@ public class UpdateUser implements Serializable {
             goError(e);
             return null;
         }
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public boolean isActive() {

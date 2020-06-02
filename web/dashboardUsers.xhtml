@@ -251,7 +251,7 @@
                             <h:form id="viewUserResults" >
                                 <p:dataTable id="tbl" var="user" value="#{dbUsers.searchUsers}" styleClass="myclass"
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 10px;    padding: 0.1em 0.2em ;  ">
+                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
 
                                     <f:facet name="{Exporters}">
                                         <div style="float:right;">
@@ -309,9 +309,9 @@
                                         <p:commandButton id="bt1" icon="pi pi-search"  title="#{bundle.view}"  onclick="viewUserWidget.show()" class="btn-list" >
                                             <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />
                                         </p:commandButton>
-                                       <p:commandButton  icon="pi pi-pencil" action="#{administrationAction.goUpdateUser(user.userid)}"  class="btn-list" title="#{bundle.updateUser}"  /> 
-                                       <!-- <p:linkButton icon="pi pi-pencil" outcome="updateUser?userID=#{user.userid}"  class="btn-list" /> -->
-                                          
+                                        <p:commandButton  icon="pi pi-pencil" action="#{administrationAction.goUpdateUser(user.userid)}"  class="btn-list" title="#{bundle.updateUser}"  /> 
+                                        <!-- <p:linkButton icon="pi pi-pencil" outcome="updateUser?userID=#{user.userid}"  class="btn-list" /> -->
+
                                         <p:commandButton  icon="pi pi-trash" action="#{administrationAction.goResetPasword()}"  class="btn-list" update="" title="#{bundle.resetPassword}">
                                             <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />                                
                                         </p:commandButton>
@@ -330,6 +330,39 @@
                 </div>                                        
             </div> 
         </div>
+
+
+        <p:dialog header="#{bundle.resetPassword}" id="resetPasswordDialogID" position="center" widgetVar="resetPasswordDialogWidget" modal="true" resizable="false" >
+            <h:form id="resetPasswordFormID">
+                <p:panel id="resetPasswordPanelID" widgetVar="resetPassowrdPanelWidget">
+                    <p:messages showDetail="false" closable="true">
+                        <p:autoUpdate />
+                    </p:messages>
+                    <table>
+                        <tr>
+                            <td><p:outputLabel for="upassword" value="#{bundle.password}:" style="font-weight: bold;" /> </td>                                    
+                            <td><p:password  match="urepassword" id="upassword" value="#{updateUser.password}" required="true"
+                                             requiredMessage="#{bundle.password}:#{bundle.mandatoryField}" >                                                    
+                                    <f:validateLength minimum="4" maximum="15" />
+                                </p:password>
+                                <p:message for="upassword" display="icon"/>  <br/></td>
+                        </tr>
+                        <tr>                                    
+                            <td><p:outputLabel for="urepassword" value="#{bundle.confirm}:" style="font-weight: bold;" /></td>
+                            <td><p:password value="#{updateUser.password}" id="urepassword"  
+                                            required="true" requiredMessage="#{bundle.reEnterPassword}:#{bundle.mandatoryField}" >
+                                    <f:validateLength minimum="4" maximum="15" />      
+                                </p:password>
+                                <p:message for="urepassword" display="icon"/> </td>
+                        </tr>
+                    </table>
+                </p:panel>
+                <p:commandButton action="#{administrationAction.resetPassword()}" value="#{bundle.resetPassword}" update="resetPasswordPanelID"/>
+                <p:spacer width="10" />
+                <p:commandButton type="button" immediate="true" value="#{bundle.cancel}" onclick="PF('resetPasswordDialogWidget').hide()" />
+            </h:form>
+        </p:dialog>
+
 
     </ui:define>
 </ui:composition> 

@@ -9,8 +9,10 @@ import erp.entities.Action;
 import erp.entities.Auditing;
 import erp.entities.Company;
 import erp.entities.Usr;
+import erp.util.FormatUtils;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.ejb.Stateless;
@@ -210,6 +212,31 @@ public class AuditingDAO implements Serializable {
             re.printStackTrace();
             logger.error("Error on searching audit ", re);
             throw re;
+        }
+    }
+    
+        public void audit(Usr user, long actionID, String comments) throws Exception {
+        try {
+            Action action = entityManager.find(Action.class, actionID);
+            Auditing auditing = new Auditing();
+            auditing.setUsr(user);
+            if (logger.isDebugEnabled()) {
+                logger.debug("AUDITING");
+            }
+            auditing.setActiondate(FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN));
+            auditing.setActiontime(FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
+            auditing.setAction(action);
+            if (user.getCompany() != null) {
+                auditing.setCompany(user.getCompany());
+            }
+
+            auditing.setComments(comments);
+            save(auditing);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("Error on insert new audit ", e);
+            throw e;
         }
     }
 }
