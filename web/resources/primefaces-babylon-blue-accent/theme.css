@@ -1042,7 +1042,7 @@ body .ui-datepicker .ui-datepicker-calendar td {
 body .ui-datepicker .ui-datepicker-calendar td a {
     color: #212121;
     text-align: center;
-    padding: 0.286em;
+    padding: 0.086em;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px; }
@@ -1416,9 +1416,9 @@ body .ui-button.ui-state-active, body .ui-button.ui-state-down {
     border-color: #1565C0;
     color: #ffffff; }
 body .ui-button.ui-button-text-only .ui-button-text {
-    padding: 0.429em 1em; }
+    padding: 0.229em 0.5em; }
 body .ui-button.ui-button-text-icon-left .ui-button-text {
-    padding: 0.429em 1em 0.429em 2em; }
+    padding: 0.229em 0.5em 0.229em 1.6em; }
 body .ui-button.ui-button-text-icon-left .ui-icon {
     position: absolute;
     top: 50%;
@@ -2293,7 +2293,7 @@ body .ui-datatable .ui-datatable-data > tr {
     color: #212121;
     border: 1px solid #e0e0e0; }
 body .ui-datatable .ui-datatable-data > tr > td {
-    padding: 0.5em 1.214em;
+    padding: 0.5em 0.214em;
     border: inherit; }
 body .ui-datatable .ui-datatable-data > tr > td.ui-datatable-subtable-header {
     background-color: #2196F3;

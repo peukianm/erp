@@ -32,8 +32,8 @@
                 width: auto !important;
             }
             .layout-dashboard .user-card .user-card-content img {
-                width: 20px;
-                height: 20px;
+                width: 25px;
+                height: 25px;
                 text-align: right;
                 margin: 0px 0 0 2px !important;
             }
@@ -74,7 +74,7 @@
     </ui:define>
 
     <ui:define name="content">
-        <p:growl id="growl" showDetail="false" sticky="false" life="2000"  />  
+        <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
         <div class="layout-dashboard">
             <div class="p-grid">
                 <div class="p-col-12 p-lg-6 p-xl-3">
@@ -357,7 +357,7 @@
                         </tr>
                     </table>
                 </p:panel>
-                <p:commandButton action="#{administrationAction.resetPassword()}" value="#{bundle.resetPassword}" update="resetPasswordPanelID"/>
+                <p:commandButton action="#{administrationAction.resetPassword()}" value="#{bundle.resetPassword}" update="growl" />
                 <p:spacer width="10" />
                 <p:commandButton type="button" immediate="true" value="#{bundle.cancel}" onclick="PF('resetPasswordDialogWidget').hide()" />
             </h:form>

@@ -21,7 +21,20 @@
                 background-image: linear-gradient(to right, rgba(48, 63, 70, 0.15) 23%, rgba(116, 144, 157, 0.15) 60%);
                 padding: 24px 48px;
                 margin-top: 114px !important; 
-            }    
+            }   
+            body .ui-selectbooleanbutton.ui-state-active, body .ui-buttonset:not(.ui-splitbutton) > .ui-button.ui-state-active {
+                background-color: #405965 !important;
+                border-color: #29382a !important;
+            }
+            body .ui-selectonelistbox .ui-selectlistbox-listcontainer .ui-selectlistbox-list .ui-selectlistbox-item.ui-state-highlight, body .ui-selectmanymenu .ui-selectlistbox-listcontainer .ui-selectlistbox-list .ui-selectlistbox-item.ui-state-highlight {
+                background-color: #ccd7e0 !important;
+            }
+            body .ui-selectonemenu-panel .ui-selectonemenu-items .ui-selectonemenu-item.ui-state-highlight {
+                background-color: #ccd7e0 !important ;
+            }
+            body .ui-autocomplete-panel .ui-autocomplete-items .ui-autocomplete-item.ui-state-highlight {
+                background-color: #ccd7e0 !important ;
+            }
         </style>
         <script type="text/javascript">
             //<![CDATA[
@@ -208,10 +221,11 @@
                                     </p:inputText>
 
                                     <p:outputLabel value="#{bundle.selectStaff}" for="staff" styleClass="form-label erp-display-block" />
-                                    <p:autoComplete widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staff" value="#{updateUser.user.staff}" completeMethod="#{updateUser.completeStaff}" size="60" required="false"  
-                                                    var="staff" itemLabel="#{staff.surname} #{staff.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
-                                        <o:converter converterId="omnifaces.ListConverter"  list="#{updateUser.availableStaff}" />                                         
-                                    </p:autoComplete>
+                                    <p:autoComplete widgetVar="acStaff" minQueryLength="2" queryDelay="300" scrollHeight="300" id="staff" value="#{updateUser.user.staff}" 
+                                                    completeMethod="#{updateUser.completeStaff}" size="60" required="false"  
+                                                    var="staff" itemLabel="#{staff.surname} #{staff.name}" itemValue="#{staff}"  converter="StaffConverter" forceSelection="true" />  
+
+
                                 </div>
                                 <div class="p-col-12 p-md-6 wizard-forms">
                                     <p:outputLabel value="#{bundle.department}" for="department" styleClass="form-label erp-display-block" />                                    

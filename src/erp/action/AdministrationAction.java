@@ -381,7 +381,7 @@ public class AdministrationAction implements Serializable {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
             sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
             sessionBean.setPageName(MessageBundleLoader.getMessage("usersPage"));
-            return "dashboardUsers";
+            return "";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -401,7 +401,7 @@ public class AdministrationAction implements Serializable {
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
             
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
-            FacesUtils.callRequestContext("PF('updateUserDialogWidget').hide()");
+            FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').hide()");
             return "";
 
         } catch (Exception e) {

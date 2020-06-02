@@ -17,7 +17,20 @@
                 background-image: linear-gradient(to right, rgba(48, 63, 70, 0.15) 23%, rgba(116, 144, 157, 0.15) 60%);
                 padding: 24px 48px;
                 margin-top: 114px !important; 
-            }    
+            }   
+            body .ui-selectbooleanbutton.ui-state-active, body .ui-buttonset:not(.ui-splitbutton) > .ui-button.ui-state-active {
+                background-color: #405965 !important;
+                border-color: #29382a !important;
+            }
+            body .ui-selectonelistbox .ui-selectlistbox-listcontainer .ui-selectlistbox-list .ui-selectlistbox-item.ui-state-highlight, body .ui-selectmanymenu .ui-selectlistbox-listcontainer .ui-selectlistbox-list .ui-selectlistbox-item.ui-state-highlight {
+                background-color: #ccd7e0 !important;
+            }
+            body .ui-selectonemenu-panel .ui-selectonemenu-items .ui-selectonemenu-item.ui-state-highlight {
+                background-color: #ccd7e0 !important ;
+            }
+            body .ui-autocomplete-panel .ui-autocomplete-items .ui-autocomplete-item.ui-state-highlight {
+                background-color: #ccd7e0 !important ;
+            }
         </style>
         <script type="text/javascript">
             //<![CDATA[
@@ -117,7 +130,7 @@
                             </div>
                         </div>
                         <div class="wizard-card-content register active-content">
-                            <p:messages showDetail="true" closable="true">
+                            <p:messages showDetail="false" closable="true">
                                 <p:autoUpdate />
                             </p:messages>
                             <!--<div class="warning">
@@ -138,7 +151,7 @@
                                     <p:outputLabel value="#{bundle.password}" for="pwds" styleClass="form-label erp-display-block" >
                                         <i class="fa fa-exclamation-circle"> </i>
                                     </p:outputLabel>
-                                    <p:password id="pwds" value="#{insertUser.password}" required="true" requiredMessage="#{bundle.password}: #{bundle.mandatoryField}" >
+                                    <p:password match="rpwd" id="pwds" value="#{insertUser.password}" required="true" requiredMessage="#{bundle.password}: #{bundle.mandatoryField}" >
                                         <f:validateLength minimum="4" maximum="15" />
                                     </p:password>
 
@@ -183,7 +196,7 @@
 
                         </div>
                         <div id="demoID" class="wizard-card-content register tier" style="padding:1px 1px !important; min-height:275px !important;">
-                            <p:messages showDetail="true" closable="true">
+                            <p:messages showDetail="false" closable="true">
                                 <p:autoUpdate />
                             </p:messages>
                             <!-- <div class="warning">
