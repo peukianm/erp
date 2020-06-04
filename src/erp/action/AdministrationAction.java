@@ -8,6 +8,7 @@ import erp.dao.AuditingDAO;
 import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
 import erp.entities.*;
+import erp.scheduler.LoggerDataRetrieveTask;
 import erp.util.*;
 import java.io.IOException;
 import java.io.Serializable;
@@ -25,6 +26,9 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 
 public class AdministrationAction implements Serializable {
+
+    @EJB
+    private LoggerDataRetrieveTask loggerDataRetrieveTask;
 
     private static final Logger logger = LogManager.getLogger(AdministrationAction.class);
 
@@ -63,12 +67,18 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     DashboardUsers dbUsers;
+    
+    @Inject
+    DashboardAttendance dbAttendance;
 
     @Inject
     InsertUser insertUser;
 
     @Inject
     UpdateUser updateUser;
+
+    @Inject
+    LoggerDataRetrieveTask ldrTask;
 
     public AdministrationAction() {
     }
@@ -150,7 +160,7 @@ public class AdministrationAction implements Serializable {
                 auditingDAO.save(audit);
                 sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
                 sessionBean.setPageName(MessageBundleLoader.getMessage("usersPage"));
-                return "dashboardUsers?faces-redirect=true";
+                return "dashboardTasks?faces-redirect=true";
             }
             return "";
         } catch (Exception e) {
@@ -194,10 +204,10 @@ public class AdministrationAction implements Serializable {
     public void fetchAttendances() {
         try {
             List<AttendanceBean> retValue = new ArrayList<>(0);
-            if (!dbView.getSelectedSectors().isEmpty()) {
-                dbView.getSelectedSectors().forEach((temp) -> {
-                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbView.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
-                            FormatUtils.formatDate(dbView.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, temp, null);
+            if (!dbAttendance.getSelectedSectors().isEmpty()) {
+                dbAttendance.getSelectedSectors().forEach((temp) -> {
+                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbAttendance.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                            FormatUtils.formatDate(dbAttendance.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, temp, null);
                     attendances.forEach((temp1) -> {
                         AttendanceBean bean = new AttendanceBean();
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
@@ -214,10 +224,10 @@ public class AdministrationAction implements Serializable {
                     });
                 });
 
-            } else if (!dbView.getSelectedDepartments().isEmpty()) {
-                dbView.getSelectedDepartments().forEach((temp) -> {
-                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbView.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
-                            FormatUtils.formatDate(dbView.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, null, temp);
+            } else if (!dbAttendance.getSelectedDepartments().isEmpty()) {
+                dbAttendance.getSelectedDepartments().forEach((temp) -> {
+                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbAttendance.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                            FormatUtils.formatDate(dbAttendance.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, null, temp);
                     attendances.forEach((temp1) -> {
                         AttendanceBean bean = new AttendanceBean();
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
@@ -234,10 +244,10 @@ public class AdministrationAction implements Serializable {
                     });
                 });
 
-            } else if (!dbView.getSelectedStaff().isEmpty()) {
-                dbView.getSelectedStaff().forEach((temp) -> {
-                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbView.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
-                            FormatUtils.formatDate(dbView.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), temp, null, null);
+            } else if (!dbAttendance.getSelectedStaff().isEmpty()) {
+                dbAttendance.getSelectedStaff().forEach((temp) -> {
+                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbAttendance.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                            FormatUtils.formatDate(dbAttendance.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), temp, null, null);
                     attendances.forEach((temp1) -> {
                         AttendanceBean bean = new AttendanceBean();
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
@@ -254,7 +264,7 @@ public class AdministrationAction implements Serializable {
                     });
                 });
             }
-            dbView.setAttendances(retValue);
+            dbAttendance.setAttendances(retValue);
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -389,17 +399,17 @@ public class AdministrationAction implements Serializable {
             return "";
         }
     }
-    
-        public String resetPassword() {
+
+    public String resetPassword() {
         try {
             Usr user = updateUser.getUser();
             String hashedPassword = ErpUtil.getSaltedHash(updateUser.getPassword());
             user.setPassword(hashedPassword);
 
             userDAO.update(user);
-            
+
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
-            
+
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
             FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').hide()");
             return "";
@@ -409,6 +419,19 @@ public class AdministrationAction implements Serializable {
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             goError(e);
             return "";
+        }
+    }
+
+    public void updateFromLoggers() {
+
+        try {
+            ldrTask.doSchedulerWork(true);
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("loggerDataUpdated"));
+        } catch (Exception e) {
+            FacesUtils.addErrorMessage(MessageBundleLoader.getMessage("problem"));
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            goError(e);
         }
     }
 
@@ -619,8 +642,6 @@ public class AdministrationAction implements Serializable {
 //            return "";
 //        }
 //    }
-
-
     public String goResetPasswordEmail() {
         try {
             sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_RESET_PASSWORD"));

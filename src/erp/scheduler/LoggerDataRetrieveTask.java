@@ -1,6 +1,7 @@
 package erp.scheduler;
 
 import erp.bean.LoggerData;
+import erp.dao.CompanyDAO;
 import erp.dao.SchedulerDAO;
 import erp.entities.Attendance;
 import erp.entities.Company;
@@ -48,7 +49,7 @@ public class LoggerDataRetrieveTask {
     SchedulerDAO schedulerDAO;
 
     @EJB
-    PersistenceHelper persistenceHelper;
+    CompanyDAO companyDAO;
 
     final String DATEPATTERN = "yyyy-MM-dd";
     final String TIMEPATTERN = "HH:mm:ss";
@@ -58,8 +59,8 @@ public class LoggerDataRetrieveTask {
 
     @Lock(LockType.READ)
     public void doSchedulerWork(Boolean force) throws InterruptedException {
-        Company company = (Company) persistenceHelper.find(Company.class, Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));
-        Scheduletask task = (Scheduletask) persistenceHelper.find(Scheduletask.class, Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
+        Company company = companyDAO.getCompany(Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));   //(Company) persistenceHelper.find(Company.class, Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));
+        Scheduletask task = schedulerDAO.getScheduleTask(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         Companytask cTask = schedulerDAO.findCtask(company, task);
         Scheduletaskdetail taskDetails = null;
         if (!force) {
@@ -104,6 +105,7 @@ public class LoggerDataRetrieveTask {
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " SUCCEDED at " + endTaskTime + " in " + FormatUtils.splitSecondsToTime(secs));
 
         } catch (Exception ex) {
+            //FAILURE
             Timestamp endTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
             long secs = FormatUtils.getDateDiff(taskDetails.getStartExecutiontime(), endTaskTime, TimeUnit.SECONDS);
 

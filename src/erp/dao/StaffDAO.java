@@ -10,9 +10,12 @@ import erp.entities.Company;
 import erp.entities.Companytask;
 import erp.entities.Department;
 import erp.entities.Scheduletask;
+import erp.entities.Scheduletaskdetail;
 import erp.entities.Sector;
 import erp.entities.Staff;
+import erp.entities.Taskstatus;
 import erp.util.FormatUtils;
+import erp.util.SystemParameters;
 import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -81,11 +84,38 @@ public class StaffDAO {
         }
     }
 
+//    public String getTaskLastExecutionTime(Company company, Long taskID) {
+//        try {
+//            Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);
+//            Companytask cTask = schedulerDAO.findCtask(company, task);
+//            return FormatUtils.formatTimeStamp(cTask.getLastexecutiontime(), FormatUtils.FULLDATEPATTERN);
+//        } catch (RuntimeException re) {
+//            re.printStackTrace();
+//            logger.error("Error on getting Last Execution Time entity", re);
+//            throw re;
+//        }
+//    }
+
     public String getTaskLastExecutionTime(Company company, Long taskID) {
         try {
             Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);
             Companytask cTask = schedulerDAO.findCtask(company, task);
-            return FormatUtils.formatTimeStamp(cTask.getLastexecutiontime(), FormatUtils.FULLDATEPATTERN);
+            Taskstatus status = entityManager.find(Taskstatus.class, Long.valueOf(SystemParameters.getInstance().getProperty("TASK_SUCCESS")));
+
+            final String queryString = "select model from Scheduletaskdetails model where "
+                    + " model.ctask = :ctask  "
+                    + " model.Taskstatus.statusid = " + SystemParameters.getInstance().getProperty("TASK_SUCCESS")
+                    + " order by model.startexecutiontime DESC  ";
+            Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.retrieveMode", "BYPASS");
+            query.setMaxResults(1);
+            query.setParameter("ctask", cTask);
+            List<Scheduletaskdetail> std = query.getResultList();
+            if (std.isEmpty()) {
+                return "N/A";
+            } else {
+                return FormatUtils.formatTimeStamp(std.get(0).getStartExecutiontime(), FormatUtils.FULLDATEPATTERN);
+            }
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on getting Last Execution Time entity", re);
@@ -127,7 +157,7 @@ public class StaffDAO {
                     + (staff != null ? " and model.staff = :staff  " : " ")
                     + (department != null ? " and model.department = :department  " : " ")
                     + (sector != null ? " and model.sector = :sector  " : " ")
-                    + " order by model.staff.surname ";
+                    + " order by model.staff.surname, model.entrance ";
 
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");

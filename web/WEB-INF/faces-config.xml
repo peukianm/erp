@@ -68,6 +68,15 @@
             <to-view-id>/dashboardAttendance.jsf</to-view-id>   
         </navigation-case>
     </navigation-rule> 
+     <navigation-rule>
+        <navigation-case>
+            <from-outcome>dashboardTasks</from-outcome>
+            <to-view-id>/dashboardTasks.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
+    
+    
+    
     <navigation-rule>
         <navigation-case>
             <from-outcome>dashboard</from-outcome>

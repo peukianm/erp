@@ -77,67 +77,7 @@
         <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
         <div class="layout-dashboard">
             <div class="p-grid">
-                <div class="p-col-12 p-lg-6 p-xl-3">
-                    <div class="overview-box sales">
-                        <i class="overview-icon fa fa-barcode"></i>
-                        <span class="overview-title">#{bundle.attendance}</span>
-                        <b> <p:spacer width="10" /> #{dbView.attendanceDate}</b>
-                        <!-- <i class="overview-arrow fa fa-chevron-circle-up"></i> -->
-
-                        <div class="overview-subinfo">
-                            <!--<span style="font-size: 15px; color: #ffffff;">DATE</span>  -->
-                            <div style="text-align:left;"> <b>#{bundle.entryTime}: #{dbView.entryTime}</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.exitTime}:  #{dbView.exitTime}</b></div> 
-                        </div>
-                    </div>
-                </div>
-                <br/>
-                <div class="p-col-12 p-lg-6 p-xl-3">
-                    <div class="overview-box views">
-                        <i class="overview-icon fa fa-search"></i>
-                        <span class="overview-title">#{bundle.reqs}</span>
-                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
-                        <!--<div class="overview-numbers">
-                        #{bundle.openReqs}
-                    </div> -->
-                        <div class="overview-subinfo">
-                            <!--<span style="font-size: 15px; color: #ffffff;">YEAR</span> --> 
-                            <div style="text-align:left;"> <b>#{bundle.openReqs}: N/A</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.totalReqs}: N/A</b></div> 
-                        </div>
-                    </div>
-                </div>
-                <div class="p-col-12 p-lg-6 p-xl-3">
-                    <div class="overview-box users">
-                        <i class="overview-icon fa fa-tasks"></i>
-                        <span class="overview-title">#{bundle.tasks}</span>
-                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
-                        <!--<div class="overview-numbers">
-                            9522
-                        </div>-->
-                        <div class="overview-subinfo">
-                            <span style="font-size: 15px; color: #ffffff;"></span> 
-                            <div style="text-align:left;"> <b>#{bundle.openTask}: N/A</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.closedTask}: N/A</b></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-col-12 p-lg-6 p-xl-3">
-                    <div class="overview-box checkin">
-                        <i class="overview-icon fa fa-calendar"></i>
-                        <span class="overview-title">#{bundle.calendar}</span>
-                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
-                        <!--<div class="overview-numbers">
-                            4211
-                        </div>-->
-                        <div class="overview-subinfo">
-                            <span style="font-size: 15px; color: #ffffff;"></span> 
-                            <div style="text-align:left;"> <b>#{bundle.todayEvents}: N/A</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.weekEvents}: N/A</b></div>
-                        </div>
-                    </div>
-                </div>
-
+                <ui:include src="/WEB-INF/status.xhtml" />
 
                 <!--          ΚΡΙΤΗΡΙΑ ΑΝΑΖΗΤΗΣΗ ΠΡΟΣΩΠΙΚΟΥ !!!!!!!!!!!!!!!!!!!!! -->
                 <!--<div class="p-col-12 p-lg-8">-->
@@ -145,7 +85,7 @@
                     <h:form id="searchUserForm">
                         <div class="card card-w-title statistics">
                             <div class="erp-panel-titlebar">
-                                Αναζήτηση Χρηστών 
+                                #{bundle.searchUsers} 
                             </div>
                             <table style="width: 100%">
                                 <tr>
@@ -246,7 +186,7 @@
                     <div class="card user-card">
                         <div id="showUsersDivID" style="display: block" class="user-card-content">
                             <div class="erp-panel-titlebar">
-                                Λιστα Χρηστων
+                                #{bundle.usersList}}
                             </div>
                             <h:form id="viewUserResults" >
                                 <p:dataTable id="tbl" var="user" value="#{dbUsers.searchUsers}" styleClass="myclass"

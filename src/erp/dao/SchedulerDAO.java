@@ -37,6 +37,16 @@ public class SchedulerDAO implements Serializable {
     @PersistenceContext(unitName = "erp")
     private EntityManager entityManager;
 
+    public Scheduletask getScheduleTask(long id) {
+        try {
+            return entityManager.find(Scheduletask.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Schedule Task entity", re);
+            throw re;
+        }
+    }
+
     public Scheduletaskdetail getScheduleTaskDetail(long id) {
         try {
             return entityManager.find(Scheduletaskdetail.class, id);

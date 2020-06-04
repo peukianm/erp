@@ -34,7 +34,7 @@ import org.primefaces.event.SelectEvent;
 
 /**
  *
- * @author user
+ * @author peukianm
  */
 @Named("dbUsers")
 @ViewScoped

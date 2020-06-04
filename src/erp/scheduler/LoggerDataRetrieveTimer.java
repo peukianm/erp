@@ -18,8 +18,8 @@ import javax.ejb.TimerService;
  *
  * @author peukianm
  */
-@Singleton
-@Startup
+//@Singleton
+//@Startup
 public class LoggerDataRetrieveTimer {
 
     @Resource

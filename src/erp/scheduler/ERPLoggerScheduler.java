@@ -12,22 +12,25 @@ import javax.ejb.LockType;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 
-
-
 /**
  *
  * @author peukianm
  */
 @Singleton
-public class ERPScheduler {
+public class ERPLoggerScheduler {
+
     @EJB
     private LoggerDataRetrieveTask retrieverTask;
- 
+
+    @EJB
+    private StaffUpdateTask staffUpdateTask;
+
     @Lock(LockType.READ)
-    @Schedule(second = "*/20", minute = "*", hour = "*", persistent = false)
-    public void atSchedule() throws InterruptedException {
-        if (SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE").equals("true"))
+    @Schedule(second = "*", minute = "*", hour = "*/2", persistent = false)
+    public void atScheduleLoggers() throws InterruptedException {
+        if (SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE") != null && SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE").equals("true")
+                && SystemParameters.getInstance().getProperty("LOGGER_RETRIEVER_TASK_ENABLE").equals("true")) {
             retrieverTask.doSchedulerWork(false);
+        }
     }
-    
 }

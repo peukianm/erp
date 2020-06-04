@@ -129,74 +129,9 @@
     <ui:define name="content">
         <div class="layout-dashboard">
             <div class="p-grid">
-                <div class="p-col-12 p-lg-6 p-xl-3">
-                    <div class="overview-box sales">
-                        <i class="overview-icon fa fa-barcode"></i>
-                        <span class="overview-title">#{bundle.attendance}</span>
-                        <b> <p:spacer width="10" /> #{dbView.attendanceDate}</b>
-                        <!-- <i class="overview-arrow fa fa-chevron-circle-up"></i> -->
+                 <ui:include src="/WEB-INF/status.xhtml" />
 
-                        <div class="overview-subinfo">
-                            <!--<span style="font-size: 15px; color: #ffffff;">DATE</span>  -->
-                            <div style="text-align:left;"> <b>#{bundle.entryTime}: #{dbView.entryTime}</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.exitTime}:  #{dbView.exitTime}</b></div> 
-                        </div>
-                    </div>
-                </div>
-                <br/>
-                <div class="p-col-12 p-lg-6 p-xl-3">
-                    <div class="overview-box views">
-                        <i class="overview-icon fa fa-search"></i>
-                        <span class="overview-title">#{bundle.reqs}</span>
-                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
-                        <!--<div class="overview-numbers">
-                        #{bundle.openReqs}
-                    </div> -->
-                        <div class="overview-subinfo">
-                            <!--<span style="font-size: 15px; color: #ffffff;">YEAR</span> --> 
-                            <div style="text-align:left;"> <b>#{bundle.openReqs}: N/A</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.totalReqs}: N/A</b></div> 
-                        </div>
-                    </div>
-                </div>
-                <div class="p-col-12 p-lg-6 p-xl-3">
-                    <div class="overview-box users">
-                        <i class="overview-icon fa fa-tasks"></i>
-                        <span class="overview-title">#{bundle.tasks}</span>
-                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
-                        <!--<div class="overview-numbers">
-                            9522
-                        </div>-->
-                        <div class="overview-subinfo">
-                            <span style="font-size: 15px; color: #ffffff;"></span> 
-                            <div style="text-align:left;"> <b>#{bundle.openTask}: N/A</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.closedTask}: N/A</b></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-col-12 p-lg-6 p-xl-3">
-                    <div class="overview-box checkin">
-                        <i class="overview-icon fa fa-calendar"></i>
-                        <span class="overview-title">#{bundle.calendar}</span>
-                        <i class="overview-arrow fa fa-chevron-circle-up"></i>
-                        <!--<div class="overview-numbers">
-                            4211
-                        </div>-->
-                        <div class="overview-subinfo">
-                            <span style="font-size: 15px; color: #ffffff;"></span> 
-                            <div style="text-align:left;"> <b>#{bundle.todayEvents}: N/A</b></div> 
-                            <div style="text-align:left;"> <b>#{bundle.weekEvents}: N/A</b></div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-
-
-
-                <!--          ΕΠΙΛΟΓΗ ΠΡΟΣΩΠΙΚΟΥ ΔΙΩ !!!!!!!!!!!!!!!!!!!!! -->
+                <!--          ΕΠΙΛΟΓΗ ΠΡΟΣΩΠΙΚΟΥ  !!!!!!!!!!!!!!!!!!!!! -->
                 <p:messages>
                     <p:autoUpdate />
                 </p:messages>
@@ -205,31 +140,31 @@
                     <h:form id="searchStaffForm">
                         <div class="card card-w-title statistics">
                             <div class="erp-panel-titlebar">
-                                #{bundle.selectPersonel} <span style="float: right;font-size:8px">#{bundle.loggersUpdate}:<i>#{dbView.lastExecution}</i></span>
+                                #{bundle.selectPersonel} <span style="float: right;font-size:9px">#{bundle.loggersUpdate}:&#160;<i>#{dbView.lastExecution}</i></span>
                             </div>
                             <table style="width: 100%">
                                 <tr>
                                     <td style="vertical-align: top">
                                         <p:outputLabel style="font-weight: bold;" for="selectSector" value="#{bundle.sector}" />  
-                                        <p:selectManyMenu disabled="#{!dbView.enableSector}"  value="#{dbView.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
-                                            <p:ajax listener="#{dbView.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass)" />                                            
+                                        <p:selectManyMenu disabled="#{!dbAttendance.enableSector}"  value="#{dbAttendance.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
+                                            <p:ajax listener="#{dbAttendance.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass)" />                                            
                                             <f:selectItems value="#{sessionBean.users.company.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
 
                                     </td>
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.department}" />  
-                                        <p:selectManyMenu disabled="#{!dbView.enableDepartment}" value="#{dbView.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
-                                            <p:ajax listener="#{dbView.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass)" />
-                                            <f:selectItems value="#{dbView.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        <p:selectManyMenu disabled="#{!dbAttendance.enableDepartment}" value="#{dbAttendance.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
+                                            <p:ajax listener="#{dbAttendance.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass)" />
+                                            <f:selectItems value="#{dbAttendance.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
                                         <br/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <p:panel id="depsID"  styleClass="depsIDtyleclass" visible="#{dbView.selectedDepartments.size() gt 0}" header="#{bundle.departmentSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
-                                            <p:repeat value="#{dbView.selectedDepartments}" var="dep" varStatus="depStatus" >
+                                        <p:panel id="depsID"  styleClass="depsIDtyleclass" visible="#{dbAttendance.selectedDepartments.size() gt 0}" header="#{bundle.departmentSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                            <p:repeat value="#{dbAttendance.selectedDepartments}" var="dep" varStatus="depStatus" >
                                                 #{dep.name} <p:spacer width="10px"/>                                          
                                             </p:repeat>
                                         </p:panel>
@@ -239,28 +174,28 @@
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="fromAttendanceDate" value="#{bundle.from}:" /><p:spacer width="20" height="20" />
                                         <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
-                                                     pattern="dd/MM/yyyy" value="#{dbView.fromAttendanceDate}" id="fromAttendanceDate"/>
+                                                     pattern="dd/MM/yyyy" value="#{dbAttendance.fromAttendanceDate}" id="fromAttendanceDate"/>
                                     </td>
                                     <td>          
                                         <p:outputLabel style="font-weight: bold;" for="toAttendanceDate" value="#{bundle.to}:" /><p:spacer width="20" height="20" />
                                         <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
-                                                    pattern="dd/MM/yyyy" value="#{dbView.toAttendanceDate}" id="toAttendanceDate"/>
+                                                    pattern="dd/MM/yyyy" value="#{dbAttendance.toAttendanceDate}" id="toAttendanceDate"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
 
                                         <p:outputLabel style="font-weight: bold;" for="staffComplete" value="#{bundle.selectStaff}:" /><p:spacer width="20" height="20" />
-                                        <p:autoComplete disabled="#{!dbView.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staffComplete" value="#{dbView.searchStaff}" completeMethod="#{dbView.completeStaff}" size="60" required="false"  
+                                        <p:autoComplete disabled="#{!dbAttendance.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staffComplete" value="#{dbAttendance.searchStaff}" completeMethod="#{dbAttendance.completeStaff}" size="60" required="false"  
                                                         var="staff" itemLabel="#{staff.surname} #{staff.name}  #{staff.department.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
-                                            <o:converter converterId="omnifaces.ListConverter"  list="#{dbView.availableStaff}" />
-                                            <p:ajax event="itemSelect" listener="#{dbView.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass)"  />  
+                                            <o:converter converterId="omnifaces.ListConverter"  list="#{dbAttendance.availableStaff}" />
+                                            <p:ajax event="itemSelect" listener="#{dbAttendance.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass)"  />  
                                         </p:autoComplete>
                                         <br/><br/>
-                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbView.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 800;font-size: 11px;">
-                                            <p:repeat value="#{dbView.selectedStaff}" var="staff" varStatus="myVarStatus">
+                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbAttendance.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 800;font-size: 11px;">
+                                            <p:repeat value="#{dbAttendance.selectedStaff}" var="staff" varStatus="myVarStatus">
                                                 #{staff.surname} #{staff.name} - #{staff.department.name} 
-                                                <p:commandButton  process="@this" update="@(.basicstyleclass)" action="#{dbView.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
+                                                <p:commandButton  process="@this" update="@(.basicstyleclass)" action="#{dbAttendance.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
                                                 </p:commandButton>
                                                 <hr/>
                                             </p:repeat>
@@ -272,7 +207,7 @@
 
                             <p:commandButton value="#{bundle.search}" action="#{administrationAction.fetchAttendances}" update="searchStaffForm viewAttendanceResults"  />  
                             <p:spacer width="10" />
-                            <p:commandButton  value="#{bundle.reset}" action="#{dbView.resetSearchStaffForm()}"  ajax="false" />
+                            <p:commandButton  value="#{bundle.reset}" action="#{dbAttendance.resetSearchStaffForm()}"  ajax="false" />
                         </div>
                     </h:form>
                 </div>
@@ -294,7 +229,7 @@
                                 #{bundle.personelAttendances}
                             </div>
                             <h:form id="viewAttendanceResults">
-                                <p:dataTable id="tbl" var="attendance" value="#{dbView.attendances}" styleClass="myclass"
+                                <p:dataTable id="tbl" var="attendance" value="#{dbAttendance.attendances}" styleClass="myclass"
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
                                              paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
 

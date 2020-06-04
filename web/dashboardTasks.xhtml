@@ -1,0 +1,124 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <!--<ui:define name="title">Dashboard</ui:define>-->
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <style type="text/css">
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
+                position: relative;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
+            }
+            .myclass table {
+                table-layout: auto !important;
+            }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 25px;
+                height: 25px;
+                text-align: right;
+                margin: 0px 0 0 2px !important;
+            }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
+
+            .btn-list {
+                float: right; 
+                width: 26px  !important;  
+                height: 26px  !important; 
+                margin: 0px 4px 0 0  !important;
+            }
+
+        </style>
+        <script type="text/javascript">
+            function showNewUser() {
+                var x = document.getElementById("showNewUserDivID");
+                var z = document.getElementById("showUsersDivID");
+                z.style.display = "none";
+                x.style.display = "block";
+            }
+            function showUsers() {
+                var x = document.getElementById("showNewUserDivID");
+                var z = document.getElementById("showUsersDivID");
+                z.style.display = "block";
+                x.style.display = "none";
+            }
+        </script>
+    </ui:define>
+
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/dashboardTasks">#{sessionBean.pageName}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <ui:include src="/WEB-INF/status.xhtml" />
+                
+                                
+                <!--         TASK UPDATE LOGGERS     !!!!!!!!!!!!!!!!!!!!! -->
+                <!--<div class="p-col-12 p-lg-8">-->
+                <div class="p-col-12 p-xl-6">    
+                    <h:form id="updateFromLoggersForm">
+                        <div class="card card-w-title statistics">
+                            <div class="erp-panel-titlebar">
+                                #{bundle.loggersUpdate} <span style="float: right;font-size:8px"></span>
+                            </div>
+                            <table style="width: 100%; margin-bottom: 15px;" >
+                                <tr>
+                                    <td>
+                                         <p:outputLabel value="#{bundle.loggersUpdate}:" />&#160;
+                                    
+                                         <p:outputLabel value="#{dbView.lastExecution}" style="font-weight: bold " />
+                                    </td>
+                                </tr>                               
+                            </table>
+                            <p:commandButton value="#{bundle.executeUpdateLoggersTask}" action="#{administrationAction.updateFromLoggers}" update="updateFromLoggersForm growl"  />                      
+                        </div>
+                    </h:form>
+                </div>
+
+
+                <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <div class="p-col-12 p-xl-6"> 
+                    <div class="card user-card">
+                        <div id="showUsersDivID" style="display: block" class="user-card-content">
+                            <div class="erp-panel-titlebar">
+                                #{bundle.staffUpdate}
+                            </div>
+                            <h:form id="viewUserResults" >
+                                
+                            </h:form>
+                        </div>
+                    </div>
+                </div>                                        
+            </div> 
+        </div>
+
+
+         </ui:define>
+</ui:composition> 

@@ -20,7 +20,7 @@ a {
   transition: color 0.3s; }
 
 .layout-wrapper .route-bar {
-  min-height: 32px;
+  min-height: 26px;
   background-color: #ffffff;
   border-bottom: 1px solid #e8e8e8; }
   .layout-wrapper .route-bar .route-bar-breadcrumb {
@@ -31,7 +31,7 @@ a {
       display: inline-block;
       color: #727272; }
       .layout-wrapper .route-bar .route-bar-breadcrumb li a {
-        color: #727272; }
+        color: black; }
     .layout-wrapper .route-bar .route-bar-breadcrumb i, .layout-wrapper .route-bar .route-bar-breadcrumb span {
       color: #727272; }
 
@@ -1187,7 +1187,7 @@ a {
   .layout-dashboard .overview-box .overview-subinfo {
     font-size: 11px;
     border-left: 4px solid;
-    margin-left: -16px;
+    margin-left: -2px;
     padding-left: 12px; }
   .layout-dashboard .overview-box.sales {
     background-color: #42A5F5; }
