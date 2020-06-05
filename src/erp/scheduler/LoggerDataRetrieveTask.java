@@ -58,7 +58,7 @@ public class LoggerDataRetrieveTask {
     Taskstatus taskStatus;
 
     @Lock(LockType.READ)
-    public void doSchedulerWork(Boolean force) throws InterruptedException {
+    public int doSchedulerWork(Boolean force) throws InterruptedException {
         Company company = companyDAO.getCompany(Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));   //(Company) persistenceHelper.find(Company.class, Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));
         Scheduletask task = schedulerDAO.getScheduleTask(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         Companytask cTask = schedulerDAO.findCtask(company, task);
@@ -66,8 +66,12 @@ public class LoggerDataRetrieveTask {
         if (!force) {
             if (busy.get() || cTask.getActive() == BigDecimal.ZERO
                     || cTask.getTaskstatus().getStatusid() != Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE"))) {
-                return;
+                return 0;
             }
+        } else {
+             if (busy.get()) {
+                 return 0;
+             }
         }
 
         try {
@@ -103,7 +107,7 @@ public class LoggerDataRetrieveTask {
 
             System.out.println("TASK DATA RETRIEVE FORM LOGGERS ENDED WITH SUCESSS in " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!!!");
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " SUCCEDED at " + endTaskTime + " in " + FormatUtils.splitSecondsToTime(secs));
-
+            return 1;
         } catch (Exception ex) {
             //FAILURE
             Timestamp endTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
@@ -122,6 +126,7 @@ public class LoggerDataRetrieveTask {
             System.out.println("TASK DATA RETRIEVE FORM LOGGERS FAILED " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!");
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " failed " + endTaskTime);
             ex.printStackTrace();
+            return -1;
 
         } finally {
             busy.set(false);

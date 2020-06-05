@@ -26,7 +26,7 @@ public class ERPLoggerScheduler {
     private StaffUpdateTask staffUpdateTask;
 
     @Lock(LockType.READ)
-    @Schedule(second = "*", minute = "*", hour = "*/2", persistent = false)
+    @Schedule(second = "*/50", minute = "*", hour = "*", persistent = false)
     public void atScheduleLoggers() throws InterruptedException {
         if (SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE") != null && SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE").equals("true")
                 && SystemParameters.getInstance().getProperty("LOGGER_RETRIEVER_TASK_ENABLE").equals("true")) {

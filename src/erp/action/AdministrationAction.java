@@ -9,6 +9,7 @@ import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
 import erp.entities.*;
 import erp.scheduler.LoggerDataRetrieveTask;
+import erp.scheduler.StaffUpdateTask;
 import erp.util.*;
 import java.io.IOException;
 import java.io.Serializable;
@@ -79,6 +80,10 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     LoggerDataRetrieveTask ldrTask;
+    
+    @Inject
+    StaffUpdateTask staffTask;
+    
 
     public AdministrationAction() {
     }
@@ -425,15 +430,52 @@ public class AdministrationAction implements Serializable {
     public void updateFromLoggers() {
 
         try {
-            ldrTask.doSchedulerWork(true);
-            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("loggerDataUpdated"));
-        } catch (Exception e) {
-            FacesUtils.addErrorMessage(MessageBundleLoader.getMessage("problem"));
+            int stat = ldrTask.doSchedulerWork(true);
+            if (stat==1)
+                FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("loggerDataUpdated"));
+            else if(stat==-1)
+                FacesUtils.addErrorMessage(MessageBundleLoader.getMessage("failureRunningLogggerDataTask"));
+            else
+                FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
+        } catch (Exception e) {            
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             goError(e);
         }
     }
+    
+        public void updateFromStaff() {
+
+        try {
+            int stat = staffTask.doSchedulerWork(true);
+            if (stat==1)
+                FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("staffDataUpdated"));
+            else if(stat==-1)
+                FacesUtils.addErrorMessage(MessageBundleLoader.getMessage("failureRunningStaffDataTask"));
+            else
+                FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
+        } catch (Exception e) {            
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            goError(e);
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -49,7 +49,7 @@ public class StaffUpdateTask {
     final String FULLDATEPATTERN = "yyyy-MM-dd HH:mm:ss";
 
     @Lock(LockType.READ)
-    public void doSchedulerWork(Boolean force) throws InterruptedException {
+    public int doSchedulerWork(Boolean force) throws InterruptedException {
         Company company = companyDAO.getCompany(Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));   //(Company) persistenceHelper.find(Company.class, Long.parseLong(SystemParameters.getInstance().getProperty("DEFAULT_COMPANY_ID")));
         Scheduletask task = schedulerDAO.getScheduleTask(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         Companytask cTask = schedulerDAO.findCtask(company, task);
@@ -57,8 +57,12 @@ public class StaffUpdateTask {
         if (!force) {
             if (busy.get() || cTask.getActive() == BigDecimal.ZERO
                     || cTask.getTaskstatus().getStatusid() != Long.parseLong(SystemParameters.getInstance().getProperty("TASK_IDLE"))) {
-                return;
+                return 0;
             }
+        } else {
+            if (busy.get()) {
+                 return 0;
+             }
         }
 
         try {
@@ -94,7 +98,7 @@ public class StaffUpdateTask {
 
             System.out.println("TASK UPDATE STAFF ENDED WITH SUCESSS in " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!!!");
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " SUCCEDED at " + endTaskTime + " in " + FormatUtils.splitSecondsToTime(secs));
-
+            return 1;
         } catch (Exception ex) {
             Timestamp endTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
             long secs = FormatUtils.getDateDiff(taskDetails.getStartExecutiontime(), endTaskTime, TimeUnit.SECONDS);
@@ -112,6 +116,7 @@ public class StaffUpdateTask {
             System.out.println("TASK DATA UPDATE STAFF FAILED " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!");
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " failed " + endTaskTime);
             ex.printStackTrace();
+            return -1;
 
         } finally {
             busy.set(false);
@@ -123,12 +128,12 @@ public class StaffUpdateTask {
         try {
 
         } catch (Exception e) {
-             goError(e);
+            goError(e);
             throw e;
         }
     }
-    
-        public void goError(Exception ex) {
+
+    public void goError(Exception ex) {
         logger.error("-----------AN ERROR HAPPENED ON STAFF UPDATE DATA SCHEDULER !!!! -------------------- : " + ex.toString());
         logger.error("Cause=" + ex.getCause());
         logger.error("Class=" + ex.getClass());

@@ -46,20 +46,9 @@ public class DashboardUsers implements Serializable {
     private SessionBean sessionBean;
 
     @Inject
-    private StaffDAO staffDao;
-
-    @Inject
     private UsrDAO userDao;
 
-    @Inject
-    private ApplicationBean applicationBean;
-
     Usr user;
-
-    private Attendance dayAttendance;
-    private String entryTime = "N/A";
-    private String exitTime = "N/A";
-    private String attendanceDate = "N/A";
 
     private Usr searchUser;
     private Department selectedDepartment;
@@ -80,14 +69,7 @@ public class DashboardUsers implements Serializable {
     public void init() {
         System.out.println("INITIALIZE DB USERS BEAN");
         user = sessionBean.getUsers();
-        dayAttendance = staffDao.getDayAttendance(user.getStaff(), false);
-        if (dayAttendance != null) {
-            attendanceDate = dayAttendance.getEntrance().toString().substring(0, 10);
-            entryTime = dayAttendance.getEntrance().toString().substring(11, 16);
-            if (dayAttendance.getExit() != null) {
-                exitTime = dayAttendance.getExit().toString().substring(11, 16);
-            }
-        }
+       
     }
 
     @PreDestroy
@@ -227,29 +209,6 @@ public class DashboardUsers implements Serializable {
         this.selectedRole = selectedRole;
     }
 
-    public String getEntryTime() {
-        return entryTime;
-    }
-
-    public void setEntryTime(String entryTime) {
-        this.entryTime = entryTime;
-    }
-
-    public String getExitTime() {
-        return exitTime;
-    }
-
-    public void setExitTime(String exitTime) {
-        this.exitTime = exitTime;
-    }
-
-    public String getAttendanceDate() {
-        return attendanceDate;
-    }
-
-    public void setAttendanceDate(String attendanceDate) {
-        this.attendanceDate = attendanceDate;
-    }
 
     public void goError(Exception ex) {
         try {

@@ -100,16 +100,16 @@ public class StaffDAO {
         try {
             Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);
             Companytask cTask = schedulerDAO.findCtask(company, task);
-            Taskstatus status = entityManager.find(Taskstatus.class, Long.valueOf(SystemParameters.getInstance().getProperty("TASK_SUCCESS")));
-
-            final String queryString = "select model from Scheduletaskdetails model where "
-                    + " model.ctask = :ctask  "
-                    + " model.Taskstatus.statusid = " + SystemParameters.getInstance().getProperty("TASK_SUCCESS")
+            
+            final String queryString = "select model from Scheduletaskdetail model where "
+                    + " model.companytask = :ctask  "
+                    + " and model.taskstatus.statusid = " + SystemParameters.getInstance().getProperty("TASK_SUCCESS")
                     + " order by model.startexecutiontime DESC  ";
             Query query = entityManager.createQuery(queryString);
+            query.setParameter("ctask", cTask);
             query.setHint("javax.persistence.retrieveMode", "BYPASS");
             query.setMaxResults(1);
-            query.setParameter("ctask", cTask);
+            
             List<Scheduletaskdetail> std = query.getResultList();
             if (std.isEmpty()) {
                 return "N/A";

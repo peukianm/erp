@@ -63,12 +63,16 @@ public class DashboardAttendance implements Serializable {
     private Boolean enableStaff;
 
     private List<AttendanceBean> attendances = new ArrayList<>(0);
+    
+    private String lastExecution;
 
     Usr user;
 
     @PostConstruct
     public void init() {
         System.out.println("INITIALIZE DB Attendance BEAN");
+        user = sessionBean.getUsers();
+        lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         fromAttendanceDate = new java.util.Date();
         toAttendanceDate = new java.util.Date();
         user = sessionBean.getUsers();
@@ -228,6 +232,14 @@ public class DashboardAttendance implements Serializable {
         }
     }
 
+    public String getLastExecution() {
+        return lastExecution;
+    }
+
+    public void setLastExecution(String lastExecution) {
+        this.lastExecution = lastExecution;
+    }
+    
     public List<AttendanceBean> getAttendances() {
         return attendances;
     }

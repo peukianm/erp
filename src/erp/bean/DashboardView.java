@@ -49,7 +49,7 @@ public class DashboardView implements Serializable {
     private String entryTime = "N/A";
     private String exitTime = "N/A";
     private String attendanceDate = "N/A";
-    private String lastExecution;
+    
 
     Usr user;
 
@@ -64,7 +64,7 @@ public class DashboardView implements Serializable {
                 exitTime = dayAttendance.getExit().toString().substring(11, 16);
             }
         }
-         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
+         
     }
 
     @PreDestroy
@@ -72,14 +72,6 @@ public class DashboardView implements Serializable {
 
     }
        
-    public String getLastExecution() {
-        return lastExecution;
-    }
-
-    public void setLastExecution(String lastExecution) {
-        this.lastExecution = lastExecution;
-    }
-
     public String getAttendanceDate() {
         return attendanceDate;
     }

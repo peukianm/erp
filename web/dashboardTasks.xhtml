@@ -78,8 +78,8 @@
         <div class="layout-dashboard">
             <div class="p-grid">
                 <ui:include src="/WEB-INF/status.xhtml" />
-                
-                                
+
+
                 <!--         TASK UPDATE LOGGERS     !!!!!!!!!!!!!!!!!!!!! -->
                 <!--<div class="p-col-12 p-lg-8">-->
                 <div class="p-col-12 p-xl-6">    
@@ -88,16 +88,19 @@
                             <div class="erp-panel-titlebar">
                                 #{bundle.loggersUpdate} <span style="float: right;font-size:8px"></span>
                             </div>
+                            <p:messages id="msgLoggerID" showDetail="false" closable="true">
+                                <p:autoUpdate disabled="true" />
+                            </p:messages>
                             <table style="width: 100%; margin-bottom: 15px;" >
                                 <tr>
                                     <td>
-                                         <p:outputLabel value="#{bundle.loggersUpdate}:" />&#160;
-                                    
-                                         <p:outputLabel value="#{dbView.lastExecution}" style="font-weight: bold " />
+                                        <p:outputLabel value="#{bundle.loggersUpdate}:" />&#160;
+
+                                        <p:outputLabel value="#{dbTasks.lastExecution}" style="font-weight: bold " />
                                     </td>
                                 </tr>                               
                             </table>
-                            <p:commandButton value="#{bundle.executeUpdateLoggersTask}" action="#{administrationAction.updateFromLoggers}" update="updateFromLoggersForm growl"  />                      
+                            <p:commandButton value="#{bundle.executeUpdateLoggersTask}" action="#{administrationAction.updateFromLoggers}" update="updateFromLoggersForm growl msgLoggerID"  />                      
                         </div>
                     </h:form>
                 </div>
@@ -110,8 +113,22 @@
                             <div class="erp-panel-titlebar">
                                 #{bundle.staffUpdate}
                             </div>
-                            <h:form id="viewUserResults" >
-                                
+                            <h:form id="updateFromStaffForm" >
+                                <p:messages id="msgStaffID" showDetail="false" closable="true">
+                                    <p:autoUpdate disabled="true" />
+                                </p:messages>
+                                <table style="width: 100%; margin-bottom: 15px;" >
+                                <tr>
+                                    <td>
+                                        <p:outputLabel value="#{bundle.staffUpdate}:" />&#160;
+
+                                        <p:outputLabel value="#{dbTasks.lastStaffExecution}" style="font-weight: bold " />
+                                    </td>
+                                </tr>                               
+                            </table>
+                            <p:commandButton value="#{bundle.executeUpdateStaffTask}" action="#{administrationAction.updateFromStaff}" update="updateFromStaffForm growl msgStaffID"  />                      
+                        
+
                             </h:form>
                         </div>
                     </div>
@@ -120,5 +137,5 @@
         </div>
 
 
-         </ui:define>
+    </ui:define>
 </ui:composition> 
