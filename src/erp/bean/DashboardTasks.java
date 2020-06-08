@@ -30,6 +30,7 @@ public class DashboardTasks implements Serializable {
     private static final Logger logger = LogManager.getLogger(DashboardTasks.class);
 
     private String lastExecution;
+    private String lastStaffExecution;
 
     @Inject
     private SessionBean sessionBean;
@@ -44,6 +45,7 @@ public class DashboardTasks implements Serializable {
         System.out.println("INITIALIZE DB TASKS BEAN");
         user = sessionBean.getUsers();
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
+        lastStaffExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")));
     }
 
     @PreDestroy
@@ -57,6 +59,14 @@ public class DashboardTasks implements Serializable {
 
     public void setLastExecution(String lastExecution) {
         this.lastExecution = lastExecution;
+    }
+
+    public String getLastStaffExecution() {
+        return lastStaffExecution;
+    }
+
+    public void setLastStaffExecution(String lastStaffExecution) {
+        this.lastStaffExecution = lastStaffExecution;
     }
 
 }

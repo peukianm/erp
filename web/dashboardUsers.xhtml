@@ -32,8 +32,8 @@
                 width: auto !important;
             }
             .layout-dashboard .user-card .user-card-content img {
-                width: 25px;
-                height: 25px;
+                width: 20px;
+                height: 20px;
                 text-align: right;
                 margin: 0px 0 0 2px !important;
             }
@@ -45,8 +45,8 @@
 
             .btn-list {
                 float: right; 
-                width: 26px  !important;  
-                height: 26px  !important; 
+                width: 23px  !important;  
+                height: 23px  !important; 
                 margin: 0px 4px 0 0  !important;
             }
 
@@ -69,7 +69,7 @@
 
     <ui:define name="viewname" >
         <li>
-            <p:link outcome="/dashboardUsers">#{sessionBean.pageName}</p:link> 
+            <p:link outcome="/dashboardUsers">#{bundle.usersPage}</p:link> 
         </li>
     </ui:define>
 
@@ -246,13 +246,13 @@
                                     </p:column>
 
                                     <p:column headerText="#{bundle.actions}" >
-                                        <p:commandButton id="bt1" icon="pi pi-search"  title="#{bundle.view}"  onclick="viewUserWidget.show()" class="btn-list" >
+                                        <p:commandButton id="bt1" icon="pi pi-search"  title="#{bundle.view}"  onclick="viewUserWidget.show()" class="btn-list" style="font-size: 16px;" >
                                             <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />
                                         </p:commandButton>
-                                        <p:commandButton  icon="pi pi-pencil" action="#{administrationAction.goUpdateUser(user.userid)}"  class="btn-list" title="#{bundle.updateUser}"  /> 
+                                        <p:commandButton  style="font-size: 16px;" icon="pi pi-pencil" action="#{administrationAction.goUpdateUser(user.userid)}"  class="btn-list" title="#{bundle.updateUser}"  /> 
                                         <!-- <p:linkButton icon="pi pi-pencil" outcome="updateUser?userID=#{user.userid}"  class="btn-list" /> -->
 
-                                        <p:commandButton  icon="pi pi-trash" action="#{administrationAction.goResetPasword()}"  class="btn-list" update="" title="#{bundle.resetPassword}">
+                                        <p:commandButton style="font-size: 16px;" icon="pi pi-envelope" action="#{administrationAction.goResetPasword()}"  class="btn-list" update="" title="#{bundle.resetPassword}">
                                             <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />                                
                                         </p:commandButton>
                                     </p:column>  

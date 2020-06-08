@@ -99,6 +99,27 @@ public class AuditingDAO implements Serializable {
         }
         //executeInsideTransaction(entityManager -> entityManager.remove(auditing));
     }
+    
+     public List<Action> getAllActions() {
+        try {
+            Query query = entityManager.createQuery("SELECT e FROM Action e");
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all actions ", re);
+            throw re;
+        }
+    }
+
+    public Action getAction(long id) {
+        try {
+            return entityManager.find(Action.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Action ", re);
+            throw re;
+        }
+    }
 
     private void executeInsideTransaction(Consumer<EntityManager> action) {
         EntityTransaction tx = entityManager.getTransaction();

@@ -5,86 +5,110 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 /**
  * The persistent class for the EMPRANK database table.
- * 
+ *
  */
 @Entity
-@NamedQuery(name="Emprank.findAll", query="SELECT e FROM Emprank e")
+@NamedQuery(name = "Emprank.findAll", query = "SELECT e FROM Emprank e")
 public class Emprank implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@SequenceGenerator(name="EMPRANK_RANKID_GENERATOR", sequenceName="EMPRANK_SEQ")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="EMPRANK_RANKID_GENERATOR")
-	private long rankid;
+    private static final long serialVersionUID = 1L;
 
-	private String description;
+    @Id
+    @SequenceGenerator(name = "EMPRANK_RANKID_GENERATOR", sequenceName = "EMPRANK_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EMPRANK_RANKID_GENERATOR")
+    private long rankid;
 
-	private String name;
+    private String description;
 
-	private BigDecimal ordered;
+    private String name;
 
-	//bi-directional many-to-one association to Staff
-	@OneToMany(mappedBy="emprank")
-	private List<Staff> staffs;
+    private BigDecimal ordered;
 
-	public Emprank() {
-	}
+    //bi-directional many-to-one association to Staff
+    @OneToMany(mappedBy = "emprank")
+    private List<Staff> staffs;
 
-	public long getRankid() {
-		return this.rankid;
-	}
+    public Emprank() {
+    }
 
-	public void setRankid(long rankid) {
-		this.rankid = rankid;
-	}
+    public long getRankid() {
+        return this.rankid;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public void setRankid(long rankid) {
+        this.rankid = rankid;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public BigDecimal getOrdered() {
-		return this.ordered;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setOrdered(BigDecimal ordered) {
-		this.ordered = ordered;
-	}
+    public BigDecimal getOrdered() {
+        return this.ordered;
+    }
 
-	public List<Staff> getStaffs() {
-		return this.staffs;
-	}
+    public void setOrdered(BigDecimal ordered) {
+        this.ordered = ordered;
+    }
 
-	public void setStaffs(List<Staff> staffs) {
-		this.staffs = staffs;
-	}
+    public List<Staff> getStaffs() {
+        return this.staffs;
+    }
 
-	public Staff addStaff(Staff staff) {
-		getStaffs().add(staff);
-		staff.setEmprank(this);
+    public void setStaffs(List<Staff> staffs) {
+        this.staffs = staffs;
+    }
 
-		return staff;
-	}
+    public Staff addStaff(Staff staff) {
+        getStaffs().add(staff);
+        staff.setEmprank(this);
 
-	public Staff removeStaff(Staff staff) {
-		getStaffs().remove(staff);
-		staff.setEmprank(null);
+        return staff;
+    }
 
-		return staff;
-	}
+    public Staff removeStaff(Staff staff) {
+        getStaffs().remove(staff);
+        staff.setEmprank(null);
+
+        return staff;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof Emprank)) {
+            return false;
+        }
+
+        Emprank compare = (Emprank) obj;
+        return compare.rankid == (this.rankid);
+    }
+
+    @Override
+    public int hashCode() {
+        return rankid != 0 ? this.getClass().hashCode() + Long.hashCode(rankid) : super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Emprank{id=" + rankid + ", name=" + getName() + "}";
+    }
 
 }

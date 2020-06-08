@@ -40,8 +40,39 @@ public class StaffDAO {
 
     @Inject
     SchedulerDAO schedulerDAO;
+    
+    public void save(Staff staff) {
+        try {
+            entityManager.persist(staff);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on saving staff entity", re);
+            throw re;
+        }
 
-    public Staff getStatff(long id) {
+    }
+
+    public void update(Staff staff) {
+        try {
+            entityManager.merge(staff);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on updating staff", re);
+            throw re;
+        }
+    }
+
+    public void delete(Staff staff) {
+        try {
+            entityManager.remove(staff);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on deleting Staff entity", re);
+            throw re;
+        }
+    }
+
+    public Staff getStaff(long id) {
         try {
             return entityManager.find(Staff.class, id);
         } catch (RuntimeException re) {
@@ -50,7 +81,15 @@ public class StaffDAO {
             throw re;
         }
     }
-
+        public void updateStaff(Staff staff) {
+        try {
+            entityManager.merge(staff);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on updating staff", re);
+            throw re;
+        }
+    }
     public List<Staff> getAllStaff(boolean onlyActive) {
         try {
             String sql = "SELECT e FROM Staff e "
@@ -83,31 +122,35 @@ public class StaffDAO {
             throw re;
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    public Staff findStaffFromLoggerCode(String loggerCode) {
 
-//    public String getTaskLastExecutionTime(Company company, Long taskID) {
-//        try {
-//            Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);
-//            Companytask cTask = schedulerDAO.findCtask(company, task);
-//            return FormatUtils.formatTimeStamp(cTask.getLastexecutiontime(), FormatUtils.FULLDATEPATTERN);
-//        } catch (RuntimeException re) {
-//            re.printStackTrace();
-//            logger.error("Error on getting Last Execution Time entity", re);
-//            throw re;
-//        }
-//    }
+        try {
+            final String queryString = "select model from Staff model where "
+                    + " model.loggercode = '" + loggerCode + "'";
+            Query query = entityManager.createQuery(queryString);
+            return query.getResultList().size() == 0 ? null : (Staff) query.getResultList().get(0);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Staff from Code ", re);
+            throw re;
+        }
+    }
+
 
     public String getTaskLastExecutionTime(Company company, Long taskID) {
         try {
-            Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);
+            Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);                        
             Companytask cTask = schedulerDAO.findCtask(company, task);
-            
+                       
             final String queryString = "select model from Scheduletaskdetail model where "
                     + " model.companytask = :ctask  "
                     + " and model.taskstatus.statusid = " + SystemParameters.getInstance().getProperty("TASK_SUCCESS")
                     + " order by model.startexecutiontime DESC  ";
             Query query = entityManager.createQuery(queryString);
-            query.setParameter("ctask", cTask);
-            query.setHint("javax.persistence.retrieveMode", "BYPASS");
+            query.setParameter("ctask", cTask);            
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             query.setMaxResults(1);
             
             List<Scheduletaskdetail> std = query.getResultList();
@@ -123,68 +166,7 @@ public class StaffDAO {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public Attendance getDayAttendance(Staff staff, boolean onlyEnded) {
-        try {
-            final String queryString = "select model from Attendance model where "
-                    + " model.entrance BETWEEN '" + LocalDate.now() + " 00:00:00' AND '" + LocalDate.now() + " 23:59:59'  "
-                    + (onlyEnded ? " and model.ended = 1 " : " ")
-                    + " and model.staff = :staff "
-                    + " order by model.id DESC  ";
-            Query query = entityManager.createQuery(queryString);
-            query.setHint("javax.persistence.retrieveMode", "BYPASS");
-            //query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            query.setParameter("staff", staff);
-            List<Attendance> ats = query.getResultList();
-            if (ats.isEmpty()) {
-                return null;
-            } else {
-                return ats.get(0);
-            }
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-            logger.error("Error on get Day Attendance ", re);
-            throw re;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<Attendance> staffApperence(Company company, String startDate, String endDate, Staff staff, Sector sector, Department department) {
-        try {
-            final String queryString = "select model from Attendance model where "
-                    + " model.company = :company  "
-                    + " and model.entrance BETWEEN '" + startDate + " 00:00:00' AND '" + endDate + " 23:59:59'  "
-                    + (staff != null ? " and model.staff = :staff  " : " ")
-                    + (department != null ? " and model.department = :department  " : " ")
-                    + (sector != null ? " and model.sector = :sector  " : " ")
-                    + " order by model.staff.surname, model.entrance ";
-
-            Query query = entityManager.createQuery(queryString);
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            query.setParameter("company", company);
-
-            if (staff != null) {
-                query.setParameter("staff", staff);
-            }
-            if (department != null) {
-                query.setParameter("department", department);
-            }
-            if (sector != null) {
-                query.setParameter("sector", sector);
-            }
-
-            List<Attendance> attendances = query.getResultList();
-
-//            if (attendances.isEmpty()) 
-//                return null;
-//            attendances.forEach(a -> entityManager.refresh(a));
-            return attendances;
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-            logger.error("Error on getting staff apperance entity", re);
-            throw re;
-        }
-    }
+    
 
     public List<Staff> fetchStaffAutoCompleteSurname(String surname, Sector sector, Department department) {
         try {
@@ -205,6 +187,63 @@ public class StaffDAO {
             }
 
             query.setMaxResults(20);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on finding entity", re);
+            throw re;
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<Staff> getStaff(Company company, Sector sector, Department department, boolean active) {
+        try {
+            final String queryString = "select model from Staff model where "
+                    + " model.company = :company  "                                        
+                    + (department != null ? " and model.department = :department  " : " ")
+                    + (sector != null ? " and model.sector = :sector  " : " ")
+                    + (active ? " and model.active = 1  " : "  and model.active = 0  ")
+                    + " order by model.surname";
+
+            Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");           
+            query.setParameter("company", company);
+            
+            if (department != null) {
+                query.setParameter("department", department);
+            }
+            if (sector != null) {
+                query.setParameter("sector", sector);
+            }
+
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting staff ", re);
+            throw re;
+        }
+    }
+    
+      @SuppressWarnings("unchecked")
+    public List<Staff> findByProperty(String propertyName, final Object value, final int... rowStartIdxAndCount) {
+
+        try {
+            final String queryString = "select model from Staff model where model." + propertyName + "= :propertyValue";
+            Query query = entityManager.createQuery(queryString);
+            query.setParameter("propertyValue", value);
+            if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
+                int rowStartIdx = Math.max(0, rowStartIdxAndCount[0]);
+                if (rowStartIdx > 0) {
+                    query.setFirstResult(rowStartIdx);
+                }
+
+                if (rowStartIdxAndCount.length > 1) {
+                    int rowCount = Math.max(0, rowStartIdxAndCount[1]);
+                    if (rowCount > 0) {
+                        query.setMaxResults(rowCount);
+                    }
+                }
+            }
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();

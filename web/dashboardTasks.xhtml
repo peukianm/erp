@@ -69,7 +69,7 @@
 
     <ui:define name="viewname" >
         <li>
-            <p:link outcome="/dashboardTasks">#{sessionBean.pageName}</p:link> 
+            <p:link outcome="/dashboardTasks">#{bundle.taskPage}</p:link> 
         </li>
     </ui:define>
 
@@ -85,9 +85,11 @@
                 <div class="p-col-12 p-xl-6">    
                     <h:form id="updateFromLoggersForm">
                         <div class="card card-w-title statistics">
+
                             <div class="erp-panel-titlebar">
                                 #{bundle.loggersUpdate} <span style="float: right;font-size:8px"></span>
                             </div>
+
                             <p:messages id="msgLoggerID" showDetail="false" closable="true">
                                 <p:autoUpdate disabled="true" />
                             </p:messages>
@@ -100,7 +102,7 @@
                                     </td>
                                 </tr>                               
                             </table>
-                            <p:commandButton value="#{bundle.executeUpdateLoggersTask}" action="#{administrationAction.updateFromLoggers}" update="updateFromLoggersForm growl msgLoggerID"  />                      
+                            <p:commandButton value="#{bundle.executeUpdateLoggersTask}" action="#{schedulerAction.updateFromLoggers}" update="updateFromLoggersForm growl msgLoggerID"  />                      
                         </div>
                     </h:form>
                 </div>
@@ -108,16 +110,18 @@
 
                 <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
                 <div class="p-col-12 p-xl-6"> 
-                    <div class="card user-card">
-                        <div id="showUsersDivID" style="display: block" class="user-card-content">
+                    <h:form id="updateFromStaffForm" >
+                        <div class="card card-w-title statistics">
+
+
                             <div class="erp-panel-titlebar">
                                 #{bundle.staffUpdate}
                             </div>
-                            <h:form id="updateFromStaffForm" >
-                                <p:messages id="msgStaffID" showDetail="false" closable="true">
-                                    <p:autoUpdate disabled="true" />
-                                </p:messages>
-                                <table style="width: 100%; margin-bottom: 15px;" >
+
+                            <p:messages id="msgStaffID" showDetail="false" closable="true">
+                                <p:autoUpdate disabled="true" />
+                            </p:messages>
+                            <table style="width: 100%;margin-bottom: 15px;" >
                                 <tr>
                                     <td>
                                         <p:outputLabel value="#{bundle.staffUpdate}:" />&#160;
@@ -126,12 +130,13 @@
                                     </td>
                                 </tr>                               
                             </table>
-                            <p:commandButton value="#{bundle.executeUpdateStaffTask}" action="#{administrationAction.updateFromStaff}" update="updateFromStaffForm growl msgStaffID"  />                      
-                        
+                            <p:commandButton value="#{bundle.executeUpdateStaffTask}" action="#{schedulerAction.updateFromStaff}" update="updateFromStaffForm growl msgStaffID"  />                      
 
-                            </h:form>
+
+
+
                         </div>
-                    </div>
+                    </h:form>
                 </div>                                        
             </div> 
         </div>

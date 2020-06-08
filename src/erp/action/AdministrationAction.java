@@ -28,9 +28,6 @@ import org.primefaces.event.SelectEvent;
 
 public class AdministrationAction implements Serializable {
 
-    @EJB
-    private LoggerDataRetrieveTask loggerDataRetrieveTask;
-
     private static final Logger logger = LogManager.getLogger(AdministrationAction.class);
 
     @EJB
@@ -68,7 +65,7 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     DashboardUsers dbUsers;
-    
+
     @Inject
     DashboardAttendance dbAttendance;
 
@@ -77,13 +74,6 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     UpdateUser updateUser;
-
-    @Inject
-    LoggerDataRetrieveTask ldrTask;
-    
-    @Inject
-    StaffUpdateTask staffTask;
-    
 
     public AdministrationAction() {
     }
@@ -157,15 +147,15 @@ public class AdministrationAction implements Serializable {
     private String mainPageForward(Usr temp) {
         try {
             if (temp.getRole().getRoleid() == 1 || temp.getRole().getRoleid() == 2 || temp.getRole().getRoleid() == 3) {
-                Action action = userDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
-                Auditing audit = new Auditing(temp, temp.getCompany(), action, null,
+                Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
+                Auditing audit = new Auditing(temp, temp.getCompany(), action, "User "+sessionBean.getUsers().getUsername()+" connected on the platform",
                         FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
                         FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
 
                 auditingDAO.save(audit);
                 sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
                 sessionBean.setPageName(MessageBundleLoader.getMessage("usersPage"));
-                return "dashboardTasks?faces-redirect=true";
+                return "dashboardStaff?faces-redirect=true";
             }
             return "";
         } catch (Exception e) {
@@ -199,77 +189,6 @@ public class AdministrationAction implements Serializable {
             List<Usr> users = userDAO.searchUser(dbUsers.getSelectedRole(), dbUsers.getSelectedCompany(), dbUsers.getSelectedDepartment(),
                     dbUsers.getSelectedSector(), dbUsers.getSurname(), dbUsers.getActive());
             dbUsers.setSearchUsers(users);
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-        }
-    }
-
-    public void fetchAttendances() {
-        try {
-            List<AttendanceBean> retValue = new ArrayList<>(0);
-            if (!dbAttendance.getSelectedSectors().isEmpty()) {
-                dbAttendance.getSelectedSectors().forEach((temp) -> {
-                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbAttendance.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
-                            FormatUtils.formatDate(dbAttendance.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, temp, null);
-                    attendances.forEach((temp1) -> {
-                        AttendanceBean bean = new AttendanceBean();
-                        bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
-                        bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
-                        bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
-                        if (temp1.getExit() != null) {
-                            bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
-                        }
-                        if (temp1.getExit() != null) {
-                            bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
-                                    temp1.getExit(), TimeUnit.SECONDS)));
-                        }
-                        retValue.add(bean);
-                    });
-                });
-
-            } else if (!dbAttendance.getSelectedDepartments().isEmpty()) {
-                dbAttendance.getSelectedDepartments().forEach((temp) -> {
-                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbAttendance.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
-                            FormatUtils.formatDate(dbAttendance.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, null, temp);
-                    attendances.forEach((temp1) -> {
-                        AttendanceBean bean = new AttendanceBean();
-                        bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
-                        bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
-                        bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
-                        if (temp1.getExit() != null) {
-                            bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
-                        }
-                        if (temp1.getExit() != null) {
-                            bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
-                                    temp1.getExit(), TimeUnit.SECONDS)));
-                        }
-                        retValue.add(bean);
-                    });
-                });
-
-            } else if (!dbAttendance.getSelectedStaff().isEmpty()) {
-                dbAttendance.getSelectedStaff().forEach((temp) -> {
-                    List<Attendance> attendances = staffDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbAttendance.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
-                            FormatUtils.formatDate(dbAttendance.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), temp, null, null);
-                    attendances.forEach((temp1) -> {
-                        AttendanceBean bean = new AttendanceBean();
-                        bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
-                        bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
-                        bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
-                        if (temp1.getExit() != null) {
-                            bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
-                        }
-                        if (temp1.getExit() != null) {
-                            bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
-                                    temp1.getExit(), TimeUnit.SECONDS)));
-                        }
-                        retValue.add(bean);
-                    });
-                });
-            }
-            dbAttendance.setAttendances(retValue);
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -322,7 +241,7 @@ public class AdministrationAction implements Serializable {
 
             userDAO.save(newUser);
 
-            Action action = userDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_INSERTUSER")));
+            Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_INSERTUSER")));
             Auditing audit = new Auditing(sessionBean.getUsers(), sessionBean.getUsers().getCompany(), action, "User " + newUser.getUsername() + " inserted",
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
@@ -360,7 +279,7 @@ public class AdministrationAction implements Serializable {
     public String updateUser() {
         try {
             List<Usr> usrs = userDAO.findByProperty("username", updateUser.getUser().getUsername().trim());
-            if (usrs.size() == 1 && !usrs.get(0).getUsername().equals(updateUser.getUser().getUsername().trim())) {
+            if (usrs.size() >= 1 && !usrs.get(0).equals(updateUser.getUser())) {
                 System.out.println("Username already  exists");
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("useranameAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
@@ -371,7 +290,7 @@ public class AdministrationAction implements Serializable {
 
             usrs = userDAO.findByProperty("email", updateUser.getUser().getEmail().trim());
 
-            if (usrs.size() == 1 && !usrs.get(0).getEmail().equals(updateUser.getUser().getEmail().trim())) {
+            if (usrs.size() >= 1 && !usrs.get(0).equals(updateUser.getUser())) {
                 System.out.println("EMAIL ALREADY EXISTS");
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("emailAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
@@ -387,7 +306,7 @@ public class AdministrationAction implements Serializable {
 
             userDAO.update(updateUser.getUser());
 
-            Action action = userDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEUSER")));
+            Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEUSER")));
             Auditing audit = new Auditing(sessionBean.getUsers(), sessionBean.getUsers().getCompany(), action, "User " + updateUser.getUser().getUsername() + " updated",
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
@@ -427,61 +346,6 @@ public class AdministrationAction implements Serializable {
         }
     }
 
-    public void updateFromLoggers() {
-
-        try {
-            int stat = ldrTask.doSchedulerWork(true);
-            if (stat==1)
-                FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("loggerDataUpdated"));
-            else if(stat==-1)
-                FacesUtils.addErrorMessage(MessageBundleLoader.getMessage("failureRunningLogggerDataTask"));
-            else
-                FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
-        } catch (Exception e) {            
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-        }
-    }
-    
-        public void updateFromStaff() {
-
-        try {
-            int stat = staffTask.doSchedulerWork(true);
-            if (stat==1)
-                FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("staffDataUpdated"));
-            else if(stat==-1)
-                FacesUtils.addErrorMessage(MessageBundleLoader.getMessage("failureRunningStaffDataTask"));
-            else
-                FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
-        } catch (Exception e) {            
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-        }
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public String goUpdateUser(long userID) {
         try {
             return "updateUser?faces-redirect=true&userID=" + userID;
@@ -493,6 +357,11 @@ public class AdministrationAction implements Serializable {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public String getPropertyValue(String key) {
         String propertyValue = SystemParameters.getInstance().getProperty(key);
         return propertyValue;

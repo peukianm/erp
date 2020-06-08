@@ -122,7 +122,7 @@
 
     <ui:define name="viewname" >
         <li>
-            <p:link outcome="/dashboardAttendance">#{bundle.attendancePage}</p:link> 
+            <p:link outcome="/dashboardAttendanceStatistics">#{bundle.attendanceStatisticsPage}</p:link> 
         </li>
     </ui:define>
 
@@ -140,31 +140,31 @@
                     <h:form id="searchStaffForm">
                         <div class="card card-w-title statistics">
                             <div class="erp-panel-titlebar">
-                                #{bundle.selectPersonel} <span style="float: right;font-size:9px">#{bundle.loggersUpdate}:&#160;<i>#{dbAttendance.lastExecution}</i></span>
+                                #{bundle.selectPersonel} <span style="float: right;font-size:9px">#{bundle.loggersUpdate}:&#160;<i>#{dbStat.lastExecution}</i></span>
                             </div>
                             <table style="width: 100%">
                                 <tr>
                                     <td style="vertical-align: top">
                                         <p:outputLabel style="font-weight: bold;" for="selectSector" value="#{bundle.sector}" />  
-                                        <p:selectManyMenu disabled="#{!dbAttendance.enableSector}"  value="#{dbAttendance.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
-                                            <p:ajax listener="#{dbAttendance.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass)" />                                            
+                                        <p:selectManyMenu disabled="#{!dbStat.enableSector}"  value="#{dbStat.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
+                                            <p:ajax listener="#{dbStat.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass)" />                                            
                                             <f:selectItems value="#{sessionBean.users.company.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
 
                                     </td>
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.department}" />  
-                                        <p:selectManyMenu disabled="#{!dbAttendance.enableDepartment}" value="#{dbAttendance.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
-                                            <p:ajax listener="#{dbAttendance.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass)" />
-                                            <f:selectItems value="#{dbAttendance.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        <p:selectManyMenu disabled="#{!dbStat.enableDepartment}" value="#{dbStat.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
+                                            <p:ajax listener="#{dbStat.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass)" />
+                                            <f:selectItems value="#{dbStat.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
                                         <br/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <p:panel id="depsID"  styleClass="depsIDtyleclass" visible="#{dbAttendance.selectedDepartments.size() gt 0}" header="#{bundle.departmentSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
-                                            <p:repeat value="#{dbAttendance.selectedDepartments}" var="dep" varStatus="depStatus" >
+                                        <p:panel id="depsID"  styleClass="depsIDtyleclass" visible="#{dbStat.selectedDepartments.size() gt 0}" header="#{bundle.departmentSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                            <p:repeat value="#{dbStat.selectedDepartments}" var="dep" varStatus="depStatus" >
                                                 #{dep.name} <p:spacer width="10px"/>                                          
                                             </p:repeat>
                                         </p:panel>
@@ -174,28 +174,28 @@
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="fromAttendanceDate" value="#{bundle.from}:" /><p:spacer width="20" height="20" />
                                         <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
-                                                     pattern="dd/MM/yyyy" value="#{dbAttendance.fromAttendanceDate}" id="fromAttendanceDate"/>
+                                                     pattern="dd/MM/yyyy" value="#{dbStat.fromAttendanceDate}" id="fromAttendanceDate"/>
                                     </td>
                                     <td>          
                                         <p:outputLabel style="font-weight: bold;" for="toAttendanceDate" value="#{bundle.to}:" /><p:spacer width="20" height="20" />
                                         <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
-                                                    pattern="dd/MM/yyyy" value="#{dbAttendance.toAttendanceDate}" id="toAttendanceDate"/>
+                                                    pattern="dd/MM/yyyy" value="#{dbStat.toAttendanceDate}" id="toAttendanceDate"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
 
                                         <p:outputLabel style="font-weight: bold;" for="staffComplete" value="#{bundle.selectStaff}:" /><p:spacer width="20" height="20" />
-                                        <p:autoComplete disabled="#{!dbAttendance.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staffComplete" value="#{dbAttendance.searchStaff}" completeMethod="#{dbAttendance.completeStaff}" size="60" required="false"  
+                                        <p:autoComplete disabled="#{!dbStat.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staffComplete" value="#{dbStat.searchStaff}" completeMethod="#{dbStat.completeStaff}" size="60" required="false"  
                                                         var="staff" itemLabel="#{staff.surname} #{staff.name}  #{staff.department.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
-                                            <o:converter converterId="omnifaces.ListConverter"  list="#{dbAttendance.availableStaff}" />
-                                            <p:ajax event="itemSelect" listener="#{dbAttendance.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass)"  />  
+                                            <o:converter converterId="omnifaces.ListConverter"  list="#{dbStat.availableStaff}" />
+                                            <p:ajax event="itemSelect" listener="#{dbStat.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass)"  />  
                                         </p:autoComplete>
                                         <br/><br/>
-                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbAttendance.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
-                                            <p:repeat value="#{dbAttendance.selectedStaff}" var="staff" varStatus="myVarStatus">
+                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbStat.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                            <p:repeat value="#{dbStat.selectedStaff}" var="staff" varStatus="myVarStatus">
                                                 #{staff.surname} #{staff.name} - #{staff.department.name} 
-                                                <p:commandButton  process="@this" update="@(.basicstyleclass)" action="#{dbAttendance.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
+                                                <p:commandButton  process="@this" update="@(.basicstyleclass)" action="#{dbStat.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
                                                 </p:commandButton>
                                                 <hr/>
                                             </p:repeat>
@@ -207,15 +207,10 @@
 
                             <p:commandButton value="#{bundle.search}" action="#{attendanceAction.fetchAttendances}" update="searchStaffForm viewAttendanceResults"  />  
                             <p:spacer width="10" />
-                            <p:commandButton  value="#{bundle.reset}" action="#{dbAttendance.resetSearchStaffForm()}"  ajax="false" />
+                            <p:commandButton  value="#{bundle.reset}" action="#{dbStat.resetSearchStaffForm()}"  ajax="false" />
                         </div>
                     </h:form>
                 </div>
-
-
-
-
-
 
 
 

@@ -81,19 +81,7 @@ public class SchedulerDAO implements Serializable {
         }
     }
 
-    public List<Staff> getAllStaff(boolean onlyActive) {
-        try {
-            String sql = "SELECT e FROM Staff e "
-                    + (onlyActive ? " where e.active = 1 " : " ");
-            Query query = entityManager.createQuery(sql);
-            return query.getResultList();
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-            logger.error("Error on getting allSTaff entity", re);
-            throw re;
-        }
-    }
-
+   
     public Taskstatus getTaskstatus(long statusid) {
         try {
             return (Taskstatus) find(Taskstatus.class, statusid);
@@ -126,62 +114,8 @@ public class SchedulerDAO implements Serializable {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public Staff findStaffFromLoggerCode(String loggerCode) {
+    
 
-        try {
-            final String queryString = "select model from Staff model where "
-                    + " model.loggercode = '" + loggerCode + "'";
-            Query query = entityManager.createQuery(queryString);
-            return query.getResultList().size() == 0 ? null : (Staff) query.getResultList().get(0);
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-            logger.error("Error on getting Staff from Code ", re);
-            throw re;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<Attendance> findOpenAttendance(Staff staff, Timestamp previousDate, Timestamp currentDate) {
-
-        try {
-            final String queryString = "select model from Attendance model where "
-                    + " model.entrance BETWEEN :previous AND :current and "
-                    + " model.ended = 0 and "
-                    + " model.staff = :staff "
-                    + " order by model.entrance DESC  ";
-            Query query = entityManager.createQuery(queryString);
-            query.setParameter("previous", previousDate);
-            query.setParameter("current", currentDate);
-            query.setParameter("staff", staff);
-            return query.getResultList();
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-            logger.error("Error on getting Staff from Code ", re);
-            throw re;
-        }
-    }
-
-    public void saveAttendance(Attendance attendance) {
-        try {
-            entityManager.persist(attendance);
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-            logger.error("Error on saving entity", re);
-            throw re;
-        }
-    }
-
-    public void updateAttendance(Attendance attendance) {
-
-        try {
-            entityManager.merge(attendance);
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-            logger.error("Error on updating entity", re);
-            throw re;
-        }
-    }
 
     public void updateCtask(Companytask companyTask) {
         try {

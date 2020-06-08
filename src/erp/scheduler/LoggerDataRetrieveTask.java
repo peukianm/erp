@@ -1,8 +1,10 @@
 package erp.scheduler;
 
 import erp.bean.LoggerData;
+import erp.dao.AttendanceDAO;
 import erp.dao.CompanyDAO;
 import erp.dao.SchedulerDAO;
+import erp.dao.StaffDAO;
 import erp.entities.Attendance;
 import erp.entities.Company;
 import erp.entities.Companytask;
@@ -11,7 +13,6 @@ import erp.entities.Scheduletaskdetail;
 import erp.entities.Staff;
 import erp.entities.Taskstatus;
 import erp.util.FormatUtils;
-import erp.util.PersistenceHelper;
 import erp.util.SystemParameters;
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,6 +50,12 @@ public class LoggerDataRetrieveTask {
     SchedulerDAO schedulerDAO;
 
     @EJB
+    StaffDAO staffDAO;
+    
+    @EJB
+   AttendanceDAO attendanceDAO;
+
+    @EJB
     CompanyDAO companyDAO;
 
     final String DATEPATTERN = "yyyy-MM-dd";
@@ -69,9 +76,9 @@ public class LoggerDataRetrieveTask {
                 return 0;
             }
         } else {
-             if (busy.get()) {
-                 return 0;
-             }
+            if (busy.get()) {
+                return 0;
+            }
         }
 
         try {
@@ -172,7 +179,7 @@ public class LoggerDataRetrieveTask {
                     iterator.next();
                 }
 
-                List<Staff> allStaff = schedulerDAO.getAllStaff(true);
+                List<Staff> allStaff = staffDAO.getAllStaff(true);
                 while (iterator.hasNext()) {
                     counter++;
                     currentRow = iterator.next();
@@ -233,7 +240,7 @@ public class LoggerDataRetrieveTask {
             currentDate = FormatUtils.formatDate(loggerData.getDateTime(), FormatUtils.TIMESTAMPDATEPATTERN);
             previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()), FormatUtils.TIMESTAMPDATEPATTERN);
 
-            List<Attendance> temp = schedulerDAO.findOpenAttendance(loggerData.getStaff(), Timestamp.valueOf(previousDate + " 00:00:00"), Timestamp.valueOf(currentDate + " 23:59:59"));
+            List<Attendance> temp = attendanceDAO.findOpenAttendance(loggerData.getStaff(), Timestamp.valueOf(previousDate + " 00:00:00"), Timestamp.valueOf(currentDate + " 23:59:59"));
             if (temp.size() > 0) {
                 Attendance attendance = temp.get(0);
                 if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 16) {
@@ -244,11 +251,11 @@ public class LoggerDataRetrieveTask {
                     newAttendance.setEnded(BigDecimal.ZERO);
                     newAttendance.setStaff(loggerData.getStaff());
                     newAttendance.setSector(loggerData.getStaff().getSector());
-                    schedulerDAO.saveAttendance(newAttendance);
+                    attendanceDAO.saveAttendance(newAttendance);
                 } else {
                     attendance.setEnded(BigDecimal.ONE);
                     attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
-                    schedulerDAO.updateAttendance(attendance);
+                    attendanceDAO.updateAttendance(attendance);
                 }
             } else {
                 Attendance newAttendance = new Attendance();
@@ -258,7 +265,7 @@ public class LoggerDataRetrieveTask {
                 newAttendance.setEnded(BigDecimal.ZERO);
                 newAttendance.setStaff(loggerData.getStaff());
                 newAttendance.setSector(loggerData.getStaff().getSector());
-                schedulerDAO.saveAttendance(newAttendance);
+                attendanceDAO.saveAttendance(newAttendance);
             }
         }
     }

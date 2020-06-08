@@ -67,26 +67,7 @@ public class UsrDAO implements Serializable {
         }
     }
 
-    public List<Action> getAllActions() {
-        try {
-            Query query = entityManager.createQuery("SELECT e FROM Action e");
-            return query.getResultList();
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-            logger.error("Error on getting all actions ", re);
-            throw re;
-        }
-    }
-
-    public Action getAction(long id) {
-        try {
-            return entityManager.find(Action.class, id);
-        } catch (RuntimeException re) {
-            re.printStackTrace();
-            logger.error("Error on getting Action ", re);
-            throw re;
-        }
-    }
+   
 
     public void save(Usr user) {
         try {

@@ -4,14 +4,17 @@
  */
 package erp.bean;
 
+import erp.dao.AuditingDAO;
 import erp.dao.CompanyDAO;
 import erp.dao.UsrDAO;
 
 import erp.entities.Action;
 import erp.entities.Company;
 import erp.entities.Department;
+import erp.entities.Emprank;
 import erp.entities.Role;
 import erp.entities.Sector;
+import erp.entities.Workshift;
 
 import erp.util.SystemParameters;
 import java.io.Serializable;
@@ -36,17 +39,47 @@ public class ApplicationBean implements Serializable {
     List<Sector> sectors;
     List<Department> departments;
     List<Action> actions;
+    List<Emprank> empranks;
+    List<Workshift> workshifts;
 
     @Inject
     CompanyDAO companyDAO;
 
     @Inject
     UsrDAO userDAO;
+    
+    @Inject
+    AuditingDAO auditingDAO;
 
     @PostConstruct
     public void init() {
     }
 
+    public List<Emprank> getEmpranks() {
+                if (empranks == null) {
+            empranks = companyDAO.getAllEmpRanks();
+        }        
+       
+        return empranks;
+    }
+
+    public void setEmpranks(List<Emprank> empranks) {
+        this.empranks = empranks;
+    }
+
+    public List<Workshift> getWorkshifts() {
+        if (workshifts == null) {
+            workshifts = companyDAO.getAllWorkShifts(true);
+        }        
+        return workshifts;
+    }
+
+    public void setWorkshifts(List<Workshift> workshifts) {
+        this.workshifts = workshifts;
+    }
+
+    
+    
     public List<Department> getDepartments() {
         if (departments == null) {
             departments = companyDAO.getAllDepartment(true);
@@ -102,7 +135,7 @@ public class ApplicationBean implements Serializable {
 
     public List<Action> getActions() {
         if (actions == null) {
-            actions = userDAO.getAllActions();
+            actions = auditingDAO.getAllActions();
         }
         return actions;
     }

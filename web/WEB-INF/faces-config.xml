@@ -23,6 +23,22 @@
         <managed-bean-class>erp.action.AdministrationAction</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>attendanceAction</managed-bean-name>
+        <managed-bean-class>erp.action.AttendanceAction</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>staffAction</managed-bean-name>
+        <managed-bean-class>erp.action.StaffAction</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>schedulerAction</managed-bean-name>
+        <managed-bean-class>erp.action.SchedulerAction</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    
     
     <converter>
         <converter-id>UserrolesConverter</converter-id>
@@ -58,6 +74,12 @@
     </navigation-rule> 
     <navigation-rule>
         <navigation-case>
+            <from-outcome>insertStaff</from-outcome>
+            <to-view-id>/insertStaff.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
+    <navigation-rule>
+        <navigation-case>
             <from-outcome>dashboardUsers</from-outcome>
             <to-view-id>/dashboardUsers.jsf</to-view-id>   
         </navigation-case>
@@ -68,19 +90,30 @@
             <to-view-id>/dashboardAttendance.jsf</to-view-id>   
         </navigation-case>
     </navigation-rule> 
-     <navigation-rule>
+    <navigation-rule>
         <navigation-case>
             <from-outcome>dashboardTasks</from-outcome>
             <to-view-id>/dashboardTasks.jsf</to-view-id>   
         </navigation-case>
+    </navigation-rule>  
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>dashboardStaff</from-outcome>
+            <to-view-id>/dashboardStaff.jsf</to-view-id>   
+        </navigation-case>
     </navigation-rule> 
     
-    
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>dashboardAttendanceStatistics</from-outcome>
+            <to-view-id>/dashboardAttendanceStatistics.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
     
     <navigation-rule>
         <navigation-case>
             <from-outcome>dashboard</from-outcome>
-            <to-view-id>/dashboardUsers.jsf</to-view-id>   
+            <to-view-id>/dashboardAttendance.jsf</to-view-id>   
         </navigation-case>
     </navigation-rule> 
     

@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 @ViewScoped
 public class UpdateUser implements Serializable {
 
-    private static final Logger logger = LogManager.getLogger(InsertUser.class);
+    private static final Logger logger = LogManager.getLogger(UpdateUser.class);
 
     @Inject
     private SessionBean sessionBean;

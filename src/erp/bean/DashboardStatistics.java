@@ -31,11 +31,11 @@ import org.primefaces.event.SelectEvent;
  *
  * @author peukianm
  */
-@Named("dbAttendance")
+@Named("dbStat")
 @ViewScoped
-public class DashboardAttendance implements Serializable {
+public class DashboardStatistics implements Serializable {
 
-    private static final Logger logger = LogManager.getLogger(DashboardView.class);
+    private static final Logger logger = LogManager.getLogger(DashboardStatistics.class);
 
     @Inject
     private SessionBean sessionBean;
@@ -70,7 +70,7 @@ public class DashboardAttendance implements Serializable {
 
     @PostConstruct
     public void init() {
-        System.out.println("INITIALIZE DB Attendance BEAN");
+        System.out.println("INITIALIZE DB STATISTICS BEAN");
         user = sessionBean.getUsers();
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         fromAttendanceDate = new java.util.Date();

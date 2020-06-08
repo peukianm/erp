@@ -5,96 +5,118 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 /**
  * The persistent class for the WORKSHIFT database table.
- * 
+ *
  */
 @Entity
-@NamedQuery(name="Workshift.findAll", query="SELECT w FROM Workshift w")
+@NamedQuery(name = "Workshift.findAll", query = "SELECT w FROM Workshift w")
 public class Workshift implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@SequenceGenerator(name="WORKSHIFT_SHIFTID_GENERATOR", sequenceName="WORKSHIFT_SEQ")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="WORKSHIFT_SHIFTID_GENERATOR")
-	private long shiftid;
+    private static final long serialVersionUID = 1L;
 
-	private BigDecimal active;
+    @Id
+    @SequenceGenerator(name = "WORKSHIFT_SHIFTID_GENERATOR", sequenceName = "WORKSHIFT_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "WORKSHIFT_SHIFTID_GENERATOR")
+    private long shiftid;
 
-	private String description;
+    private BigDecimal active;
 
-	private String name;
+    private String description;
 
-	private BigDecimal ordered;
+    private String name;
 
-	//bi-directional many-to-one association to Staff
-	@OneToMany(mappedBy="workshift")
-	private List<Staff> staffs;
+    private BigDecimal ordered;
 
-	public Workshift() {
-	}
+    //bi-directional many-to-one association to Staff
+    @OneToMany(mappedBy = "workshift")
+    private List<Staff> staffs;
 
-	public long getShiftid() {
-		return this.shiftid;
-	}
+    public Workshift() {
+    }
 
-	public void setShiftid(long shiftid) {
-		this.shiftid = shiftid;
-	}
+    public long getShiftid() {
+        return this.shiftid;
+    }
 
-	public BigDecimal getActive() {
-		return this.active;
-	}
+    public void setShiftid(long shiftid) {
+        this.shiftid = shiftid;
+    }
 
-	public void setActive(BigDecimal active) {
-		this.active = active;
-	}
+    public BigDecimal getActive() {
+        return this.active;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public void setActive(BigDecimal active) {
+        this.active = active;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public BigDecimal getOrdered() {
-		return this.ordered;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setOrdered(BigDecimal ordered) {
-		this.ordered = ordered;
-	}
+    public BigDecimal getOrdered() {
+        return this.ordered;
+    }
 
-	public List<Staff> getStaffs() {
-		return this.staffs;
-	}
+    public void setOrdered(BigDecimal ordered) {
+        this.ordered = ordered;
+    }
 
-	public void setStaffs(List<Staff> staffs) {
-		this.staffs = staffs;
-	}
+    public List<Staff> getStaffs() {
+        return this.staffs;
+    }
 
-	public Staff addStaff(Staff staff) {
-		getStaffs().add(staff);
-		staff.setWorkshift(this);
+    public void setStaffs(List<Staff> staffs) {
+        this.staffs = staffs;
+    }
 
-		return staff;
-	}
+    public Staff addStaff(Staff staff) {
+        getStaffs().add(staff);
+        staff.setWorkshift(this);
+        return staff;
+    }
 
-	public Staff removeStaff(Staff staff) {
-		getStaffs().remove(staff);
-		staff.setWorkshift(null);
+    public Staff removeStaff(Staff staff) {
+        getStaffs().remove(staff);
+        staff.setWorkshift(null);
+        return staff;
+    }
 
-		return staff;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof Workshift)) {
+            return false;
+        }
+
+        Workshift compare = (Workshift) obj;
+        return compare.shiftid == (this.shiftid);
+    }
+
+    @Override
+    public int hashCode() {
+        return shiftid != 0 ? this.getClass().hashCode() + Long.hashCode(shiftid) : super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Workshift{id=" + shiftid + ", name=" + getName() + "}";
+    }
 
 }

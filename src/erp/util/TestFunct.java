@@ -1,16 +1,16 @@
 package erp.util;
 
 import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
 import erp.bean.LoggerData;
+import erp.dao.AttendanceDAO;
 import erp.dao.SchedulerDAO;
+import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
 import erp.entities.Attendance;
 import erp.entities.Companytask;
-import erp.entities.Staff;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,10 +55,6 @@ import java.sql.*;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import okhttp3.*;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -71,6 +67,8 @@ public class TestFunct {
 
     
     static SchedulerDAO schedulerDAO;
+    static AttendanceDAO attendanceDAO;
+    static StaffDAO staffDAO;
 
     //public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static Response outpResponse;
@@ -107,7 +105,7 @@ public class TestFunct {
             System.out.println(LocalDate.now()+" das ");
             Timestamp ter = new Timestamp(13131323);
            openPDF();
-
+  
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -269,7 +267,7 @@ public class TestFunct {
                     }
                     currentRow = iterator.next();
                     LoggerData logerData = new LoggerData(currentRow.getCell(0).getNumericCellValue(), currentRow.getCell(1).getDateCellValue(),
-                            currentRow.getCell(2).getNumericCellValue(), schedulerDAO.findStaffFromLoggerCode(String.valueOf(currentRow.getCell(0).getNumericCellValue())));
+                            currentRow.getCell(2).getNumericCellValue(), staffDAO.findStaffFromLoggerCode(String.valueOf(currentRow.getCell(0).getNumericCellValue())));
                     logerDataList.add(logerData);
                 }
                 workbook.close();
@@ -306,11 +304,11 @@ public class TestFunct {
                             newAttendance.setEnded(BigDecimal.ZERO);
                             newAttendance.setStaff(loggerData.getStaff());
                             newAttendance.setSector(loggerData.getStaff().getSector());
-                            schedulerDAO.saveAttendance(newAttendance);
+                            attendanceDAO.saveAttendance(newAttendance);
                         } else {
                             attendance.setEnded(BigDecimal.ONE);
                             attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
-                            schedulerDAO.updateAttendance(attendance);
+                            attendanceDAO.updateAttendance(attendance);
                         }
                     }
                 }
@@ -322,7 +320,7 @@ public class TestFunct {
                 newAttendance.setEnded(BigDecimal.ZERO);
                 newAttendance.setStaff(loggerData.getStaff());
                 newAttendance.setSector(loggerData.getStaff().getSector());
-                schedulerDAO.saveAttendance(newAttendance);
+                attendanceDAO.saveAttendance(newAttendance);
             }
         }
 

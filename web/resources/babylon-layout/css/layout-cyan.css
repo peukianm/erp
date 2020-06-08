@@ -1332,7 +1332,7 @@ a {
 .layout-dashboard .statistics h1 {
   margin-top: 0; }
 .layout-dashboard .user-card {
-  padding: 0; }
+  padding: 2px; }
   .layout-dashboard .user-card .user-card-header {
     height: 100px;
     overflow: hidden;
