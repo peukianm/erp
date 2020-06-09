@@ -7,6 +7,7 @@ package erp.action;
 
 import erp.bean.AttendanceBean;
 import erp.bean.DashboardAttendance;
+import erp.bean.DashboardStatistics;
 import erp.bean.ErrorBean;
 import erp.bean.SessionBean;
 import erp.dao.AttendanceDAO;
@@ -44,6 +45,9 @@ public class AttendanceAction {
 
     @Inject
     DashboardAttendance dbAttendance;
+
+    @Inject
+    DashboardStatistics dbStat;
 
     public void fetchAttendances() {
         try {
@@ -109,6 +113,77 @@ public class AttendanceAction {
                 });
             }
             dbAttendance.setAttendances(retValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            goError(e);
+        }
+    }
+
+    public void fetchAttendancesStatistics() {
+        try {
+            List<AttendanceBean> retValue = new ArrayList<>(0);
+            if (!dbStat.getSelectedSectors().isEmpty()) {
+                dbStat.getSelectedSectors().forEach((temp) -> {
+                    List<Attendance> attendances = attendanceDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbStat.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                            FormatUtils.formatDate(dbStat.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, temp, null);
+                    attendances.forEach((temp1) -> {
+                        AttendanceBean bean = new AttendanceBean();
+                        bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                        bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
+                        bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
+                        if (temp1.getExit() != null) {
+                            bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
+                        }
+                        if (temp1.getExit() != null) {
+                            bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
+                                    temp1.getExit(), TimeUnit.SECONDS)));
+                        }
+                        retValue.add(bean);
+                    });
+                });
+
+            } else if (!dbStat.getSelectedDepartments().isEmpty()) {
+                dbStat.getSelectedDepartments().forEach((temp) -> {
+                    List<Attendance> attendances = attendanceDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbStat.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                            FormatUtils.formatDate(dbStat.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, null, temp);
+                    attendances.forEach((temp1) -> {
+                        AttendanceBean bean = new AttendanceBean();
+                        bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                        bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
+                        bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
+                        if (temp1.getExit() != null) {
+                            bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
+                        }
+                        if (temp1.getExit() != null) {
+                            bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
+                                    temp1.getExit(), TimeUnit.SECONDS)));
+                        }
+                        retValue.add(bean);
+                    });
+                });
+
+            } else if (!dbStat.getSelectedStaff().isEmpty()) {
+                dbStat.getSelectedStaff().forEach((temp) -> {
+                    List<Attendance> attendances = attendanceDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbStat.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                            FormatUtils.formatDate(dbStat.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), temp, null, null);
+                    attendances.forEach((temp1) -> {
+                        AttendanceBean bean = new AttendanceBean();
+                        bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                        bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
+                        bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
+                        if (temp1.getExit() != null) {
+                            bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
+                        }
+                        if (temp1.getExit() != null) {
+                            bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
+                                    temp1.getExit(), TimeUnit.SECONDS)));
+                        }
+                        retValue.add(bean);
+                    });
+                });
+            }
+            dbStat.setAttendances(retValue);
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");

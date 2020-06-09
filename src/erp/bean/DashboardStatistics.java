@@ -185,7 +185,8 @@ public class DashboardStatistics implements Serializable {
         try {
             selectedDepartments = new ArrayList<>(0);
             selectedSectors = new ArrayList<>(0);
-            selectedStaff.add(searchStaff);
+            if (!selectedStaff.contains(searchStaff))
+                selectedStaff.add(searchStaff);
             searchStaff = null;
         } catch (Exception e) {
             e.printStackTrace();

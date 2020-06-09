@@ -5,6 +5,7 @@
  */
 package erp.bean;
 
+import erp.entities.Staff;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -19,6 +20,7 @@ public class AttendanceBean  implements Serializable {
     private LocalTime entrance;
     private LocalTime exit;
     private String duration;
+    private Staff staff;
 
     public String getName() {
         return name;
@@ -58,6 +60,14 @@ public class AttendanceBean  implements Serializable {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
     }
     
     
