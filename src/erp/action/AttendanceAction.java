@@ -129,6 +129,7 @@ public class AttendanceAction {
                             FormatUtils.formatDate(dbStat.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, temp, null);
                     attendances.forEach((temp1) -> {
                         AttendanceBean bean = new AttendanceBean();
+                        bean.setStaff(temp1.getStaff());
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
                         bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                         bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
@@ -149,6 +150,7 @@ public class AttendanceAction {
                             FormatUtils.formatDate(dbStat.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, null, temp);
                     attendances.forEach((temp1) -> {
                         AttendanceBean bean = new AttendanceBean();
+                        bean.setStaff(temp1.getStaff());
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
                         bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                         bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
@@ -169,6 +171,7 @@ public class AttendanceAction {
                             FormatUtils.formatDate(dbStat.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), temp, null, null);
                     attendances.forEach((temp1) -> {
                         AttendanceBean bean = new AttendanceBean();
+                        bean.setStaff(temp1.getStaff());
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
                         bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                         bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());

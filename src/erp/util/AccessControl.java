@@ -62,7 +62,9 @@ public class AccessControl {
 
     //MODE=1
     private static boolean checkPageAccess(long roleID, String pageCode) throws Exception {
+        System.out.println("PAgeCode="+pageCode);
         pageAccessRule = SystemParameters.getInstance().getProperty("ROLE_PAGE_ACCESS_" + roleID);
+        System.out.println("pageAccessRule="+pageAccessRule);
         if (pageAccessRule.equals("ALL")) {
             return true;
         }

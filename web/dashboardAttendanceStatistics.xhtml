@@ -35,8 +35,8 @@
                 width: auto !important;
             }
             .layout-dashboard .user-card .user-card-content img {
-                width: 25px;
-                height: 25px;
+                width: 20px;
+                height: 20px;
                 text-align: right;
                 margin: 0px 0 0 2px !important;
             }
@@ -157,32 +157,33 @@
                                 #{bundle.personelAttendances}
                                 <span style="float: right;font-size:10px; font-weight: bold">#{bundle.loggersUpdate}:&#160;<i>#{dbStat.lastExecution}</i></span>
                             </div>
+                          
                             <h:form id="viewAttendanceResults">
-                                <h:panelGroup styleClass="summaryIDClass" layout="block" id="summaryID" class="order-summary order-default selected-order">   
-                                    <p:outputLabel style="font-weight: bold;font-size:14px;" value="Επιλεγμένοι Υπάλληλοι:" />
-                                    <span style="font-size:14px;">#{dbStat.selectedStaff.size()}</span>&#160;&#160;
-                                    <p:outputLabel style="font-weight: bold;font-size:14px;" value="Επιλεγμένα Τμημάτα:" />
-                                    <span  style="font-size:14px;">#{dbStat.selectedDepartments.size()}</span>&#160;&#160;
-                                    <p:outputLabel style="font-weight: bold;font-size:14px;" value="Επιλεγμένες Υπηρεσίες:" />
-                                    <span style="font-size:14px;">#{dbStat.selectedSectors.size()}</span>
-                                    <br/><br/>
-
-                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0}" value="Παρουσίες" 
+                                <h:panelGroup rendered="#{dbStat.attendances.size() gt 0}" styleClass="summaryIDClass" layout="block" id="summaryID" class="order-summary order-default selected-order" >   
+                                    <p:outputLabel style="font-weight: bold;font-size:13px;" value="Επιλεγμένοι Υπάλληλοι:" />
+                                    <span style="font-size:13px;">#{dbStat.selectedStaff.size()}</span>&#160;&#160;
+                                    <p:outputLabel style="font-weight: bold;font-size:13px;" value="Επιλεγμένα Τμημάτα:" />
+                                    <span  style="font-size:13px;">#{dbStat.selectedDepartments.size()}</span>&#160;&#160;
+                                    <p:outputLabel style="font-weight: bold;font-size:13px;" value="Επιλεγμένες Υπηρεσίες:" />
+                                    <span style="font-size:13px;">#{dbStat.selectedSectors.size()}</span>
+                                    <br/>
+                                      <p:separator />
+                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0}" value="Παρουσίες" style="font-size: 12px"
                                                      action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />  
                                     &#160;&#160;
                                     <p:commandButton disabled="#{dbStat.selectedDepartments.size()==0 and dbStat.selectedSectors.size()==0}" value="Παρουσίες ανα Τμήμα/Υπηρεσία" 
-                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />  
+                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults" style="font-size: 12px"  />  
                                     &#160;&#160;
-                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0}" value="Μ.Ο Χρόνος Παρουσίας" 
+                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0}" value="Μ.Ο Χρόνος Παρουσίας" style="font-size: 12px"
                                                      action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />
                                     &#160;&#160;
                                     <p:commandButton disabled="#{dbStat.selectedDepartments.size()==0 and dbStat.selectedSectors.size()==0}" value="Μ.Ο. Χρονος Παρουσιας ανά Τμήμα/Υπηρεσία" 
-                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  /> 
+                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults" style="font-size: 12px"  /> 
                                 </h:panelGroup>
 
-                                <br/>
+                                
                                 <p:separator />
-                                <br/>
+                               
 
                                 <p:dataTable rendered="#{dbStat.attendances.size() gt 0}" id="tbl" var="attendance" value="#{dbStat.attendances}" styleClass="myclass" 
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
@@ -193,7 +194,7 @@
 
 
                                             <p:commandLink id="pdf" ajax="false">
-                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" />
+                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" height="20px" width="20px" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
                                                 <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle=" #{bundle.personelAttendances}" orientation="Landscape"
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
@@ -203,7 +204,7 @@
 
 
                                             <p:commandLink id="xlsx" ajax="false">
-                                                <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
+                                                <p:graphicImage name="images/xlsx.png"  library="babylon-layout"  height="20px" width="20px" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
                                                 <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" #{bundle.personelAttendances}"
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
@@ -219,6 +220,13 @@
                                             <h:outputText value="#{bundle.fullName}" />
                                         </f:facet>
                                         <h:outputText value="#{attendance.name}" />
+                                    </p:column>
+                                    
+                                     <p:column sortBy="#{attendance.staff.department.name}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.department}" />
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.staff.department.name}" />
                                     </p:column>
 
                                     <p:column sortBy="#{attendance.date}">
