@@ -10,6 +10,7 @@ import erp.entities.Company;
 import erp.entities.Department;
 import erp.entities.Role;
 import erp.entities.Staff;
+import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
@@ -52,6 +53,12 @@ public class InsertUser implements Serializable {
     Company company;
     Department department;
     List<Staff> availableStaff;
+
+    public void preRenderView() {
+        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_USER"), null, 1)) {
+            return;
+        }
+    }
 
     @PostConstruct
     public void init() {

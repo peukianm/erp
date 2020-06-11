@@ -155,6 +155,8 @@ public class AdministrationAction implements Serializable {
                 auditingDAO.save(audit);
                 sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
                 sessionBean.setPageName(MessageBundleLoader.getMessage("usersPage"));
+                
+                              
                 return "dashboardAttendanceStatistics?faces-redirect=true";
             }
             return "";

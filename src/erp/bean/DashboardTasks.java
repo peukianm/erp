@@ -9,6 +9,7 @@ import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
 import erp.entities.Attendance;
 import erp.entities.Usr;
+import erp.util.AccessControl;
 import erp.util.SystemParameters;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -39,6 +40,12 @@ public class DashboardTasks implements Serializable {
     private StaffDAO staffDao;
 
     Usr user;
+
+    public void preRenderView() {
+        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_TASK_ADMIN"), null, 1)) {
+            return;
+        }
+    }
 
     @PostConstruct
     public void init() {

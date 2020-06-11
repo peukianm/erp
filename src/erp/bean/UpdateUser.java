@@ -10,8 +10,10 @@ import erp.dao.UsrDAO;
 import erp.entities.Role;
 import erp.entities.Staff;
 import erp.entities.Usr;
+import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
+import erp.util.SystemParameters;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -55,6 +57,9 @@ public class UpdateUser implements Serializable {
     String password;
 
     public void init() {
+        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_USER"), null, 1)) {
+            return;
+        }
         if (userID == null) {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noUserSelected"));
             FacesUtils.redirectWithNavigationID("dashboardUsers");

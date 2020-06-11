@@ -10,6 +10,7 @@ import erp.entities.Department;
 import erp.entities.Sector;
 import erp.entities.Staff;
 import erp.entities.Usr;
+import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
@@ -52,9 +53,14 @@ public class DashboardStaff implements Serializable {
     private String loggerCode;
     private List<Staff> staff = new ArrayList<>(0);
 
+    public void preRenderView() {
+        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_STAFF_ADMIN"), null, 1)) {
+            return;
+        }
+    }
+
     @PostConstruct
     public void init() {
-        System.out.println("INITIALIZE DB STaff BEAN");
     }
 
     @PreDestroy
@@ -95,9 +101,10 @@ public class DashboardStaff implements Serializable {
     public void autocompleteSurnameSelectStaff(SelectEvent event) {
         try {
             selectedDepartments = new ArrayList<>(0);
-            selectedSectors = new ArrayList<>(0);                      
-            if (!staff.contains(searchStaff))
+            selectedSectors = new ArrayList<>(0);
+            if (!staff.contains(searchStaff)) {
                 staff.add(searchStaff);
+            }
             searchStaff = null;
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,7 +160,6 @@ public class DashboardStaff implements Serializable {
         this.loggerCode = loggerCode;
     }
 
-    
     public Staff getStaffForUpdate() {
         return staffForUpdate;
     }
@@ -162,7 +168,6 @@ public class DashboardStaff implements Serializable {
         this.staffForUpdate = staffForUpdate;
     }
 
-    
     public boolean isActive() {
         return active;
     }
@@ -218,7 +223,5 @@ public class DashboardStaff implements Serializable {
     public void setStaff(List<Staff> staff) {
         this.staff = staff;
     }
-    
-    
 
 }

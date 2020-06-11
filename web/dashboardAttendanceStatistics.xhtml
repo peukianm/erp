@@ -3,6 +3,9 @@
                 xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
 
     <!--<ui:define name="title">Dashboard</ui:define>-->
+    <f:metadata>        
+        <f:viewAction action="#{dbStat.preRenderView}"/>
+    </f:metadata>
 
     <ui:define name="head">
         <h:outputScript name="chartjs/chart.js" library="demo" />
@@ -45,78 +48,7 @@
 
         </style>
         <script type="text/javascript">
-            $(function () {
-                var ctx = document.getElementById("dashboard-chart").getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                        datasets: [{
-                                label: 'Sales',
-                                data: [12, 19, 3, 5, 2, 3, 9],
-                                borderColor: [
-                                    '#7E57C2',
-                                ],
-                                borderWidth: 3,
-                                borderDash: [5, 5],
-                                fill: false,
-                                pointRadius: 3
-                            }, {
-                                label: 'Income',
-                                data: [1, 2, 5, 3, 12, 7, 15],
-                                backgroundColor: [
-                                    'rgba(187,222,251,0.2)',
-                                ],
-                                borderColor: [
-                                    '#42A5F5',
-                                ],
-                                borderWidth: 3,
-                                fill: true
-                            },
-                            {
-                                label: 'Expenses',
-                                data: [7, 12, 15, 5, 3, 13, 21],
-                                borderColor: [
-                                    '#FFB300',
-                                ],
-                                borderWidth: 3,
-                                fill: false,
-                                pointRadius: [4, 6, 4, 12, 8, 0, 4]
-                            },
-                            {
-                                label: 'New Users',
-                                data: [3, 7, 2, 17, 15, 13, 19],
-                                borderColor: [
-                                    '#66BB6A',
-                                ],
-                                borderWidth: 3,
-                                fill: false
-                            }]
-                    },
-                    options: {
-                        responsive: true,
-                        hover: {
-                            mode: 'index'
-                        },
-                        scales: {
-                            xAxes: [{
-                                    display: true,
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Month'
-                                    }
-                                }],
-                            yAxes: [{
-                                    display: true,
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Value'
-                                    }
-                                }]
-                        }
-                    }
-                });
-            });
+
         </script>
     </ui:define>
 
@@ -129,7 +61,7 @@
     <ui:define name="content">
         <div class="layout-dashboard">
             <div class="p-grid">
-                 <ui:include src="/WEB-INF/status.xhtml" />
+                <ui:include src="/WEB-INF/status.xhtml" />
 
                 <!--          ΕΠΙΛΟΓΗ ΠΡΟΣΩΠΙΚΟΥ  !!!!!!!!!!!!!!!!!!!!! -->
                 <p:messages>
@@ -149,7 +81,7 @@
                                     <td style="vertical-align: top">
                                         <p:outputLabel style="font-weight: bold;" for="selectSector" value="#{bundle.sector}" />  
                                         <p:selectManyMenu disabled="#{!dbStat.enableSector}"  value="#{dbStat.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
-                                            <p:ajax listener="#{dbStat.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass)" />                                            
+                                            <p:ajax listener="#{dbStat.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass) :viewAttendanceResults:summaryID" />                                            
                                             <f:selectItems value="#{sessionBean.users.company.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
 
@@ -157,7 +89,7 @@
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.department}" />  
                                         <p:selectManyMenu disabled="#{!dbStat.enableDepartment}" value="#{dbStat.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
-                                            <p:ajax listener="#{dbStat.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass)" />
+                                            <p:ajax listener="#{dbStat.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass) :viewAttendanceResults:summaryID" />
                                             <f:selectItems value="#{dbStat.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
                                         <br/>
@@ -191,13 +123,13 @@
                                         <p:autoComplete disabled="#{!dbStat.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staffComplete" value="#{dbStat.searchStaff}" completeMethod="#{dbStat.completeStaff}" size="45" required="false"  
                                                         var="staff" itemLabel="#{staff.surname} #{staff.name}  #{staff.department.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter"  list="#{dbStat.availableStaff}" />
-                                            <p:ajax event="itemSelect" listener="#{dbStat.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass)"  />  
+                                            <p:ajax event="itemSelect" listener="#{dbStat.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass) :viewAttendanceResults:summaryID  "  />  
                                         </p:autoComplete>
                                         <br/><br/>
                                         <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbStat.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
                                             <p:repeat value="#{dbStat.selectedStaff}" var="staff" varStatus="myVarStatus">
                                                 #{staff.surname} #{staff.name} - #{staff.department.name} 
-                                                <p:commandButton  process="@this" update="@(.basicstyleclass)" action="#{dbStat.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
+                                                <p:commandButton  process="@this" update="@(.basicstyleclass) :viewAttendanceResults:summaryID" action="#{dbStat.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
                                                 </p:commandButton>
                                                 <hr/>
                                             </p:repeat>
@@ -220,23 +152,39 @@
                 <div class="p-col-12 p-xl-8">    
                     <div class="card user-card">
 
-                           <div class="card card-w-title statistics">
+                        <div class="card card-w-title statistics">
                             <div class="erp-panel-titlebar">
                                 #{bundle.personelAttendances}
                                 <span style="float: right;font-size:10px; font-weight: bold">#{bundle.loggersUpdate}:&#160;<i>#{dbStat.lastExecution}</i></span>
                             </div>
                             <h:form id="viewAttendanceResults">
-                                Συνολικός Αριθμός Υπαλληλων:#{dbStat.attendances.size()}  Συνολικός Αριθμός Τμημάτων:#{dbStat.selectedDepartments.size()}<br/>
-                                
-                                 <p:commandButton value="Μ.Ο Χρόνος Παρουσίας" action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />
-                                 &#160;&#160;
-                                 <p:commandButton value="Μ.Ο. Χρονος Παρουσιας ανά Ημέρα/Τμήμα" action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  /> 
-                                 &#160;&#160;σ
-                                 <p:commandButton value="Παρουσίες ανα Ημερα/Τμήμα" action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  /> 
-                                <br/><br/>
-                                 
-                                 
-                                <p:dataTable id="tbl" var="attendance" value="#{dbStat.attendances}" styleClass="myclass" 
+                                <h:panelGroup styleClass="summaryIDClass" layout="block" id="summaryID" class="order-summary order-default selected-order">   
+                                    <p:outputLabel style="font-weight: bold;font-size:14px;" value="Επιλεγμένοι Υπάλληλοι:" />
+                                    <span style="font-size:14px;">#{dbStat.selectedStaff.size()}</span>&#160;&#160;
+                                    <p:outputLabel style="font-weight: bold;font-size:14px;" value="Επιλεγμένα Τμημάτα:" />
+                                    <span  style="font-size:14px;">#{dbStat.selectedDepartments.size()}</span>&#160;&#160;
+                                    <p:outputLabel style="font-weight: bold;font-size:14px;" value="Επιλεγμένες Υπηρεσίες:" />
+                                    <span style="font-size:14px;">#{dbStat.selectedSectors.size()}</span>
+                                    <br/><br/>
+
+                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0}" value="Παρουσίες" 
+                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />  
+                                    &#160;&#160;
+                                    <p:commandButton disabled="#{dbStat.selectedDepartments.size()==0 and dbStat.selectedSectors.size()==0}" value="Παρουσίες ανα Τμήμα/Υπηρεσία" 
+                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />  
+                                    &#160;&#160;
+                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0}" value="Μ.Ο Χρόνος Παρουσίας" 
+                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />
+                                    &#160;&#160;
+                                    <p:commandButton disabled="#{dbStat.selectedDepartments.size()==0 and dbStat.selectedSectors.size()==0}" value="Μ.Ο. Χρονος Παρουσιας ανά Τμήμα/Υπηρεσία" 
+                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  /> 
+                                </h:panelGroup>
+
+                                <br/>
+                                <p:separator />
+                                <br/>
+
+                                <p:dataTable rendered="#{dbStat.attendances.size() gt 0}" id="tbl" var="attendance" value="#{dbStat.attendances}" styleClass="myclass" 
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
                                              paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
 

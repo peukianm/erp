@@ -38,34 +38,15 @@ public class SecurityFilter implements Filter {
             throws IOException, ServletException {
 
  
-//        if (logger.isDebugEnabled()) {
-//            logger.debug("sessionBean="+sessionBean);
-//        }
-//
-//        if (sessionBean != null) {
-//            if (logger.isDebugEnabled()) {
-//                logger.debug("user="+sessionBean.getUsers());
-//            }
-//        }
-       
-
         HttpServletRequest hreq = (HttpServletRequest) request;
         HttpServletResponse hres = (HttpServletResponse) response;
         HttpSession session = hreq.getSession();
         String checkforloginpage = hreq.getServletPath();
-        
-//         if (logger.isDebugEnabled()) {
-//            logger.debug("checkforloginpage=" + checkforloginpage);
-//        }
 
         if (checkforloginpage == null) {
             checkforloginpage = "";
         }
-//        
-//        if (logger.isDebugEnabled()) {
-//            logger.debug("hreq.getHeader(Faces-Request) ="+hreq.getHeader("Faces-Request"));
-//        }
-        
+
         if ((request.getAttribute(FILTER_APPLIED) == null)
                 && (!checkforloginpage.endsWith("index.jsp"))
                 && (!checkforloginpage.endsWith("login.jsf"))

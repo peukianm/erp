@@ -59,9 +59,9 @@
                     <pb:menu>
                         <p:submenu id="om_account" label="#{bundle.userData}" icon="fa fa-fw fa-user">
                             <p:submenu id="ggg" label="#{sessionBean.users.username}" icon="fa fa-fw fa-user">
-                                <p:menuitem id="om_account_acc" value="#{bundle.settings}" icon="fa fa-fw fa-cog" outcome="dashboard" />                   
-                                <p:menuitem id="om_account_not" value="#{bundle.notifications}" icon="fa fa-fw fa-bell-o" outcome="dashboard" />
-                                <p:menuitem id="om_account_mess" value="#{bundle.messages}" icon="fa fa-fw fa-envelope-o" outcome="dashboard" />
+                                <p:menuitem id="om_account_acc" value="#{bundle.settings}" icon="fa fa-fw fa-cog" outcome="dashboardAttendance" />                   
+                                <p:menuitem id="om_account_not" value="#{bundle.notifications}" icon="fa fa-fw fa-bell-o" outcome="dashboardStaff" />
+                                <p:menuitem id="om_account_mess" value="#{bundle.messages}" icon="fa fa-fw fa-envelope-o" outcome="dashboardUsers" />
                                 <p:menuitem id="om_account_dis" value="#{bundle.disconnect}" onclick="PF('disconnectDlg').show()" icon="fa fa-fw fa-sign-out" />                                
                             </p:submenu>
                         </p:submenu>

@@ -10,6 +10,7 @@ import erp.entities.Department;
 import erp.entities.Sector;
 import erp.entities.Staff;
 import erp.entities.Usr;
+import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
@@ -18,6 +19,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.view.ViewScoped;
@@ -63,10 +65,18 @@ public class DashboardAttendance implements Serializable {
     private Boolean enableStaff;
 
     private List<AttendanceBean> attendances = new ArrayList<>(0);
-    
+
     private String lastExecution;
 
     Usr user;
+
+    public void preRenderView() {
+        System.out.println("ACCESSS CONTROLLLLLLLLLLLLLsssssLLLLLLLLLLLLLL!!!!!!!!!!!!!!!!!!!!!");
+        user = sessionBean.getUsers();
+        if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_ADMIN"), null, 1)) {
+            return;
+        }
+    }
 
     @PostConstruct
     public void init() {
@@ -74,7 +84,7 @@ public class DashboardAttendance implements Serializable {
         user = sessionBean.getUsers();
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         fromAttendanceDate = new java.util.Date();
-        toAttendanceDate = new java.util.Date();       
+        toAttendanceDate = new java.util.Date();
         departments = applicationBean.getDepartments();
         switch ((int) user.getRole().getRoleid()) {
             case 1:
@@ -185,8 +195,9 @@ public class DashboardAttendance implements Serializable {
         try {
             selectedDepartments = new ArrayList<>(0);
             selectedSectors = new ArrayList<>(0);
-            if (!selectedStaff.contains(searchStaff))
+            if (!selectedStaff.contains(searchStaff)) {
                 selectedStaff.add(searchStaff);
+            }
             searchStaff = null;
         } catch (Exception e) {
             e.printStackTrace();
@@ -239,7 +250,7 @@ public class DashboardAttendance implements Serializable {
     public void setLastExecution(String lastExecution) {
         this.lastExecution = lastExecution;
     }
-    
+
     public List<AttendanceBean> getAttendances() {
         return attendances;
     }

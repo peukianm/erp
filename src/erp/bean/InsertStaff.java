@@ -7,8 +7,10 @@ package erp.bean;
 
 import erp.dao.StaffDAO;
 import erp.entities.Staff;
+import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
+import erp.util.SystemParameters;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -38,8 +40,14 @@ public class InsertStaff implements Serializable {
     Staff staff;
     boolean active;
 
+    public void preRenderView() {
+        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_STAFF"), null, 1)) {
+            return;
+        }
+    }
+
     @PostConstruct
-    public void init() {
+    public void init() {        
         staff = new Staff();
         staff.setCompany(sessionBean.getUsers().getCompany());
         active = true;

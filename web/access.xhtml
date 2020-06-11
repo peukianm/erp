@@ -3,6 +3,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
     <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/favicon.ico"/>
         <f:facet name="first">
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -18,8 +19,8 @@
 
         <div class="exception-content">
             <p:graphicImage name="images/logo-black.png" library="babylon-layout" />
-            <h1><span class="exception-name">ΑΠΑΓΟΡΕΥΕΤΑΙ Η ΠΡΟΣΒΑΣΗ</span></h1>
-            <p>Δεν έχετε τα απαραίτητα δικαιώματα.</p>
+            <h1><span class="exception-name" style="font-weight: bold; color: red">#{bundle.noEntrance}</span></h1>
+            <p style="color: black">#{bundle.noEntranceDetails}</p>
            
             <h:form>
                 <p:commandButton id="btn" value="#{bundle.disconnect}" action="#{administrationAction.logoutAction}" />

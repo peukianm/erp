@@ -15,6 +15,7 @@ import erp.entities.Department;
 import erp.entities.Role;
 import erp.entities.Sector;
 import erp.entities.Usr;
+import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
@@ -65,11 +66,14 @@ public class DashboardUsers implements Serializable {
     String showUsers = "";
     String showNewUser = "hidden='true'";
 
+    public void preRenderView() {
+        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"), null, 1)) {
+            return;
+        }
+    }
+
     @PostConstruct
     public void init() {
-        System.out.println("INITIALIZE DB USERS BEAN");
-        user = sessionBean.getUsers();
-       
     }
 
     @PreDestroy
@@ -208,7 +212,6 @@ public class DashboardUsers implements Serializable {
     public void setSelectedRole(Role selectedRole) {
         this.selectedRole = selectedRole;
     }
-
 
     public void goError(Exception ex) {
         try {

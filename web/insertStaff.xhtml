@@ -2,8 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
       xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions" >
+    <f:metadata>        
+        <f:viewAction action="#{insertStaff.preRenderView}"/>
+    </f:metadata>
 
     <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/favicon.ico"/>
         <f:facet name="first">
             <meta http-equiv="X-UA-Compatible" content="IE=edge" />
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -165,7 +169,7 @@
                                         <i class="fa fa-exclamation-circle"> </i>
                                     </p:outputLabel>
                                     <p:inputText id="surname" value="#{insertStaff.staff.surname}" required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}" >
-                                       
+
                                         <f:validateLength minimum="2" maximum="30" /> 
                                     </p:inputText>
 
@@ -213,7 +217,7 @@
                                     <p:selectOneMenu  value="#{insertStaff.staff.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
                                         <f:selectItem itemLabel="" itemValue=""  />
                                         <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />
-                                         <p:ajax update="summaryID" />
+                                        <p:ajax update="summaryID" />
                                     </p:selectOneMenu >
 
                                     <p:outputLabel value="#{bundle.empRank}" for="emprank" styleClass="form-label erp-display-block" />                                    

@@ -7,8 +7,10 @@ package erp.bean;
 
 import erp.dao.StaffDAO;
 import erp.entities.Staff;
+import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
+import erp.util.SystemParameters;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.annotation.PostConstruct;
@@ -41,13 +43,17 @@ public class UpdateStaff implements Serializable {
 
     public void init() {
         System.out.println("INIT UPDATE STAFF!!!!!!");
-      
+        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_STAFF"), null, 1)) {
+            return;
+        }
+        AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_STAFF"), null, 1);
+
         if (staffID == null) {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noStaffSelected"));
             FacesUtils.redirectWithNavigationID("dashboardStaff");
         }
         staff = staffDao.getStaff(Long.parseLong(staffID));
-        
+
         if (staff == null) {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("invalidStaffSelected"));
             FacesUtils.redirectWithNavigationID("dashboardStaff");
@@ -61,7 +67,7 @@ public class UpdateStaff implements Serializable {
     }
 
     @PostConstruct
-    public void pc() {
+    public void pc() {       
     }
 
     @PreDestroy
@@ -91,7 +97,5 @@ public class UpdateStaff implements Serializable {
     public void setStaffID(String staffID) {
         this.staffID = staffID;
     }
-    
-    
 
 }

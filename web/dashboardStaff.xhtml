@@ -3,6 +3,9 @@
                 xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
 
     <!--<ui:define name="title">Dashboard</ui:define>-->
+    <f:metadata>        
+        <f:viewAction action="#{dbStaff.preRenderView}"/>
+    </f:metadata>
 
     <ui:define name="head">
         <h:outputScript name="chartjs/chart.js" library="demo" />
@@ -170,7 +173,7 @@
                                         <br/><br/>
                                     </td>
                                 </tr> 
-                                
+
                                 <tr>
                                     <td style="vertical-align: top">
                                         <p:outputLabel style="font-weight: bold;" for="selectSector" value="#{bundle.sector}" />  
@@ -323,8 +326,8 @@
                         <tr>
                             <td><p:outputLabel for="logData" value="#{bundle.loggerCode}:" style="font-weight: bold;" /> </td>                                    
                             <td><p:inputText id="logData" value="#{dbStaff.staffForUpdate.loggercode}" required="false">
-                                             
-                                             <!--requiredMessage="#{bundle.loggerCode}:#{bundle.mandatoryField}" -->                                                  
+
+<!--requiredMessage="#{bundle.loggerCode}:#{bundle.mandatoryField}" -->                                                  
                                     <!--<f:validateLength minimum="4" maximum="15" />-->
                                 </p:inputText>
                                 <p:message for="logData" display="icon"/>  <br/></td>
