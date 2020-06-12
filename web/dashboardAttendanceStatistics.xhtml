@@ -166,7 +166,7 @@
                                 #{bundle.personelAttendances}
                                 <span style="float: right;font-size:10px; font-weight: bold">#{bundle.loggersUpdate}:&#160;<i>#{dbStat.lastExecution}</i></span>
                             </div>
-                          
+
                             <h:form id="viewAttendanceResults">
                                 <h:panelGroup rendered="#{dbStat.attendances.size() gt 0}" styleClass="summaryIDClass" layout="block" id="summaryID" class="order-summary order-default selected-order" >   
                                     <p:outputLabel style="font-weight: bold;font-size:13px;" value="Επιλεγμένοι Υπάλληλοι:" />
@@ -176,25 +176,91 @@
                                     <p:outputLabel style="font-weight: bold;font-size:13px;" value="Επιλεγμένες Υπηρεσίες:" />
                                     <span style="font-size:13px;">#{dbStat.selectedSectors.size()}</span>
                                     <br/>
-                                      <p:separator />
-                                      <p:commandButton disabled="#{dbStat.selectedStaff.size()==0 and !dbStat.all }" value="Παρουσίες" style="font-size: 12px"
-                                                     action="#{attendanceAction.staffAppearances()}" update="viewAttendanceResults"  />  
+                                    <p:separator />
+                                    <p:commandButton value="Συνολικα" style="font-size: 12px"
+                                                     action="#{attendanceAction.statTotal()}" update="viewAttendanceResults"  />  
                                     &#160;&#160;
-                                    <p:commandButton disabled="#{dbStat.selectedDepartments.size()==0 and dbStat.selectedSectors.size()==0}" value="Παρουσίες ανα Τμήμα/Υπηρεσία" 
-                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults" style="font-size: 12px"  />  
+                                    <p:commandButton value="Ανα Ημερομηνία" style="font-size: 12px"
+                                                     action="#{attendanceAction.statPerDate()}" update="viewAttendanceResults" />  
                                     &#160;&#160;
-                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0 and !dbStat.all}" value="Μ.Ο Χρόνος Παρουσίας" style="font-size: 12px"
-                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />
+                                    <p:commandButton value="Ανα Διεύθυνση" style="font-size: 12px"
+                                                     action="#{attendanceAction.statPerDateSection()}" update="viewAttendanceResults"  />
                                     &#160;&#160;
-                                    <p:commandButton disabled="#{dbStat.selectedDepartments.size()==0 and dbStat.selectedSectors.size()==0}" value="Μ.Ο. Χρονος Παρουσιας ανά Τμήμα/Υπηρεσία" 
-                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults" style="font-size: 12px"  /> 
+                                    <p:commandButton value="Ανά Τμήμα" style="font-size: 12px"
+                                                     action="#{attendanceAction.statPerDateSectionDepartment()}" update="viewAttendanceResults" />
+                                     &#160;&#160;
+                                    <p:commandButton value="Προσωπικου" style="font-size: 12px"
+                                                     action="#{attendanceAction.statPerStaff()}" update="viewAttendanceResults" /> 
                                 </h:panelGroup>
 
-                                
-                                <p:separator />
-                               
 
-                                <p:dataTable rendered="#{dbStat.attendances.size() gt 0}" id="tbl" var="attendance" value="#{dbStat.attendances}" styleClass="myclass" 
+                                <p:separator />
+
+
+                                <p:dataTable rendered="#{dbStat.statData.size() gt 0}" id="stat" var="attendance" value="#{dbStat.statData}" styleClass="myclass" 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
+
+
+                                    <p:column rendered="#{dbStat.showName}" sortBy="#{attendance.name}" style="width: 1px !important; white-space: nowrap;">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.name}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.name}" />
+                                    </p:column>
+                                    
+                                    <p:column rendered="#{dbStat.showDate}" sortBy="#{attendance.date}" style="width: 1px !important; white-space: nowrap;">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.date}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.date}" />
+                                    </p:column>
+                                    
+                                    <p:column sortBy="#{attendance.sector.name}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.sector}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.sector eq null ? 'ΟΛΑ': attendance.sector.name}"  />
+                                    </p:column>
+                                    
+                                    <p:column sortBy="#{attendance.department.name}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.department}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.department eq null ? 'ΟΛΑ': attendance.department.name}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{attendance.count}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.countPresences}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.count}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{attendance.min}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.minTime}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.min}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{attendance.max}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.maxTime}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.max}" />
+                                    </p:column>
+                                    
+                                    <p:column sortBy="#{attendance.average}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.averageTime}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{attendance.average}" />
+                                    </p:column>
+                                </p:dataTable>
+
+
+                                <p:dataTable rendered="#{dbStat.attendances.size() gt 0 and dbStat.statData.size() eq 0}" id="tbl" var="attendance" value="#{dbStat.attendances}" styleClass="myclass" 
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
                                              paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
 
@@ -230,8 +296,8 @@
                                         </f:facet>
                                         <h:outputText value="#{attendance.name}" />
                                     </p:column>
-                                    
-                                     <p:column sortBy="#{attendance.staff.department.name}">
+
+                                    <p:column sortBy="#{attendance.staff.department.name}">
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.department}" />
                                         </f:facet>

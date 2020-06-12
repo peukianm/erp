@@ -78,7 +78,7 @@ public class AttendanceDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Attendance> staffApperence(Company company, String startDate, String endDate, Staff staff, Sector sector, Department department) {
+    public List<Attendance> staffApperence(Company company, String startDate, String endDate, Staff staff, Sector sector, Department department, boolean onlyEnded) {
         try {
             final String queryString = "select model from Attendance model where "
                     + " model.company = :company  "
@@ -86,6 +86,7 @@ public class AttendanceDAO {
                     + (staff != null ? " and model.staff = :staff  " : " ")
                     + (department != null ? " and model.department = :department  " : " ")
                     + (sector != null ? " and model.sector = :sector  " : " ")
+                    + (onlyEnded ? " and model.ended = 1  " : " ")
                     + " order by model.staff.surname, model.entrance ";
 
             Query query = entityManager.createQuery(queryString);

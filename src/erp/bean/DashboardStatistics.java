@@ -64,11 +64,15 @@ public class DashboardStatistics implements Serializable {
     private Boolean enableStaff;
 
     private List<AttendanceBean> attendances = new ArrayList<>(0);
+    private List<AttendanceBean> statData = new ArrayList<>(0);
 
     private String lastExecution;
     private boolean all = false;
 
     Usr user;
+
+    private boolean showName;
+    private boolean showDate;
 
     public void preRenderView() {
         user = sessionBean.getUsers();
@@ -165,13 +169,14 @@ public class DashboardStatistics implements Serializable {
         fromAttendanceDate = new java.util.Date();
         toAttendanceDate = new java.util.Date();
         attendances = new ArrayList<>(0);
+        statData = new ArrayList<>(0);
         all = false;
 
     }
 
     public void onSectorChange() {
         try {
-            all =false;
+            all = false;
             if (selectedSectors != null) {
                 selectedDepartments = new ArrayList<>(0);
                 selectedStaff = new ArrayList<>(0);
@@ -209,12 +214,12 @@ public class DashboardStatistics implements Serializable {
         selectedSectors = new ArrayList<Sector>();
         selectedStaff = new ArrayList<Staff>(0);
         searchStaff = null;
-        all =false;
+        all = false;
     }
 
     public void autocompleteSurnameSelectStaff(SelectEvent event) {
         try {
-            all =false;
+            all = false;
             selectedDepartments = new ArrayList<>(0);
             selectedSectors = new ArrayList<>(0);
             if (!selectedStaff.contains(searchStaff)) {
@@ -375,6 +380,30 @@ public class DashboardStatistics implements Serializable {
 
     public void setSelectedDepartments(List<Department> selectedDepartments) {
         this.selectedDepartments = selectedDepartments;
+    }
+
+    public List<AttendanceBean> getStatData() {
+        return statData;
+    }
+
+    public void setStatData(List<AttendanceBean> statData) {
+        this.statData = statData;
+    }
+
+    public boolean isShowName() {
+        return showName;
+    }
+
+    public void setShowName(boolean showName) {
+        this.showName = showName;
+    }
+
+    public boolean isShowDate() {
+        return showDate;
+    }
+
+    public void setShowDate(boolean showDate) {
+        this.showDate = showDate;
     }
 
     public void goError(Exception ex) {

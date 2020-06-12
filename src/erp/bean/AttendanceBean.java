@@ -5,6 +5,8 @@
  */
 package erp.bean;
 
+import erp.entities.Department;
+import erp.entities.Sector;
 import erp.entities.Staff;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -22,11 +24,18 @@ public class AttendanceBean implements Serializable {
     private LocalTime exit;
     private String duration;
     private Staff staff;
+    private Sector sector;
+    private Department department;
     private long secondsDuration;
     private long staffID;
     private long departmentID;
     private long sectorID;
+    private String min;
+    private String max;
+    private String average;
+    private String count;
 
+    
     public long getSecondsDuration() {
         return secondsDuration;
     }
@@ -106,6 +115,55 @@ public class AttendanceBean implements Serializable {
     public void setSectorID(long sectorID) {
         this.sectorID = sectorID;
     }
+
+    public String getMin() {
+        return min;
+    }
+
+    public void setMin(String min) {
+        this.min = min;
+    }
+
+    public String getMax() {
+        return max;
+    }
+
+    public void setMax(String max) {
+        this.max = max;
+    }
+
+    public String getAverage() {
+        return average;
+    }
+
+    public void setAverage(String average) {
+        this.average = average;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+
+    public Sector getSector() {
+        return sector;
+    }
+
+    public void setSector(Sector sector) {
+        this.sector = sector;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+    
     
     
     @Override

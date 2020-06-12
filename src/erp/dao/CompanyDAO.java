@@ -42,6 +42,26 @@ public class CompanyDAO {
         }
     }
 
+    public Department getDepartment(long id) {
+        try {
+            return entityManager.find(Department.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Department entity", re);
+            throw re;
+        }
+    }
+
+    public Sector getSector(long id) {
+        try {
+            return entityManager.find(Sector.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Sector entity", re);
+            throw re;
+        }
+    }
+
     public List<Company> getAllStaff(boolean onlyActive) {
         try {
             String sql = "SELECT e FROM Company e "
@@ -68,7 +88,7 @@ public class CompanyDAO {
             throw re;
         }
     }
-    
+
     public List<Workshift> getAllWorkShifts(boolean onlyActive) {
         try {
             String sql = "SELECT e FROM Workshift e "
@@ -82,10 +102,10 @@ public class CompanyDAO {
             throw re;
         }
     }
-    
-        public List<Emprank> getAllEmpRanks() {
+
+    public List<Emprank> getAllEmpRanks() {
         try {
-            String sql = "SELECT e FROM Emprank e "                   
+            String sql = "SELECT e FROM Emprank e "
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
             return query.getResultList();
@@ -95,10 +115,7 @@ public class CompanyDAO {
             throw re;
         }
     }
-    
-    
-    
-            
+
     public List<Company> getAllCompanies(boolean onlyActive) {
         try {
             String sql = "SELECT e FROM Company e "
@@ -133,7 +150,8 @@ public class CompanyDAO {
      * subsequent persist actions of this entity should use the #update()
      * method. This operation must be performed within the a database
      * transaction context for the entity's data to be permanently saved to the
-     * persistence store, i.e., database. This method uses the null null null null     {@link javax.persistence.EntityManager#persist(Object)
+     * persistence store, i.e., database. This method uses the null null null
+     * null null     {@link javax.persistence.EntityManager#persist(Object)
 	 * EntityManager#persist} operation.
      *
      * <pre>
@@ -256,7 +274,7 @@ public class CompanyDAO {
                         query.setMaxResults(rowCount);
                     }
                 }
-            }            
+            }
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
