@@ -66,10 +66,11 @@ public class DashboardStatistics implements Serializable {
     private List<AttendanceBean> attendances = new ArrayList<>(0);
 
     private String lastExecution;
+    private boolean all = false;
 
     Usr user;
 
-    public void preRenderView() {        
+    public void preRenderView() {
         user = sessionBean.getUsers();
         if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_STAT"), null, 1)) {
             return;
@@ -164,11 +165,13 @@ public class DashboardStatistics implements Serializable {
         fromAttendanceDate = new java.util.Date();
         toAttendanceDate = new java.util.Date();
         attendances = new ArrayList<>(0);
+        all = false;
 
     }
 
     public void onSectorChange() {
         try {
+            all =false;
             if (selectedSectors != null) {
                 selectedDepartments = new ArrayList<>(0);
                 selectedStaff = new ArrayList<>(0);
@@ -187,14 +190,31 @@ public class DashboardStatistics implements Serializable {
         }
     }
 
+    public void onAllChange() {
+        try {
+            if (all) {
+                selectedDepartments = new ArrayList<>(0);
+                selectedSectors = new ArrayList<>(0);
+                selectedStaff = new ArrayList<>(0);
+                searchStaff = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            goError(e);
+        }
+    }
+
     public void onDepartmentChange() {
         selectedSectors = new ArrayList<Sector>();
         selectedStaff = new ArrayList<Staff>(0);
         searchStaff = null;
+        all =false;
     }
 
     public void autocompleteSurnameSelectStaff(SelectEvent event) {
         try {
+            all =false;
             selectedDepartments = new ArrayList<>(0);
             selectedSectors = new ArrayList<>(0);
             if (!selectedStaff.contains(searchStaff)) {
@@ -243,6 +263,14 @@ public class DashboardStatistics implements Serializable {
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             goError(e);
         }
+    }
+
+    public boolean isAll() {
+        return all;
+    }
+
+    public void setAll(boolean all) {
+        this.all = all;
     }
 
     public String getLastExecution() {

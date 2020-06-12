@@ -78,10 +78,19 @@
                             <span style="float: left;font-size:10px; font-weight: bold">#{bundle.loggersUpdate}:&#160;<i>#{dbStat.lastExecution}</i></span><br/>
                             <table style="width: 100%">
                                 <tr>
+                                    <td colspan="2">
+                                        <p:outputLabel value="#{bundle.selectAllStaff}:" style="font-weight: bold;" for="selectAllStaff" />
+                                        &#160;&#160;
+                                        <p:selectBooleanButton id="selectAllStaff" value="#{dbStat.all}" onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
+                                            <p:ajax listener="#{dbStat.onAllChange()}" update="selectSector selectDepartment basicId @(.depsIDtyleclass) :viewAttendanceResults:summaryID" />      
+                                        </p:selectBooleanButton>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="vertical-align: top">
                                         <p:outputLabel style="font-weight: bold;" for="selectSector" value="#{bundle.sector}" />  
                                         <p:selectManyMenu disabled="#{!dbStat.enableSector}"  value="#{dbStat.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
-                                            <p:ajax listener="#{dbStat.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass) :viewAttendanceResults:summaryID" />                                            
+                                            <p:ajax listener="#{dbStat.onSectorChange}" update="selectAllStaff selectDepartment basicId @(.depsIDtyleclass) :viewAttendanceResults:summaryID" />                                            
                                             <f:selectItems value="#{sessionBean.users.company.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
 
@@ -89,7 +98,7 @@
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.department}" />  
                                         <p:selectManyMenu disabled="#{!dbStat.enableDepartment}" value="#{dbStat.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
-                                            <p:ajax listener="#{dbStat.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass) :viewAttendanceResults:summaryID" />
+                                            <p:ajax listener="#{dbStat.onDepartmentChange}" update="selectAllStaff selectSector basicId @(.depsIDtyleclass) :viewAttendanceResults:summaryID" />
                                             <f:selectItems value="#{dbStat.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
                                         <br/>
@@ -123,7 +132,7 @@
                                         <p:autoComplete disabled="#{!dbStat.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staffComplete" value="#{dbStat.searchStaff}" completeMethod="#{dbStat.completeStaff}" size="45" required="false"  
                                                         var="staff" itemLabel="#{staff.surname} #{staff.name}  #{staff.department.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter"  list="#{dbStat.availableStaff}" />
-                                            <p:ajax event="itemSelect" listener="#{dbStat.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass) :viewAttendanceResults:summaryID  "  />  
+                                            <p:ajax event="itemSelect" listener="#{dbStat.autocompleteSurnameSelectStaff}" update="selectAllStaff @(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass) :viewAttendanceResults:summaryID  "  />  
                                         </p:autoComplete>
                                         <br/><br/>
                                         <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbStat.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
@@ -168,13 +177,13 @@
                                     <span style="font-size:13px;">#{dbStat.selectedSectors.size()}</span>
                                     <br/>
                                       <p:separator />
-                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0}" value="Παρουσίες" style="font-size: 12px"
-                                                     action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />  
+                                      <p:commandButton disabled="#{dbStat.selectedStaff.size()==0 and !dbStat.all }" value="Παρουσίες" style="font-size: 12px"
+                                                     action="#{attendanceAction.staffAppearances()}" update="viewAttendanceResults"  />  
                                     &#160;&#160;
                                     <p:commandButton disabled="#{dbStat.selectedDepartments.size()==0 and dbStat.selectedSectors.size()==0}" value="Παρουσίες ανα Τμήμα/Υπηρεσία" 
                                                      action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults" style="font-size: 12px"  />  
                                     &#160;&#160;
-                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0}" value="Μ.Ο Χρόνος Παρουσίας" style="font-size: 12px"
+                                    <p:commandButton disabled="#{dbStat.selectedStaff.size()==0 and !dbStat.all}" value="Μ.Ο Χρόνος Παρουσίας" style="font-size: 12px"
                                                      action="#{attendanceAction.fetchAttendancesStatistics()}" update="viewAttendanceResults"  />
                                     &#160;&#160;
                                     <p:commandButton disabled="#{dbStat.selectedDepartments.size()==0 and dbStat.selectedSectors.size()==0}" value="Μ.Ο. Χρονος Παρουσιας ανά Τμήμα/Υπηρεσία" 
