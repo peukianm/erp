@@ -4,13 +4,11 @@
  */
 package erp.bean;
 
+import erp.dao.UsrDAO;
 import erp.entities.Usr;
-import erp.util.PersistenceHelper;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 
@@ -22,14 +20,14 @@ import javax.inject.Named;
  */
 @Named(value = "resetBean")
 @ViewScoped
-public class ResetBean implements Serializable{
-    
+public class ResetBean implements Serializable {
+
     @Inject
     private SessionBean sessionBean;
-    
-    @EJB
-    private PersistenceHelper persistenceHelper;
-    
+
+    @Inject
+    private UsrDAO userDAO;
+
     private String password;
     private String rePassword;
     private String email;
@@ -37,26 +35,24 @@ public class ResetBean implements Serializable{
     private Usr user;
     private String userid;
     private boolean show = false;
-    
-    
+
     @PostConstruct
-    public void init() {        
-        
-        if (userid!=null && sessionid!=null) {            
-            user = (Usr)persistenceHelper.find(Usr.class, new BigDecimal(userid));
-            if (user.getPassword().equals(sessionid)){
+    public void pc() {
+    }
+
+    public void init() {
+        if (userid != null && !userid.equals("") && sessionid != null && !sessionid.equals("")) {
+            user = userDAO.get(Long.parseLong(userid));            
+            if (user.getPassword().equals(sessionid)) {
                 show = true;
             } else {
-                show =false;
+                show = false;
             }
         } else {
             show = false;
-        }        
+        }
     }
 
-    
-    
-    
     @PreDestroy
     public void reset() {
     }
@@ -69,9 +65,6 @@ public class ResetBean implements Serializable{
         this.userid = userid;
     }
 
-    
-    
-    
     public boolean isShow() {
         return show;
     }
@@ -80,9 +73,6 @@ public class ResetBean implements Serializable{
         this.show = show;
     }
 
-    
-    
-    
     public Usr getUser() {
         return user;
     }
@@ -91,9 +81,6 @@ public class ResetBean implements Serializable{
         this.user = user;
     }
 
-    
-    
-    
     public String getSessionid() {
         return sessionid;
     }
@@ -101,8 +88,6 @@ public class ResetBean implements Serializable{
     public void setSessionid(String sessionid) {
         this.sessionid = sessionid;
     }
-    
-    
 
     public SessionBean getSessionBean() {
         return sessionBean;
@@ -135,10 +120,4 @@ public class ResetBean implements Serializable{
     public void setEmail(String email) {
         this.email = email;
     }
-    
-    
-    
-    
-    
-    
 }

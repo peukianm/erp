@@ -9,7 +9,6 @@ import erp.dao.StaffDAO;
 import erp.entities.Department;
 import erp.entities.Sector;
 import erp.entities.Staff;
-import erp.entities.Usr;
 import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
@@ -146,7 +145,7 @@ public class DashboardStaff implements Serializable {
             errorBean.reset();
             errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
             //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/error.jsf?faces-redirect=true");
+            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
         } catch (IOException e) {
             e.printStackTrace();
         }

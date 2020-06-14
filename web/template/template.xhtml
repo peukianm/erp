@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en">
+
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/babylon-layout/images/favicon.ico"/>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>#{sessionBean.pageName}</title>
+        <h:outputScript name="js/nanoscroller.js" library="babylon-layout" />
+        <h:outputScript name="js/layout.js" library="babylon-layout" />
+        <ui:insert name="head"/>
+    </h:head>
+
+    <h:body>
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+            <p:graphicImage name="images/ajaxloadingbar.gif" library="babylon-layout"  />
+        </p:dialog> 
+
+        <p:idleMonitor timeout="1800000" onidle="PF('idleDialog').show()">  
+            <p:ajax event="idle" listener="#{administrationAction.invalidateSession}"/>                  
+        </p:idleMonitor>
+
+        <p:dialog header="#{bundle.attention}" resizable="false"  closable="true" 
+                  widgetVar="idleDialog" modal="true" style="color: black;font-weight: bold;">  
+            <h:form>                    
+                <table>
+                    <tr><td><h:outputText value="#{bundle.idleMsg}" style="color: black;" /><br/></td></tr>
+                    <tr><td style="text-align: center"><p:commandButton value="OK" ajax="false" action="#{administrationAction.logoutAction(0)}"/></td></tr>
+                </table>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog  header="#{bundle.warning}" modal="true" resizable="false"  widgetVar="generalAlertWidget" >                    
+            <p:panel widgetVar="alertPanelWidget" id="alertPanel">
+                <table>
+                    <tr>
+                        <td style="text-align: center">
+                            <h:outputLabel value="#{sessionBean.alertMessage}"/>
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td style="text-align: center">
+                            <p:commandButton  update="primePanelWidget" value="OK" type="button" onclick="PF('generalAlertWidget').hide()"  />
+                        </td>
+                    </tr>    	                      	                      
+                </table>
+            </p:panel>
+        </p:dialog> 
+
+
+        <div class="layout-wrapper layout-static layout-menu-dark">
+            <ui:include src="./topbar.xhtml"></ui:include>
+            <ui:include src="./menu.xhtml"></ui:include>
+
+            <div class="layout-main">       
+                <div class="route-bar">
+                    <div class="route-bar-breadcrumb">
+                        <i class="fa fa-home"></i> 
+                        <span>/ </span> 
+                        <ui:insert name="viewname" />
+                    </div>
+                </div> 
+                <div class="layout-content" style="min-height:300px">
+                    <ui:insert name="content"></ui:insert>
+                </div>
+            </div>
+
+            <div class="layout-footer">
+                <ui:include src="./footer.xhtml"></ui:include>
+            </div>
+
+            <!-- <p:ajaxStatus styleClass="layout-ajax-loader">
+                 <f:facet name="start">
+                     <i class="fa fa-circle-o-notch fa-spin layout-ajax-loader-icon" aria-hidden="true"></i>
+                 </f:facet>
+ 
+                 <f:facet name="complete">
+                     <h:outputText value="" />
+                 </f:facet>
+             </p:ajaxStatus>-->
+
+
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" /> 
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="babylon-layout" class="profile-image" />
+            </p:dialog>
+
+            <div class="layout-mask"></div>
+
+            <p:confirmDialog id="disconnectDlgID" header="#{bundle.disconnect}" global="true" showEffect="fade" hideEffect="fade" 
+                             message="#{bundle.msgDisconnect}" widgetVar="disconnectDlg">	        
+                <h:form >                         
+                    <p:commandButton  value="OK" action="#{administrationAction.logoutAction(0)}" ajax="false"  />
+                    <p:commandButton type="button" value="#{bundle.cancel}" onclick="PF('disconnectDlg').hide()" />	                                                  
+                </h:form>  
+            </p:confirmDialog>
+
+        </div>
+
+        <h:outputStylesheet name="css/nanoscroller.css" library="babylon-layout" />
+        <h:outputStylesheet name="css/primeflex.css" library="babylon-layout" />         
+        <h:outputStylesheet name="css/layout-cyan.css" library="babylon-layout" />
+        <h:outputStylesheet name="css/erp.css" library="babylon-layout" />
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />      
+    </h:body>
+
+</html>

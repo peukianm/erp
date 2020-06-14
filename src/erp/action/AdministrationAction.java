@@ -1,6 +1,3 @@
-/**
- *
- */
 package erp.action;
 
 import erp.bean.*;
@@ -8,24 +5,22 @@ import erp.dao.AuditingDAO;
 import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
 import erp.entities.*;
-import erp.scheduler.LoggerDataRetrieveTask;
-import erp.scheduler.StaffUpdateTask;
+import erp.exception.ERPCustomException;
 import erp.util.*;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.SelectEvent;
 
+/**
+ *
+ * @author peukianm
+ */
 public class AdministrationAction implements Serializable {
 
     private static final Logger logger = LogManager.getLogger(AdministrationAction.class);
@@ -41,12 +36,6 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     private SessionBean sessionBean;
-
-    @EJB
-    private PersistenceUtil persistenceUtil;
-
-    @EJB
-    private PersistenceHelper persistenceHelper;
 
     @Inject
     UserBean userBean;
@@ -78,7 +67,7 @@ public class AdministrationAction implements Serializable {
     public AdministrationAction() {
     }
 
-    public String loginAction() {
+    public String loginAction() throws ERPCustomException {
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("LOGIN ACTION!!!!!!");
@@ -106,65 +95,44 @@ public class AdministrationAction implements Serializable {
                 FacesUtils.callRequestContext("PF('selectRoleDialog').show()");
             } else if (userroles.size() == 1) {
                 temp.setRole(userroles.get(0).getRole());
-
-//               usrTransaction.begin();
-//                Company comp = new Company();
-//                comp.setName("1111111111111111111");
-//                comp.setActive(BigDecimal.ONE);
-//                persistenceHelper.create(comp);
-//                Users usr = new Users();
-//                //usr.setActive(BigDecimal.ONE);
-//                usr.setUsername("Username1");
-//                usr.setPassword("Password1");
-//                usr.setName("Name1");
-//                usr.setSurname("Surname1");
-//                persistenceHelper.create(usr);
-//                usrTransaction.commit();
-//               
                 return mainPageForward(temp);
-                //return userAdmin();
             }
             return "";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
+            throw new ERPCustomException("Throw From Login Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public String selectRole() {
-        //RoleSelectionBean roleSelectionBean = (RoleSelectionBean) FacesUtils.getManagedBean("roleSelectionBean");
+    public String selectRole() throws ERPCustomException {
         Userrole selectedRole = roleSelectionBean.getSelectedRole();
         Usr temp = sessionBean.getUsers();
         temp.setRole(selectedRole.getRole());
         sessionBean.setUsers(temp);
-
         return mainPageForward(temp);
 
     }
 
-    private String mainPageForward(Usr temp) {
+    private String mainPageForward(Usr temp) throws ERPCustomException {
         try {
             if (temp.getRole().getRoleid() == 1 || temp.getRole().getRoleid() == 2 || temp.getRole().getRoleid() == 3) {
                 Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
-                Auditing audit = new Auditing(temp, temp.getCompany(), action, "User "+sessionBean.getUsers().getUsername()+" connected on the platform",
+                Auditing audit = new Auditing(temp, temp.getCompany(), action, "User " + sessionBean.getUsers().getUsername() + " connected on the platform",
                         FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
                         FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
 
                 auditingDAO.save(audit);
                 sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
                 sessionBean.setPageName(MessageBundleLoader.getMessage("usersPage"));
-                
-                              
+
                 return "dashboardAttendanceStatistics?faces-redirect=true";
             }
             return "";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
+            throw new ERPCustomException("Throw From Masin Page Forward Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
@@ -173,20 +141,7 @@ public class AdministrationAction implements Serializable {
         FacesUtils.invalidateSession();
     }
 
-    public String gotoMain() {
-        try {
-            sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"));
-            sessionBean.setPageName(MessageBundleLoader.getMessage("homePage"));
-            return "main?faces-redirect=true";
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
-        }
-    }
-
-    public void fetchUsers() {
+    public void fetchUsers() throws ERPCustomException {
         try {
             List<Usr> users = userDAO.searchUser(dbUsers.getSelectedRole(), dbUsers.getSelectedCompany(), dbUsers.getSelectedDepartment(),
                     dbUsers.getSelectedSector(), dbUsers.getSurname(), dbUsers.getActive());
@@ -194,22 +149,20 @@ public class AdministrationAction implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+            throw new ERPCustomException("Throw From fetch users Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public String insertUser() {
+    public String insertUser() throws ERPCustomException {
         try {
             List<Usr> usrs = userDAO.findByProperty("username", insertUser.getUsername().trim());
             if (!insertUser.getPassword().trim().equals(insertUser.getRepassword().trim())) {
-                System.out.println("Not Same Password");
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("passwordDontMatch"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
                 FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
                 return "";
             }
             if (usrs.size() == 1) {
-                System.out.println("Username already  exists");
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("useranameAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
                 FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
@@ -219,7 +172,6 @@ public class AdministrationAction implements Serializable {
             usrs = userDAO.findByProperty("email", insertUser.getEmail().trim());
 
             if (usrs.size() == 1) {
-                System.out.println("EMAIL ALREADY EXISTS");
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("emailAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
                 FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
@@ -256,12 +208,11 @@ public class AdministrationAction implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
+            throw new ERPCustomException("Throw From insert User Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public List<Usr> completeUser(String username) {
+    public List<Usr> completeUser(String username) throws ERPCustomException {
         try {
             if (username != null && !username.trim().isEmpty() && username.trim().length() >= 1) {
                 username = username.trim();
@@ -273,16 +224,14 @@ public class AdministrationAction implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return null;
+            throw new ERPCustomException("Throw From complete User (username) Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public String updateUser() {
+    public String updateUser() throws ERPCustomException {
         try {
             List<Usr> usrs = userDAO.findByProperty("username", updateUser.getUser().getUsername().trim());
             if (usrs.size() >= 1 && !usrs.get(0).equals(updateUser.getUser())) {
-                System.out.println("Username already  exists");
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("useranameAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
                 FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
@@ -293,7 +242,6 @@ public class AdministrationAction implements Serializable {
             usrs = userDAO.findByProperty("email", updateUser.getUser().getEmail().trim());
 
             if (usrs.size() >= 1 && !usrs.get(0).equals(updateUser.getUser())) {
-                System.out.println("EMAIL ALREADY EXISTS");
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("emailAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
                 FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
@@ -321,12 +269,11 @@ public class AdministrationAction implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
+            throw new ERPCustomException("Throw From Update User Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public String resetPassword() {
+    public String resetPassword() throws ERPCustomException {
         try {
             Usr user = updateUser.getUser();
             String hashedPassword = ErpUtil.getSaltedHash(updateUser.getPassword());
@@ -343,241 +290,27 @@ public class AdministrationAction implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
+            throw new ERPCustomException("Throw From Reset Password Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
     public String goUpdateUser(long userID) {
-        try {
-            return "updateUser?faces-redirect=true&userID=" + userID;
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
-        }
+        return "updateUser?faces-redirect=true&userID=" + userID;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public String getPropertyValue(String key) {
-        String propertyValue = SystemParameters.getInstance().getProperty(key);
-        return propertyValue;
-    }
-
-    public String auditControl() {
-        try {
-            auditBean.reset();
-            sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_AUDIT_CONTROL"));
-            sessionBean.setPageName(MessageBundleLoader.getMessage("audit"));
-            return "auditControl?faces-redirect=true ";
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
-        }
-    }
-
-    public String userAdmin() {
-        try {
-            userBean.reset();
-            sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
-            sessionBean.setPageName(MessageBundleLoader.getMessage("userAdmin"));
-            return "userMgt?faces-redirect=true ";
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
-        }
-    }
-
-    public void autocompleteUsernameSelectUser(SelectEvent event) {
-        try {
-
-            Usr user = auditBean.getSelectUser();
-            auditBean.setSearchUser(user);
-            auditBean.setSelectUser(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-        }
-    }
-
-    public String resetSearchAudit() {
-        try {
-            return auditControl();
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
-        }
-    }
-
-    public void searchAudit() {
-        try {
-            Timestamp from = null;
-            if (auditBean.getSearchFromActionDate() != null) {
-                from = FormatUtils.formatDateToTimestamp(auditBean.getSearchFromActionDate());
-            }
-
-            Timestamp to = null;
-            if (auditBean.getSearchToActionDate() != null) {
-                to = FormatUtils.formatDateToTimestamp(auditBean.getSearchToActionDate());
-            }
-
-            AuditingDAO dao = new AuditingDAO();
-            List<Auditing> auditings = dao.searchAudit(auditBean.getSearchUser(), auditBean.getSearchAction(), from, to, auditBean.getSearchCompany());
-            auditBean.setAudits(auditings);
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-        }
-    }
-
-    public String resetUserAdmin() {
-        try {
-            return userAdmin();
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
-        }
-    }
-
-    public void goInsertUser() {
-        try {
-            Usr user = new Usr();
-            user.setActive(BigDecimal.ONE);
-            userBean.setRoles(new ArrayList<Role>(0));
-
-            userBean.setUser(user);
-            FacesUtils.callRequestContext("createUserDialogWidget.show()");
-            FacesUtils.updateHTMLComponnetWIthJS("createUserPanelID");
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-        }
-    }
-
-    public void goResetPasword() {
-        try {
-            FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').show()");
-            FacesUtils.updateHTMLComponnetWIthJS("resetPasswordUserPanelID");
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-        }
-    }
-
-    public void deleteUser() {
-        try {
-            Usr user = userBean.getUser();
-            user.setActive(BigDecimal.ZERO);
-            user = persistenceHelper.editPersist(user);
-            persistenceUtil.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_DELETEUSER")), "User " + user.getUsername() + " removed");
-
-            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userDeleted"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-        }
-    }
-
-//    public String updateUser() {
-//        try {
-//            Usr user = userBean.getUser();
-//            List<Usr> usrs = userDAO.findByProperty("username", userBean.getUser().getUsername().trim());
-//            if (usrs.size() == 1 && !usrs.get(0).equals(user)) {
-//                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("useranameAlreadyUsed"));
-//                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                return "";
-//            }
-//
-//            usrs = userDAO.findByProperty("email", userBean.getUser().getEmail().trim());
-//
-//            if (usrs.size() == 1 && !usrs.get(0).equals(user)) {
-//                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("emailAlreadyUsed"));
-//                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
-//                FacesUtils.callRequestContext("generalAlertWidget.show()");
-//                return "";
-//            }
-//
-//            if (userBean.isActive()) {
-//                user.setActive(BigDecimal.ONE);
-//            } else {
-//                user.setActive(BigDecimal.ZERO);
-//            }
-//
-//            //removing
-//            for (int i = 0; i < user.getUserroles().size(); i++) {
-//                Userrole userrole = user.getUserroles().get(i);
-//                persistenceHelper.remove(userrole);
-//            }
-//            user.setUserroles(null);
-//
-//            //adding
-//            List<Role> roles = userBean.getRoles();
-//            List<Userrole> userroles = new ArrayList<Userrole>(0);
-//            for (int i = 0; i < roles.size(); i++) {
-//                Role role = roles.get(i);
-//                Userrole userrole = new Userrole();
-//                userrole.setUsr(user);
-//                userrole.setRole(role);
-//                userroles.add(userrole);
-//            }
-//
-//            user.setUserroles(userroles);
-//
-//            user = persistenceHelper.editPersist(user);
-//            persistenceUtil.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEUSER")), "User " + user.getUsername() + " updated");
-//            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
-//            FacesUtils.callRequestContext("updateUserDialogWidget.hide()");
-//            return userAdmin();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-//            goError(e);
-//            return "";
-//        }
-//    }
     public String goResetPasswordEmail() {
-        try {
-            sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_RESET_PASSWORD"));
-            sessionBean.setPageName(MessageBundleLoader.getMessage("passwordReminder"));
-            return "resetPassword?faces-redirect=true";
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
-        }
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_RESET_PASSWORD"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("passwordReminder"));
+        return "resetPassword?faces-redirect=true";
     }
 
-    public String sendResetPasswordEmail() {
+    public String sendResetPasswordEmail() throws ERPCustomException {
         try {
-            ResetBean resetBean = (ResetBean) FacesUtils.getManagedBean("resetBean");
             String email = resetBean.getEmail().trim();
             List<Usr> users = userDAO.findByProperty("email", email);
             if (users != null && users.size() == 1) {
                 Usr user = users.get(0);
                 String username = user.getUsername();
-                String[] emails = new String[1];
-                emails[0] = user.getEmail();
 
                 String link = SystemParameters.getInstance().getProperty("resetPassword_link") + user.getPassword() + "&userid=" + user.getUserid();
                 String host = SystemParameters.getInstance().getProperty("gmail_host");
@@ -587,8 +320,11 @@ public class AdministrationAction implements Serializable {
                 String subject = SystemParameters.getInstance().getProperty("email_subject") + username;
                 String body = SystemParameters.getInstance().getProperty("email_body") + link;
 
-                ErpUtil.sendFromGMail(host, port, account, password, emails, subject, body);
-                FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("successUserEmail"));
+                if (ErpUtil.sendFromGMail(host, port, account, password, user.getEmail(), subject, body)) {
+                    FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("successUserEmail"));
+                } else {
+                    FacesUtils.addErrorMessage(MessageBundleLoader.getMessage("errorSendingEmail"));
+                }
                 return "";
             } else {
                 FacesUtils.addErrorMessage(MessageBundleLoader.getMessage("falseUserEmail"));
@@ -599,54 +335,37 @@ public class AdministrationAction implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
+            throw new ERPCustomException("Throw From Send Reset Password Email Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+
         }
     }
 
-    public void resetPasswordEmail() {
-        //ResetBean resetBean = (ResetBean) FacesUtils.getManagedBean("resetBean");        
+    public void resetPasswordEmail() throws ERPCustomException {
         try {
             Usr user = resetBean.getUser();
             String hashedPassword = ErpUtil.getSaltedHash(resetBean.getPassword());
             user.setPassword(hashedPassword);
 
-            user = persistenceHelper.editPersist(user);
-            persistenceUtil.audit(user, Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
+            userDAO.update(user);
+            Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_RESETPASSWORD")));
+            Auditing audit = new Auditing(user, user.getCompany(), action, "User " + user.getUsername() + " password was reseted using the email procedure",
+                    FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
+                    FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
+
+            auditingDAO.save(audit);
+
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
 
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+            throw new ERPCustomException("Throw From Reset Password Email Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+
         }
     }
 
-    public void goError(Exception ex) {
+    public String logoutAction() throws ERPCustomException {
         try {
-            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
-            if (sessionBean.getUsers() != null) {
-                logger.error("User=" + sessionBean.getUsers().getUsername());
-            }
-            logger.error("Cause=" + ex.getCause());
-            logger.error("Class=" + ex.getClass());
-            logger.error("Message=" + ex.getLocalizedMessage());
-            logger.error(ex, ex);
-            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-
-            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
-            errorBean.reset();
-            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
-            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/error.jsf?faces-redirect=true");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String logoutAction() {
-        try {
-            System.out.println("LOGING OUT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             FacesUtils.resetManagedBeanJSF2("sessionBean");
             FacesUtils.invalidateSession();
             FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/login.jsf?faces-redirect=true");
@@ -654,27 +373,201 @@ public class AdministrationAction implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
+            throw new ERPCustomException("Throw From Logout Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+
         }
     }
 
-    public String logoutAction(int t) {
+    public String logoutAction(int t) throws ERPCustomException {
         try {
             FacesUtils.resetManagedBeanJSF2("sessionBean");
-            FacesUtils.invalidateSession();
-            //FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/loginPage.jsf?faces-redirect=true");
+            FacesUtils.invalidateSession();            
             return "/login?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return "";
+            throw new ERPCustomException("Throw From Logout(0) Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+
         }
     }
-
-    public void closeAlertDlg() {
-        sessionBean.setShowGeneralDialog(false);
-        sessionBean.setShowMsgDialog(false);
-    }
 }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//    public String getPropertyValue(String key) {
+//        String propertyValue = SystemParameters.getInstance().getProperty(key);
+//        return propertyValue;
+//    }
+//
+//    public String auditControl() {
+//        try {
+//            auditBean.reset();
+//            sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_AUDIT_CONTROL"));
+//            sessionBean.setPageName(MessageBundleLoader.getMessage("audit"));
+//            return "auditControl?faces-redirect=true ";
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+//            goError(e);
+//            return "";
+//        }
+//    }
+//
+//    public String userAdmin() {
+//        try {
+//            userBean.reset();
+//            sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
+//            sessionBean.setPageName(MessageBundleLoader.getMessage("userAdmin"));
+//            return "userMgt?faces-redirect=true ";
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+//            goError(e);
+//            return "";
+//        }
+//    }
+//
+//    public void autocompleteUsernameSelectUser(SelectEvent event) {
+//        try {
+//
+//            Usr user = auditBean.getSelectUser();
+//            auditBean.setSearchUser(user);
+//            auditBean.setSelectUser(null);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+//            goError(e);
+//        }
+//    }
+//
+//    public String resetSearchAudit() {
+//        try {
+//            return auditControl();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+//            goError(e);
+//            return "";
+//        }
+//    }
+//
+//    public void searchAudit() {
+//        try {
+//            Timestamp from = null;
+//            if (auditBean.getSearchFromActionDate() != null) {
+//                from = FormatUtils.formatDateToTimestamp(auditBean.getSearchFromActionDate());
+//            }
+//
+//            Timestamp to = null;
+//            if (auditBean.getSearchToActionDate() != null) {
+//                to = FormatUtils.formatDateToTimestamp(auditBean.getSearchToActionDate());
+//            }
+//
+//            AuditingDAO dao = new AuditingDAO();
+//            List<Auditing> auditings = dao.searchAudit(auditBean.getSearchUser(), auditBean.getSearchAction(), from, to, auditBean.getSearchCompany());
+//            auditBean.setAudits(auditings);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+//            goError(e);
+//        }
+//    }
+//
+//    public String resetUserAdmin() {
+//        try {
+//            return userAdmin();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+//            goError(e);
+//            return "";
+//        }
+//    }
+//
+//    public void goInsertUser() {
+//        try {
+//            Usr user = new Usr();
+//            user.setActive(BigDecimal.ONE);
+//            userBean.setRoles(new ArrayList<Role>(0));
+//
+//            userBean.setUser(user);
+//            FacesUtils.callRequestContext("createUserDialogWidget.show()");
+//            FacesUtils.updateHTMLComponnetWIthJS("createUserPanelID");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+//            goError(e);
+//        }
+//    }
+//
+//    public void goResetPasword() {
+//        try {
+//            FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').show()");
+//            FacesUtils.updateHTMLComponnetWIthJS("resetPasswordUserPanelID");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+//            goError(e);
+//        }
+//    }
+//
+//    public void deleteUser() {
+//        try {
+//            Usr user = userBean.getUser();
+//            user.setActive(BigDecimal.ZERO);
+//            user = persistenceHelper.editPersist(user);
+//            persistenceUtil.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_DELETEUSER")), "User " + user.getUsername() + " removed");
+//
+//            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userDeleted"));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+//            goError(e);
+//        }
+//    }
+//
+//    public void goErrorrrrrrrrrrrrrrrr(Exception ex) {
+//        try {
+//            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
+//            if (sessionBean.getUsers() != null) {
+//                logger.error("User=" + sessionBean.getUsers().getUsername());
+//            }
+//            logger.error("Cause=" + ex.getCause());
+//            logger.error("Class=" + ex.getClass());
+//            logger.error("Message=" + ex.getLocalizedMessage());
+//            logger.error(ex, ex);
+//            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
+//
+//            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
+//            errorBean.reset();
+//            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
+//            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
+//            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void closeAlertDlg() {
+//        sessionBean.setShowGeneralDialog(false);
+//        sessionBean.setShowMsgDialog(false);
+//    }
+//}
+
+//               usrTransaction.begin();
+//                Company comp = new Company();
+//                comp.setName("1111111111111111111");
+//                comp.setActive(BigDecimal.ONE);
+//                persistenceHelper.create(comp);
+//                Users usr = new Users();
+//                //usr.setActive(BigDecimal.ONE);
+//                usr.setUsername("Username1");
+//                usr.setPassword("Password1");
+//                usr.setName("Name1");
+//                usr.setSurname("Surname1");
+//                persistenceHelper.create(usr);
+//                usrTransaction.commit();
+//               

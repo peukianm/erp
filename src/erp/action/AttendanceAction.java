@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package erp.action;
 
 import erp.bean.AttendanceBean;
 import erp.bean.DashboardAttendance;
 import erp.bean.DashboardStatistics;
-import erp.bean.ErrorBean;
 import erp.bean.SessionBean;
 import erp.dao.AttendanceDAO;
 import erp.dao.AuditingDAO;
@@ -16,21 +10,15 @@ import erp.dao.CompanyDAO;
 import erp.dao.StaffDAO;
 import erp.entities.Attendance;
 import erp.entities.Staff;
-import erp.util.FacesUtils;
+import erp.exception.ERPCustomException;
 import erp.util.FormatUtils;
-import erp.util.MessageBundleLoader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,7 +52,7 @@ public class AttendanceAction {
     @Inject
     DashboardStatistics dbStat;
 
-    public void fetchAttendances() {
+    public void fetchAttendances() throws ERPCustomException {
         try {
             List<AttendanceBean> retValue = new ArrayList<>(0);
             if (!dbAttendance.getSelectedSectors().isEmpty()) {
@@ -125,11 +113,11 @@ public class AttendanceAction {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+            throw new ERPCustomException("Throw From Fetch Addetances Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public void fetchAttendancesStatistics() {
+    public void fetchAttendancesStatistics() throws ERPCustomException {
         try {
             List<AttendanceBean> retValue = new ArrayList<>(0);
             if (!dbStat.getSelectedSectors().isEmpty()) {
@@ -224,14 +212,15 @@ public class AttendanceAction {
 
             }
             dbStat.setAttendances(retValue);
+            dbStat.setStatData(new ArrayList<>(0));
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+            throw new ERPCustomException("Throw From Fetch Addetance Statistics Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public void statPerStaff() {
+    public void statPerStaff() throws ERPCustomException {
         try {
             List<AttendanceBean> attendances = dbStat.getAttendances();
             attendances.sort((m1, m2) -> {
@@ -255,18 +244,18 @@ public class AttendanceAction {
                 ab.setAverage(FormatUtils.splitSecondsToTime((long) statistics.getAverage()));
                 retValue.add(ab);
             }
-            dbStat.setStatData(retValue);
+            dbStat.setStatData(retValue); 
             dbStat.setShowName(true);
             dbStat.setShowDate(false);
 
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+            throw new ERPCustomException("Throw From Statistics Per Employee Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public void statTotal() {
+    public void statTotal() throws ERPCustomException {
         try {
             List<AttendanceBean> attendances = dbStat.getAttendances();
             LongSummaryStatistics statistics = attendances.stream().collect(Collectors.summarizingLong(AttendanceBean::getSecondsDuration));
@@ -286,11 +275,11 @@ public class AttendanceAction {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+            throw new ERPCustomException("Throw From Total Statistics Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public void statPerDate() {
+    public void statPerDate() throws ERPCustomException {
         try {
             List<AttendanceBean> attendances = dbStat.getAttendances();
             attendances.sort((m1, m2) -> {
@@ -334,11 +323,11 @@ public class AttendanceAction {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+            throw new ERPCustomException("Throw From Statistics Per Date", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public void statPerDateSection() {
+    public void statPerDateSection() throws ERPCustomException {
         try {
             List<AttendanceBean> attendances = dbStat.getAttendances();
             attendances.sort((m1, m2) -> {
@@ -371,11 +360,11 @@ public class AttendanceAction {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+            throw new ERPCustomException("Throw From Statistics Per Date/Section Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public void statPerDateSectionDepartment() {
+    public void statPerDateSectionDepartment() throws ERPCustomException {
         try {
             List<AttendanceBean> attendances = dbStat.getAttendances();
             attendances.sort((m1, m2) -> {
@@ -413,30 +402,29 @@ public class AttendanceAction {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+            throw new ERPCustomException("Throw From Statistics Per Date/Section/Department Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
-    public void goError(Exception ex) {
-        try {
-            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
-            if (sessionBean.getUsers() != null) {
-                logger.error("User=" + sessionBean.getUsers().getUsername());
-            }
-            logger.error("Cause=" + ex.getCause());
-            logger.error("Class=" + ex.getClass());
-            logger.error("Message=" + ex.getLocalizedMessage());
-            logger.error(ex, ex);
-            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-
-            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
-            errorBean.reset();
-            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
-            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/error.jsf?faces-redirect=true");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+//    public void goError(Exception ex) {
+//        try {
+//            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
+//            if (sessionBean.getUsers() != null) {
+//                logger.error("User=" + sessionBean.getUsers().getUsername());
+//            }
+//            logger.error("Cause=" + ex.getCause());
+//            logger.error("Class=" + ex.getClass());
+//            logger.error("Message=" + ex.getLocalizedMessage());
+//            logger.error(ex, ex);
+//            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
+//
+//            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
+//            errorBean.reset();
+//            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
+//            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
+//            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

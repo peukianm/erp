@@ -6,8 +6,6 @@
 package erp.bean;
 
 import erp.dao.StaffDAO;
-import erp.dao.UsrDAO;
-import erp.entities.Attendance;
 import erp.entities.Usr;
 import erp.util.AccessControl;
 import erp.util.SystemParameters;

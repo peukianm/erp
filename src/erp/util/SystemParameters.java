@@ -20,56 +20,15 @@ public class SystemParameters {
      * The Logger instance of the class
      */
     private final static Logger logger = LogManager.getLogger(SystemParameters.class);
-
     private long startUpTimestamp = System.currentTimeMillis();
 
-    /**
-     * Constant for enabling scheduler
-     */
-    public static final String SCHEDULER_ENABLED = "SCHEDULER_ENABLED";
 
-    /**
-     * Constant for scheduler delay
-     */
-    public static final String SCHEDULER_DELAY = "SCHEDULER_DELAY";
-
-    /**
-     * Indicator for the scheduled_Task resource rows policy
-     */
-    public static final String PURGE_SCHEDULED_TASK_RESOURCE = "PURGE_SCHEDULED_TASK_RESOURCE";
-
-    /**
-     * Constant for scheduler period
-     */
-    public static final String SCHEDULER_PERIOD = "SCHEDULER_PERIOD";
-
-    /**
-     * Constant for the maximum number of scheduled task execution
-     */
-    public static final String MAXIMUM_NUMBER_OF_SCHEDULED_TASK_EXECUTION = "MAXIMUM_NUMBER_OF_SCHEDULED_TASK_EXECUTION";
-
-    /**
-     * These variables reference the ids at the database
-     */
-    public static final String SCHEDULE_TASK_ID_DISK_CLEAN_UP = "SCEDULE_TASK_ID_DISK_CLEAN_UP";
-
-    /**
-     * Max minutes that a task can be at the state is_idle == 1
-     */
-    public static final String MAX_MINUTES = "MAX_MINUTES";
-
-    /**
-     * Max DAYS that a task can be left on the system
-     */
-    public static final String MAX_DAYS_FOR_TASK = "MAX_DAYS_FOR_TASK";
 
     /**
      * Used for caching the system.properties file
      */
     private Properties properties = new Properties();
-
     public static final String MULTIPART_UPLOAD_DIRECTORY = "MULTIPART_UPLOAD_DIRECTORY";
-
     public static String appRoot = "";
   
     private SystemParameters() {

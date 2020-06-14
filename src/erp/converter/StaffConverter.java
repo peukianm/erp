@@ -31,11 +31,7 @@ public class StaffConverter implements Converter {
         if (submittedValue == null || submittedValue.trim().isEmpty()) {
             return null;
         } else {
-            try {
-                System.out.println("submittedValue=" + submittedValue);
-                System.out.println("staffDAO=" + staffDAO);
-                System.out.println("em=" + persistenceHelper);
-                
+            try {                
                 Long number = new Long(submittedValue);
                 Staff staff =  persistenceHelper.getEntityManager().find(Staff.class, number); //staffDAO.getStatff(number.longValue());
                 return staff;

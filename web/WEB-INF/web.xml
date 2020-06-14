@@ -127,20 +127,20 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     
     <error-page>
         <error-code>500</error-code>
-        <location>/error.jsf</location>
+        <location>/common/error.jsf</location>
     </error-page>
     <error-page>
         <error-code>404</error-code>
-        <location>/404.jsf</location>
+        <location>/common/404.jsf</location>
     </error-page>
         <error-page>
         <error-code>403</error-code>
-        <location>/access.jsf</location>
+        <location>/common/access.jsf</location>
     </error-page>
     
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/error.jsf</location>
+        <location>/common/error.jsf</location>
     </error-page>
     
     

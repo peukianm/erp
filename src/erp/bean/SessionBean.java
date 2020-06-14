@@ -1,8 +1,5 @@
-/**
- *
- */
-package erp.bean;
 
+package erp.bean;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,21 +8,18 @@ import java.util.TimeZone;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
-import javax.persistence.EntityManager;
-
 
 import erp.entities.Usr;
 import erp.util.*;
-import javax.faces.bean.ManagedBean;
-//import javax.faces.bean.SessionScoped;
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 
-//@ManagedBean(name = "sessionBean")
-//@SessionScoped
-@Named(value = "sessionBean")
+
+/**
+ *
+ * @author peukianm
+ */
+@Named("sessionBean")
 @SessionScoped
 public class SessionBean implements Serializable {
 
@@ -33,30 +27,15 @@ public class SessionBean implements Serializable {
     private java.lang.String pageTitle;
     private java.lang.String pageCode = "LOGIN";
     private Usr users;
-   
+
     private String errorMsgKey = "errMsg_GeneralError";
     private Locale locale = null;
-    private String tameioID;
-
-    private Object parameter;
-    private List<Object> parameterList;
     private String alertMessage;
     private Boolean showGeneralDialog = false;
     TimeZone timeZone;
-    
+
     private Boolean showMsgDialog = false;
     private String errorMsg = "";
-    
- 
-
-    
-//    public void hideMsgDialog() {
-//        showMsgDialog = false;
-//        errorMsg = "";
-//        pageName = null;
-//        pageTitle = null;
-//
-//    }
 
     public String getPageTitle() {
         if (pageTitle == null) {
@@ -69,7 +48,6 @@ public class SessionBean implements Serializable {
         this.pageTitle = pageTitle;
     }
 
-        
     public Locale getLocale() {
         return locale;
     }
@@ -77,7 +55,7 @@ public class SessionBean implements Serializable {
     public void setLocale(Locale locale) {
         this.locale = locale;
     }
-    
+
     public java.lang.String getPageName() {
         return pageName;
     }
@@ -111,8 +89,6 @@ public class SessionBean implements Serializable {
         this.timeZone = timeZone;
     }
 
-       
-    
     public Boolean getShowMsgDialog() {
         return showMsgDialog;
     }
@@ -129,7 +105,6 @@ public class SessionBean implements Serializable {
         this.errorMsg = errorMsg;
     }
 
-    
     public void greekLocale(ActionEvent actionEvent) {
         setLocale(new Locale("gr"));
         FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale("gr"));
@@ -140,39 +115,12 @@ public class SessionBean implements Serializable {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(Locale.ENGLISH);
     }
 
-    public String getTameioID() {
-        return tameioID;
-    }
-
-    public void setTameioID(String tameioID) {
-        this.tameioID = tameioID;
-    }
-
-    
-
     public java.lang.String getPageCode() {
         return pageCode;
     }
 
     public void setPageCode(java.lang.String pageCode) {
         this.pageCode = pageCode;
-    }
-
-    
-    public Object getParameter() {
-        return parameter;
-    }
-
-    public void setParameter(Object parameter) {
-        this.parameter = parameter;
-    }
-
-    public List<Object> getParameterList() {
-        return parameterList;
-    }
-
-    public void setParameterList(List<Object> parameterList) {
-        this.parameterList = parameterList;
     }
 
     public String getAlertMessage() {
@@ -183,7 +131,6 @@ public class SessionBean implements Serializable {
         this.alertMessage = alertMessage;
     }
 
-   
     public Boolean getShowGeneralDialog() {
         return showGeneralDialog;
     }

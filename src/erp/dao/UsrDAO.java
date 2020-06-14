@@ -185,8 +185,7 @@ public class UsrDAO implements Serializable {
                     + (role != null ? " JOIN u.userroles userrole " : " ")
                     + " where u.userid IS NOT NULL "
                     + (company != null ? " and u.company=:company " : " ")
-                    //+ (department != null ? " and u.department=:department " : " ")
-                    //+ (sector != null ? " and u.sector=:sector " : " ")
+                    + (department != null ? " and u.department=:department " : " ")
                     + (role != null ? " and userrole.role=:role " : " ")                   
                     + (surname != null ? " and (LOWER(u.surname) like '" + ((String) surname).toLowerCase() + "%'"
                             + " OR UPPER(u.surname)  like '" + ((String) surname).toUpperCase() + "%') " : " ")
@@ -197,15 +196,12 @@ public class UsrDAO implements Serializable {
             if (company != null) {
                 query.setParameter("company", company);
             }
+            if (department != null) {
+                query.setParameter("department", department);
+            }
             if (role != null) {
                 query.setParameter("role", role);
             }
-//            if (department != null) {
-//                query.setParameter("department", department);
-//            }
-//             if (sector != null) {
-//                query.setParameter("sector", sector);
-//            }
 
             return query.getResultList();
         } catch (RuntimeException re) {

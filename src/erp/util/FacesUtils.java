@@ -609,30 +609,7 @@ public class FacesUtils {
         context.addMessage(null, new FacesMessage(msg1, msg2));  
     }
     
-    
-    public static void goError(Exception ex, Logger logger, Usr user, String errorMsgKey) {
-        try {
-            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
-            if (user != null) {
-                logger.error("User=" + user.getUsername());
-            }
-            logger.error("Cause=" + ex.getCause());
-            logger.error("Class=" + ex.getClass());
-            logger.error("Message=" + ex.getLocalizedMessage());
-            logger.error(ex, ex);
-            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
-            errorBean.reset();
-            errorBean.setErrorMSG(MessageBundleLoader.getMessage(errorMsgKey));
-
-            //FacesUtils.redirectAJAX("/templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/templates/error.jsf?faces-redirect=true");
-            //return  "/templates/error?faces-redirect=true";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
+   
     
 //    public static void partialViewUpdate(String componentID){
 //    	RequestContext context = RequestContext.getCurrentInstance();

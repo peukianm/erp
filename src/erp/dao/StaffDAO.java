@@ -5,7 +5,6 @@
  */
 package erp.dao;
 
-import erp.entities.Attendance;
 import erp.entities.Company;
 import erp.entities.Companytask;
 import erp.entities.Department;
@@ -13,10 +12,8 @@ import erp.entities.Scheduletask;
 import erp.entities.Scheduletaskdetail;
 import erp.entities.Sector;
 import erp.entities.Staff;
-import erp.entities.Taskstatus;
 import erp.util.FormatUtils;
 import erp.util.SystemParameters;
-import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;

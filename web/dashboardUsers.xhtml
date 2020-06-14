@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
                 xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
 
     <!--<ui:define name="title">Dashboard</ui:define>-->
@@ -52,6 +52,13 @@
                 height: 23px  !important; 
                 margin: 0px 4px 0 0  !important;
             }
+            .title{
+                font-weight: bold;
+                text-align: right;
+            }
+            .data{             
+                text-align: left;
+            }
 
         </style>
         <script type="text/javascript">
@@ -80,11 +87,11 @@
         <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
         <div class="layout-dashboard">
             <div class="p-grid">
-                <ui:include src="/WEB-INF/status.xhtml" />
+                <ui:include src="/common/status.xhtml" />
 
                 <!--          ΚΡΙΤΗΡΙΑ ΑΝΑΖΗΤΗΣΗ ΠΡΟΣΩΠΙΚΟΥ !!!!!!!!!!!!!!!!!!!!! -->
                 <!--<div class="p-col-12 p-lg-8">-->
-                <div class="p-col-12 p-xl-6">    
+                <div class="p-col-12 p-xl-5">    
                     <h:form id="searchUserForm">
                         <div class="card card-w-title statistics">
                             <div class="erp-panel-titlebar">
@@ -97,7 +104,7 @@
                                     </td>
 
                                     <td colspan="3">                                        
-                                        <p:autoComplete widgetVar="acUser" minQueryLength="2" queryDelay="300" scrollHeight="300" id="userComplete" value="#{dbUsers.searchUser}" completeMethod="#{dbUsers.completeUser}" size="70" required="false"  
+                                        <p:autoComplete widgetVar="acUser" minQueryLength="2" queryDelay="300" scrollHeight="300" id="userComplete" value="#{dbUsers.searchUser}" completeMethod="#{dbUsers.completeUser}" size="65" required="false"  
                                                         var="user" itemLabel="#{user.username} #{user.surname} #{user.name}" itemValue="#{user}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter"  list="#{dbUsers.availableUsers}" />
                                             <p:ajax event="itemSelect" listener="#{dbUsers.autocompleteUsernameSelectUser}" update="userComplete viewUserResults"  />  
@@ -134,36 +141,25 @@
                                         </p:selectOneMenu >
 
                                     </td>
-                                    <td>
-                                        <p:outputLabel value="#{bundle.active}:" style="" for="userActive" />
-                                    </td>
-                                    <td>
+                                    <td colspan="2">
+                                        <p:outputLabel value="#{bundle.active}:" style="" for="userActive" />&#160;
+
                                         <p:selectBooleanButton id="userActive" value="#{dbUsers.active}" onLabel="Yes" offLabel="No" 
                                                                onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" />
                                     </td>
                                 </tr>
-                                <!--<tr>
-                                    <td>
-                                        <p:outputLabel style="" for="selectSector" value="#{bundle.sector}:" />    
-                                    </td>
-                                    <td>                                        
-                                        <p:selectOneMenu   value="#{dbUsers.selectedSector}" id="selectSector" converter="omnifaces.SelectItemsConverter" >                                                                                      
-                                            <f:selectItem itemLabel="" itemValue=""  />
-                                            <f:selectItems value="#{applicationBean.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
-                                        </p:selectOneMenu >
-
-                                    </td>
+                                <tr>
                                     <td>
                                         <p:outputLabel style="" for="selectDepartment" value="#{bundle.department}:" />  
                                     </td>
-                                    <td>                                         
+                                    <td colspan="3">                                         
                                         <p:selectOneMenu  value="#{dbUsers.selectedDepartment}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                                                                          
                                             <f:selectItem itemLabel="" itemValue=""  />
                                             <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectOneMenu >
 
                                     </td>
-                                </tr> -->
+                                </tr> 
 
 
                             </table>
@@ -185,7 +181,7 @@
 
 
                 <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-                <div class="p-col-12 p-xl-6"> 
+                <div class="p-col-12 p-xl-7"> 
                     <div class="card user-card">
                         <div id="showUsersDivID" style="display: block" class="user-card-content">
                             <div class="erp-panel-titlebar">
@@ -220,14 +216,14 @@
 
                                     <p:column sortBy="#{user.username}" >
                                         <f:facet name="header">
-                                            <h:outputText value="#{bundle.username}" />
+                                            <h:outputText value="#{bundle.user}" />
                                         </f:facet>
                                         <h:outputText value="#{user.username}" />
                                     </p:column>
 
                                     <p:column sortBy="#{user.surname}">
                                         <f:facet name="header">
-                                            <h:outputText value="#{bundle.surname}"/>
+                                            <h:outputText value="#{bundle.name}"/>
                                         </f:facet>
                                         <h:outputText value="#{user.surname} #{user.name}" />
                                     </p:column>
@@ -237,7 +233,7 @@
                                             <h:outputText value="#{bundle.role}"/>
                                         </f:facet>
                                         <ui:repeat var="userrole" value="#{user.userroles}">
-                                            <h:outputText value="#{userrole.role.name}" /> <br/>
+                                            <h:outputText value="#{userrole.role.name}" style="font-size: 11px;" /> <br/>
                                         </ui:repeat>
                                     </p:column>
 
@@ -245,18 +241,23 @@
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.company}" />
                                         </f:facet>
-                                        <h:outputText value="#{user.company.abbrev}" />
+                                        <h:outputText value="#{user.company.abbrev}" style="font-size: 11px;" />
+                                    </p:column>
+                                    <p:column style="text-align: center;">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.active}" />
+                                        </f:facet>
+                                        <h:graphicImage rendered="#{user.active==1}" url="/resources/babylon-layout/images/success.jpg" width="12px" height="12px" />
+                                        <h:graphicImage rendered="#{user.active!=1}" url="/resources/babylon-layout/images/close.gif" width="12px" height="12px" />   
                                     </p:column>
 
                                     <p:column headerText="#{bundle.actions}" >
-                                        <p:commandButton id="bt1" icon="pi pi-search"  title="#{bundle.view}"  onclick="viewUserWidget.show()" class="btn-list" style="font-size: 16px;" >
-                                            <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />
-                                        </p:commandButton>
-                                        <p:commandButton  style="font-size: 16px;" icon="pi pi-pencil" action="#{administrationAction.goUpdateUser(user.userid)}"  class="btn-list" title="#{bundle.updateUser}"  /> 
-                                        <!-- <p:linkButton icon="pi pi-pencil" outcome="updateUser?userID=#{user.userid}"  class="btn-list" /> -->
-
                                         <p:commandButton style="font-size: 16px;" icon="pi pi-envelope" action="#{administrationAction.goResetPasword()}"  class="btn-list" update="" title="#{bundle.resetPassword}">
                                             <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />                                
+                                        </p:commandButton>
+                                        <p:commandButton  style="font-size: 16px;" icon="pi pi-pencil" action="#{administrationAction.goUpdateUser(user.userid)}"  class="btn-list" title="#{bundle.updateUser}"  /> 
+                                        <p:commandButton id="bt1" icon="pi pi-search" style="font-size: 16px;"  title="#{bundle.viewUser}"  onclick="PF('userDialog').show()" class="btn-list" update="userDetail">
+                                            <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />
                                         </p:commandButton>
                                     </p:column>  
 
@@ -273,6 +274,48 @@
                 </div>                                        
             </div> 
         </div>
+
+
+
+        <p:dialog header="#{bundle.userData}" widgetVar="userDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <div id="userDialogDiv" class="ui-widget" style="border-radius:7px; margin-top: 0.8% ; box-shadow: 4px 4px 4px #5C5C5C; ">	
+                <p:outputPanel id="userDetail" style="text-align:center;">
+                    <p:panelGrid  columns="4" columnClasses="title, data, title, data" >
+                        <h:outputText value="#{bundle.username}:" />
+                        <h:outputText value="#{updateUser.user.username}" />
+
+                        <h:outputText value="#{bundle.active}:" />
+                        <h:graphicImage rendered="#{updateUser.user.active==1}" url="/resources/babylon-layout/images/success.jpg" width="14px" height="14px" />
+                        <h:graphicImage rendered="#{updateUser.user.active!=1}" url="/resources/babylon-layout/images/close.gif" width="14px" height="14px" />   
+
+                        <h:outputText value="#{bundle.name}:" />
+                        <h:outputText value="#{updateUser.user.name}" />
+
+                        <h:outputText value="#{bundle.surname}:" />
+                        <h:outputText value="#{updateUser.user.surname}" />
+
+                        <h:outputText value="#{bundle.email}:" />
+                        <h:outputText value="#{updateUser.user.email}" />
+
+                        <h:outputText value="#{bundle.company}:" />
+                        <h:outputText value="#{updateUser.user.company.name}" />
+
+                        <h:outputText value="#{bundle.department}:" />
+                        <h:outputText value="#{updateUser.user.department.name}" />
+
+                        <h:outputText value="#{bundle.phone}:" />
+                        <h:outputText value="#{updateUser.user.phone}" />
+
+                        <h:outputText value="#{bundle.role}:" />
+                        <ui:repeat var="userrole" value="#{updateUser.user.userroles}">
+                            <h:outputText value="#{userrole.role.name}" /> <br/>
+                        </ui:repeat>
+
+
+                    </p:panelGrid>
+                </p:outputPanel>
+            </div>
+        </p:dialog>
 
 
         <p:dialog header="#{bundle.resetPassword}" id="resetPasswordDialogID" position="center" widgetVar="resetPasswordDialogWidget" modal="true" resizable="false" >

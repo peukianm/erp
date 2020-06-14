@@ -5,11 +5,7 @@
  */
 package erp.bean;
 
-import com.sun.javafx.scene.control.skin.VirtualFlow;
-import erp.action.AdministrationAction;
-import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
-import erp.entities.Attendance;
 import erp.entities.Company;
 import erp.entities.Department;
 import erp.entities.Role;
@@ -22,7 +18,6 @@ import erp.util.SystemParameters;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -89,6 +84,7 @@ public class DashboardUsers implements Serializable {
         selectedCompany = null;
         surname = null;
         active = true;
+        searchUsers = new ArrayList<>(0);
     }
 
     public List<Usr> completeUser(String username) {
@@ -111,7 +107,9 @@ public class DashboardUsers implements Serializable {
 
     public void autocompleteUsernameSelectUser(SelectEvent event) {
         try {
-            searchUsers.add(searchUser);
+            if (!searchUsers.contains(searchUser)) {
+                searchUsers.add(searchUser);
+            }
             searchUser = null;
         } catch (Exception e) {
             e.printStackTrace();
@@ -229,7 +227,7 @@ public class DashboardUsers implements Serializable {
             errorBean.reset();
             errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
             //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/error.jsf?faces-redirect=true");
+            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
         } catch (IOException e) {
             e.printStackTrace();
         }

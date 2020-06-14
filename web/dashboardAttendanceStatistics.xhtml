@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
                 xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
 
     <!--<ui:define name="title">Dashboard</ui:define>-->
@@ -61,7 +61,7 @@
     <ui:define name="content">
         <div class="layout-dashboard">
             <div class="p-grid">
-                <ui:include src="/WEB-INF/status.xhtml" />
+                <ui:include src="/common/status.xhtml" />
 
                 <!--          ΕΠΙΛΟΓΗ ΠΡΟΣΩΠΙΚΟΥ  !!!!!!!!!!!!!!!!!!!!! -->
                 <p:messages>
@@ -202,7 +202,7 @@
                                              paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
 
 
-                                    <p:column rendered="#{dbStat.showName}" sortBy="#{attendance.name}" style="width: 1px !important; white-space: nowrap;">
+                                    <p:column rendered="#{dbStat.showName}" sortBy="#{attendance.name}" style="padding: 1px 2px !important;">
                                         <f:facet name="header" >
                                             <h:outputText value="#{bundle.name}"/>
                                         </f:facet>

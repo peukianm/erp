@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package erp.bean;
 
 import erp.dao.AuditingDAO;
@@ -18,7 +14,6 @@ import erp.entities.Workshift;
 
 import erp.util.SystemParameters;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;

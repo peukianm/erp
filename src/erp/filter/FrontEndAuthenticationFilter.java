@@ -36,7 +36,7 @@ public class FrontEndAuthenticationFilter implements Filter {
     private final static String FILTER_APPLIED = "_security_filter_applied";
 
     private static final String[] nonRequiredLogin = {
-        "resource", "login", "error","index"
+        "resource", "login", "error","index", "resetPassword"
     };
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

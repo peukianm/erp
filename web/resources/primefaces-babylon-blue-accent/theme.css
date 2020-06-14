@@ -2240,7 +2240,7 @@ body .ui-datatable .ui-paginator.ui-paginator-top {
 body .ui-datatable .ui-paginator.ui-paginator-bottom {
     border-top: 0 none; }
 body .ui-datatable thead th {
-    background-color: #ffffff;
+    background-color: #ebf2f3;
     border: 1px solid #e0e0e0;
     color: #212121;
     padding: 0.5em 1.214em; }
@@ -3796,8 +3796,8 @@ body .ui-dialog {
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16); }
 body .ui-dialog .ui-dialog-titlebar {
     border: 1px solid #c8c8c8;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: #628292;
+    color: #ffffff;
     padding: .571em 1em .571em 1em;
     font-weight: 700;
     border-bottom: 0 none; }
@@ -3806,9 +3806,11 @@ body .ui-dialog .ui-dialog-titlebar .ui-dialog-title {
     float: none;
     font-size: 18px;
     font-weight: 700;
-    color: #212121; }
+    border: 1px solid #628292;
+    background-color: #628292;
+    color: #ffffff;}
 body .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-icon {
-    color: #727272;
+    color: #ffffff;
     border: 0 none;
     padding: 0;
     margin-left: 0.429em;

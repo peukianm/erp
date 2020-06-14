@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package erp.bean;
 
 import erp.dao.StaffDAO;
@@ -19,7 +14,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.view.ViewScoped;
@@ -71,7 +65,6 @@ public class DashboardAttendance implements Serializable {
     Usr user;
 
     public void preRenderView() {
-        System.out.println("ACCESSS CONTROLLLLLLLLLLLLLsssssLLLLLLLLLLLLLL!!!!!!!!!!!!!!!!!!!!!");
         user = sessionBean.getUsers();
         if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_ADMIN"), null, 1)) {
             return;
@@ -139,7 +132,7 @@ public class DashboardAttendance implements Serializable {
         }
 
         if (user.getStaff().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
-                || user.getStaff().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) { //Prosopokou Plhroforikh
+                || user.getStaff().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) { //Prosopikou/Plhroforikh
             enableDepartment = true;
             enableSector = true;
             enableStaff = true;
@@ -363,7 +356,7 @@ public class DashboardAttendance implements Serializable {
             errorBean.reset();
             errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
             //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/error.jsf?faces-redirect=true");
+            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
         } catch (IOException e) {
             e.printStackTrace();
         }

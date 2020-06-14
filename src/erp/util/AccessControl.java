@@ -25,7 +25,6 @@ public class AccessControl {
     private static String actionAccessRule;
 
     public static boolean control(Usr user, String pageCode, String actionCode, int mode) {
-        System.out.println("INSIDE ACEEEESSSSSSSSSSS CONTROLLLLLLLLLLLLLLLLLLLLLLLLLLLL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!="+user);
         try {
             if (user == null || user.getRole() == null || (pageCode == null && mode == 1) || (actionCode == null && mode == 2)
                     || (actionCode == null && actionCode == null && mode == 3)) {
@@ -35,7 +34,6 @@ public class AccessControl {
             switch (mode) {
                 case 1:
                     if (!checkPageAccess(user.getRole().getRoleid(), pageCode)) {
-                        System.out.println("checking Page Access");
                         redirectToNoAccessPage();
                         return false;
 
@@ -62,9 +60,7 @@ public class AccessControl {
 
     //MODE=1
     private static boolean checkPageAccess(long roleID, String pageCode) throws Exception {
-        System.out.println("PAgeCode="+pageCode);
         pageAccessRule = SystemParameters.getInstance().getProperty("ROLE_PAGE_ACCESS_" + roleID);
-        System.out.println("pageAccessRule="+pageAccessRule);
         if (pageAccessRule.equals("ALL")) {
             return true;
         }
@@ -89,7 +85,7 @@ public class AccessControl {
 
     private static void redirectToNoAccessPage() {
         try {
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/access.jsf?faces-redirect=true");
+            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/access.jsf?faces-redirect=true");
         } catch (IOException ex) {
             Logger.getLogger(AccessControl.class.getName()).log(Level.SEVERE, null, ex);
         }

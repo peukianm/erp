@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
                 xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
 
     <!--<ui:define name="title">Dashboard</ui:define>-->
@@ -51,6 +51,14 @@
                 height: 23px  !important; 
                 margin: 0px 4px 0 0  !important;
             }
+            .title{
+                font-weight: bold;
+                text-align: right;
+            }
+            .data{             
+                text-align: left;
+            }
+
 
         </style>
         <script type="text/javascript">
@@ -142,7 +150,7 @@
         <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
         <div class="layout-dashboard">
             <div class="p-grid">
-                <ui:include src="/WEB-INF/status.xhtml" />
+                <ui:include src="/common/status.xhtml" />
 
                 <!--          ΕΠΙΛΟΓΗ ΠΡΟΣΩΠΙΚΟΥ  !!!!!!!!!!!!!!!!!!!!! -->
 
@@ -296,17 +304,17 @@
                                     </p:column>
 
                                     <p:column headerText="#{bundle.actions}" >
-                                        <p:commandButton id="bt1" icon="pi pi-info-circle" style="font-size: 16px;"  title="#{bundle.viewStaff}"  onclick="viewUserWidget.show()" class="btn-list" >
-                                            <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />
-                                        </p:commandButton>
-                                        <p:commandButton  icon="pi pi-pencil" style="font-size: 16px;" action="#{staffAction.goUpdateStaff(staff.staffid)}"  class="btn-list" title="#{bundle.updateStaff}"  /> 
 
-                                        <!-- <p:linkButton outcome="" icon="pi pi-pencil" onclick="PF('resetLoggerDataDialogWidget').show()"  class="btn-list"  />--> 
-
-                                        <p:commandButton  icon="pi pi-envelope"  class="btn-list" update="resetLoggerDataFormID" style="font-size: 16px;"
-                                                          title="#{bundle.resetLoggerCode}"   onclick="PF('resetLoggerDataDialogWidget').show()">
+                                        <p:commandButton  icon="pi pi-envelope"  class="btn-list" update="resetLoggerDataFormID" style="font-size: 16px;" title="#{bundle.resetLoggerCode}"   onclick="PF('resetLoggerDataDialogWidget').show()">
                                             <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />                                
                                         </p:commandButton> 
+
+                                        <p:commandButton  icon="pi pi-pencil" style="font-size: 16px;" action="#{staffAction.goUpdateStaff(staff.staffid)}"  class="btn-list" title="#{bundle.updateStaff}"  /> 
+                                        <!-- <p:linkButton outcome="" icon="pi pi-pencil" onclick="PF('resetLoggerDataDialogWidget').show()"  class="btn-list"  />-->
+                                        <p:commandButton id="bt1" icon="pi pi-search" style="font-size: 16px;"  title="#{bundle.viewStaff}"  onclick="PF('staffDialog').show()" 
+                                                         class="btn-list" update="staffDetail">
+                                            <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />
+                                        </p:commandButton>
                                     </p:column>  
                                 </p:dataTable>
                             </h:form>
@@ -315,6 +323,74 @@
                 </div>
             </div>
         </div>
+
+        <p:dialog header="Στοιχεία Προσωπικου" widgetVar="staffDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <div id="staffDialogDiv" class="ui-widget" style="border-radius:7px; margin-top: 0.8% ; box-shadow: 4px 4px 4px #5C5C5C; ">	
+                <p:outputPanel id="staffDetail" style="text-align:center;">
+                    <p:panelGrid  columns="4" columnClasses="title, data, title, data" >
+                        <h:outputText value="#{bundle.name}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.name}" />
+
+                        <h:outputText value="#{bundle.surname}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.surname}" />
+
+                        <h:outputText value="#{bundle.fatherName}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.fathername}" />
+
+                        <h:outputText value="#{bundle.active}:" />
+                        <h:graphicImage rendered="#{dbStaff.staffForUpdate.active==1}" url="/resources/babylon-layout/images/success.jpg" width="14px" height="14px" />
+                        <h:graphicImage rendered="#{dbStaff.staffForUpdate.active!=1}" url="/resources/babylon-layout/images/close.gif" width="14px" height="14px" />   
+
+
+
+                        <h:outputText value="#{bundle.loggerCode}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.loggercode}" />
+
+                        <h:outputText value="#{bundle.department}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.department.name}" />
+
+                        <h:outputText value="#{bundle.sector}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.sector.name}" />
+
+                        <h:outputText value="#{bundle.company}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.company.name}" />
+
+
+
+                        <h:outputText value="#{bundle.empRank}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.emprank.name}" />
+
+                        <h:outputText value="#{bundle.workShift}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.workshift.name}" />
+
+                        <h:outputText value="#{bundle.afm}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.afm}" />
+
+                        <h:outputText value="#{bundle.amka}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.amka}" />
+
+
+
+                        <h:outputText value="#{bundle.aat}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.adt}" />
+
+                        <h:outputText value="#{bundle.phone}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.phone1}" />
+
+                        <h:outputText value="#{bundle.dateOfBirth}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.birthdate}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+
+                        <h:outputText value="#{bundle.city}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.city}" />
+
+                    </p:panelGrid>
+                </p:outputPanel>
+            </div>
+        </p:dialog>
+
+
 
         <p:dialog header="#{bundle.resetLoggerData}" id="resetLoggerDataDialogID" position="center" widgetVar="resetLoggerDataDialogWidget" modal="true" resizable="false" >
             <h:form id="resetLoggerDataFormID">
