@@ -1,19 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package erp.bean;
 
 import erp.dao.StaffDAO;
 import erp.entities.Department;
 import erp.entities.Sector;
 import erp.entities.Staff;
+import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
-import erp.util.FacesUtils;
-import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,21 +67,15 @@ public class DashboardStaff implements Serializable {
     }
 
     public void onSectorChange() {
-        try {
-            if (selectedSectors != null) {
-                selectedDepartments = new ArrayList<>(0);
-                searchStaff = null;
-                selectedSectors.forEach((temp) -> {
-                    selectedDepartments.addAll(staffDao.getSectorDepartments(sessionBean.getUsers().getCompany(), temp));
-                });
+        if (selectedSectors != null) {
+            selectedDepartments = new ArrayList<>(0);
+            searchStaff = null;
+            selectedSectors.forEach((temp) -> {
+                selectedDepartments.addAll(staffDao.getSectorDepartments(sessionBean.getUsers().getCompany(), temp));
+            });
 
-            } else {
-                selectedDepartments = new ArrayList<>();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+        } else {
+            selectedDepartments = new ArrayList<>();
         }
     }
 
@@ -98,21 +85,15 @@ public class DashboardStaff implements Serializable {
     }
 
     public void autocompleteSurnameSelectStaff(SelectEvent event) {
-        try {
-            selectedDepartments = new ArrayList<>(0);
-            selectedSectors = new ArrayList<>(0);
-            if (!staff.contains(searchStaff)) {
-                staff.add(searchStaff);
-            }
-            searchStaff = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+        selectedDepartments = new ArrayList<>(0);
+        selectedSectors = new ArrayList<>(0);
+        if (!staff.contains(searchStaff)) {
+            staff.add(searchStaff);
         }
+        searchStaff = null;
     }
 
-    public List<Staff> completeStaff(String surname) {
+    public List<Staff> completeStaff(String surname) throws ERPCustomException {
         try {
             if (surname != null && !surname.trim().isEmpty() && surname.trim().length() >= 1) {
                 surname = surname.trim();
@@ -124,33 +105,10 @@ public class DashboardStaff implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return null;
+            throw new ERPCustomException("Throw From Autocomplete STaff Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
-
-    public void goError(Exception ex) {
-        try {
-            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
-            if (sessionBean.getUsers() != null) {
-                logger.error("User=" + sessionBean.getUsers().getUsername());
-            }
-            logger.error("Cause=" + ex.getCause());
-            logger.error("Class=" + ex.getClass());
-            logger.error("Message=" + ex.getLocalizedMessage());
-            logger.error(ex, ex);
-            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-
-            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
-            errorBean.reset();
-            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
-            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+   
     public String getLoggerCode() {
         return loggerCode;
     }

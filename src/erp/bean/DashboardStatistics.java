@@ -10,6 +10,7 @@ import erp.entities.Department;
 import erp.entities.Sector;
 import erp.entities.Staff;
 import erp.entities.Usr;
+import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
@@ -175,38 +176,25 @@ public class DashboardStatistics implements Serializable {
     }
 
     public void onSectorChange() {
-        try {
-            all = false;
-            if (selectedSectors != null) {
-                selectedDepartments = new ArrayList<>(0);
-                selectedStaff = new ArrayList<>(0);
-                searchStaff = null;
-                selectedSectors.forEach((temp) -> {
-                    selectedDepartments.addAll(staffDao.getSectorDepartments(sessionBean.getUsers().getCompany(), temp));
-                });
-
-            } else {
-                selectedDepartments = new ArrayList<>();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+        all = false;
+        if (selectedSectors != null) {
+            selectedDepartments = new ArrayList<>(0);
+            selectedStaff = new ArrayList<>(0);
+            searchStaff = null;
+            selectedSectors.forEach((temp) -> {
+                selectedDepartments.addAll(staffDao.getSectorDepartments(sessionBean.getUsers().getCompany(), temp));
+            });
+        } else {
+            selectedDepartments = new ArrayList<>();
         }
     }
 
     public void onAllChange() {
-        try {
-            if (all) {
-                selectedDepartments = new ArrayList<>(0);
-                selectedSectors = new ArrayList<>(0);
-                selectedStaff = new ArrayList<>(0);
-                searchStaff = null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+        if (all) {
+            selectedDepartments = new ArrayList<>(0);
+            selectedSectors = new ArrayList<>(0);
+            selectedStaff = new ArrayList<>(0);
+            searchStaff = null;
         }
     }
 
@@ -218,22 +206,16 @@ public class DashboardStatistics implements Serializable {
     }
 
     public void autocompleteSurnameSelectStaff(SelectEvent event) {
-        try {
-            all = false;
-            selectedDepartments = new ArrayList<>(0);
-            selectedSectors = new ArrayList<>(0);
-            if (!selectedStaff.contains(searchStaff)) {
-                selectedStaff.add(searchStaff);
-            }
-            searchStaff = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+        all = false;
+        selectedDepartments = new ArrayList<>(0);
+        selectedSectors = new ArrayList<>(0);
+        if (!selectedStaff.contains(searchStaff)) {
+            selectedStaff.add(searchStaff);
         }
+        searchStaff = null;
     }
 
-    public List<Staff> completeStaff(String surname) {
+    public List<Staff> completeStaff(String surname) throws ERPCustomException {
         try {
             user = sessionBean.getUsers();
             if (surname != null && !surname.trim().isEmpty() && surname.trim().length() >= 1) {
@@ -253,20 +235,13 @@ public class DashboardStatistics implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return null;
+            throw new ERPCustomException("Throw From Autocomplete Staff Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
     public void removeStaff(int index) {
-        try {
-            if (selectedStaff != null && selectedStaff.size() > 0 && selectedStaff.size() > index) {
-                selectedStaff.remove(index);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+        if (selectedStaff != null && selectedStaff.size() > 0 && selectedStaff.size() > index) {
+            selectedStaff.remove(index);
         }
     }
 
@@ -405,27 +380,4 @@ public class DashboardStatistics implements Serializable {
     public void setShowDate(boolean showDate) {
         this.showDate = showDate;
     }
-
-    public void goError(Exception ex) {
-        try {
-            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
-            if (sessionBean.getUsers() != null) {
-                logger.error("User=" + sessionBean.getUsers().getUsername());
-            }
-            logger.error("Cause=" + ex.getCause());
-            logger.error("Class=" + ex.getClass());
-            logger.error("Message=" + ex.getLocalizedMessage());
-            logger.error(ex, ex);
-            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-
-            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
-            errorBean.reset();
-            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
-            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

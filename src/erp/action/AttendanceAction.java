@@ -108,6 +108,22 @@ public class AttendanceAction {
                         retValue.add(bean);
                     });
                 });
+            } else if (dbAttendance.isAll()) {
+                List<Attendance> attendances = attendanceDAO.staffApperence(sessionBean.getUsers().getCompany(), FormatUtils.formatDate(dbAttendance.getFromAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN),
+                        FormatUtils.formatDate(dbAttendance.getToAttendanceDate(), FormatUtils.TIMESTAMPDATEPATTERN), null, null, null, false);
+                attendances.forEach((temp1) -> {
+                    AttendanceBean bean = new AttendanceBean();
+                    bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                    bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
+                    bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
+                    if (temp1.getExit() != null) {
+                        bean.setExit(temp1.getExit().toLocalDateTime().toLocalTime());
+                        bean.setDuration(FormatUtils.splitSecondsToTime(FormatUtils.getDateDiff(temp1.getEntrance(),
+                                temp1.getExit(), TimeUnit.SECONDS)));
+                    }
+                    retValue.add(bean);
+                });
+
             }
             dbAttendance.setAttendances(retValue);
         } catch (Exception e) {
@@ -244,7 +260,7 @@ public class AttendanceAction {
                 ab.setAverage(FormatUtils.splitSecondsToTime((long) statistics.getAverage()));
                 retValue.add(ab);
             }
-            dbStat.setStatData(retValue); 
+            dbStat.setStatData(retValue);
             dbStat.setShowName(true);
             dbStat.setShowDate(false);
 

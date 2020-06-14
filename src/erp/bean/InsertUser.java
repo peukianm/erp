@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package erp.bean;
 
 import erp.dao.StaffDAO;
@@ -10,6 +5,7 @@ import erp.entities.Company;
 import erp.entities.Department;
 import erp.entities.Role;
 import erp.entities.Staff;
+import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
@@ -68,7 +64,7 @@ public class InsertUser implements Serializable {
     public void reset() {
     }
 
-    public List<Staff> completeStaff(String surname) {
+    public List<Staff> completeStaff(String surname) throws ERPCustomException {
         try {
             if (surname != null && !surname.trim().isEmpty() && surname.trim().length() >= 1) {
                 surname = surname.trim();
@@ -80,8 +76,7 @@ public class InsertUser implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return null;
+            throw new ERPCustomException("Throw From Autocomplete Staff Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
@@ -180,27 +175,4 @@ public class InsertUser implements Serializable {
     public void setCompany(Company company) {
         this.company = company;
     }
-
-    public void goError(Exception ex) {
-        try {
-            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
-            if (sessionBean.getUsers() != null) {
-                logger.error("User=" + sessionBean.getUsers().getUsername());
-            }
-            logger.error("Cause=" + ex.getCause());
-            logger.error("Class=" + ex.getClass());
-            logger.error("Message=" + ex.getLocalizedMessage());
-            logger.error(ex, ex);
-            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-
-            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
-            errorBean.reset();
-            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
-            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

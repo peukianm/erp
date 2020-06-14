@@ -11,6 +11,7 @@ import erp.entities.Department;
 import erp.entities.Role;
 import erp.entities.Sector;
 import erp.entities.Usr;
+import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
@@ -87,7 +88,7 @@ public class DashboardUsers implements Serializable {
         searchUsers = new ArrayList<>(0);
     }
 
-    public List<Usr> completeUser(String username) {
+    public List<Usr> completeUser(String username) throws ERPCustomException {
         try {
             user = sessionBean.getUsers();
             if (username != null && !username.trim().isEmpty() && username.trim().length() >= 1) {
@@ -100,22 +101,15 @@ public class DashboardUsers implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return null;
+            throw new ERPCustomException("Throw From Autocomplete User Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
     public void autocompleteUsernameSelectUser(SelectEvent event) {
-        try {
-            if (!searchUsers.contains(searchUser)) {
-                searchUsers.add(searchUser);
-            }
-            searchUser = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
+        if (!searchUsers.contains(searchUser)) {
+            searchUsers.add(searchUser);
         }
+        searchUser = null;
     }
 
     public void goAddNewUser() {
@@ -209,28 +203,5 @@ public class DashboardUsers implements Serializable {
 
     public void setSelectedRole(Role selectedRole) {
         this.selectedRole = selectedRole;
-    }
-
-    public void goError(Exception ex) {
-        try {
-            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
-            if (sessionBean.getUsers() != null) {
-                logger.error("User=" + sessionBean.getUsers().getUsername());
-            }
-            logger.error("Cause=" + ex.getCause());
-            logger.error("Class=" + ex.getClass());
-            logger.error("Message=" + ex.getLocalizedMessage());
-            logger.error(ex, ex);
-            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-
-            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
-            errorBean.reset();
-            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
-            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    }   
 }

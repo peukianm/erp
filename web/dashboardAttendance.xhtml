@@ -139,7 +139,7 @@
                     <p:autoUpdate />
                 </p:messages>
                 <!--<div class="p-col-12 p-lg-8">-->
-                <div class="p-col-12 p-xl-6">    
+                <div class="p-col-12 p-xl-5">    
                     <h:form id="searchStaffForm">
                         <div class="card card-w-title statistics">
                             <div class="erp-panel-titlebar">
@@ -147,10 +147,19 @@
                             </div>
                             <table style="width: 100%">
                                 <tr>
+                                    <td colspan="2">
+                                        <p:outputLabel value="#{bundle.selectAllStaff}:" style="font-weight: bold;" for="selectAllStaff" />
+                                        &#160;&#160;
+                                        <p:selectBooleanButton id="selectAllStaff" value="#{dbAttendance.all}" onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
+                                            <p:ajax listener="#{dbAttendance.onAllChange()}" update="selectSector selectDepartment basicId @(.depsIDtyleclass)" />      
+                                        </p:selectBooleanButton>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="vertical-align: top">
                                         <p:outputLabel style="font-weight: bold;" for="selectSector" value="#{bundle.sector}" />  
                                         <p:selectManyMenu disabled="#{!dbAttendance.enableSector}"  value="#{dbAttendance.selectedSectors}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
-                                            <p:ajax listener="#{dbAttendance.onSectorChange}" update="selectDepartment basicId @(.depsIDtyleclass)" />                                            
+                                            <p:ajax listener="#{dbAttendance.onSectorChange}" update="selectAllStaff selectDepartment basicId @(.depsIDtyleclass)" />                                            
                                             <f:selectItems value="#{sessionBean.users.company.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
 
@@ -158,7 +167,7 @@
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.department}" />  
                                         <p:selectManyMenu disabled="#{!dbAttendance.enableDepartment}" value="#{dbAttendance.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
-                                            <p:ajax listener="#{dbAttendance.onDepartmentChange}" update="selectSector basicId @(.depsIDtyleclass)" />
+                                            <p:ajax listener="#{dbAttendance.onDepartmentChange}" update="selectAllStaff selectSector basicId @(.depsIDtyleclass)" />
                                             <f:selectItems value="#{dbAttendance.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
                                         <br/>
@@ -192,7 +201,7 @@
                                         <p:autoComplete disabled="#{!dbAttendance.enableStaff}" widgetVar="acStaff" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staffComplete" value="#{dbAttendance.searchStaff}" completeMethod="#{dbAttendance.completeStaff}" size="60" required="false"  
                                                         var="staff" itemLabel="#{staff.surname} #{staff.name}  #{staff.department.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter"  list="#{dbAttendance.availableStaff}" />
-                                            <p:ajax event="itemSelect" listener="#{dbAttendance.autocompleteSurnameSelectStaff}" update="@(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass)"  />  
+                                            <p:ajax event="itemSelect" listener="#{dbAttendance.autocompleteSurnameSelectStaff}" update="selectAllStaff @(.basicstyleclass)  @widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass)"  />  
                                         </p:autoComplete>
                                         <br/><br/>
                                         <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbAttendance.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
@@ -224,7 +233,7 @@
 
                 <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
                 <!--<div class="p-col-12 p-lg-4">-->
-                <div class="p-col-12 p-xl-6">    
+                <div class="p-col-12 p-xl-7">    
                     <div class="card user-card">
 
                         <div class="user-card-content">

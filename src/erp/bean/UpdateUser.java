@@ -10,6 +10,7 @@ import erp.dao.UsrDAO;
 import erp.entities.Role;
 import erp.entities.Staff;
 import erp.entities.Usr;
+import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
@@ -87,7 +88,7 @@ public class UpdateUser implements Serializable {
     public void reset() {
     }
 
-    public List<Staff> completeStaff(String surname) {
+    public List<Staff> completeStaff(String surname) throws ERPCustomException {
         try {
             if (surname != null && !surname.trim().isEmpty() && surname.trim().length() >= 1) {
                 surname = surname.trim();
@@ -99,8 +100,7 @@ public class UpdateUser implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
-            goError(e);
-            return null;
+            throw new ERPCustomException("Throw From AUtocomplete Staff Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
 
@@ -159,27 +159,4 @@ public class UpdateUser implements Serializable {
     public void setStaff(Staff staff) {
         this.staff = staff;
     }
-
-    public void goError(Exception ex) {
-        try {
-            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
-            if (sessionBean.getUsers() != null) {
-                logger.error("User=" + sessionBean.getUsers().getUsername());
-            }
-            logger.error("Cause=" + ex.getCause());
-            logger.error("Class=" + ex.getClass());
-            logger.error("Message=" + ex.getLocalizedMessage());
-            logger.error(ex, ex);
-            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-
-            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
-            errorBean.reset();
-            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
-            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/error.jsf?faces-redirect=true");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions" >
+
+    <h:head>
+        <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/babylon-layout/images/favicon.ico"/>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+        </f:facet>
+        <title>#{bundle.updateAccount}</title>
+        <style type="text/css">
+            .data-review {
+                position: relative;
+                background-image: linear-gradient(to right, rgba(48, 63, 70, 0.15) 23%, rgba(116, 144, 157, 0.15) 60%);
+                padding: 24px 48px;
+                margin-top: 114px !important; 
+            }   
+            body .ui-selectbooleanbutton.ui-state-active, body .ui-buttonset:not(.ui-splitbutton) > .ui-button.ui-state-active {
+                background-color: #405965 !important;
+                border-color: #29382a !important;
+            }
+            body .ui-selectonelistbox .ui-selectlistbox-listcontainer .ui-selectlistbox-list .ui-selectlistbox-item.ui-state-highlight, body .ui-selectmanymenu .ui-selectlistbox-listcontainer .ui-selectlistbox-list .ui-selectlistbox-item.ui-state-highlight {
+                background-color: #ccd7e0 !important;
+            }
+            body .ui-selectonemenu-panel .ui-selectonemenu-items .ui-selectonemenu-item.ui-state-highlight {
+                background-color: #ccd7e0 !important ;
+            }
+            body .ui-autocomplete-panel .ui-autocomplete-items .ui-autocomplete-item.ui-state-highlight {
+                background-color: #ccd7e0 !important ;
+            }
+        </style>
+        <script type="text/javascript">
+            //<![CDATA[
+            var Wizard = {
+                init: function () {
+                    this.wizardContent = $('.wizard-content');
+                    if (this.wizardContent.length) {
+                        this.wizardCard = this.wizardContent.find('.wizard-card');
+                        this.tabs = this.wizardCard.find('> .wizard-card-header .wizard-card-tab');
+                        this.banner = this.wizardCard.find('> .wizard-card-header .banner-image');
+
+                        var continueButton = $('.continue-button'),
+                                $this = this;
+
+                        this.tabs.off('click.wizard-tab').on('click.wizard-tab', function () {
+                            $this.openNextTab($(this));
+                        });
+
+                        continueButton.off('click.cbutton').on('click.cbutton', function () {
+                            var content = $(this).closest('.wizard-card-content'),
+                                    index = content.index(),
+                                    nextTab = $this.tabs.eq(index);
+
+                            content.find('.ink').remove();
+                            $this.openNextTab(nextTab);
+                        });
+                    }
+                },
+
+                openNextTab: function (tab) {
+                    var index = tab.index();
+
+                    if (!tab.hasClass('selected-tab')) {
+                        tab.siblings('.wizard-card-tab').removeClass('selected-tab').end().addClass('selected-tab');
+                        this.banner.removeClass('active-banner').eq(index).addClass('active-banner');
+                        this.wizardCard.children('.wizard-card-content').filter('.active-content').removeClass('active-content').end().eq(index).addClass('active-content');
+                    }
+                },
+
+                selectOrderInfo: function (itemSelector, orderSelector) {
+                    var selectedItem = $(itemSelector),
+                            selectedOrder = $(orderSelector);
+
+                    $('.wizard-tier-card ').removeClass('active-tier-card');
+                    selectedItem.addClass('active-tier-card');
+                    selectedOrder.siblings().removeClass('selected-order').end().addClass('selected-order');
+                }
+            }
+
+            $(function () {
+                Wizard.init();
+            });
+            //]]>
+            function updateSummary()
+            {
+                // alert('updating');
+                //$("#summary").load(window.location.href + " #summary");
+                $("#summary").load(" #summary > *");
+            }
+        </script>
+    </h:head>
+
+    <h:body styleClass="wizard-body">       
+        <div class="wizard-wrapper">
+            <div class="wizard-header">
+                <div class="wizard-logo">
+                    <h:link outcome="/dashboardUsers" styleClass="layout-topbar-logo">
+                        <p:graphicImage name="images/logo-black.png" library="babylon-layout" />
+                    </h:link>
+                </div>
+            </div>
+            <p:growl id="growl" showDetail="true" />  
+            <h:form id="insertUserFormID">                
+                <div class="wizard-content">
+                    <div class="wizard-card">
+                        <div class="wizard-card-header">
+                            <div class="wizard-card-header-banner">
+                                <div class="banner-logo">
+                                    <p:graphicImage name="images/extensions/babylon-icon.png" library="babylon-layout" />
+                                </div>
+                                <div class="banner-image banner-1 active-banner">
+                                    <h1>#{bundle.editUserData}</h1>
+                                    <p:graphicImage name="images/extensions/bg-header.png" library="babylon-layout" />
+                                </div>
+                                <div class="banner-image banner-2">
+                                    <h1>#{bundle.editUserData}</h1>
+                                    <p:graphicImage name="images/extensions/bg-header-2.png" library="babylon-layout" />
+                                </div>
+                            </div>
+                            <div class="wizard-card-tabs">
+                                <div class="wizard-card-tab register-tab selected-tab">
+                                    #{bundle.account}
+                                </div>
+                                <div class="wizard-card-tab tier-tab">
+                                    #{bundle.profileData}
+                                </div>                            
+                            </div>
+                        </div>
+                        <div class="wizard-card-content register active-content">
+                            <p:messages showDetail="true" closable="true">
+                                <p:autoUpdate />
+                            </p:messages>
+                            <!--<div class="warning">
+                               <i class="fa fa-exclamation-circle"></i>
+                                <p>You must have an account to complete your order and manage your downloads.</p>                              
+                           </div>-->
+                            <div class="wizard-forms-wrapper p-grid p-nogutter">
+                                <div class="p-col-12 p-md-6 wizard-forms">
+                                    <p:outputLabel value="#{bundle.username}" for="unm" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>                                    
+                                    <p:inputText id="unm"  value="#{updateAccount.user.username}" required="true" requiredMessage="#{bundle.username}: #{bundle.mandatoryField}">
+                                        <f:validateLength minimum="4" maximum="15" />
+                                    </p:inputText>
+
+
+
+                                    <p:outputLabel value="#{bundle.active}" for="act" styleClass="form-label erp-display-block"/>
+                                    <p:selectBooleanButton id="act" value="#{updateAccount.active}" onLabel="#{bundle.yes}" offLabel="#{bundle.no}" 
+                                                           onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px"/>
+
+
+                                    <p:outputLabel value="#{bundle.selectCompany}" for="company" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:selectOneMenu   value="#{updateUser.user.company}" id="company" converter="omnifaces.SelectItemsConverter" 
+                                                       required="true" requiredMessage="#{bundle.company}: #{bundle.mandatoryField}" >                                                                                                                            
+                                        <f:selectItems value="#{applicationBean.companies}" var="company" itemLabel="#{company.name}" itemValue="#{company}"   />						                                                                                                                                    
+                                    </p:selectOneMenu >
+
+                                </div>
+                                <div class="p-col-12 p-md-6 wizard-forms">
+                                    <p:outputLabel value="email" for="emll" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:inputText id="emll" value="#{updateUser.user.email}" required="true" requiredMessage="#{bundle.email}: #{bundle.mandatoryField}" >
+                                        <f:validator validatorId="emailValidator" /> 
+                                    </p:inputText>
+
+                                    <p:outputLabel value="#{bundle.selectRole}" for="role" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:selectManyMenu value="#{updateUser.user.roles}" id="role" converter="omnifaces.SelectItemsConverter" style="width: 100%;"
+                                                      required="true" requiredMessage="#{bundle.role}: #{bundle.mandatoryField}">                                                                          
+                                        <f:selectItems value="#{applicationBean.roles}" var="role" itemLabel="#{role.name}" itemValue="#{role}"   />						                                                                                                                                    
+                                    </p:selectManyMenu>
+                                </div>
+                            </div>
+                            <div id="btn1" class="wizard-button">
+                                <p:linkButton outcome="dashboardAttendance" value="#{bundle.exit}" />
+                                <p:spacer width="15"/>
+                                <p:commandButton value="#{bundle.next}" styleClass="continue-button" update="summaryID" process="company unm"  />
+                            </div>
+
+                        </div>
+                        <div id="demoID" class="wizard-card-content register tier" style="padding:1px 1px !important; min-height:275px !important;">
+                            <p:messages showDetail="true" closable="true">
+                                <p:autoUpdate />
+                            </p:messages>
+                            <!-- <div class="warning">
+                                 <i class="fa fa-exclamation-circle"></i>
+                                 <p>You must have an account to complete your order and manage your downloads.</p>
+                             </div> -->
+                            <div class="wizard-forms-wrapper p-grid p-nogutter">
+                                <div class="p-col-12 p-md-6 wizard-forms">
+                                    <p:outputLabel value="#{bundle.name}" for="nm" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>    
+                                    <p:inputText id="nm" value="#{updateUser.user.name}"  required="true" requiredMessage="#{bundle.name}: #{bundle.mandatoryField}" >
+                                        <p:ajax event="keyup" update="summaryID" />
+                                    </p:inputText>
+
+
+                                    <p:outputLabel value="#{bundle.phone}" for="phone" styleClass="form-label erp-display-block" />
+                                    <p:inputText id="phone" value="#{updateUser.user.phone}" />
+
+                                </div>
+                                <div class="p-col-12 p-md-6 wizard-forms">
+                                    <p:outputLabel value="#{bundle.surname}" for="snm" styleClass="form-label erp-display-block" >
+                                        <i class="fa fa-exclamation-circle"> </i>
+                                    </p:outputLabel>
+                                    <p:inputText id="snm" value="#{updateUser.user.surname}"  required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}" >
+                                        <p:ajax event="keyup" update="summaryID" />
+                                    </p:inputText>
+
+                                    <p:outputLabel value="#{bundle.selectStaff}" for="staff" styleClass="form-label erp-display-block" />
+                                    <p:autoComplete widgetVar="acStaff" minQueryLength="2" queryDelay="300" scrollHeight="300" id="staff" value="#{updateUser.user.staff}" 
+                                                    completeMethod="#{updateUser.completeStaff}" size="60" required="false"  
+                                                    var="staff" itemLabel="#{staff.surname} #{staff.name}" itemValue="#{staff}"  converter="StaffConverter" forceSelection="true" />  
+
+
+                                </div>
+                                <div class="p-col-12 p-md-6 wizard-forms">
+                                    <p:outputLabel value="#{bundle.department}" for="department" styleClass="form-label erp-display-block" />                                    
+                                    <p:selectOneMenu   value="#{updateUser.user.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                        <f:selectItem itemLabel="" itemValue=""  />
+                                        <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                    </p:selectOneMenu >
+                                </div>
+                            </div>
+
+                            <div class="wizard-button">
+                                <h:panelGroup layout="block" id="summaryID" class="order-summary order-default selected-order">    
+                                    <p>#{bundle.insertReview}</p>
+                                    <h1>#{updateUser.user.username}</h1>
+                                    <span>#{updateUser.user.name} #{updateUser.user.surname} #{updateUser.user.company!=null?updateUser.user.company.name : ""}</span>
+                                </h:panelGroup>
+                                <p:commandButton value="#{bundle.update}" action="#{administrationAction.updateUser}" update="growl">
+                                    <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationEditUser};" icon="pi pi-exclamation-triangle" />
+                                </p:commandButton>
+                                <p:spacer width="15"/>
+                                <p:linkButton outcome="dashboardUsers" value="#{bundle.cancel}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="#{bundle.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+            <p:commandButton value="#{bundle.no}" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+        </p:confirmDialog> 
+
+        <p:dialog  header="#{bundle.warning}"  modal="true" resizable="false"  widgetVar="generalAlertWidget" >                    
+            <p:panel widgetVar="alertPanelWidget" id="alertPanel">
+                <table>
+                    <tr>
+                        <td style="text-align: center">
+                            <h:outputLabel value="#{sessionBean.alertMessage}"/>
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td style="text-align: center">
+                            <p:commandButton  update="primePanelWidget" value="OK" type="button" onclick="PF('generalAlertWidget').hide()"  />
+                        </td>
+                    </tr>    	                      	                      
+                </table>
+            </p:panel>
+        </p:dialog> 
+
+        <h:outputStylesheet name="css/layout-orange.css" library="babylon-layout" />
+        <h:outputStylesheet name="css/erp.css" library="babylon-layout" />
+        <h:outputStylesheet name="css/primeflex.css" library="babylon-layout" />
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+
+    </h:body>
+
+</html>
