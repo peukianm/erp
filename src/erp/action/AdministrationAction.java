@@ -64,6 +64,9 @@ public class AdministrationAction implements Serializable {
     @Inject
     UpdateUser updateUser;
 
+    @Inject
+    UpdateAccount updateAccount;
+
     public AdministrationAction() {
     }
 
@@ -273,6 +276,36 @@ public class AdministrationAction implements Serializable {
         }
     }
 
+    public String updateAccount() throws ERPCustomException {
+        try {
+            List<Usr> usrs = userDAO.findByProperty("email", updateAccount.getUser().getEmail().trim());
+
+            if (usrs.size() >= 1 && !usrs.get(0).equals(updateAccount.getUser())) {
+                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("emailAlreadyUsed"));
+                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
+                FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
+                return "";
+            }
+
+            userDAO.update(updateAccount.getUser());
+
+            Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEACCOUNT")));
+            Auditing audit = new Auditing(sessionBean.getUsers(), sessionBean.getUsers().getCompany(), action, "Account " + updateAccount.getUser().getUsername() + " updated",
+                    FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
+                    FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
+            auditingDAO.save(audit);
+
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("accountUpdated"));
+            sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_ADMIN"));
+            sessionBean.setPageName(MessageBundleLoader.getMessage("attendancePage"));
+            return "";
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From Update Account Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
+    }
+
     public String resetPassword() throws ERPCustomException {
         try {
             Usr user = updateUser.getUser();
@@ -381,7 +414,7 @@ public class AdministrationAction implements Serializable {
     public String logoutAction(int t) throws ERPCustomException {
         try {
             FacesUtils.resetManagedBeanJSF2("sessionBean");
-            FacesUtils.invalidateSession();            
+            FacesUtils.invalidateSession();
             return "/login?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
@@ -392,11 +425,11 @@ public class AdministrationAction implements Serializable {
     }
 }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //    public String getPropertyValue(String key) {
 //        String propertyValue = SystemParameters.getInstance().getProperty(key);
 //        return propertyValue;
@@ -556,7 +589,6 @@ public class AdministrationAction implements Serializable {
 //        sessionBean.setShowMsgDialog(false);
 //    }
 //}
-
 //               usrTransaction.begin();
 //                Company comp = new Company();
 //                comp.setName("1111111111111111111");

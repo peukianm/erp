@@ -80,6 +80,12 @@
     </navigation-rule> 
     <navigation-rule>
         <navigation-case>
+            <from-outcome>updateAccount</from-outcome>
+            <to-view-id>/updateAccount.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
+    <navigation-rule>
+        <navigation-case>
             <from-outcome>dashboardUsers</from-outcome>
             <to-view-id>/dashboardUsers.jsf</to-view-id>   
         </navigation-case>
