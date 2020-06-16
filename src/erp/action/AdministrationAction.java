@@ -119,19 +119,19 @@ public class AdministrationAction implements Serializable {
 
     private String mainPageForward(Usr temp) throws ERPCustomException {
         try {
-            if (temp.getRole().getRoleid() == 1 || temp.getRole().getRoleid() == 2 || temp.getRole().getRoleid() == 3) {
+            //if (temp.getRole().getRoleid() == 1 || temp.getRole().getRoleid() == 2 || temp.getRole().getRoleid() == 3) {
                 Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
                 Auditing audit = new Auditing(temp, temp.getCompany(), action, "User " + sessionBean.getUsers().getUsername() + " connected on the platform",
                         FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
                         FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
 
                 auditingDAO.save(audit);
-                sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
-                sessionBean.setPageName(MessageBundleLoader.getMessage("usersPage"));
+                sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_ADMIN"));
+                sessionBean.setPageName(MessageBundleLoader.getMessage("attendancePage"));
 
-                return "dashboardAttendanceStatistics?faces-redirect=true";
-            }
-            return "";
+                return "dashboardAttendance?faces-redirect=true";
+            //}
+            //return "";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -315,8 +315,30 @@ public class AdministrationAction implements Serializable {
             userDAO.update(user);
 
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
-
+            
+            updateUser.setPassword(null);
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
+            FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').hide()");
+            return "";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From Reset Password Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
+    }
+    
+    public String resetAccountPassword() throws ERPCustomException {
+        try {
+            Usr user = updateAccount.getUser();
+            String hashedPassword = ErpUtil.getSaltedHash(updateAccount.getPassword());
+            user.setPassword(hashedPassword);
+
+            userDAO.update(user);
+
+            auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_RESETPASSWORD")), "User Password " + user.getUsername() + " reseted");
+
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userPasswordReseted"));
             FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').hide()");
             return "";
 
@@ -395,6 +417,11 @@ public class AdministrationAction implements Serializable {
             throw new ERPCustomException("Throw From Reset Password Email Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
 
         }
+    }
+
+    public void goResetPasword() {
+        FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').show()");
+        FacesUtils.updateHTMLComponnetWIthJS("resetPasswordUserPanelID");
     }
 
     public String logoutAction() throws ERPCustomException {

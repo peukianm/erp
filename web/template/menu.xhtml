@@ -3,7 +3,7 @@
 
     <div class="layout-menu-container">
         <div class="layout-menu-logo">
-            <h:link id="logolink" outcome="/dashboard">
+            <h:link id="logolink" outcome="dashboardAttendance">
                 <p:graphicImage name="images/logo-white.png" library="babylon-layout" height="50px"  width="250px" style="margin:3px 0px"/>
             </h:link> 
         </div>
@@ -11,88 +11,36 @@
         <div class="nano layout-menu-wrapper"> 
             <div class="nano-content menu-scroll-content">
                 <h:form id="menuform">
-                   <!-- <ui:fragment rendered="#{guestPreferences.profileMode == 'inline' ? true : false}">                         
-                        <div class="layout-profile">
-                            <a class="layout-profile-button" href="#">
-                                <i class="fa fa-fw fa-magic"></i>
-                                <div class="layout-profile-userinfo">
-                                    <span class="layout-profile-name">#{sessionBean.users.name} #{sessionBean.users.surname}</span>
-                                    <span class="layout-profile-role" style="font-size: 10px;font-weight: 1000;">#{sessionBean.users.company.abbrev}-#{sessionBean.users.role.name}</span>
-                                </div>
-                                <i class="layout-profile-icon fa fa-angle-down"></i>
-                            </a>                            
-                            <ul class="layout-profile-menu">
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-fw fa-user"></i>
-                                        <span>#{bundle.account}</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-fw fa-tasks"></i>
-                                        <span>#{bundle.tasks}</span>                                        
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-fw fa-envelope-o"></i>
-                                        <span>#{bundle.messages}</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-fw fa-bell-o"></i>
-                                        <span>#{bundle.notifications}</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-fw fa-sign-out"></i>
-                                        <span>#{bundle.disconnect}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </ui:fragment> -->
-
                     <pb:menu>
                         <p:submenu id="om_account" label="#{bundle.userData}" icon="fa fa-fw fa-user">
                             <p:submenu id="ggg" label="#{sessionBean.users.username}" icon="fa fa-fw fa-user">
                                 <p:menuitem id="om_account_acc" value="#{bundle.viewProfile}" icon="fa fa-fw fa-cog" outcome="updateAccount?userID=#{sessionBean.users.userid}" />                   
-                                <p:menuitem id="om_account_not" value="#{bundle.resetPassword}" icon="fa fa-fw fa-bell-o"  />
-                                <p:menuitem id="om_account_mess" value="#{bundle.messages}" icon="fa fa-fw fa-envelope-o"  />
+                                <p:menuitem id="om_account_not" value="#{bundle.tasks}" icon="fa fa-fw fa-bell-o"  />
+                                <p:menuitem id="om_account_mess" value="#{bundle.requests}" icon="fa fa-fw fa-envelope-o"  />
                                 <p:menuitem id="om_account_dis" value="#{bundle.disconnect}" onclick="PF('disconnectDlg').show()" icon="fa fa-fw fa-sign-out" />                                
                             </p:submenu>
                         </p:submenu>
 
                         <p:submenu id="om_homepage" label="#{bundle.homePage}" icon="fa fa-fw fa-home">
-                            <p:menuitem id="om_dashboard" value="#{bundle.dashboard}" icon="fa fa-fw fa-dashboard" outcome="dashboard" />
+                            <p:menuitem id="om_dashboard" value="#{bundle.dashboard}" icon="fa fa-fw fa-dashboard" outcome="dashboardAttendance" />
                         </p:submenu>
                         <p:submenu id="om_services" label="#{bundle.services}" icon="fa fa-fw fa-magic">
-                            <p:submenu id="om_general" label="#{bundle.general}" icon="fa fa-fw fa-magic">                                
-                                <p:menuitem id="om_menulayouts_1" value="#{bundle.depAttedance}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
-                                <p:menuitem id="om_menulayouts_2" value="#{bundle.reqs}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
-                                <p:menuitem id="om_menulayouts_3" value="#{bundle.tasks}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
+                            <p:submenu id="hrDep" label="#{bundle.hrDep}" icon="fa fa-fw fa-users" rendered="#{(sessionBean.users.department!=null and (sessionBean.users.department.departmentid==67 or sessionBean.users.department.departmentid==64)) or sessionBean.users.role.roleid le 2}" >                               
+                                <p:menuitem id="hr_companyAttedance" value="#{bundle.attendance}" icon="fa fa-fw fa-bars" outcome="dashboardAttendance" />
+                                <p:menuitem id="hr_companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars"  outcome="dashboardStaff" />
+                                <p:menuitem id="hr_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-fw fa-bars"  outcome="dashboardAttendanceStatistics" />
                             </p:submenu>
-                            <p:submenu id="hrDep" label="#{bundle.hrDep}" icon="fa fa-fw fa-users">                               
-                                <p:menuitem id="companyAttedance" value="#{bundle.companyAttedance}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
-                                <p:menuitem id="companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
-                            </p:submenu>
-                            <p:submenu id="om_userprofile_mode" label="#{bundle.itDep}" icon="fa fa-fw fa-desktop">
-                                <p:menuitem id="userMgt" value="#{bundle.userMgt}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
-                                <p:menuitem id="eqMgt" value="#{bundle.eqMgt}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
-                                <p:menuitem id="companyMgt" value="#{bundle.companyMgt}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
-                                <p:menuitem id="systemMgt" value="#{bundle.systemAdmin}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
-                               
+                            <p:submenu  id="om_userprofile_mode" label="#{bundle.itDep}" icon="fa fa-fw fa-desktop" rendered="#{(sessionBean.users.department!=null and sessionBean.users.department.departmentid==64) or sessionBean.users.role.roleid le 2}">
+                                <p:menuitem id="it_companyAttedance" value="#{bundle.attendance}" icon="fa fa-fw fa-bars" outcome="dashboardAttendance" />
+                                <p:menuitem id="it_companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars"  outcome="dashboardStaff" />
+                                <p:menuitem id="it_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-fw fa-bars"  outcome="dashboardAttendanceStatistics" />                                
+                                <p:menuitem id="it_userMgt" value="#{bundle.userMgt}" icon="fa fa-fw fa-bars" outcome="dashboardUsers" />                                    
+                                <p:menuitem id="it_eqMgt" value="#{bundle.eqMgt}" icon="fa fa-fw fa-bars" actionListener="#" ajax="false" />
+                                <p:menuitem id="it_systemMgt" value="#{bundle.systemAdmin}" icon="fa fa-fw fa-bars" outcome="dashboardTasks" />    
                             </p:submenu>
 
                         </p:submenu>
                     </pb:menu>
-
-
-
-<!--  <ui:include src="#{guestPreferences.groupedMenu ? 'groupedMenu.xhtml' : 'ungroupedMenu.xhtml'}" /> -->
 
                 </h:form>
             </div>

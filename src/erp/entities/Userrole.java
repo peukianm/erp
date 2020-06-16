@@ -30,12 +30,12 @@ public class Userrole implements Serializable {
 	private BigDecimal primary;
 
 	//bi-directional many-to-one association to Role
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="ROLEID")
 	private Role role;
 
 	//bi-directional many-to-one association to Usr
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="USERID")
 	private Usr usr;
 

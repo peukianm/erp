@@ -79,17 +79,6 @@
                 <ui:include src="./footer.xhtml"></ui:include>
             </div>
 
-            <!-- <p:ajaxStatus styleClass="layout-ajax-loader">
-                 <f:facet name="start">
-                     <i class="fa fa-circle-o-notch fa-spin layout-ajax-loader-icon" aria-hidden="true"></i>
-                 </f:facet>
- 
-                 <f:facet name="complete">
-                     <h:outputText value="" />
-                 </f:facet>
-             </p:ajaxStatus>-->
-
-
             <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" /> 
             <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
                 <p:graphicImage name="images/ajaxloadingbar.gif" library="babylon-layout" class="profile-image" />
@@ -97,7 +86,7 @@
 
             <div class="layout-mask"></div>
 
-            <p:confirmDialog id="disconnectDlgID" header="#{bundle.disconnect}" global="true" showEffect="fade" hideEffect="fade" 
+            <p:confirmDialog id="disconnectDlgID" header="#{bundle.disconnect}" global="false" showEffect="fade" hideEffect="fade" 
                              message="#{bundle.msgDisconnect}" widgetVar="disconnectDlg">	        
                 <h:form >                         
                     <p:commandButton  value="OK" action="#{administrationAction.logoutAction(0)}" ajax="false"  />
@@ -105,6 +94,12 @@
                 </h:form>  
             </p:confirmDialog>
 
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="#{bundle.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="#{bundle.no}" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </p:confirmDialog>
+
+          
         </div>
 
         <h:outputStylesheet name="css/nanoscroller.css" library="babylon-layout" />

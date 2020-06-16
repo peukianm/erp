@@ -193,6 +193,7 @@ public class UsrDAO implements Serializable {
                     + " order by u.username DESC";
 
             Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             if (company != null) {
                 query.setParameter("company", company);
             }

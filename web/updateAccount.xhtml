@@ -62,6 +62,12 @@
             .ui-panelgrid .ui-panelgrid-cell{
                 padding: 1px 1px !important;
             }
+            .ui-fluid .ui-button {
+                width: auto !important;
+                border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;
+                font-weight: 550;
+            }
+
 
         </style>
         <script type="text/javascript">
@@ -95,9 +101,11 @@
             <div class="ui-fluid">
                 <div class="ui-g">
 
-                    <h:form class="ui-g-12 ui-lg-6">
-                        <div class="card card-w-title">
+                    <h:form id="updateAccountForm" class="ui-g-12 ui-lg-6">                       
+                        <div class="card card-w-title" style="border-radius:5px; box-shadow: 4px 4px 4px #5C5C5C; ">
                             <h1>#{bundle.account}</h1>
+                            <p:messages id="msg1" showDetail="true" closable="true" />
+
                             <p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" 
                                          style="border:0px none; background-color:transparent;" >
 
@@ -113,29 +121,29 @@
                                 <p:outputLabel value="#{bundle.company}:"   style="font-weight: bold;text-align: right;"/>
                                 <p:outputLabel  value="#{updateAccount.user.company.abbrev}"/> 
 
-                                <p:outputLabel value="Email" for="emll"  style="font-weight: bold;text-align: right;" />
-                                <p:inputText id="emll" value="#{updateAccount.user.email}" required="true" requiredMessage="#{bundle.email}: #{bundle.mandatoryField}" >
-                                    <f:validator validatorId="emailValidator" /> 
-                                </p:inputText>
 
                                 <p:outputLabel value="#{bundle.selectRole}:"  style="font-weight: bold;text-align: right;"/>
                                 <ui:repeat var="userrole" value="#{updateAccount.user.userroles}">
                                     <h:outputText value="#{userrole.role.name}" /> <br/>
                                 </ui:repeat>  
+                                <p:outputLabel value="Email" for="emll"  style="font-weight: bold;text-align: right;" />
+                                <p:inputText id="emll" value="#{updateAccount.user.email}" required="true" requiredMessage="#{bundle.email}: #{bundle.mandatoryField}" >
+                                    <f:validator validatorId="emailValidator" /> 
+                                </p:inputText>
 
                             </p:panelGrid>
                             <br/><br/>
-                            <p:commandButton value="#{bundle.update}" action="#{administrationAction.updateAccount}" update="growl">
-                                <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationEditUser};" icon="pi pi-exclamation-triangle" />
+                            <p:commandButton value="#{bundle.update}" action="#{administrationAction.updateAccount}" update="growl msg1">
+                                <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationEditUser};" icon="pi pi-exclamation-triangle" /> 
                             </p:commandButton>
-                            <p:spacer />
+                            <p:spacer width="10" />
                             <p:linkButton outcome="dashboardAttendance" value="#{bundle.exit}" />
                         </div>
                     </h:form>
-
-                    <h:form class="ui-g-12 ui-lg-6">
-                        <div class="card card-w-title">
+                    <h:form id="updateProfileDataForm" class="ui-g-12 ui-lg-6">
+                        <div class="card card-w-title" style="border-radius:5px; box-shadow: 4px 4px 4px #5C5C5C;">
                             <h1>#{bundle.profileData}</h1>
+                            <p:messages id="msg2" showDetail="true" closable="true" />
                             <p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" 
                                          style="border:0px none; background-color:transparent;">
                                 <p:outputLabel value="#{bundle.name}:" for="nm"  style="font-weight: bold;text-align: right;"/>                             
@@ -152,36 +160,46 @@
 
                             </p:panelGrid>
                             <br/><br/>
-                            <p:commandButton value="#{bundle.update}" action="#{administrationAction.updateAccount}" update="growl">
-                                <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationEditUser};" icon="pi pi-exclamation-triangle" />
+                            <p:commandButton value="#{bundle.update}" action="#{administrationAction.updateAccount}" update="growl msg2">
+                                <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationEditUser};" icon="pi pi-exclamation-triangle" /> 
                             </p:commandButton>
-                            <p:spacer />
+                            <p:spacer width="10" />
                             <p:linkButton outcome="dashboardAttendance" value="#{bundle.exit}" />
                         </div>
 
                     </h:form>
 
-                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                        <p:commandButton value="#{bundle.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-                        <p:commandButton value="#{bundle.no}" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
-                    </p:confirmDialog> 
+                    <h:form id="updatePassword" class="ui-g-12 ui-lg-6">
+                        <div class="card card-w-title" style="border-radius:5px; box-shadow: 4px 4px 4px #5C5C5C;">
+                            <h1>#{bundle.resetPassword}</h1>
+                            <p:messages id="msg2" showDetail="true" closable="true" />
+                            <p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" style="border:0px none; background-color:transparent;">
 
-                    <p:dialog  header="#{bundle.warning}"  modal="true" resizable="false"  widgetVar="generalAlertWidget" >                    
-                        <p:panel widgetVar="alertPanelWidget" id="alertPanelUser">
-                            <table>
-                                <tr>
-                                    <td style="text-align: center">
-                                        <h:outputLabel value="#{sessionBean.alertMessage}"/>
-                                    </td>
-                                </tr>                    
-                                <tr>
-                                    <td style="text-align: center">
-                                        <p:commandButton  update="primePanelWidget" value="OK" type="button" onclick="PF('generalAlertWidget').hide()"  />
-                                    </td>
-                                </tr>    	                      	                      
-                            </table>
-                        </p:panel>
-                    </p:dialog> 
+                                <p:outputLabel for="upassword" value="#{bundle.password}:" style="font-weight: bold;" />                                     
+                                <p:password  match="urepassword" id="upassword" value="#{updateAccount.password}" required="true"
+                                             requiredMessage="#{bundle.password}:#{bundle.mandatoryField}" >                                                    
+                                    <f:validateLength minimum="4" maximum="15" />
+                                </p:password>
+                                <p:message for="upassword" display="icon"/>  <br/>
+
+                                <p:outputLabel for="urepassword" value="#{bundle.confirm}:" style="font-weight: bold;" />
+                                <p:password value="#{updateAccount.password}" id="urepassword"  
+                                            required="true" requiredMessage="#{bundle.reEnterPassword}:#{bundle.mandatoryField}" >
+                                    <f:validateLength minimum="4" maximum="15" />      
+                                </p:password>
+                                <p:message for="urepassword" display="icon"/> 
+
+
+                            </p:panelGrid>
+                            <br/><br/>
+                            <p:commandButton value="#{bundle.update}" action="#{administrationAction.resetAccountPassword}" update="growl msg2">
+                                <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationEditUser};" icon="pi pi-exclamation-triangle" /> 
+                            </p:commandButton>
+                            <p:spacer width="10" />
+                            <p:linkButton outcome="dashboardAttendance" value="#{bundle.exit}" />
+                        </div>
+
+                    </h:form>
 
                 </div>
             </div>

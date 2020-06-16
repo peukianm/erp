@@ -35,8 +35,7 @@ public class AccessControl {
                 case 1:
                     if (!checkPageAccess(user.getRole().getRoleid(), pageCode)) {
                         redirectToNoAccessPage();
-                        return false;
-
+                        return false;                        
                     }
                 case 2:
                     if (!checkActionAccess(user.getRole().getRoleid(), actionCode)) {
@@ -60,6 +59,7 @@ public class AccessControl {
 
     //MODE=1
     private static boolean checkPageAccess(long roleID, String pageCode) throws Exception {
+        System.out.println("Checking No Access Page fro roleid="+roleID+"  "+pageCode);
         pageAccessRule = SystemParameters.getInstance().getProperty("ROLE_PAGE_ACCESS_" + roleID);
         if (pageAccessRule.equals("ALL")) {
             return true;
