@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package erp.bean;
 
 import erp.dao.UsrDAO;
@@ -13,10 +8,7 @@ import erp.entities.Sector;
 import erp.entities.Usr;
 import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
-import erp.util.FacesUtils;
-import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +55,10 @@ public class DashboardUsers implements Serializable {
     String showNewUser = "hidden='true'";
 
     public void preRenderView() {
-        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"), null, 1)) {
-            return;
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"), null, 1)) {
+                return;
+            }
         }
     }
 
@@ -203,5 +197,5 @@ public class DashboardUsers implements Serializable {
 
     public void setSelectedRole(Role selectedRole) {
         this.selectedRole = selectedRole;
-    }   
+    }
 }

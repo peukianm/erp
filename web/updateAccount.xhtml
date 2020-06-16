@@ -65,7 +65,7 @@
             .ui-fluid .ui-button {
                 width: auto !important;
                 border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;
-                font-weight: 550;
+                font-weight: 400;
             }
 
 
@@ -120,13 +120,12 @@
 
                                 <p:outputLabel value="#{bundle.company}:"   style="font-weight: bold;text-align: right;"/>
                                 <p:outputLabel  value="#{updateAccount.user.company.abbrev}"/> 
-
-
+                                
                                 <p:outputLabel value="#{bundle.selectRole}:"  style="font-weight: bold;text-align: right;"/>
                                 <ui:repeat var="userrole" value="#{updateAccount.user.userroles}">
                                     <h:outputText value="#{userrole.role.name}" /> <br/>
                                 </ui:repeat>  
-                                <p:outputLabel value="Email" for="emll"  style="font-weight: bold;text-align: right;" />
+                                <p:outputLabel value="email" for="emll"  style="font-weight: bold;text-align: right;" />
                                 <p:inputText id="emll" value="#{updateAccount.user.email}" required="true" requiredMessage="#{bundle.email}: #{bundle.mandatoryField}" >
                                     <f:validator validatorId="emailValidator" /> 
                                 </p:inputText>
@@ -147,13 +146,19 @@
                             <p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" 
                                          style="border:0px none; background-color:transparent;">
                                 <p:outputLabel value="#{bundle.name}:" for="nm"  style="font-weight: bold;text-align: right;"/>                             
-                                <p:inputText id="nm" value="#{updateAccount.user.name}"  required="true" requiredMessage="#{bundle.name}: #{bundle.mandatoryField}" />
+                                <p:inputText id="nm" value="#{updateAccount.user.name}"  required="true" requiredMessage="#{bundle.name}: #{bundle.mandatoryField}" >
+                                    <f:validateLength minimum="2" maximum="20" />
+                                </p:inputText>
 
                                 <p:outputLabel value="#{bundle.phone}:" for="phone"  style="font-weight: bold;text-align: right;" />
-                                <p:inputText id="phone" value="#{updateAccount.user.phone}" />
+                                <p:inputText id="phone" value="#{updateAccount.user.phone}" >
+                                    <f:validateLength minimum="2" maximum="15" />
+                                </p:inputText>
 
                                 <p:outputLabel value="#{bundle.surname}:" for="snm"  style="font-weight: bold;text-align: right;" />                            
-                                <p:inputText id="snm" value="#{updateAccount.user.surname}"  required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}" />
+                                <p:inputText id="snm" value="#{updateAccount.user.surname}"  required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}" >
+                                    <f:validateLength minimum="2" maximum="30" />
+                                </p:inputText>
 
                                 <p:outputLabel value="#{bundle.connectedStaff}:"  style="font-weight: bold;text-align: right;"/>
                                 <p:outputLabel  value="#{updateAccount.user.staff!=null ? updateAccount.user.staff.name.concat(' ').concat(updateAccount.user.staff.surname) : bundle.notConnected}"   />  

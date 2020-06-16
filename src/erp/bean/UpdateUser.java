@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package erp.bean;
 
 import erp.dao.StaffDAO;
@@ -15,13 +10,11 @@ import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -58,9 +51,12 @@ public class UpdateUser implements Serializable {
     String password;
 
     public void init() {
-        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_USER"), null, 1)) {
-            return;
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_USER"), null, 1)) {
+                return;
+            }
         }
+
         if (userID == null) {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noUserSelected"));
             FacesUtils.redirectWithNavigationID("dashboardUsers");

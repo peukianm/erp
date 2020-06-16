@@ -1088,9 +1088,9 @@ a {
 .card.no-gutter {
     margin-bottom: 0; }
 .card h1 {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400;
-    background-color: #64b5f6;
+    background-color: #628292;
     padding: 0.229em 0.5em;
     border-radius:2px; box-shadow: 4px 4px 4px #5C5C5C;
     color: white;       
@@ -1194,28 +1194,36 @@ a {
     margin-left: -2px;
     padding-left: 12px; }
 .layout-dashboard .overview-box.sales {
-    background-color: #42A5F5; }
+    background-color: #42A5F5; 
+    border-radius: 3px;
+    box-shadow: 4px 4px 4px #5C5C5C;}
 .layout-dashboard .overview-box.sales .overview-icon {
     color: #BBDEFB; }
 .layout-dashboard .overview-box.sales .overview-subinfo {
     border-color: #BBDEFB;
     /*color: #BBDEFB;*/ }
 .layout-dashboard .overview-box.views {
-    background-color: #7E57C2; }
+    background-color: #7E57C2; 
+    border-radius: 3px;
+    box-shadow: 4px 4px 4px #5C5C5C;}
 .layout-dashboard .overview-box.views .overview-icon {
     color: #D1C4E9; }
 .layout-dashboard .overview-box.views .overview-subinfo {
     border-color: #D1C4E9;
     color: #D1C4E9; }
 .layout-dashboard .overview-box.users {
-    background-color: #FFB300; }
+    background-color: #FFB300; 
+    border-radius: 3px;
+    box-shadow: 4px 4px 4px #5C5C5C;}
 .layout-dashboard .overview-box.users .overview-icon {
     color: #FFECB3; }
 .layout-dashboard .overview-box.users .overview-subinfo {
     border-color: #FFECB3;
     color: #FFECB3; }
 .layout-dashboard .overview-box.checkin {
-    background-color: #66BB6A; }
+    background-color: #66BB6A; 
+    border-radius: 3px;
+    box-shadow: 4px 4px 4px #5C5C5C;}
 .layout-dashboard .overview-box.checkin .overview-icon {
     color: #FFF8E1; }
 .layout-dashboard .overview-box.checkin .overview-subinfo {

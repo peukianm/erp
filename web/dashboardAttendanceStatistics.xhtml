@@ -200,7 +200,25 @@
                                 <p:dataTable rendered="#{dbStat.statData.size() gt 0}" id="stat" var="attendance" value="#{dbStat.statData}" styleClass="myclass" 
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
                                              paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
-
+                                    
+                                     <f:facet name="{Exporters}">
+                                        <div style="float:right;">
+                                            <p:commandLink id="pdf" ajax="false">
+                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" height="20px" width="20px" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="pdf" target="stat" fileName="exportData" tableTitle=" #{bundle.personelAttendancesStatistics}" orientation="Landscape"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
+                                                             cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+                                            <p:commandLink id="xlsx" ajax="false">
+                                                <p:graphicImage name="images/xlsx.png"  library="babylon-layout"  height="20px" width="20px" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="xlsx" target="stat" fileName="exportData" tableTitle=" #{bundle.personelAttendancesStatistics}"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
+                                                             cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+                                        </div>
+                                    </f:facet>
 
                                     <p:column rendered="#{dbStat.showName}" sortBy="#{attendance.name}" style="padding: 1px 2px !important;">
                                         <f:facet name="header" >
@@ -266,8 +284,6 @@
 
                                     <f:facet name="{Exporters}">
                                         <div style="float:right;">
-
-
                                             <p:commandLink id="pdf" ajax="false">
                                                 <p:graphicImage name="images/pdf.png" library="babylon-layout" height="20px" width="20px" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
@@ -275,9 +291,6 @@
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
                                                              cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
-
-
-
                                             <p:commandLink id="xlsx" ajax="false">
                                                 <p:graphicImage name="images/xlsx.png"  library="babylon-layout"  height="20px" width="20px" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
@@ -285,9 +298,7 @@
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
                                                              cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
-
                                         </div>
-
                                     </f:facet>
 
                                     <p:column sortBy="#{attendance.name}">

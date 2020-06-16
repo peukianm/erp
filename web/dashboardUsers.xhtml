@@ -239,9 +239,9 @@
 
                                     <p:column>
                                         <f:facet name="header">
-                                            <h:outputText value="#{bundle.company}" />
+                                            <h:outputText value="#{bundle.department}" />
                                         </f:facet>
-                                        <h:outputText value="#{user.company.abbrev}" style="font-size: 11px;" />
+                                        <h:outputText value="#{user.department.name}" style="font-size: 11px;" />
                                     </p:column>
                                     <p:column style="text-align: center;">
                                         <f:facet name="header">
@@ -299,6 +299,9 @@
 
                         <h:outputText value="#{bundle.company}:" />
                         <h:outputText value="#{updateUser.user.company.name}" />
+                        
+                        <h:outputText value="#{bundle.sector}:" />
+                        <h:outputText value="#{updateUser.user.sector.name}" />
 
                         <h:outputText value="#{bundle.department}:" />
                         <h:outputText value="#{updateUser.user.department.name}" />
@@ -310,6 +313,11 @@
                         <ui:repeat var="userrole" value="#{updateUser.user.userroles}">
                             <h:outputText value="#{userrole.role.name}" /> <br/>
                         </ui:repeat>
+                        
+                         <h:outputText value="#{bundle.staff}:" />
+                         <h:outputText rendered="#{updateUser.user.staff!=null}" value="#{updateUser.user.staff.name}" />
+                         <h:outputText rendered="#{updateUser.user.staff!=null}" value="#{updateUser.user.staff.surname}" />
+
 
 
                     </p:panelGrid>

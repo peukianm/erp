@@ -36,13 +36,15 @@ public class InsertStaff implements Serializable {
     boolean active;
 
     public void preRenderView() {
-        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_STAFF"), null, 1)) {
-            return;
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
+            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_STAFF"), null, 1)) {
+                return;
+            }
         }
     }
 
     @PostConstruct
-    public void init() {        
+    public void init() {
         staff = new Staff();
         staff.setCompany(sessionBean.getUsers().getCompany());
         active = true;

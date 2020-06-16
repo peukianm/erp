@@ -72,6 +72,11 @@ public class Usr implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DEPARTMENTID")
     private Department department;
+    
+     //bi-directional many-to-one association to Department
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "SECTORID")
+    private Sector sector;
 
     //bi-directional many-to-many association to Role
     @ManyToMany(fetch = FetchType.EAGER)
@@ -283,6 +288,15 @@ public class Usr implements Serializable {
         this.staff = staff;
     }
 
+    public Sector getSector() {
+        return sector;
+    }
+
+    public void setSector(Sector sector) {
+        this.sector = sector;
+    }
+    
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

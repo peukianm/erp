@@ -228,6 +228,14 @@
 
 
                                 </div>
+                                 <div class="p-col-12 p-md-6 wizard-forms">
+                                    <p:outputLabel value="#{bundle.sector}" for="sector" styleClass="form-label erp-display-block" />                                    
+                                    <p:selectOneMenu   value="#{updateUser.user.sector}" id="sector" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                        <f:selectItem itemLabel="" itemValue=""  />
+                                        <f:selectItems value="#{applicationBean.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
+                                    </p:selectOneMenu >
+                                </div>
+                                
                                 <div class="p-col-12 p-md-6 wizard-forms">
                                     <p:outputLabel value="#{bundle.department}" for="department" styleClass="form-label erp-display-block" />                                    
                                     <p:selectOneMenu   value="#{updateUser.user.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package erp.bean;
 
 import erp.dao.StaffDAO;
@@ -40,8 +35,10 @@ public class DashboardTasks implements Serializable {
     Usr user;
 
     public void preRenderView() {
-        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_TASK_ADMIN"), null, 1)) {
-            return;
+        if (sessionBean.getUsers().getDepartment() != null && user.getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_TASK_ADMIN"), null, 1)) {
+                return;
+            }
         }
     }
 

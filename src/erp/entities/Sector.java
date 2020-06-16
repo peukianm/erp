@@ -36,10 +36,10 @@ public class Sector implements Serializable {
     @ManyToMany
     @JoinTable(
             name = "SECTORDEPARTMENT",
-             joinColumns = {
+            joinColumns = {
                 @JoinColumn(name = "SECTORID")
             },
-             inverseJoinColumns = {
+            inverseJoinColumns = {
                 @JoinColumn(name = "DEPARTMENTID")
             }
     )
@@ -56,6 +56,10 @@ public class Sector implements Serializable {
     //bi-directional many-to-one association to Attendance
     @OneToMany(mappedBy = "sector")
     private List<Attendance> attendances;
+
+    //bi-directional many-to-one association to Usr
+    @OneToMany(mappedBy = "sector")
+    private List<Usr> usrs;
 
     public Sector() {
     }
@@ -186,6 +190,14 @@ public class Sector implements Serializable {
         return attendance;
     }
 
+    public List<Usr> getUsrs() {
+        return usrs;
+    }
+
+    public void setUsrs(List<Usr> usrs) {
+        this.usrs = usrs;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

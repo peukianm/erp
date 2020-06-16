@@ -212,6 +212,7 @@
                                         <i class="fa fa-exclamation-circle"> </i>
                                     </p:outputLabel>    
                                     <p:inputText id="nm" value="#{insertUser.name}"  required="true" requiredMessage="#{bundle.name}: #{bundle.mandatoryField}" >
+                                         <f:validateLength minimum="2" maximum="20" />
                                         <p:ajax event="keyup" update="summaryID" />
                                     </p:inputText>
 
@@ -225,6 +226,7 @@
                                         <i class="fa fa-exclamation-circle"> </i>
                                     </p:outputLabel>
                                     <p:inputText id="snm" value="#{insertUser.surname}"  required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}" >
+                                         <f:validateLength minimum="2" maximum="30" />
                                         <p:ajax event="keyup" update="summaryID" />
                                     </p:inputText>
 
@@ -233,6 +235,13 @@
                                                     var="staff" itemLabel="#{staff.surname} #{staff.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                         <o:converter converterId="omnifaces.ListConverter"  list="#{insertUser.availableStaff}" />                                         
                                     </p:autoComplete>
+                                </div>
+                                <div class="p-col-12 p-md-6 wizard-forms">
+                                    <p:outputLabel value="#{bundle.sector}" for="sector" styleClass="form-label erp-display-block" />                                    
+                                    <p:selectOneMenu   value="#{insertUser.sector}" id="sector" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                        <f:selectItem itemLabel="" itemValue=""  />
+                                        <f:selectItems value="#{applicationBean.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
+                                    </p:selectOneMenu >
                                 </div>
                                 <div class="p-col-12 p-md-6 wizard-forms">
                                     <p:outputLabel value="#{bundle.department}" for="department" styleClass="form-label erp-display-block" />                                    

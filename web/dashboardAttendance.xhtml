@@ -150,7 +150,7 @@
                                     <td colspan="2">
                                         <p:outputLabel value="#{bundle.selectAllStaff}:" style="font-weight: bold;" for="selectAllStaff" />
                                         &#160;&#160;
-                                        <p:selectBooleanButton id="selectAllStaff" value="#{dbAttendance.all}" onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
+                                        <p:selectBooleanButton id="selectAllStaff" disabled="#{sessionBean.users.role.roleid gt 2}" value="#{dbAttendance.all}" onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
                                             <p:ajax listener="#{dbAttendance.onAllChange()}" update="selectSector selectDepartment basicId @(.depsIDtyleclass)" />      
                                         </p:selectBooleanButton>
                                     </td>
@@ -207,8 +207,8 @@
                                         <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbAttendance.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
                                             <p:repeat value="#{dbAttendance.selectedStaff}" var="staff" varStatus="myVarStatus">
                                                 #{staff.surname} #{staff.name} - #{staff.department.name} 
-                                                <p:commandButton  process="@this" update="@(.basicstyleclass)" action="#{dbAttendance.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
-                                                </p:commandButton>
+                                                <p:commandButton disabled="#{!dbAttendance.enableStaff}" process="@this" update="@(.basicstyleclass)" action="#{dbAttendance.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" />                                                   
+                                                
                                                 <hr/>
                                             </p:repeat>
                                         </p:panel>

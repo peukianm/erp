@@ -49,8 +49,10 @@ public class DashboardStatistics implements Serializable {
     private ApplicationBean applicationBean;
 
     private List<Department> departments;
-    private List<Department> selectedDepartments;
-    private List<Sector> selectedSectors;
+    private List<Department> selectedDepartments = new ArrayList<>(0);
+    ;
+    private List<Sector> selectedSectors = new ArrayList<>(0);
+    ;
 
     private Date fromAttendanceDate;
     private Date toAttendanceDate;
@@ -77,8 +79,10 @@ public class DashboardStatistics implements Serializable {
 
     public void preRenderView() {
         user = sessionBean.getUsers();
-        if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_STAT"), null, 1)) {
-            return;
+        if (sessionBean.getUsers().getDepartment() != null && user.getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
+            if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_STAT"), null, 1)) {
+                return;
+            }
         }
     }
 
@@ -94,6 +98,7 @@ public class DashboardStatistics implements Serializable {
         fromAttendanceDate = new java.util.Date();
         toAttendanceDate = new java.util.Date();
         departments = applicationBean.getDepartments();
+
         switch ((int) user.getRole().getRoleid()) {
             case 1:
                 enableDepartment = true;
@@ -105,55 +110,69 @@ public class DashboardStatistics implements Serializable {
                 enableSector = true;
                 enableStaff = true;
                 break;
-            case 3: {
-                switch ((int) user.getStaff().getEmprank().getRankid()) {
-                    case 15: //YPALLHLOI
-                    case 16:
-                    case 17:
-                    case 6:
-                    case 7:
-                    case 8: {
-                        enableDepartment = false;
-                        enableSector = false;
-                        enableStaff = false;
-                        selectedStaff = new ArrayList<>(0);
-                        selectedStaff.add(user.getStaff());
-                        break;
-                    }
-                    case 3: //DIEYYHYNTES
-                    case 14:
-                    case 13:
-                    case 11: {
-                        enableDepartment = true;
-                        enableSector = false;
-                        enableStaff = true;
-                        selectedSectors = new ArrayList<>(0);
-                        selectedSectors.add(user.getStaff().getSector());
-                        departments = staffDao.getSectorDepartments(user.getCompany(), user.getStaff().getSector());
-                        break;
-                    }
-                    case 12://PROISTAMENOI
-                    case 10:
-                    case 9: {
-                        enableDepartment = false;
-                        enableSector = false;
-                        enableStaff = true;
-                        selectedDepartments = new ArrayList<>(0);
-                        selectedDepartments.add(user.getStaff().getDepartment());
-                        break;
-                    }
+            case 3:
+                if (user.getStaff() != null) {
+                    enableDepartment = false;
+                    enableSector = false;
+                    enableStaff = false;
+                    selectedStaff = new ArrayList<>(0);
+                    selectedStaff.add(user.getStaff());
+                    break;
                 }
-            }
+            case 4:
+                if (user.getStaff() != null) {
+                    enableDepartment = false;
+                    enableSector = false;
+                    enableStaff = true;
+                    selectedDepartments = new ArrayList<>(0);
+                    selectedDepartments.add(user.getStaff().getDepartment());
+                    break;
+                }
+            case 5:
+                if (user.getStaff() != null) {
+                    enableSector = false;
+                    enableStaff = true;
+                    selectedSectors = new ArrayList<>(0);
+                    selectedSectors.add(user.getStaff().getSector());
+                    departments = staffDao.getSectorDepartments(user.getCompany(), user.getStaff().getSector());
+                    break;
+                }
+            case 6:
+                if (user.getStaff() != null) {
+                    enableDepartment = false;
+                    enableSector = false;
+                    enableStaff = false;
+                    selectedStaff = new ArrayList<>(0);
+                    selectedStaff.add(user.getStaff());
+                    break;
+                }
+            case 7:
+                if (user.getStaff() != null) {
+                    enableSector = false;
+                    enableStaff = true;
+                    selectedSectors = new ArrayList<>(0);
+                    selectedSectors.add(user.getStaff().getSector());
+                    departments = staffDao.getSectorDepartments(user.getCompany(), user.getStaff().getSector());
+                    break;
+                }
+            default:
+                if (user.getStaff() != null) {
+                    enableDepartment = false;
+                    enableSector = false;
+                    enableStaff = false;
+                    selectedStaff = new ArrayList<>(0);
+                    selectedStaff.add(user.getStaff());
+                    break;
+                }
         }
 
-        if (user.getStaff().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
-                || user.getStaff().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) { //Prosopokou Plhroforikh
+        if ((user.getDepartment() != null) && (user.getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
+                || user.getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID")))) { //Prosopokou Plhroforikh
             enableDepartment = true;
             enableSector = true;
             enableStaff = true;
             selectedSectors = new ArrayList<>(0);
             selectedDepartments = new ArrayList<>(0);
-
         }
     }
 
@@ -164,8 +183,8 @@ public class DashboardStatistics implements Serializable {
 
     public void resetSearchStaffForm() {
         selectedStaff = new ArrayList<>(0);
-        selectedDepartments = null;
-        selectedSectors = null;
+        selectedDepartments = new ArrayList<>(0);
+        selectedSectors = new ArrayList<>(0);
 
         fromAttendanceDate = new java.util.Date();
         toAttendanceDate = new java.util.Date();

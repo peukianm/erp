@@ -137,29 +137,29 @@
                             <p:messages showDetail="true" closable="true">
                                 <p:autoUpdate />
                             </p:messages>
-                            <!--<div class="warning">
-                               <i class="fa fa-exclamation-circle"></i>
-                                <p>You must have an account to complete your order and manage your downloads.</p>                              
-                           </div>-->
                             <div class="wizard-forms-wrapper p-grid p-nogutter">
                                 <div class="p-col-12 p-md-6 wizard-forms">
                                     <p:outputLabel value="#{bundle.name}" for="name" styleClass="form-label erp-display-block" >
                                         <i class="fa fa-exclamation-circle"> </i>
                                     </p:outputLabel>                                    
                                     <p:inputText id="name"  value="#{insertStaff.staff.name}" required="true" requiredMessage="#{bundle.name}: #{bundle.mandatoryField}">                                       
-                                        <f:validateLength minimum="2" maximum="15" />
+                                        <f:validateLength minimum="2" maximum="20" />
                                     </p:inputText>
 
                                     <p:outputLabel value="#{bundle.fatherName}" for="fatherName" styleClass="form-label erp-display-block" />                                        
                                     <p:inputText id="fatherName"  value="#{insertStaff.staff.fathername}" required="true" requiredMessage="#{bundle.fatherName}: #{bundle.mandatoryField}">
-                                        <f:validateLength minimum="2" maximum="15" />
+                                        <f:validateLength minimum="2" maximum="20" />
                                     </p:inputText>
 
                                     <p:outputLabel value="#{bundle.afm}" for="afm" styleClass="form-label erp-display-block" />                                 
-                                    <p:inputText id="afm"  value="#{insertStaff.staff.afm}"  />
+                                    <p:inputText id="afm"  value="#{insertStaff.staff.afm}"  >
+                                         <f:validateLength minimum="5" maximum="15" />
+                                    </p:inputText>
 
                                     <p:outputLabel value="#{bundle.phone}" for="phone" styleClass="form-label erp-display-block" />                                 
-                                    <p:inputText id="phone"  value="#{insertStaff.staff.phone1}" />
+                                    <p:inputText id="phone"  value="#{insertStaff.staff.phone1}" >
+                                         <f:validateLength minimum="5" maximum="15" />
+                                    </p:inputText>
 
                                 </div>
 
@@ -169,7 +169,6 @@
                                         <i class="fa fa-exclamation-circle"> </i>
                                     </p:outputLabel>
                                     <p:inputText id="surname" value="#{insertStaff.staff.surname}" required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}" >
-
                                         <f:validateLength minimum="2" maximum="30" /> 
                                     </p:inputText>
 
@@ -179,10 +178,14 @@
                                                            onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px"/>
 
                                     <p:outputLabel value="#{bundle.amka}" for="amka" styleClass="form-label erp-display-block" />                                 
-                                    <p:inputText id="amka"  value="#{insertStaff.staff.amka}" />
+                                    <p:inputText id="amka"  value="#{insertStaff.staff.amka}" >
+                                         <f:validateLength minimum="2" maximum="15" />
+                                    </p:inputText>
 
                                     <p:outputLabel value="#{bundle.address}" for="address" styleClass="form-label erp-display-block" />                                 
-                                    <p:inputText id="address"  value="#{insertStaff.staff.address}" />
+                                    <p:inputText id="address"  value="#{insertStaff.staff.address}" >
+                                         <f:validateLength minimum="2" maximum="40" />
+                                    </p:inputText>
 
                                 </div>
                             </div>

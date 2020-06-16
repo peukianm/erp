@@ -31,22 +31,26 @@ public class AccessControl {
                 redirectToNoAccessPage();
                 return false;
             }
+          
             switch (mode) {
-                case 1:
+                case 1: 
                     if (!checkPageAccess(user.getRole().getRoleid(), pageCode)) {
                         redirectToNoAccessPage();
                         return false;                        
                     }
-                case 2:
+                    break;
+                case 2: 
                     if (!checkActionAccess(user.getRole().getRoleid(), actionCode)) {
                         redirectToNoAccessPage();
                         return false;
                     }
+                    break;
                 case 3:
                     if (!(checkPageAccess(user.getRole().getRoleid(), pageCode) && checkActionAccess(user.getRole().getRoleid(), actionCode))) {
                         redirectToNoAccessPage();
                         return false;
                     }
+                    break;
             }
             return true;
         } catch (Exception ex) {
@@ -59,7 +63,6 @@ public class AccessControl {
 
     //MODE=1
     private static boolean checkPageAccess(long roleID, String pageCode) throws Exception {
-        System.out.println("Checking No Access Page fro roleid="+roleID+"  "+pageCode);
         pageAccessRule = SystemParameters.getInstance().getProperty("ROLE_PAGE_ACCESS_" + roleID);
         if (pageAccessRule.equals("ALL")) {
             return true;

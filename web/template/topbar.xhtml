@@ -31,15 +31,9 @@
                     </a>
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="updateAccount.jsf?userID=#{sessionBean.users.userid}">
                                 <i class="fa fa-fw fa-user"></i>
                                 <span>#{bundle.account}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-fw fa-cog"></i>
-                                <span>#{bundle.settings}</span>
                             </a>
                         </li>
                         <li role="menuitem">
@@ -52,7 +46,7 @@
                         <li>
                             <a href="#">
                                 <i class="fa fa-fw fa-envelope-o"></i>
-                                <span>#{bundle.messages}</span>
+                                <span>#{bundle.requests}</span>
                                 <span class="topbar-submenuitem-badge">4</span>
                             </a>
                         </li>
@@ -70,7 +64,7 @@
                 
                 #{sessionBean.users.name} #{sessionBean.users.surname}
                 <br/>
-                #{sessionBean.users.company.abbrev}-#{sessionBean.users.role.name}-#{sessionBean.users.department.name}
+                #{sessionBean.users.role.name} #{sessionBean.users.department.name}
             </div>
         </ul>
     </div>

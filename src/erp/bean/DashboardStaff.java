@@ -46,8 +46,10 @@ public class DashboardStaff implements Serializable {
     private List<Staff> staff = new ArrayList<>(0);
 
     public void preRenderView() {
-        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_STAFF_ADMIN"), null, 1)) {
-            return;
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
+            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_STAFF_ADMIN"), null, 1)) {
+                return;
+            }
         }
     }
 
@@ -108,7 +110,7 @@ public class DashboardStaff implements Serializable {
             throw new ERPCustomException("Throw From Autocomplete STaff Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
-   
+
     public String getLoggerCode() {
         return loggerCode;
     }

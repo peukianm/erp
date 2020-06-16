@@ -4,13 +4,11 @@ import erp.dao.StaffDAO;
 import erp.entities.Company;
 import erp.entities.Department;
 import erp.entities.Role;
+import erp.entities.Sector;
 import erp.entities.Staff;
 import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
-import erp.util.FacesUtils;
-import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -47,12 +45,15 @@ public class InsertUser implements Serializable {
     List<Role> selectedRoles;
     Staff staff;
     Company company;
+    Sector sector;
     Department department;
     List<Staff> availableStaff;
 
     public void preRenderView() {
-        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_USER"), null, 1)) {
-            return;
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_USER"), null, 1)) {
+                return;
+            }
         }
     }
 
@@ -78,6 +79,14 @@ public class InsertUser implements Serializable {
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             throw new ERPCustomException("Throw From Autocomplete Staff Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
+    }
+
+    public Sector getSector() {
+        return sector;
+    }
+
+    public void setSector(Sector sector) {
+        this.sector = sector;
     }
 
     public List<Staff> getAvailableStaff() {

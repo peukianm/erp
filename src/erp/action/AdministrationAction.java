@@ -195,6 +195,7 @@ public class AdministrationAction implements Serializable {
             newUser.setPhone(insertUser.getPhone());
             newUser.setRoles(insertUser.getSelectedRoles());
             newUser.setStaff(insertUser.getStaff());
+            newUser.setSector(insertUser.getSector());
 
             userDAO.save(newUser);
 
