@@ -327,7 +327,7 @@
         <p:dialog header="Στοιχεία Προσωπικου" widgetVar="staffDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
             <div id="staffDialogDiv" class="ui-widget" style="border-radius:7px; margin-top: 0.8% ; box-shadow: 4px 4px 4px #5C5C5C; ">	
                 <p:outputPanel id="staffDetail" style="text-align:center;">
-                    <p:panelGrid  columns="4" columnClasses="title, data, title, data" >
+                    <p:panelGrid  columns="6" columnClasses="title, data, title, data, title, data" >
                         <h:outputText value="#{bundle.name}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.name}" />
 
@@ -337,31 +337,54 @@
                         <h:outputText value="#{bundle.fatherName}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.fathername}" />
 
+
+
                         <h:outputText value="#{bundle.active}:" />
                         <h:graphicImage rendered="#{dbStaff.staffForUpdate.active==1}" url="/resources/babylon-layout/images/success.jpg" width="14px" height="14px" />
                         <h:graphicImage rendered="#{dbStaff.staffForUpdate.active!=1}" url="/resources/babylon-layout/images/close.gif" width="14px" height="14px" />   
 
-
-
                         <h:outputText value="#{bundle.loggerCode}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.loggercode}" />
-
-                        <h:outputText value="#{bundle.department}:" />
-                        <h:outputText value="#{dbStaff.staffForUpdate.department.name}" />
-
-                        <h:outputText value="#{bundle.sector}:" />
-                        <h:outputText value="#{dbStaff.staffForUpdate.sector.name}" />
 
                         <h:outputText value="#{bundle.company}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.company.name}" />
 
 
 
+                        <h:outputText value="#{bundle.sector}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.sector.name}" />
+                        
+                        <h:outputText value="#{bundle.department}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.department.name}" />
+                        
+                         <h:outputText value="#{bundle.branch}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.branch.name}" />
+                        
+                        
+                        
+                        <h:outputText value="#{bundle.speciality}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.speciality.name}" />
+
                         <h:outputText value="#{bundle.empRank}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.emprank.name}" />
 
                         <h:outputText value="#{bundle.workShift}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.workshift.name}" />
+                        
+                        
+                        
+                        <h:outputText value="#{bundle.studyType}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.studytype.name}" />
+                        
+                        <h:outputText value="#{bundle.familyStatus}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.familystatus.name}" />                        
+                        
+                        <h:outputText value="#{bundle.dateOfBirth}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.birthdate}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
+                        
+                        
 
                         <h:outputText value="#{bundle.afm}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.afm}" />
@@ -369,21 +392,22 @@
                         <h:outputText value="#{bundle.amka}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.amka}" />
 
-
-
                         <h:outputText value="#{bundle.aat}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.adt}" />
 
-                        <h:outputText value="#{bundle.phone}:" />
+                        
+                        <h:outputText value="#{bundle.workPhone}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.phone1}" />
+                        
+                        <h:outputText value="#{bundle.homePhone}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.phone2}" />
+                        
+                        <h:outputText value="#{bundle.mobile}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.mobile}" />
 
-                        <h:outputText value="#{bundle.dateOfBirth}:" />
-                        <h:outputText value="#{dbStaff.staffForUpdate.birthdate}" >
-                            <f:convertDateTime pattern="dd/MM/yyyy" />
-                        </h:outputText>
 
-                        <h:outputText value="#{bundle.city}:" />
-                        <h:outputText value="#{dbStaff.staffForUpdate.city}" />
+                        <h:outputText value="#{bundle.address}:" />
+                        <h:outputText value="#{dbStaff.staffForUpdate.address}" />
 
                     </p:panelGrid>
                 </p:outputPanel>

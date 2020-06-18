@@ -56,6 +56,8 @@ public class Staff implements Serializable {
     private String phone1;
 
     private String phone2;
+    
+    private String mobile;
 
     private String surname;
 
@@ -68,7 +70,27 @@ public class Staff implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DEPARTMENTID")
     private Department department;
+    
+    //bi-directional many-to-one association to Department
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "STUDYTYPEID")
+    private Studytype studytype;
+    
+     //bi-directional many-to-one association to Department
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "FAMILYSTATUSID")
+    private Familystatus familystatus;
 
+      //bi-directional many-to-one association to Department
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "SPECIALITYID")
+    private Speciality speciality;
+    
+     //bi-directional many-to-one association to Department
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "BRANCHID")
+    private Branch branch;
+    
     //bi-directional many-to-one association to Emprank
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "RANKID")
@@ -89,6 +111,14 @@ public class Staff implements Serializable {
     private List<Attendance> attendances;
 
     public Staff() {
+    }
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 
     public long getStaffid() {
@@ -275,6 +305,40 @@ public class Staff implements Serializable {
         this.workshift = workshift;
     }
 
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public Studytype getStudytype() {
+        return studytype;
+    }
+
+    public void setStudytype(Studytype studytype) {
+        this.studytype = studytype;
+    }
+
+    public Familystatus getFamilystatus() {
+        return familystatus;
+    }
+
+    public void setFamilystatus(Familystatus familystatus) {
+        this.familystatus = familystatus;
+    }
+
+    public Speciality getSpeciality() {
+        return speciality;
+    }
+
+    public void setSpeciality(Speciality speciality) {
+        this.speciality = speciality;
+    }
+
+    
+    
     public List<Attendance> getAttendances() {
         return this.attendances;
     }
