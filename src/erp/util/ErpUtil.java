@@ -18,6 +18,7 @@ import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import com.sun.mail.smtp.SMTPTransport;
+import java.sql.DriverManager;
 
 /**
  *
@@ -106,6 +107,18 @@ public class ErpUtil {
         } catch (MessagingException me) {
             me.printStackTrace();
             return false;
+        }
+    }
+    
+      public static java.sql.Connection getOracleConnection(String host, String port, String SID, String username, String password) throws Exception {
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            String coonectionString = "jdbc:oracle:thin:@"+host+":"+port+":"+SID;
+            java.sql.Connection conn = DriverManager.getConnection(coonectionString, username, password);
+            return conn;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 

@@ -314,10 +314,9 @@
                             <h:outputText value="#{userrole.role.name}" /> <br/>
                         </ui:repeat>
                         
-                         <h:outputText value="#{bundle.staff}:" />
-                         <h:outputText rendered="#{updateUser.user.staff!=null}" value="#{updateUser.user.staff.name}" />
-                         <h:outputText rendered="#{updateUser.user.staff!=null}" value="#{updateUser.user.staff.surname}" />
-
+                         <h:outputText value="#{bundle.employee}:" />
+                         <h:outputText rendered="#{updateUser.user.staff!=null}" value="#{updateUser.user.staff.name} #{updateUser.user.staff.surname}" />
+                         
 
 
                     </p:panelGrid>

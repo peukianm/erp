@@ -180,7 +180,7 @@ public class LoggerDataRetrieveTask {
                 }
 
                 List<Staff> allStaff = staffDAO.getAllStaff(true);
-                while (iterator.hasNext()) {
+                while (iterator.hasNext()) {    
                     counter++;
                     currentRow = iterator.next();
                     String lc = String.valueOf((int) currentRow.getCell(0).getNumericCellValue());

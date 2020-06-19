@@ -11,6 +11,7 @@ import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
 import erp.entities.Attendance;
 import erp.entities.Companytask;
+import erp.entities.Staff;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,6 +56,7 @@ import java.sql.*;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.stream.Stream;
 import okhttp3.*;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -65,7 +67,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
  */
 public class TestFunct {
 
-    
     static SchedulerDAO schedulerDAO;
     static AttendanceDAO attendanceDAO;
     static StaffDAO staffDAO;
@@ -101,11 +102,21 @@ public class TestFunct {
             // run4(); // Create random attendance files
             //readOro("C:\\tmp\\random5.xlsx");
             //readOro();
-            
-            System.out.println(LocalDate.now()+" das ");
-            Timestamp ter = new Timestamp(13131323);
-           openPDF();
-  
+            //System.out.println(LocalDate.now() + " das ");
+            //Timestamp ter = new Timestamp(13131323);
+            //openPDF();
+            String sqlSelect = " SELECT amy, first_name as name, last_name as surname, EM.FATHER_NAME as fathername, rolos_id as rankid, "
+                    + " section_id as departmentid,  hoursperday as shiftid, EM.MOBILE,"
+                    + " branch_id as branchid, adt,specialty_id as specialityid, afm, street as address,  "
+                    + " work_phone as phone1,  home_phone as phone2,  "
+                    + " birth_date as birthdate,employee_id as cteamid, active as enable,EM.AMKA as amka,"
+                    + " studytype_id as studytypeid,familystatus_id as familystatusid,service_id as sectorid,"
+                    + " bigsection_id as companyid "
+                    + " from SYSPROS.EMP_EMPLOYEES em "
+                    + " where em.active=1 AND TODATE >= current_date AND EM.BIGSECTION_ID=1 "
+                    + " order by last_name";
+            DBQueryExample(sqlSelect);
+
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -116,45 +127,42 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   
-    private static void openPDF (){
+    private static void openPDF() {
         Document document = new Document();
-        
+
         try {
-            
+
             // step 2: creation of the writer-object
             PdfWriter.getInstance(document, new FileOutputStream("E:\\temp\\unicode.pdf"));
-            
+
             // step 3: we open the document
             document.open();
-            
+
             // step 4: we add content to the document
             BaseFont bfComic = BaseFont.createFont("c:\\windows\\fonts\\verdana.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             com.lowagie.text.Font font1 = new com.lowagie.text.Font(bfComic, 12);
-             
+
             BaseFont bfComic1 = BaseFont.createFont("c:\\windows\\fonts\\candara.ttf", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
             com.lowagie.text.Font font2 = new com.lowagie.text.Font(bfComic1, 12);
-            
+
             FontFactory.registerDirectories();
             com.lowagie.text.Font font3 = FontFactory.getFont("verdana.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, 12, 4);
-            
-            
-                       
+
             String text1 = "This is ΠΕΥΚΙΑΝΑΚΗΣ  \u0393\u0394\u03b6 'Comic'.";
             String text2 = "Some greek characters: \u0393\u0394\u03b6 ΠΕΥΚΙΑΝΑΚΗΣ ssaddfsad121213";
             String text3 = "Some cyrillic characters: \u0418\u044f ΠΕΥΚΙΑΝΑΚΗΣ ασδασδ \u0393\u0394\u03b6 ";
             document.add(new com.lowagie.text.Paragraph(text1, font1));
             document.add(new com.lowagie.text.Paragraph(text2, font2));
             document.add(new com.lowagie.text.Paragraph(text3, font3));
-        }
-        catch(Exception de ) {
+        } catch (Exception de) {
             System.err.println(de.getMessage());
         }
 
         // step 5: we close the document
         document.close();
-    
+
     }
+
     private static void dateManipulation() throws ParseException {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
@@ -186,22 +194,102 @@ public class TestFunct {
         UsrDAO dao = new UsrDAO();
     }
 
-    private static void DBQueryUpadate(String sql) throws SQLException, Exception {
-        java.sql.Connection conn = getConnectionXE();
-        Statement stmt = conn.createStatement();
-        ResultSet rset = stmt.executeQuery(sql);
-        while (rset.next()) {
-            System.out.println(rset.getString(1));
-        }
+    private static void DBQueryExample(String sql) throws SQLException, Exception {
+        //java.sql.Connection conn = getConnectionXE();
+        try (java.sql.Connection conn = getConnectionXE()) {
+            Statement stmt = conn.createStatement();
+            ResultSet rset = stmt.executeQuery(sql);
 
-        sql = "Update lab_exams le set le.value=";
-        stmt.executeUpdate(sql);
+            Array amys = rset.getArray("amy");
+
+            while (rset.next()) {
+                System.out.println(rset.getArray(1));
+                String sqlUpdate = "update staff  set "
+                        + " rankid = " + rset.getString("rankid")
+                        + " , departmentid =" + rset.getString("departmentid")
+                        + " , shiftid=" + rset.getString("shiftid")
+                        + " , branchid=" + rset.getString("branchid")
+                        + " , specialityid=" + rset.getString("specialityid")
+                        + " , studytypeid=" + rset.getString("studytypeid")
+                        + " , familystatusid=" + rset.getString("familystatusid")
+                        + " , sectorid=" + rset.getString("sectorid")
+                        + " , mobile='" + rset.getString("mobile") + "' "
+                        + " , address='" + rset.getString("address") + "' "
+                        + " , phone1='" + rset.getString("phone1") + "' "
+                        + " , phone2='" + rset.getString("phone2") + "' "
+                        + " , amka='" + rset.getString("amka") + "' "
+                        + " , adt='" + rset.getString("adt") + "' "
+                        + " , afm='" + rset.getString("afm") + "' "
+                        + " , fathername='" + rset.getString("fathername") + "' "
+                        + " , birthdate=" + rset.getString("birthdate")
+                        + " , name='" + rset.getString("name") + "' "
+                        + " , surname='" + rset.getString("surname") + "' "
+                        + " where amy='" + rset.getString("amy") + "'";
+                int code = stmt.executeUpdate(sqlUpdate);
+                if (code == 0) {
+                    Staff newStaff = new Staff();
+                    newStaff.setName(rset.getString("name"));
+                    newStaff.setSurname(rset.getString("surname"));
+                    newStaff.setFathername(rset.getString("fathername"));
+                    newStaff.setBirthdate(rset.getDate("birthdate"));
+                    newStaff.setAmka(rset.getString("amka"));
+                    newStaff.setAfm(rset.getString("afm"));
+                    newStaff.setAdt(rset.getString("adt"));
+                    newStaff.setPhone1(rset.getString("phone1"));
+                    newStaff.setPhone2(rset.getString("phone2"));
+                    newStaff.setMobile(rset.getString("mobile"));
+                    newStaff.setAddress(rset.getString("address"));
+                    newStaff.setCteamid(rset.getString("cteamid"));
+                    newStaff.setAmy(rset.getString("amy"));
+                    newStaff.setActive(BigDecimal.ONE);
+
+                    newStaff.setDepartment(staffDAO.getDepartment(Long.parseLong(rset.getString("departmentid"))));
+                    newStaff.setSector(staffDAO.getSector(Long.parseLong(rset.getString("sectorid"))));
+                    newStaff.setSpeciality(staffDAO.getSpeciality(Long.parseLong(rset.getString("specialityid"))));
+                    newStaff.setStudytype(staffDAO.getStudytype(Long.parseLong(rset.getString("studytypeid"))));
+                    newStaff.setFamilystatus(staffDAO.getFamilyStatus(Long.parseLong(rset.getString("familystatusid"))));
+                    newStaff.setBranch(staffDAO.getBranch(Long.parseLong(rset.getString("branchid"))));
+                    newStaff.setCompany(staffDAO.getCompany(1));
+                    newStaff.setEmprank(staffDAO.getRank(Long.parseLong(rset.getString("rankid"))));
+                    newStaff.setWorkshift(staffDAO.getShift(Long.parseLong(rset.getString("shiftid"))));
+                }
+
+            }
+
+            List<Staff> allStaff = staffDAO.getAllStaff(true);
+
+            String[] amysArray = (String[]) amys.getArray();
+
+            boolean contains = true;
+            for (int i = 0; i < allStaff.size(); i++) {
+                Staff staff = allStaff.get(i);
+                contains = Stream.of(amysArray).anyMatch(x -> x.equals(String.valueOf(staff.getStaffid())));
+                if (!contains) {
+                    staff.setActive(BigDecimal.ZERO);
+                    staffDAO.update(staff);
+                }
+
+            }
+
+            String sqlInsert = " INSERT INTO staff (name, surname, fathername, birthdate, amka, afm, phone1, "
+                    + " phone2, mobile, address, cteamid, rankid, departmentid, shiftid, branchid, specialityid, "
+                    + " studytypeid, familystatusid, sectorid, companyid) "
+                    + " VALUES ('" + rset.getString("name") + "', '" + rset.getString("surname") + "', '" + rset.getString("fathername") + "'"
+                    + " , '" + rset.getString("fathername") + "'          )";
+
+            //System.out.println(rset.getString(1));
+            //sql = "Update lab_exams le set le.value=";
+            //stmt.executeUpdate(sql);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static java.sql.Connection getConnectionXE() throws Exception {
         try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            java.sql.Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "skeleton", "jijikos");
+            //Class.forName("oracle.jdbc.driver.OracleDriver");
+            //java.sql.Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@10.75.3.252:1521:hosp", "skeleton", "jijikos");
+            java.sql.Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@10.75.75.5:1521:karddb", "SHADMIN", "cteam");
             return conn;
         } catch (Exception e) {
 
@@ -291,7 +379,7 @@ public class TestFunct {
         for (LoggerData loggerData : loggerDataList) {
             currentDate = FormatUtils.formatDate(loggerData.getDateTime());
             previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()));
-            List<Attendance> temp = null ;//schedulerDAO.findAttendance(loggerData.getStaff(), currentDate, previousDate);
+            List<Attendance> temp = null;//schedulerDAO.findAttendance(loggerData.getStaff(), currentDate, previousDate);
 
             if (temp != null) {
                 for (Attendance attendance : temp) {

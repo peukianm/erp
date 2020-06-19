@@ -22,9 +22,6 @@ public class ERPLoggerScheduler {
     @EJB
     private LoggerDataRetrieveTask retrieverTask;
 
-    @EJB
-    private StaffUpdateTask staffUpdateTask;
-
     @Lock(LockType.READ)
     @Schedule(second = "*/50", minute = "*", hour = "*", persistent = false)
     public void atScheduleLoggers() throws InterruptedException {

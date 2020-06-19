@@ -20,9 +20,6 @@ import javax.ejb.Singleton;
 public class ERPStaffScheduler {
 
     @EJB
-    private LoggerDataRetrieveTask retrieverTask;
-
-    @EJB
     private StaffUpdateTask staffUpdateTask;
 
     @Lock(LockType.READ)

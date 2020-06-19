@@ -5,13 +5,19 @@
  */
 package erp.dao;
 
+import erp.entities.Branch;
 import erp.entities.Company;
 import erp.entities.Companytask;
 import erp.entities.Department;
+import erp.entities.Emprank;
+import erp.entities.Familystatus;
 import erp.entities.Scheduletask;
 import erp.entities.Scheduletaskdetail;
 import erp.entities.Sector;
+import erp.entities.Speciality;
 import erp.entities.Staff;
+import erp.entities.Studytype;
+import erp.entities.Workshift;
 import erp.util.FormatUtils;
 import erp.util.SystemParameters;
 import java.util.List;
@@ -37,7 +43,7 @@ public class StaffDAO {
 
     @Inject
     SchedulerDAO schedulerDAO;
-    
+
     public void save(Staff staff) {
         try {
             entityManager.persist(staff);
@@ -78,7 +84,101 @@ public class StaffDAO {
             throw re;
         }
     }
-        public void updateStaff(Staff staff) {
+
+    public Department getDepartment(long id) {
+        try {
+            return entityManager.find(Department.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Department entity", re);
+            throw re;
+        }
+    }
+
+    public Speciality getSpeciality(long id) {
+        try {
+            return entityManager.find(Speciality.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Speciality entity", re);
+            throw re;
+        }
+    }
+
+    public Familystatus getFamilyStatus(long id) {
+        try {
+            return entityManager.find(Familystatus.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Family Status entity", re);
+            throw re;
+        }
+    }
+
+    public Emprank getRank(long id) {
+        try {
+            return entityManager.find(Emprank.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Rank entity", re);
+            throw re;
+        }
+    }
+
+    public Branch getBranch(long id) {
+        try {
+            return entityManager.find(Branch.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Branch entity", re);
+            throw re;
+        }
+    }
+
+    public Sector getSector(long id) {
+        try {
+            return entityManager.find(Sector.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Sector entity", re);
+            throw re;
+        }
+    }
+
+    public Studytype getStudytype(long id) {
+        try {
+            return entityManager.find(Studytype.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Studytype entity", re);
+            throw re;
+        }
+    }
+    
+    public Company getCompany(long id) {
+        try {
+            return entityManager.find(Company.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Company entity", re);
+            throw re;
+        }
+    }
+    
+    public Workshift getShift(long id) {
+        try {
+            return entityManager.find(Workshift.class, id);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Workshift entity", re);
+            throw re;
+        }
+    }
+
+    
+    
+    
+    public void updateStaff(Staff staff) {
         try {
             entityManager.merge(staff);
         } catch (RuntimeException re) {
@@ -87,6 +187,7 @@ public class StaffDAO {
             throw re;
         }
     }
+
     public List<Staff> getAllStaff(boolean onlyActive) {
         try {
             String sql = "SELECT e FROM Staff e "
@@ -119,7 +220,7 @@ public class StaffDAO {
             throw re;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public Staff findStaffFromLoggerCode(String loggerCode) {
 
@@ -135,21 +236,20 @@ public class StaffDAO {
         }
     }
 
-
     public String getTaskLastExecutionTime(Company company, Long taskID) {
         try {
-            Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);                        
+            Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);
             Companytask cTask = schedulerDAO.findCtask(company, task);
-                       
+
             final String queryString = "select model from Scheduletaskdetail model where "
                     + " model.companytask = :ctask  "
                     + " and model.taskstatus.statusid = " + SystemParameters.getInstance().getProperty("TASK_SUCCESS")
                     + " order by model.startexecutiontime DESC  ";
             Query query = entityManager.createQuery(queryString);
-            query.setParameter("ctask", cTask);            
+            query.setParameter("ctask", cTask);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             query.setMaxResults(1);
-            
+
             List<Scheduletaskdetail> std = query.getResultList();
             if (std.isEmpty()) {
                 return "N/A";
@@ -162,8 +262,6 @@ public class StaffDAO {
             throw re;
         }
     }
-
-    
 
     public List<Staff> fetchStaffAutoCompleteSurname(String surname, Sector sector, Department department) {
         try {
@@ -191,21 +289,21 @@ public class StaffDAO {
             throw re;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<Staff> getStaff(Company company, Sector sector, Department department, boolean active) {
         try {
             final String queryString = "select model from Staff model where "
-                    + " model.company = :company  "                                        
+                    + " model.company = :company  "
                     + (department != null ? " and model.department = :department  " : " ")
                     + (sector != null ? " and model.sector = :sector  " : " ")
                     + (active ? " and model.active = 1  " : "  and model.active = 0  ")
                     + " order by model.surname";
 
             Query query = entityManager.createQuery(queryString);
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");           
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             query.setParameter("company", company);
-            
+
             if (department != null) {
                 query.setParameter("department", department);
             }
@@ -220,8 +318,8 @@ public class StaffDAO {
             throw re;
         }
     }
-    
-      @SuppressWarnings("unchecked")
+
+    @SuppressWarnings("unchecked")
     public List<Staff> findByProperty(String propertyName, final Object value, final int... rowStartIdxAndCount) {
 
         try {
