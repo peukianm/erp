@@ -56,7 +56,7 @@ public class UpdateAccount implements Serializable {
         if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_ACCOUNT"), null, 1)) {
             return;
         }
-        if (userID == null) {
+        if (userID == null || userID.equals("")) {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noUserSelected"));
             FacesUtils.redirectWithNavigationID("dashboardUsers");
         }

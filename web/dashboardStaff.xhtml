@@ -62,78 +62,6 @@
 
         </style>
         <script type="text/javascript">
-            $(function () {
-                var ctx = document.getElementById("dashboard-chart").getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                        datasets: [{
-                                label: 'Sales',
-                                data: [12, 19, 3, 5, 2, 3, 9],
-                                borderColor: [
-                                    '#7E57C2',
-                                ],
-                                borderWidth: 3,
-                                borderDash: [5, 5],
-                                fill: false,
-                                pointRadius: 3
-                            }, {
-                                label: 'Income',
-                                data: [1, 2, 5, 3, 12, 7, 15],
-                                backgroundColor: [
-                                    'rgba(187,222,251,0.2)',
-                                ],
-                                borderColor: [
-                                    '#42A5F5',
-                                ],
-                                borderWidth: 3,
-                                fill: true
-                            },
-                            {
-                                label: 'Expenses',
-                                data: [7, 12, 15, 5, 3, 13, 21],
-                                borderColor: [
-                                    '#FFB300',
-                                ],
-                                borderWidth: 3,
-                                fill: false,
-                                pointRadius: [4, 6, 4, 12, 8, 0, 4]
-                            },
-                            {
-                                label: 'New Users',
-                                data: [3, 7, 2, 17, 15, 13, 19],
-                                borderColor: [
-                                    '#66BB6A',
-                                ],
-                                borderWidth: 3,
-                                fill: false
-                            }]
-                    },
-                    options: {
-                        responsive: true,
-                        hover: {
-                            mode: 'index'
-                        },
-                        scales: {
-                            xAxes: [{
-                                    display: true,
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Month'
-                                    }
-                                }],
-                            yAxes: [{
-                                    display: true,
-                                    scaleLabel: {
-                                        display: true,
-                                        labelString: 'Value'
-                                    }
-                                }]
-                        }
-                    }
-                });
-            });
         </script>
     </ui:define>
 
@@ -161,24 +89,23 @@
                             <div class="erp-panel-titlebar">
                                 #{bundle.selectStaff} <span style="float: right;font-size:9px;">#{bundle.forOrganization}:&#160;#{sessionBean.users.company.name}</span>
                             </div>
-                            <table style="width: 100%">
+                            <table style="width: 100%;" >
                                 <tr>                                    
-                                    <td colspan="2">
+                                    <td colspan="2" style="vertical-align: top;">
                                         <p:outputLabel value="#{bundle.active}:" style="" for="staffActive" />&#160;&#160; &#160;                                 
-                                        <p:selectBooleanButton id="staffActive" value="#{dbStaff.active}" onLabel="Yes" offLabel="No" 
-                                                               onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" />
+                                        <p:selectBooleanButton id="staffActive" value="#{dbStaff.active}" onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" />                                     
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <td colspan="2">
+                                    <td colspan="2"  style="vertical-align: top;">
                                         <p:outputLabel style="font-weight: bold;" for="staffComplete" value="#{bundle.selectStaff}:" /><p:spacer width="20" height="20" />
                                         <p:autoComplete widgetVar="acStaff" minQueryLength="2" queryDelay="400" scrollHeight="300" id="staffComplete" value="#{dbStaff.searchStaff}" completeMethod="#{dbStaff.completeStaff}" size="45" required="false"  
                                                         var="staff" itemLabel="#{staff.surname} #{staff.name}  #{staff.department.name}" itemValue="#{staff}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter"  list="#{dbStaff.availableStaff}" />
                                             <p:ajax event="itemSelect" listener="#{dbStaff.autocompleteSurnameSelectStaff}" update="@widgetVar(acStaff) selectSector selectDepartment @(.depsIDtyleclass) viewStaffResults"  />  
                                         </p:autoComplete>
-                                        <br/><br/>
+
                                     </td>
                                 </tr> 
 
@@ -192,8 +119,8 @@
                                     </td>
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.department}" />  
-                                        <p:selectManyMenu value="#{dbStaff.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
-                                            <p:ajax listener="#{dbStaff.onDepartmentChange}" update="selectSector @(.depsIDtyleclass)" />
+                                        <p:selectManyMenu style="width: 100%;" value="#{dbStaff.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                              
+                                            <p:ajax listener="#{dbStaff.onDepartmentChange}" update="selectSector @(.depsIDtyleclass)"  />
                                             <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
                                         <br/>
@@ -212,10 +139,11 @@
 
 
                             </table>
-
                             <p:commandButton value="#{bundle.search}" action="#{staffAction.fetchStaff}" update="searchStaffForm viewStaffResults"  />  
                             <p:spacer width="10" />
                             <p:commandButton  value="#{bundle.reset}" action="#{dbStaff.resetSearchStaffForm()}"  ajax="false" />
+
+
                         </div>
                         <p:linkButton outcome="insertStaff" value="#{bundle.insertStaff}" />
                     </h:form>
@@ -238,7 +166,7 @@
                                 #{bundle.staffList}
                             </div>
                             <h:form id="viewStaffResults">
-                                <p:dataTable id="tbl" var="staff" value="#{dbStaff.staff}" styleClass="myclass"
+                                <p:dataTable id="tbl" var="staff" value="#{dbStaff.staff}" styleClass="myclass" 
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
                                              paginator="true" rows="20" style="margin-bottom:10px;font-size: 11px;    padding: 0.1em 0.2em ;  ">
 
@@ -296,14 +224,14 @@
                                         <h:outputText value="#{staff.emprank.name}" />
                                     </p:column>
 
-                                    <p:column>
+                                    <p:column style="width:1% !important;white-space:nowrap;">
                                         <f:facet name="header" >
                                             <h:outputText value="#{bundle.loggerCode}"/>
                                         </f:facet>
                                         <h:outputText value="#{staff.loggercode}" />
                                     </p:column>
 
-                                    <p:column headerText="#{bundle.actions}" >
+                                    <p:column headerText="#{bundle.actions}" exportable="false" >
 
                                         <p:commandButton  icon="pi pi-envelope"  class="btn-list" update="resetLoggerDataFormID" style="font-size: 16px;" title="#{bundle.resetLoggerCode}"   onclick="PF('resetLoggerDataDialogWidget').show()">
                                             <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />                                
@@ -353,15 +281,15 @@
 
                         <h:outputText value="#{bundle.sector}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.sector.name}" />
-                        
+
                         <h:outputText value="#{bundle.department}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.department.name}" />
-                        
-                         <h:outputText value="#{bundle.branch}:" />
+
+                        <h:outputText value="#{bundle.branch}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.branch.name}" />
-                        
-                        
-                        
+
+
+
                         <h:outputText value="#{bundle.speciality}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.speciality.name}" />
 
@@ -370,21 +298,21 @@
 
                         <h:outputText value="#{bundle.workShift}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.workshift.name}" />
-                        
-                        
-                        
+
+
+
                         <h:outputText value="#{bundle.studyType}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.studytype.name}" />
-                        
+
                         <h:outputText value="#{bundle.familyStatus}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.familystatus.name}" />                        
-                        
+
                         <h:outputText value="#{bundle.dateOfBirth}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.birthdate}" >
                             <f:convertDateTime pattern="dd/MM/yyyy" />
                         </h:outputText>
-                        
-                        
+
+
 
                         <h:outputText value="#{bundle.afm}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.afm}" />
@@ -395,13 +323,13 @@
                         <h:outputText value="#{bundle.aat}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.adt}" />
 
-                        
+
                         <h:outputText value="#{bundle.workPhone}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.phone1}" />
-                        
+
                         <h:outputText value="#{bundle.homePhone}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.phone2}" />
-                        
+
                         <h:outputText value="#{bundle.mobile}:" />
                         <h:outputText value="#{dbStaff.staffForUpdate.mobile}" />
 

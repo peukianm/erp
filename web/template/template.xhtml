@@ -22,7 +22,7 @@
 
     <h:body>
         <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
-        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
             <p:graphicImage name="images/ajaxloadingbar.gif" library="babylon-layout"  />
         </p:dialog> 
 
@@ -87,7 +87,7 @@
             <div class="layout-mask"></div>
 
             <p:confirmDialog id="disconnectDlgID" header="#{bundle.disconnect}" global="false" showEffect="fade" hideEffect="fade" 
-                             message="#{bundle.msgDisconnect}" widgetVar="disconnectDlg">	        
+                             message="#{bundle.msgDisconnect}" widgetVar="disconnectDlg" >	        
                 <h:form >                         
                     <p:commandButton  value="OK" action="#{administrationAction.logoutAction(0)}" ajax="false"  />
                     <p:commandButton type="button" value="#{bundle.cancel}" onclick="PF('disconnectDlg').hide()" />	                                                  

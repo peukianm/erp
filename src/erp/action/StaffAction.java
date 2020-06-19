@@ -88,6 +88,16 @@ public class StaffAction {
     public String resetLoggerCode() throws ERPCustomException {
         try {
             Staff staff = dbStaff.getStaffForUpdate();
+            
+             List<Staff> staffs = staffDAO.findByProperty("loggercode", staff.getLoggercode().trim());
+            if (staffs.size() >= 1 && !staffs.get(0).equals(staff)) {
+                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("loggerCodeAlreadyUsed"));
+                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
+                FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
+                PrimeFaces.current().ajax().update("alertPanel");
+                return "";
+            }
+            
             staffDAO.updateStaff(staff);
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATELOGGERCODE")), "Staff logger code " + staff.getSurname() + " " + staff.getName() + " updated");
 
@@ -105,14 +115,37 @@ public class StaffAction {
     public String insertStaff() throws ERPCustomException {
         try {
             List<Staff> staff = staffDAO.findByProperty("afm", insertStaff.getStaff().getAfm().trim());
-
             if (staff.size() >= 1) {
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("afmAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
                 FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
                 return "";
             }
-
+            
+            staff = staffDAO.findByProperty("amy", insertStaff.getStaff().getAmy().trim());
+            if (staff.size() >= 1) {
+                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("amyAlreadyUsed"));
+                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
+                FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
+                return "";
+            }
+            
+             staff = staffDAO.findByProperty("loggercode", insertStaff.getStaff().getLoggercode().trim());
+            if (staff.size() >= 1) {
+                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("loggerCodeAlreadyUsed"));
+                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
+                FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
+                return "";
+            }
+            
+            staff = staffDAO.findByProperty("amka", insertStaff.getStaff().getAmka().trim());
+            if (staff.size() >= 1) {
+                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("amkaCodeAlreadyUsed"));
+                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
+                FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
+                return "";
+            }
+                        
             if (insertStaff.isActive()) {
                 insertStaff.getStaff().setActive(BigDecimal.ONE);
             } else {
@@ -141,8 +174,36 @@ public class StaffAction {
     public String updateStaff() throws ERPCustomException {
         try {
             List<Staff> staff = staffDAO.findByProperty("afm", updateStaff.getStaff().getAfm().trim());
-            if (staff.size() >= 1 && !staff.equals(updateStaff.getStaff())) {
+            
+            if (staff.size() >= 1 && !staff.get(0).equals(updateStaff.getStaff())) {
                 sessionBean.setAlertMessage(MessageBundleLoader.getMessage("afmAlreadyUsed"));
+                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
+                FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
+                PrimeFaces.current().ajax().update("alertPanel");
+                return "";
+            }
+            
+             staff = staffDAO.findByProperty("amy", updateStaff.getStaff().getAmy().trim());
+            if (staff.size() >= 1 && !staff.get(0).equals(updateStaff.getStaff())) {
+                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("amyAlreadyUsed"));
+                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
+                FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
+                PrimeFaces.current().ajax().update("alertPanel");
+                return "";
+            }
+            
+             staff = staffDAO.findByProperty("amka", updateStaff.getStaff().getAmka().trim());
+            if (staff.size() >= 1 && !staff.get(0).equals(updateStaff.getStaff())) {
+                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("amkaAlreadyUsed"));
+                FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
+                FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
+                PrimeFaces.current().ajax().update("alertPanel");
+                return "";
+            }
+            
+              staff = staffDAO.findByProperty("loggercode", updateStaff.getStaff().getLoggercode().trim());
+            if (staff.size() >= 1 && !staff.get(0).equals(updateStaff.getStaff())) {
+                sessionBean.setAlertMessage(MessageBundleLoader.getMessage("loggerCodeAlreadyUsed"));
                 FacesUtils.updateHTMLComponnetWIthJS("alertPanel");
                 FacesUtils.callRequestContext("PF('generalAlertWidget').show();");
                 PrimeFaces.current().ajax().update("alertPanel");

@@ -1,9 +1,13 @@
 package erp.dao;
 
+import erp.entities.Branch;
 import erp.entities.Company;
 import erp.entities.Department;
 import erp.entities.Emprank;
+import erp.entities.Familystatus;
 import erp.entities.Sector;
+import erp.entities.Speciality;
+import erp.entities.Studytype;
 import erp.entities.Workshift;
 
 import java.util.List;
@@ -99,6 +103,61 @@ public class CompanyDAO {
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on getting all work shifts", re);
+            throw re;
+        }
+    }
+    
+    public List<Speciality> getAllSpecialities(boolean onlyActive) {
+        try {
+            String sql = "SELECT e FROM Speciality e "
+                    + (onlyActive ? " where e.active = 1 " : " ")
+                    + " order by e.name ";
+            Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all specialities", re);
+            throw re;
+        }
+    }
+    
+    public List<Studytype> getAllStudyTypes(boolean onlyActive) {
+        try {
+            String sql = "SELECT e FROM Studytype e "
+                    + (onlyActive ? " where e.active = 1 " : " ")
+                    + " order by e.name ";
+            Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all studytypes", re);
+            throw re;
+        }
+    }
+    
+    public List<Branch> getAllBranches(boolean onlyActive) {
+        try {
+            String sql = "SELECT e FROM Branch e "
+                    + (onlyActive ? " where e.active = 1 " : " ")
+                    + " order by e.name ";
+            Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all Branches", re);
+            throw re;
+        }
+    }
+    
+    public List<Familystatus> getAllFamilyStatuses() {
+        try {
+            String sql = "SELECT e FROM Familystatus e "                   
+                    + " order by e.name ";
+            Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all family stauses", re);
             throw re;
         }
     }

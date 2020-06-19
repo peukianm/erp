@@ -51,7 +51,7 @@ public class UpdateStaff implements Serializable {
         }
         AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_STAFF"), null, 1);
 
-        if (staffID == null) {
+        if (staffID == null || staffID.equals("")) {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noStaffSelected"));
             FacesUtils.redirectWithNavigationID("dashboardStaff");
         }

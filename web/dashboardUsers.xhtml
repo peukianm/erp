@@ -251,7 +251,7 @@
                                         <h:graphicImage rendered="#{user.active!=1}" url="/resources/babylon-layout/images/close.gif" width="12px" height="12px" />   
                                     </p:column>
 
-                                    <p:column headerText="#{bundle.actions}" >
+                                    <p:column headerText="#{bundle.actions}" exportable="false" >
                                         <p:commandButton style="font-size: 16px;" icon="pi pi-envelope" action="#{administrationAction.goResetPasword()}"  class="btn-list" update="" title="#{bundle.resetPassword}">
                                             <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />                                
                                         </p:commandButton>
