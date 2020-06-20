@@ -176,8 +176,7 @@
 
                                     <f:facet name="{Exporters}">
                                         <div style="float:right;">
-
-
+                                            <span style="font-weight: bold">#{bundle.sum}=(#{dbStaff.staff.size()})</span> &#160; &#160;
                                             <p:commandLink id="pdf" ajax="false">
                                                 <p:graphicImage name="images/pdf.png" library="babylon-layout" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
@@ -185,7 +184,7 @@
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
                                                              cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
-                                           &#160;
+                                            &#160;
                                             <p:commandLink id="xlsx" ajax="false">
                                                 <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
