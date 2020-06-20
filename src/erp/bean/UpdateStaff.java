@@ -44,7 +44,8 @@ public class UpdateStaff implements Serializable {
     public void init() {
         System.out.println("INIT UPDATE STAFF!!!!!!");
         
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && (sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))
+                            && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID")))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_STAFF"), null, 1)) {
                 return;
             }

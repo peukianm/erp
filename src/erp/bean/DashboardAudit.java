@@ -50,7 +50,7 @@ public class DashboardAudit implements Serializable {
     private List<Usr> users;
 
     public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_AUDIT_CONTROL"), null, 1)) {
                 return;
             }

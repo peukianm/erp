@@ -10,13 +10,11 @@ import erp.util.AccessControl;
 import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -60,6 +58,10 @@ public class UpdateAccount implements Serializable {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noUserSelected"));
             FacesUtils.redirectWithNavigationID("dashboardUsers");
         }
+        
+                sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_UPDATE_ACCOUNT"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("updateAccount"));
+        
         user = userDao.get(Long.parseLong(userID));
         System.out.println("User="+user);
         if (user == null) {

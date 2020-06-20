@@ -137,7 +137,7 @@
                                         <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbStat.selectedStaff.size() gt 0}" header="#{bundle.staffSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
                                             <p:repeat value="#{dbStat.selectedStaff}" var="staff" varStatus="myVarStatus">
                                                 #{staff.surname} #{staff.name} - #{staff.department.name} 
-                                                <p:commandButton  process="@this" update="@(.basicstyleclass) :viewAttendanceResults:summaryID" action="#{dbStat.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
+                                                <p:commandButton  process="@this" update="@(.basicstyleclass) :viewAttendanceResults:summaryID @(.depsIDtyleclass) searchStaffForm:selectDepartment" action="#{dbStat.removeStaff(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" >                                                   
                                                 </p:commandButton>
                                                 <hr/>
                                             </p:repeat>

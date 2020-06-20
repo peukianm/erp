@@ -224,9 +224,10 @@ public class AuditingDAO implements Serializable {
                     + (category != null ? " and a.action.actionscategory=:actionscategory " : " ")
                     + (from != null ? " and a.actiondate>=:from" : " ")
                     + (to != null ? " and a.actiondate<=:to" : " ")
-                    + " order by a.actiondate DESC";
+                    + " order by a.actiontime DESC";
 
             Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             if (company != null) {
                 query.setParameter("company", company);
             }

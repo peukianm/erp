@@ -88,7 +88,7 @@
     <ui:define name="viewname" >
         <li>
             <p:link outcome="/dashboardStaff">#{bundle.staffPage}/</p:link> 
-            <p:link outcome="/updateStaff.jsf">#{bundle.updateStaff}</p:link> 
+            <p:link outcome="/updateStaff.jsf?staffID=#{updateStaff.staff.staffid}">#{bundle.updateStaff}</p:link> 
         </li>
     </ui:define>
 

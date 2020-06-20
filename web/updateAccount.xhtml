@@ -88,7 +88,7 @@
 
     <ui:define name="viewname" >
         <li>
-            <p:link outcome="/updateAccount.jsf">#{bundle.updateAccount}</p:link> 
+            <p:link outcome="/updateAccount.jsf?userID=#{sessionBean.users.userid}">#{bundle.updateAccount}</p:link> 
         </li>
     </ui:define>
 

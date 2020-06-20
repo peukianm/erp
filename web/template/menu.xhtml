@@ -22,21 +22,24 @@
                         </p:submenu>
 
                         <p:submenu id="om_homepage" label="#{bundle.homePage}" icon="fa fa-fw fa-home">
-                            <p:menuitem id="om_dashboard" value="#{bundle.personelAttendance}" icon="fa fa-fw fa-dashboard" outcome="dashboardAttendance" />
+                            <p:menuitem id="om_dashboard" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
                         </p:submenu>
                         <p:submenu id="om_services" label="#{bundle.services}" icon="fa fa-fw fa-magic">
+                            <p:menuitem id="srv_attendanceStatistics" value="#{bundle.statisticsAttendance}" rendered="#{sessionBean.users.role.roleid != 3 or sessionBean.users.role.roleid != 6}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />
+                        </p:submenu>
+                        <p:submenu id="om_departments" label="#{bundle.perDepartment}" icon="fa fa-fw fa-magic">
                             <p:submenu id="hrDep" label="#{bundle.hrDep}" icon="fa fa-fw fa-users" rendered="#{(sessionBean.users.department!=null and (sessionBean.users.department.departmentid==16)) or sessionBean.users.role.roleid le 2}" >                               
-                                <p:menuitem id="hr_companyAttedance" value="#{bundle.personelAttendance}" icon="fa fa-fw fa-bars" outcome="dashboardAttendance" />
+                                <p:menuitem id="hr_companyAttedance" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
                                 <p:menuitem id="hr_companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars"  outcome="dashboardStaff" />
-                                <p:menuitem id="hr_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-fw fa-bars"  outcome="dashboardAttendanceStatistics" />
+                                <p:menuitem id="hr_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />
                             </p:submenu>
                             <p:submenu  id="om_userprofile_mode" label="#{bundle.itDep}" icon="fa fa-fw fa-desktop" rendered="#{(sessionBean.users.department!=null and sessionBean.users.department.departmentid==14) or sessionBean.users.role.roleid le 2}">
-                                <p:menuitem id="it_companyAttedance" value="#{bundle.personelAttendance}" icon="fa fa-fw fa-bars" outcome="dashboardAttendance" />
+                                <p:menuitem id="it_companyAttedance" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
                                 <p:menuitem id="it_companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars"  outcome="dashboardStaff" />
-                                <p:menuitem id="it_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-fw fa-bars"  outcome="dashboardAttendanceStatistics" />                                
-                                <p:menuitem id="it_userMgt" value="#{bundle.userMgt}" icon="fa fa-fw fa-bars" outcome="dashboardUsers" />
-                                <p:menuitem id="it_auditMgt" value="#{bundle.auditPage}" icon="fa fa-fw fa-bars" outcome="dashboardAudit" /> 
-                                <p:menuitem id="it_systemMgt" value="#{bundle.systemAdmin}" icon="fa fa-fw fa-bars" outcome="dashboardTasks" />    
+                                <p:menuitem id="it_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />                                
+                                <p:menuitem id="it_userMgt" value="#{bundle.userMgt}" icon="fa fa-user-plus" outcome="dashboardUsers" />
+                                <p:menuitem id="it_auditMgt" value="#{bundle.auditPage}" icon="fa fa-th-list" outcome="dashboardAudit" /> 
+                                <p:menuitem id="it_systemMgt" value="#{bundle.systemAdmin}" icon="fa fa-tasks" outcome="dashboardTasks" />    
                             </p:submenu>
 
                         </p:submenu>

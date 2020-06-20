@@ -47,7 +47,8 @@ public class DashboardStaff implements Serializable {
     private List<Staff> staff = new ArrayList<>(0);
 
     public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && (sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))
+                            && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID")))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_STAFF_ADMIN"), null, 1)) {
                 return;
             }

@@ -158,12 +158,17 @@ public class StaffUpdateTask {
             Array amys = rset.getArray("amy");
             
             Staff updateStaff;
-            List<Staff> staffs;            
+            List<Staff> staffs;  
+            int index = 0;
+            int update=0;
+            int insert = 0;
             while (rset.next()) {
+                index++;
                 System.out.println(rset.getArray(1));
                 
                 staffs = staffDAO.findByProperty("amy", rset.getArray(1));
                 if (staffs.size() > 0) {
+                    update++;
                     updateStaff = staffs.get(0);
                     
                     updateStaff.setName(rset.getString("name"));
@@ -177,8 +182,7 @@ public class StaffUpdateTask {
                     updateStaff.setPhone2(rset.getString("phone2"));
                     updateStaff.setMobile(rset.getString("mobile"));
                     updateStaff.setAddress(rset.getString("address"));
-                    updateStaff.setCteamid(rset.getString("cteamid"));
-                    //newStaff.setAmy(rset.getString("amy"));
+                    updateStaff.setCteamid(rset.getString("cteamid"));                    
                     updateStaff.setActive(BigDecimal.ONE);
                     
                     updateStaff.setDepartment(staffDAO.getDepartment(Long.parseLong(rset.getString("departmentid"))));
@@ -193,6 +197,7 @@ public class StaffUpdateTask {
                     staffDAO.update(updateStaff);
                     
                 } else {
+                    insert++;
                     Staff newStaff = new Staff();
                     newStaff.setName(rset.getString("name"));
                     newStaff.setSurname(rset.getString("surname"));
@@ -218,10 +223,11 @@ public class StaffUpdateTask {
                     newStaff.setCompany(staffDAO.getCompany(1));
                     newStaff.setEmprank(staffDAO.getRank(Long.parseLong(rset.getString("rankid"))));
                     newStaff.setWorkshift(staffDAO.getShift(Long.parseLong(rset.getString("shiftid"))));
+                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!INSERTING staff="+newStaff.getSurname()+" "+newStaff.getAmy());
                     staffDAO.save(newStaff);
                 }                
             }
-            
+            System.out.println("index="+index+" insert="+insert+" updata="+update);
             List<Staff> allStaff = staffDAO.getAllStaff(true);            
             String[] amysArray = (String[]) amys.getArray();            
             boolean contains = true;
@@ -229,6 +235,7 @@ public class StaffUpdateTask {
                 Staff staff = allStaff.get(i);
                 contains = Stream.of(amysArray).anyMatch(x -> x.equals(String.valueOf(staff.getStaffid())));
                 if (!contains) {
+                    System.out.println("DISABLING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     staff.setActive(BigDecimal.ZERO);
                     staffDAO.update(staff);
                 }                
@@ -238,6 +245,7 @@ public class StaffUpdateTask {
             goError(e);
             throw e;
         } finally {
+            System.out.println("Closing connection!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             conn.close();
         }
     }
