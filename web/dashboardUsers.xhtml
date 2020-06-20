@@ -228,7 +228,7 @@
                                         <h:outputText value="#{user.surname} #{user.name}" />
                                     </p:column>
 
-                                    <p:column exportable="false">
+                                    <p:column exportable="true">
                                         <f:facet name="header" >
                                             <h:outputText value="#{bundle.role}"/>
                                         </f:facet>
@@ -243,7 +243,7 @@
                                         </f:facet>
                                         <h:outputText value="#{user.department.name}" style="font-size: 11px;" />
                                     </p:column>
-                                    <p:column style="text-align: center;">
+                                    <p:column style="text-align: center;" exportable="false">
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.active}" />
                                         </f:facet>
@@ -314,7 +314,7 @@
                             <h:outputText value="#{userrole.role.name}" /> <br/>
                         </ui:repeat>
                         
-                         <h:outputText value="#{bundle.employee}:" />
+                         <h:outputText value="#{bundle.connectedStaff}:" />
                          <h:outputText rendered="#{updateUser.user.staff!=null}" value="#{updateUser.user.staff.name} #{updateUser.user.staff.surname}" />
                          
 

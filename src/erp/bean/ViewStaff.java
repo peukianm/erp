@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package erp.bean;
 
 import erp.dao.StaffDAO;
@@ -25,11 +20,11 @@ import org.apache.logging.log4j.Logger;
  *
  * @author peukianm
  */
-@Named("updateStaff")
+@Named("viewStaff")
 @ViewScoped
-public class UpdateStaff implements Serializable {
+public class ViewStaff implements Serializable {
 
-    private static final Logger logger = LogManager.getLogger(UpdateStaff.class);
+    private static final Logger logger = LogManager.getLogger(ViewStaff.class);
 
     @Inject
     private SessionBean sessionBean;
@@ -42,14 +37,16 @@ public class UpdateStaff implements Serializable {
     String staffID;
 
     public void init() {
-        System.out.println("INIT UPDATE STAFF!!!!!!");
+        System.out.println("INIT VIEW STAFF!!!!!!");
         
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
-            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_STAFF"), null, 1)) {
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
+            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_VIEW_STAFF"), null, 1)) {
                 return;
             }
         }
-       
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_VIEW_STAFF"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("viewStaff"));
+
         if (staffID == null || staffID.equals("")) {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noStaffSelected"));
             FacesUtils.redirectWithNavigationID("dashboardStaff");

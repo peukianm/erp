@@ -115,12 +115,12 @@
                                 <tr>
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="fromAttendanceDate" value="#{bundle.from}:" /><p:spacer width="20" height="20" />
-                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
+                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-1:c+1"
                                                      pattern="dd/MM/yyyy" value="#{dbStat.fromAttendanceDate}" id="fromAttendanceDate"/>
                                     </td>
                                     <td>          
                                         <p:outputLabel style="font-weight: bold;" for="toAttendanceDate" value="#{bundle.to}:" /><p:spacer width="20" height="20" />
-                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
+                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-1:c+1"
                                                     pattern="dd/MM/yyyy" value="#{dbStat.toAttendanceDate}" id="toAttendanceDate"/>
                                     </td>
                                 </tr>

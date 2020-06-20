@@ -1,0 +1,247 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <!--<ui:define name="title">Dashboard</ui:define>-->
+    <f:metadata>        
+        <f:viewAction action="#{dbAudit.preRenderView}"/>
+    </f:metadata>
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <style type="text/css">
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
+                position: relative;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
+            }
+            .myclass table {
+                table-layout: auto !important;
+            }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 20px;
+                height: 20px;
+                text-align: right;
+                margin: 0px 0 0 2px !important;
+            }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
+
+            .btn-list {
+                float: right; 
+                width: 23px  !important;  
+                height: 23px  !important; 
+                margin: 0px 4px 0 0  !important;
+            }
+            .title{
+                font-weight: bold;
+                text-align: right;
+            }
+            .data{             
+                text-align: left;
+            }
+
+        </style>
+        
+    </ui:define>
+
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/dashboardAudit">#{bundle.auditPage}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <ui:include src="/common/status.xhtml" />
+
+                <!--          ΚΡΙΤΗΡΙΑ ΑΝΑΖΗΤΗΣΗ ΠΡΟΣΩΠΙΚΟΥ !!!!!!!!!!!!!!!!!!!!! -->
+                <!--<div class="p-col-12 p-lg-8">-->
+                <div class="p-col-12 p-xl-4">    
+                    <h:form id="searchAuditForm">
+                        <div class="card card-w-title statistics">
+                            <div class="erp-panel-titlebar">
+                                #{bundle.searchAudit} 
+                            </div>
+                            <table style="width: 100%">
+                                <tr>
+                                    <td>
+                                        <p:outputLabel style="" for="selectUser" value="#{bundle.selectUser}:" />
+                                    </td>
+                                    <td colspan="3">                                        
+                                        <p:selectOneMenu   value="#{dbAudit.searchUser}" id="selectUser" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{dbAudit.users}" var="user" itemLabel="#{user.surname} #{user.name} " itemValue="#{user}"   />						                                                                                                                                    
+                                        </p:selectOneMenu>
+                                    </td>
+                                </tr>  
+                                <tr>
+                                    <td>
+                                        <p:outputLabel style="" for="selectCompany" value="#{bundle.company}:" />
+                                    </td>
+                                    <td colspan="3">                                        
+                                        <p:selectOneMenu   value="#{dbAudit.selectedCompany}" id="selectCompany" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.companies}" var="company" itemLabel="#{company.name}" itemValue="#{company}"   />						                                                                                                                                    
+                                        </p:selectOneMenu>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+                                        <p:outputLabel style="" for="selectAction" value="#{bundle.action}" />
+                                    </td>
+                                    <td colspan="3">                                       
+                                        <p:selectOneMenu   value="#{dbAudit.selectAction}" id="selectAction" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.actions}" var="action" itemLabel="#{action.name}" itemValue="#{action}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p:outputLabel style="" for="selectActionCategory" value="#{bundle.category}:" />  
+                                    </td>
+                                    <td colspan="3">                                         
+                                        <p:selectOneMenu  value="#{dbAudit.selectCategory}" id="selectActionCategory" converter="omnifaces.SelectItemsConverter" >                                                                          
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.actionsCategories}" var="category" itemLabel="#{category.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                    </td>
+                                </tr> 
+                                <tr>
+                                    <td colspan="4">
+                                        <p:outputLabel style="font-weight: bold;" for="fromAuditDate" value="#{bundle.from}:" /><p:spacer width="20" height="20" />
+                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-1:c+1"
+                                                     pattern="dd/MM/yyyy" value="#{dbAudit.fromAuditDate}" id="fromAuditDate"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">          
+                                        <p:outputLabel style="font-weight: bold;" for="toAuditDate" value="#{bundle.to}:" /><p:spacer width="20" height="20" />
+                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-1:c+1"
+                                                    pattern="dd/MM/yyyy" value="#{dbAudit.toAuditDate}" id="toAuditDate"/>
+                                    </td>
+                                </tr>
+
+
+                            </table>
+
+                            <p:commandButton value="#{bundle.search}" action="#{administrationAction.searchAudit}" update="searchAuditForm viewAuditResults"  />  
+                            <p:spacer width="10" />
+                            <p:commandButton  value="#{bundle.reset}" action="#{dbAudit.resetSearchAuditForm()}"  ajax="false" />
+                            <p:spacer width="10" />                            
+                        </div>                        
+                    </h:form>
+                </div>
+
+
+
+
+
+
+
+
+                <!--              ΠΡΟΒΟΛΗ AUDIT ENTRIES    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <div class="p-col-12 p-xl-8"> 
+                    <div class="card user-card">
+                        <div id="showUsersDivID" style="display: block" class="user-card-content">
+                            <div class="erp-panel-titlebar">
+                                #{bundle.auditList}
+                            </div>
+                            <h:form id="viewAuditResults" >
+                                <p:dataTable id="tbl" var="audit" value="#{dbAudit.searchAudit}" styleClass="myclass"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
+
+                                    <f:facet name="{Exporters}">
+                                        <div style="float:right;">
+
+
+                                            <p:commandLink id="pdf" ajax="false">
+                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle="Λίστα Χρηστών" orientation="Landscape"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
+                                                             cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+                                            <p:commandLink id="xlsx" ajax="false">
+                                                <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" Λίστα Χρηστών"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
+                                                             cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+                                        </div>
+
+                                    </f:facet>
+
+                                    <p:column sortBy="#{audit.usr.username}" >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.user}" />
+                                        </f:facet>
+                                        <h:outputText value="#{audit.usr.username}" />
+                                    </p:column>
+                                    
+                                    <p:column sortBy="#{audit.actiontime}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.time}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{audit.actiontime}" />
+                                    </p:column>
+
+
+                                    <p:column sortBy="#{audit.action.actionscategory.name}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.category}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{audit.action.actionscategory.name}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{audit.action.name}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.action}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{audit.action.name}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.comments}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{audit.comments}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>                                        
+            </div> 
+        </div>
+    </ui:define>
+</ui:composition> 

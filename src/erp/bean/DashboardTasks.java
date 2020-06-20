@@ -3,6 +3,7 @@ package erp.bean;
 import erp.dao.StaffDAO;
 import erp.entities.Usr;
 import erp.util.AccessControl;
+import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -35,11 +36,13 @@ public class DashboardTasks implements Serializable {
     Usr user;
 
     public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null && user.getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && user.getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_TASK_ADMIN"), null, 1)) {
                 return;
             }
         }
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_TASK_ADMIN"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("taskPage"));
     }
 
     @PostConstruct

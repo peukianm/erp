@@ -58,6 +58,10 @@
             .data{             
                 text-align: left;
             }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 15px;
+                height: 15px;
+            }
 
 
         </style>
@@ -181,9 +185,7 @@
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
                                                              cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
-
-
-
+                                           &#160;
                                             <p:commandLink id="xlsx" ajax="false">
                                                 <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
@@ -203,13 +205,20 @@
                                         <h:outputText value="#{staff.surname} #{staff.name}" />
                                     </p:column>
 
+                                    <p:column sortBy="#{staff.afm}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.afm}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{staff.afm}" />
+                                    </p:column> 
 
-                                    <p:column sortBy="#{staff.sector.name}">
+
+                                  <!--  <p:column sortBy="#{staff.sector.name}">
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.sector}"/>
                                         </f:facet>
                                         <h:outputText value="#{staff.sector.name}" />
-                                    </p:column>
+                                    </p:column> -->
 
                                     <p:column sortBy="#{staff.department.name}">
                                         <f:facet name="header">
@@ -217,12 +226,13 @@
                                         </f:facet>
                                         <h:outputText value="#{staff.department.name}" />
                                     </p:column>
-                                    <p:column sortBy="#{staff.emprank.name}">
-                                        <f:facet name="header">
-                                            <h:outputText value="#{bundle.position}"/>
-                                        </f:facet>
-                                        <h:outputText value="#{staff.emprank.name}" />
-                                    </p:column>
+
+                                <!--<p:column sortBy="#{staff.emprank.name}">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{bundle.position}"/>
+                                    </f:facet>
+                                    <h:outputText value="#{staff.emprank.name}" />
+                                </p:column> -->
 
                                     <p:column style="width:1% !important;white-space:nowrap;">
                                         <f:facet name="header" >
@@ -231,18 +241,31 @@
                                         <h:outputText value="#{staff.loggercode}" />
                                     </p:column>
 
-                                    <p:column headerText="#{bundle.actions}" exportable="false" >
+                                    <p:column style="text-align: center;" exportable="false">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.active}" />
+                                        </f:facet>
+                                        <h:graphicImage rendered="#{staff.active==1}" url="/resources/babylon-layout/images/success.jpg" width="10px" height="10px" />
+                                        <h:graphicImage rendered="#{staff.active!=1}" url="/resources/babylon-layout/images/close.gif" width="10px" height="10px" />   
+                                    </p:column>
 
+
+                                    <p:column headerText="#{bundle.actions}" exportable="false" >
                                         <p:commandButton  icon="pi pi-envelope"  class="btn-list" update="resetLoggerDataFormID" style="font-size: 16px;" title="#{bundle.resetLoggerCode}"   onclick="PF('resetLoggerDataDialogWidget').show()">
                                             <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />                                
                                         </p:commandButton> 
+                                        <p:commandButton  icon="pi pi-pencil" style="font-size: 16px;" action="#{staffAction.goUpdateStaff(staff.staffid)}"  class="btn-list" title="#{bundle.updateStaff}"  />                                                                            
+                                        <p:commandButton update="growl viewStaffResults" rendered="#{staff.active==1}"  icon="pi pi-times"  style="font-size: 16px;" action="#{staffAction.deactivateStaff(staff.staffid)}" class="btn-list" title="#{bundle.deactivateStaff}"  >
+                                            <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationDeactivateStaff};" icon="pi pi-exclamation-triangle" /> 
+                                            <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />                                
+                                        </p:commandButton> 
+                                        <p:commandButton update="growl viewStaffResults" rendered="#{staff.active==0}"  icon="pi pi-check"  style="font-size: 16px;" action="#{staffAction.activateStaff(staff.staffid)}" class="btn-list" title="#{bundle.activateStaff}"  >
+                                            <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationActivateStaff};" icon="pi pi-exclamation-triangle" /> 
+                                            <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />                                
+                                        </p:commandButton> 
+                                        <p:commandButton  icon="pi pi-search" style="font-size: 16px;" action="#{staffAction.goViewStaff(staff.staffid)}" class="btn-list" title="#{bundle.viewStaff}"    />                                                       
 
-                                        <p:commandButton  icon="pi pi-pencil" style="font-size: 16px;" action="#{staffAction.goUpdateStaff(staff.staffid)}"  class="btn-list" title="#{bundle.updateStaff}"  /> 
-                                        <!-- <p:linkButton outcome="" icon="pi pi-pencil" onclick="PF('resetLoggerDataDialogWidget').show()"  class="btn-list"  />-->
-                                        <p:commandButton id="bt1" icon="pi pi-search" style="font-size: 16px;"  title="#{bundle.viewStaff}"  onclick="PF('staffDialog').show()" 
-                                                         class="btn-list" update="staffDetail">
-                                            <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />
-                                        </p:commandButton>
+
                                     </p:column>  
                                 </p:dataTable>
                             </h:form>
@@ -353,10 +376,8 @@
                     <table>
                         <tr>
                             <td><p:outputLabel for="logData" value="#{bundle.loggerCode}:" style="font-weight: bold;" /> </td>                                    
-                            <td><p:inputText id="logData" value="#{dbStaff.staffForUpdate.loggercode}" required="false">
-
-<!--requiredMessage="#{bundle.loggerCode}:#{bundle.mandatoryField}" -->                                                  
-                                    <!--<f:validateLength minimum="4" maximum="15" />-->
+                            <td><p:inputText id="logData" value="#{dbStaff.staffForUpdate.loggercode}" required="false">                                               
+                                    <f:validateLength minimum="2" maximum="20" />
                                 </p:inputText>
                                 <p:message for="logData" display="icon"/>  <br/></td>
                         </tr>                        

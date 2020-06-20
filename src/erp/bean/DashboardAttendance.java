@@ -7,6 +7,7 @@ import erp.entities.Staff;
 import erp.entities.Usr;
 import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
+import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -70,6 +71,9 @@ public class DashboardAttendance implements Serializable {
         if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_ADMIN"), null, 1)) {
             return;
         }
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_ADMIN"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("attendancePage"));
+
     }
 
     @PostConstruct
@@ -137,7 +141,7 @@ public class DashboardAttendance implements Serializable {
                     break;
                 }
             default:
-               if (user.getStaff() != null) {
+                if (user.getStaff() != null) {
                     enableDepartment = false;
                     enableSector = false;
                     enableStaff = false;
@@ -356,7 +360,6 @@ public class DashboardAttendance implements Serializable {
         this.selectedDepartments = selectedDepartments;
     }
 }
-
 
 //if (user.getStaff() != null) {
 //                    switch ((int) user.getStaff().getEmprank().getRankid()) {

@@ -9,6 +9,7 @@ import erp.exception.ERPCustomException;
 import erp.util.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -44,13 +45,13 @@ public class AdministrationAction implements Serializable {
     RoleSelectionBean roleSelectionBean;
 
     @Inject
-    AuditBean auditBean;
-
-    @Inject
     ResetBean resetBean;
 
     @Inject
     DashboardView dbView;
+    
+    @Inject
+    DashboardAudit dbAudit;
 
     @Inject
     DashboardUsers dbUsers;
@@ -423,6 +424,29 @@ public class AdministrationAction implements Serializable {
     public void goResetPasword() {
         FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').show()");
         FacesUtils.updateHTMLComponnetWIthJS("resetPasswordUserPanelID");
+    }
+    
+    
+    public void searchAudit()  throws ERPCustomException  {
+        try {
+            Timestamp from = null;
+            if (dbAudit.getFromAuditDate() != null) {
+                from = FormatUtils.formatDateToTimestamp(dbAudit.getFromAuditDate());
+            }
+
+            Timestamp to = null;
+            if (dbAudit.getToAuditDate() != null) {
+                to = FormatUtils.formatDateToTimestamp(dbAudit.getToAuditDate());
+            }
+
+    
+            List<Auditing> auditings = auditingDAO.searchAudit(dbAudit.getSearchUser(), dbAudit.getSelectAction(), dbAudit.getSelectCategory(), from, to, dbAudit.getSelectedCompany());
+            dbAudit.setSearchAudit(auditings);
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From Reset Password Email Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
     }
 
     public String logoutAction() throws ERPCustomException {

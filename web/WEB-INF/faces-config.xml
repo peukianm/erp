@@ -108,6 +108,12 @@
             <to-view-id>/dashboardStaff.jsf</to-view-id>   
         </navigation-case>
     </navigation-rule> 
+    <navigation-rule>
+        <navigation-case>
+            <from-outcome>dashboardAudit</from-outcome>
+            <to-view-id>/dashboardAudit.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
     
     <navigation-rule>
         <navigation-case>

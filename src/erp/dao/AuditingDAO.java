@@ -6,6 +6,7 @@
 package erp.dao;
 
 import erp.entities.Action;
+import erp.entities.Actionscategory;
 import erp.entities.Auditing;
 import erp.entities.Company;
 import erp.entities.Usr;
@@ -110,6 +111,19 @@ public class AuditingDAO implements Serializable {
             throw re;
         }
     }
+     
+     public List<Actionscategory> getAllActionsCtegories() {
+        try {
+            Query query = entityManager.createQuery("SELECT e FROM Actionscategory e");
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all actionsctegories ", re);
+            throw re;
+        }
+    }
+     
+     
 
     public Action getAction(long id) {
         try {
@@ -198,15 +212,16 @@ public class AuditingDAO implements Serializable {
         }
     }
 
-    public List<Auditing> searchAudit(Usr user, Action action, Timestamp from, Timestamp to,
+    public List<Auditing> searchAudit(Usr user, Action action, Actionscategory category, Timestamp from, Timestamp to,
             Company company) {
         try {
 
             String queryString = "Select a from Auditing a"
                     + " where a.auditingid IS NOT NULL "
-                    + (company != null ? " and a.company=:hospital " : " ")
-                    + (user != null ? " and a.users=:user " : " ")
+                    + (company != null ? " and a.company=:company " : " ")
+                    + (user != null ? " and a.usr=:user " : " ")
                     + (action != null ? " and a.action=:action " : " ")
+                    + (category != null ? " and a.action.actionscategory=:actionscategory " : " ")
                     + (from != null ? " and a.actiondate>=:from" : " ")
                     + (to != null ? " and a.actiondate<=:to" : " ")
                     + " order by a.actiondate DESC";
@@ -220,6 +235,9 @@ public class AuditingDAO implements Serializable {
             }
             if (action != null) {
                 query.setParameter("action", action);
+            }
+            if (category != null) {
+                query.setParameter("actionscategory", category);
             }
             if (from != null) {
                 query.setParameter("from", from);

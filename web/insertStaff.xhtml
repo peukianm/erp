@@ -1,303 +1,270 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
-      xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions" >
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
+
     <f:metadata>        
         <f:viewAction action="#{insertStaff.preRenderView}"/>
     </f:metadata>
-
-    <h:head>
-        <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/babylon-layout/images/favicon.ico"/>
-        <f:facet name="first">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-            <meta name="apple-mobile-web-app-capable" content="yes" />
-        </f:facet>
-        <title>#{bundle.insertStaff}</title>
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
         <style type="text/css">
-            .data-review {
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
                 position: relative;
-                background-image: linear-gradient(to right, rgba(48, 63, 70, 0.15) 23%, rgba(116, 144, 157, 0.15) 60%);
-                padding: 24px 48px;
-                margin-top: 114px !important; 
-            }   
-            body .ui-selectbooleanbutton.ui-state-active, body .ui-buttonset:not(.ui-splitbutton) > .ui-button.ui-state-active {
-                background-color: #405965 !important;
-                border-color: #29382a !important;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
             }
-            body .ui-selectonelistbox .ui-selectlistbox-listcontainer .ui-selectlistbox-list .ui-selectlistbox-item.ui-state-highlight, body .ui-selectmanymenu .ui-selectlistbox-listcontainer .ui-selectlistbox-list .ui-selectlistbox-item.ui-state-highlight {
-                background-color: #ccd7e0 !important;
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
             }
-            body .ui-selectonemenu-panel .ui-selectonemenu-items .ui-selectonemenu-item.ui-state-highlight {
-                background-color: #ccd7e0 !important ;
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
             }
-            body .ui-autocomplete-panel .ui-autocomplete-items .ui-autocomplete-item.ui-state-highlight {
-                background-color: #ccd7e0 !important ;
+            .myclass table {
+                table-layout: auto !important;
             }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 20px;
+                height: 20px;
+                text-align: right;
+                margin: 0px 0 0 2px !important;
+            }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
+
+            .btn-list {
+                float: right; 
+                width: 23px  !important;  
+                height: 23px  !important; 
+                margin: 0px 4px 0 0  !important;
+            }
+            .title{
+                font-weight: bold;
+                text-align: right;
+            }
+            .data{             
+                text-align: left;
+            }
+            .ui-panelgrid .ui-panelgrid-cell{
+                padding: 3px 1px !important;
+            }
+            .ui-fluid .ui-button {
+                width: auto !important;
+                border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;
+                font-weight: 400;
+            }
+            .ui-fluid .ui-inputtext {
+                width: auto !important;
+            }
+            .ui-fluid .ui-selectonemenu {
+                width: auto !important;
+            }
+            .ui-md-2,  .ui-md-1{
+                text-align: right;
+                font-weight: bold;                
+            }
+
+
         </style>
         <script type="text/javascript">
-            //<![CDATA[
-            var Wizard = {
-                init: function () {
-                    this.wizardContent = $('.wizard-content');
-                    if (this.wizardContent.length) {
-                        this.wizardCard = this.wizardContent.find('.wizard-card');
-                        this.tabs = this.wizardCard.find('> .wizard-card-header .wizard-card-tab');
-                        this.banner = this.wizardCard.find('> .wizard-card-header .banner-image');
 
-                        var continueButton = $('.continue-button'),
-                                $this = this;
-
-                        this.tabs.off('click.wizard-tab').on('click.wizard-tab', function () {
-                            $this.openNextTab($(this));
-                        });
-
-                        continueButton.off('click.cbutton').on('click.cbutton', function () {
-                            var content = $(this).closest('.wizard-card-content'),
-                                    index = content.index(),
-                                    nextTab = $this.tabs.eq(index);
-
-                            content.find('.ink').remove();
-                            $this.openNextTab(nextTab);
-                        });
-                    }
-                },
-
-                openNextTab: function (tab) {
-                    var index = tab.index();
-
-                    if (!tab.hasClass('selected-tab')) {
-                        tab.siblings('.wizard-card-tab').removeClass('selected-tab').end().addClass('selected-tab');
-                        this.banner.removeClass('active-banner').eq(index).addClass('active-banner');
-                        this.wizardCard.children('.wizard-card-content').filter('.active-content').removeClass('active-content').end().eq(index).addClass('active-content');
-                    }
-                },
-
-                selectOrderInfo: function (itemSelector, orderSelector) {
-                    var selectedItem = $(itemSelector),
-                            selectedOrder = $(orderSelector);
-
-                    $('.wizard-tier-card ').removeClass('active-tier-card');
-                    selectedItem.addClass('active-tier-card');
-                    selectedOrder.siblings().removeClass('selected-order').end().addClass('selected-order');
-                }
-            }
-
-            $(function () {
-                Wizard.init();
-            });
-            //]]>
-            function updateSummary()
-            {
-                // alert('updating');
-                //$("#summary").load(window.location.href + " #summary");
-                $("#summary").load(" #summary > *");
-            }
         </script>
-    </h:head>
+    </ui:define>
 
-    <h:body styleClass="wizard-body">       
-        <div class="wizard-wrapper">
-            <div class="wizard-header">
-                <div class="wizard-logo">
-                    <h:link outcome="/dashboardStaff" styleClass="layout-topbar-logo">
-                        <p:graphicImage name="images/logo-black.png" library="babylon-layout" />
-                    </h:link>
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/dashboardStaff">#{bundle.staffPage}/</p:link> 
+            <p:link outcome="/insertStaff.jsf">#{bundle.insertStaff}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <ui:include src="/common/status.xhtml" />
+            </div>
+            <div class="ui-fluid">
+                <div class="ui-g">
+
+                    <h:form id="updateStaffForm" class="ui-g-12 ui-lg-12"> 
+                        <p:messages id="msg" showDetail="true" closable="true" >
+                            <p:autoUpdate />
+                        </p:messages>
+                        <p:tabView>
+                            <p:tab title="#{bundle.demographicData}">
+                                <div class="card card-w-title" style="border-radius:5px; box-shadow: 4px 4px 4px #5C5C5C;">
+                                    <h1>#{bundle.demographicData}</h1>
+
+                                    <p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" 
+                                                 style="border:0px none; background-color:transparent;width: 70%" >
+
+                                        <p:outputLabel value="#{bundle.name}:" for="name" style="font-weight: bold;text-align: right;" />
+                                        <p:inputText id="name"  value="#{insertStaff.staff.name}" required="true" requiredMessage="#{bundle.name}: #{bundle.mandatoryField}">                                       
+                                            <f:validateLength minimum="2" maximum="15" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.surname}:" for="surname" style="font-weight: bold;text-align: right;" />                                   
+                                        <p:inputText id="surname" value="#{insertStaff.staff.surname}" required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}" >
+                                            <f:validateLength minimum="2" maximum="30" /> 
+                                        </p:inputText>
+
+
+                                        <p:outputLabel value="#{bundle.fatherName}:" for="fatherName" style="font-weight: bold;text-align: right;" />                                                                      
+                                        <p:inputText id="fatherName"  value="#{insertStaff.staff.fathername}" required="true" requiredMessage="#{bundle.fatherName}: #{bundle.mandatoryField}">
+                                            <f:validateLength minimum="2" maximum="15" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.active}:" for="act" style="font-weight: bold;text-align: right;"/>
+                                        <p:selectBooleanButton id="act" value="#{insertStaff.active}" onLabel="#{bundle.yes}" offLabel="#{bundle.no}" 
+                                                               onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px"/>
+                                        
+                                        <p:outputLabel style="font-weight: bold;" for="birthdate" value="#{bundle.birthDate}:" />
+                                        <p:calendar  locale="el" size="20"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100" 
+                                                     pattern="dd/MM/yyyy" value="#{insertStaff.staff.birthdate}" id="birthdate"/>
+                                        
+
+                                        <p:outputLabel value="#{bundle.afm}:" for="afm" style="font-weight: bold;text-align: right;" />                                 
+                                        <p:inputText id="afm"  value="#{insertStaff.staff.afm}"  >
+                                            <f:validateLength minimum="8" maximum="15" />
+                                        </p:inputText>
+
+
+                                        <p:outputLabel value="#{bundle.amka}:" for="amka" style="font-weight: bold;text-align: right;" />                                 
+                                        <p:inputText id="amka"  value="#{insertStaff.staff.amka}" >
+                                            <f:validateLength minimum="2" maximum="15" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.aat}:" for="adt" style="font-weight: bold;text-align: right;" />                                 
+                                        <p:inputText id="adt"  value="#{insertStaff.staff.adt}" >
+                                            <f:validateLength minimum="2" maximum="15" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.address}:" for="address" style="font-weight: bold;text-align: right;" />                                 
+                                        <p:inputText id="address"  value="#{insertStaff.staff.address}" >
+                                            <f:validateLength minimum="2" maximum="40" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.familyStatus}:" for="familyStatus" style="font-weight: bold;text-align: right;"/>                                    
+                                        <p:selectOneMenu   value="#{insertStaff.staff.familystatus}" id="familyStatus" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.familyStatuses}" var="fs" itemLabel="#{fs.name}" itemValue="#{fs}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel value="#{bundle.workPhone}:" for="phone" style="font-weight: bold;text-align: right;" />                                 
+                                        <p:inputText id="phone"  value="#{insertStaff.staff.phone1}" >
+                                            <f:validateLength minimum="2" maximum="18" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.homePhone}:" for="hphone" style="font-weight: bold;text-align: right;" />                                 
+                                        <p:inputText id="hphone"  value="#{insertStaff.staff.phone2}" >
+                                            <f:validateLength minimum="2" maximum="18" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.mobile}:" for="mobile" style="font-weight: bold;text-align: right;" />                                 
+                                        <p:inputText id="mobile"  value="#{insertStaff.staff.mobile}" >
+                                            <f:validateLength minimum="2" maximum="18" />
+                                        </p:inputText>
+
+                                    </p:panelGrid>
+
+                                </div>
+
+                            </p:tab> 
+                            <p:tab title="#{bundle.staffy}">
+                                <div class="card card-w-title" style="border-radius:5px; box-shadow: 4px 4px 4px #5C5C5C;">
+                                    <h1>#{bundle.staffy}</h1>
+
+                                    <p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" 
+                                                 style="border:0px none; background-color:transparent;">
+
+
+                                        <p:outputLabel value="#{bundle.selectCompany}:" for="company"  style="font-weight: bold;text-align: right;" />                                   
+                                        <p:selectOneMenu value="#{insertStaff.staff.company}" id="company" converter="omnifaces.SelectItemsConverter" 
+                                                         required="true" requiredMessage="#{bundle.company}: #{bundle.mandatoryField}" >                                                                                                                            
+                                            <f:selectItems value="#{applicationBean.companies}" var="company" itemLabel="#{company.name}" itemValue="#{company}"   />                                    
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel value="#{bundle.sector}:" for="sector"  style="font-weight: bold;text-align: right;" />                                    
+                                        <p:selectOneMenu   value="#{insertStaff.staff.sector}" id="sector" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel value="#{bundle.department}:" for="department"  style="font-weight: bold;text-align: right;"/>                                    
+                                        <p:selectOneMenu  value="#{insertStaff.staff.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />                                   
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel value="#{bundle.loggerCode}:" for="loggerCode" style="font-weight: bold;text-align: right;" />
+                                        <p:inputText id="loggerCode"  value="#{insertStaff.staff.loggercode}" >
+                                            <f:validateLength minimum="2" maximum="20" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.empRank}:" for="emprank"  style="font-weight: bold;text-align: right;" />                                    
+                                        <p:selectOneMenu   value="#{insertStaff.staff.emprank}" id="emprank" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.empranks}" var="rank" itemLabel="#{rank.name}" itemValue="#{rank}"   />						                                                                                                                                    
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel value="#{bundle.speciality}:" for="speciality"  style="font-weight: bold;text-align: right;" />                                    
+                                        <p:selectOneMenu   value="#{insertStaff.staff.speciality}" id="speciality" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.specialities}" var="speciality" itemLabel="#{speciality.name}" itemValue="#{speciality}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel value="#{bundle.studyType}:" for="studytype"  style="font-weight: bold;text-align: right;" />                                    
+                                        <p:selectOneMenu   value="#{insertStaff.staff.studytype}" id="studytype" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.studytypes}" var="studytype" itemLabel="#{studytype.name}" itemValue="#{studytype}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel value="#{bundle.branch}:" for="branch"  style="font-weight: bold;text-align: right;" />                                    
+                                        <p:selectOneMenu   value="#{insertStaff.staff.branch}" id="branch" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.branches}" var="branch" itemLabel="#{branch.name}" itemValue="#{branch}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel value="#{bundle.workShift}:" for="workshift"  style="font-weight: bold;text-align: right;" />                                    
+                                        <p:selectOneMenu   value="#{insertStaff.staff.workshift}" id="workshift" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                            <f:selectItem itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{applicationBean.workshifts}" var="shift" itemLabel="#{shift.name}" itemValue="#{shift}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel value="ΑΜΥ:" for="amy" style="font-weight: bold;text-align: right;" />
+                                        <p:inputText id="amy"  value="#{insertStaff.staff.amy}" >
+                                            <f:validateLength minimum="1" maximum="20" />
+                                        </p:inputText>
+
+
+                                    </p:panelGrid>
+                                    <br/><br/>
+                                    <p:commandButton value="#{bundle.insert}" action="#{staffAction.insertStaff}" update="growl">
+                                        <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationInsertStaff};" icon="pi pi-exclamation-triangle" /> 
+                                    </p:commandButton>
+                                    <p:spacer width="10" />
+                                    <p:linkButton outcome="dashboardStaff" value="#{bundle.exit}" />
+                                </div>
+                            </p:tab>
+                        </p:tabView>
+
+                    </h:form>
+
                 </div>
             </div>
-            <p:growl id="growl" showDetail="true" />  
-            <h:form id="insertUserFormID">                
-                <div class="wizard-content">
-                    <div class="wizard-card">
-                        <div class="wizard-card-header">
-                            <div class="wizard-card-header-banner">
-                                <div class="banner-logo">
-                                    <p:graphicImage name="images/extensions/babylon-icon.png" library="babylon-layout" />
-                                </div>
-                                <div class="banner-image banner-1 active-banner">
-                                    <h1>#{bundle.insertStaff}</h1>
-                                    <p:graphicImage name="images/extensions/bg-header.png" library="babylon-layout" />
-                                </div>
-                                <div class="banner-image banner-2">
-                                    <h1>#{bundle.insertStaff}</h1>
-                                    <p:graphicImage name="images/extensions/bg-header-2.png" library="babylon-layout" />
-                                </div>
-                            </div>
-                            <div class="wizard-card-tabs">
-                                <div class="wizard-card-tab register-tab selected-tab">
-                                    #{bundle.demographicData}
-                                </div>
-                                <div class="wizard-card-tab tier-tab">
-                                    #{bundle.staffy}
-                                </div>                            
-                            </div>
-                        </div>
-                        <div class="wizard-card-content register active-content">
-                            <p:messages showDetail="true" closable="true">
-                                <p:autoUpdate />
-                            </p:messages>
-                            <div class="wizard-forms-wrapper p-grid p-nogutter">
-                                <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="#{bundle.name}" for="name" styleClass="form-label erp-display-block" >
-                                        <i class="fa fa-exclamation-circle"> </i>
-                                    </p:outputLabel>                                    
-                                    <p:inputText id="name"  value="#{insertStaff.staff.name}" required="true" requiredMessage="#{bundle.name}: #{bundle.mandatoryField}">                                       
-                                        <f:validateLength minimum="2" maximum="20" />
-                                    </p:inputText>
-
-                                    <p:outputLabel value="#{bundle.fatherName}" for="fatherName" styleClass="form-label erp-display-block" />                                        
-                                    <p:inputText id="fatherName"  value="#{insertStaff.staff.fathername}" required="true" requiredMessage="#{bundle.fatherName}: #{bundle.mandatoryField}">
-                                        <f:validateLength minimum="2" maximum="20" />
-                                    </p:inputText>
-
-                                    <p:outputLabel value="#{bundle.afm}" for="afm" styleClass="form-label erp-display-block" />                                 
-                                    <p:inputText id="afm"  value="#{insertStaff.staff.afm}"  >
-                                         <f:validateLength minimum="5" maximum="15" />
-                                    </p:inputText>
-
-                                    <p:outputLabel value="#{bundle.phone}" for="phone" styleClass="form-label erp-display-block" />                                 
-                                    <p:inputText id="phone"  value="#{insertStaff.staff.phone1}" >
-                                         <f:validateLength minimum="5" maximum="15" />
-                                    </p:inputText>
-
-                                </div>
-
-
-                                <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="#{bundle.surname}" for="surname" styleClass="form-label erp-display-block" >
-                                        <i class="fa fa-exclamation-circle"> </i>
-                                    </p:outputLabel>
-                                    <p:inputText id="surname" value="#{insertStaff.staff.surname}" required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}" >
-                                        <f:validateLength minimum="2" maximum="30" /> 
-                                    </p:inputText>
-
-
-                                    <p:outputLabel value="#{bundle.active}" for="act" styleClass="form-label erp-display-block"/>
-                                    <p:selectBooleanButton id="act" value="#{insertStaff.active}" onLabel="#{bundle.yes}" offLabel="#{bundle.no}" 
-                                                           onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px"/>
-
-                                    <p:outputLabel value="#{bundle.amka}" for="amka" styleClass="form-label erp-display-block" />                                 
-                                    <p:inputText id="amka"  value="#{insertStaff.staff.amka}" >
-                                         <f:validateLength minimum="2" maximum="15" />
-                                    </p:inputText>
-
-                                    <p:outputLabel value="#{bundle.address}" for="address" styleClass="form-label erp-display-block" />                                 
-                                    <p:inputText id="address"  value="#{insertStaff.staff.address}" >
-                                         <f:validateLength minimum="2" maximum="40" />
-                                    </p:inputText>
-
-                                </div>
-                            </div>
-                            <div id="btn1" class="wizard-button">
-                                <p:linkButton outcome="dashboardStaff" value="#{bundle.cancel}" />
-                                <p:spacer width="15"/>
-                                <p:commandButton value="#{bundle.next}" styleClass="continue-button" update="summaryID" process="name surname"  />
-                            </div>
-
-                        </div>
-
-
-
-
-                        <div id="demoID" class="wizard-card-content register tier" style="padding:1px 1px !important; min-height:275px !important;">
-                            <p:messages showDetail="true" closable="true">
-                                <p:autoUpdate />
-                            </p:messages>
-
-                            <div class="wizard-forms-wrapper p-grid p-nogutter">
-                                <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="#{bundle.selectCompany}" for="company" styleClass="form-label erp-display-block" >
-                                        <i class="fa fa-exclamation-circle"> </i>
-                                    </p:outputLabel>
-                                    <p:selectOneMenu value="#{insertStaff.staff.company}" id="company" converter="omnifaces.SelectItemsConverter" 
-                                                     required="true" requiredMessage="#{bundle.company}: #{bundle.mandatoryField}" >                                                                                                                            
-                                        <f:selectItems value="#{applicationBean.companies}" var="company" itemLabel="#{company.name}" itemValue="#{company}"   />
-                                        <p:ajax update="summaryID" />
-                                    </p:selectOneMenu >
-
-                                    <p:outputLabel value="#{bundle.department}" for="department" styleClass="form-label erp-display-block" />                                    
-                                    <p:selectOneMenu  value="#{insertStaff.staff.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
-                                        <f:selectItem itemLabel="" itemValue=""  />
-                                        <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />
-                                        <p:ajax update="summaryID" />
-                                    </p:selectOneMenu >
-
-                                    <p:outputLabel value="#{bundle.empRank}" for="emprank" styleClass="form-label erp-display-block" />                                    
-                                    <p:selectOneMenu   value="#{insertStaff.staff.emprank}" id="emprank" converter="omnifaces.SelectItemsConverter" >                                                                                     
-                                        <f:selectItem itemLabel="" itemValue=""  />
-                                        <f:selectItems value="#{applicationBean.empranks}" var="rank" itemLabel="#{rank.name}" itemValue="#{rank}"   />						                                                                                                                                    
-                                    </p:selectOneMenu >
-                                </div>
-
-
-                                <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="#{bundle.sector}" for="sector" styleClass="form-label erp-display-block" />                                    
-                                    <p:selectOneMenu   value="#{insertStaff.staff.sector}" id="sector" converter="omnifaces.SelectItemsConverter" >                                                                                     
-                                        <f:selectItem itemLabel="" itemValue=""  />
-                                        <f:selectItems value="#{applicationBean.sectors}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
-                                    </p:selectOneMenu >
-
-                                    <p:outputLabel value="#{bundle.loggerCode}" for="loggerCode" styleClass="form-label erp-display-block" />                                 
-                                    <p:inputText id="loggerCode"  value="#{insertStaff.staff.loggercode}" />
-
-                                    <p:outputLabel value="#{bundle.workShift}" for="workshift" styleClass="form-label erp-display-block" />                                    
-                                    <p:selectOneMenu   value="#{insertStaff.staff.workshift}" id="workshift" converter="omnifaces.SelectItemsConverter" >                                                                                     
-                                        <f:selectItem itemLabel="" itemValue=""  />
-                                        <f:selectItems value="#{applicationBean.workshifts}" var="shift" itemLabel="#{shift.name}" itemValue="#{shift}"   />						                                                                                                                                    
-                                    </p:selectOneMenu >
-                                </div>
-
-
-
-
-                            </div>
-
-                            <div class="wizard-button">
-                                <h:panelGroup layout="block" id="summaryID" class="order-summary order-default selected-order">    
-                                    <p>#{bundle.insertReview}</p>
-                                    <h1>#{insertStaff.staff.name} #{insertStaff.staff.surname} </h1>
-                                    <span>#{insertStaff.staff.company!=null?insertStaff.staff.company.name : " "} #{insertStaff.staff.department!=null?insertStaff.staff.department.name : " "} </span>
-                                </h:panelGroup>
-                                <p:commandButton value="#{bundle.insert}" action="#{staffAction.insertStaff}" update="growl">
-                                    <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationInsertStaff};" icon="pi pi-exclamation-triangle" />
-                                </p:commandButton>
-                                <p:spacer width="15"/>
-                                <p:linkButton outcome="dashboardStaff" value="#{bundle.cancel}" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </h:form>
-        </div>
-
-        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-            <p:commandButton value="#{bundle.yes}" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
-            <p:commandButton value="#{bundle.no}" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
-        </p:confirmDialog> 
-
-        <p:dialog  header="#{bundle.warning}"  modal="true" resizable="false"  widgetVar="generalAlertWidget" >                    
-            <p:panel widgetVar="alertPanelWidget" id="alertPanel">
-                <table>
-                    <tr>
-                        <td style="text-align: center">
-                            <h:outputLabel value="#{sessionBean.alertMessage}"/>
-                        </td>
-                    </tr>                    
-                    <tr>
-                        <td style="text-align: center">
-                            <p:commandButton  update="primePanelWidget" value="OK" type="button" onclick="PF('generalAlertWidget').hide()"  />
-                        </td>
-                    </tr>    	                      	                      
-                </table>
-            </p:panel>
-        </p:dialog> 
-
-        <h:outputStylesheet name="css/layout-orange.css" library="babylon-layout" />
-        <h:outputStylesheet name="css/erp.css" library="babylon-layout" />
-        <h:outputStylesheet name="css/primeflex.css" library="babylon-layout" />
-        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
-
-    </h:body>
-
-</html>
+        </div>                                        
+    </ui:define>
+</ui:composition> 

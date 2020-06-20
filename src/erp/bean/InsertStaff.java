@@ -3,10 +3,8 @@ package erp.bean;
 import erp.dao.StaffDAO;
 import erp.entities.Staff;
 import erp.util.AccessControl;
-import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
-import java.io.IOException;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -36,11 +34,13 @@ public class InsertStaff implements Serializable {
     boolean active;
 
     public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_STAFF"), null, 1)) {
                 return;
             }
         }
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_INSERT_STAFF"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("insertStaff"));
     }
 
     @PostConstruct

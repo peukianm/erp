@@ -77,8 +77,9 @@
                                 <tr>
                                     <td colspan="2">
                                         <p:outputLabel value="#{bundle.selectAllStaff}:" style="font-weight: bold;" for="selectAllStaff" />
-                                        &#160;&#160;
-                                        <p:selectBooleanButton id="selectAllStaff" disabled="#{sessionBean.users.role.roleid gt 2}" value="#{dbAttendance.all}" onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
+                                        &#160;&#160; 
+                                        <p:selectBooleanButton id="selectAllStaff" disabled="#{sessionBean.users.role.roleid gt 2 and (not empty sessionBean.users.department and sessionBean.users.department.departmentid ne 16)}" value="#{dbAttendance.all}" 
+                                                               onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
                                             <p:ajax listener="#{dbAttendance.onAllChange()}" update="selectSector selectDepartment basicId @(.depsIDtyleclass)" />      
                                         </p:selectBooleanButton>
                                     </td>
@@ -113,12 +114,12 @@
                                 <tr>
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="fromAttendanceDate" value="#{bundle.from}:" /><p:spacer width="20" height="20" />
-                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
+                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-1:c+1"
                                                      pattern="dd/MM/yyyy" value="#{dbAttendance.fromAttendanceDate}" id="fromAttendanceDate"/>
                                     </td>
                                     <td>          
                                         <p:outputLabel style="font-weight: bold;" for="toAttendanceDate" value="#{bundle.to}:" /><p:spacer width="20" height="20" />
-                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" 
+                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-1:c+1"
                                                     pattern="dd/MM/yyyy" value="#{dbAttendance.toAttendanceDate}" id="toAttendanceDate"/>
                                     </td>
                                 </tr>

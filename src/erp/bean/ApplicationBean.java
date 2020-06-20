@@ -5,6 +5,7 @@ import erp.dao.CompanyDAO;
 import erp.dao.UsrDAO;
 
 import erp.entities.Action;
+import erp.entities.Actionscategory;
 import erp.entities.Branch;
 import erp.entities.Company;
 import erp.entities.Department;
@@ -44,6 +45,7 @@ public class ApplicationBean implements Serializable {
     List<Studytype> studytypes;
     List<Speciality> specialities;
     List<Familystatus> familystatuses;
+    List<Actionscategory> actionscategories;
 
     @Inject
     CompanyDAO companyDAO;
@@ -166,6 +168,13 @@ public class ApplicationBean implements Serializable {
             actions = auditingDAO.getAllActions();
         }
         return actions;
+    }
+    
+    public List<Actionscategory> getActionsCategories() {
+        if (actionscategories == null) {
+            actionscategories = auditingDAO.getAllActionsCtegories();
+        }
+        return actionscategories;
     }
 
     public void setActions(List<Action> actions) {

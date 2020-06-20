@@ -12,6 +12,7 @@ import erp.entities.Staff;
 import erp.entities.Usr;
 import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
+import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -76,20 +77,19 @@ public class DashboardStatistics implements Serializable {
 
     public void preRenderView() {
         user = sessionBean.getUsers();
-        if (sessionBean.getUsers().getDepartment() != null && user.getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && user.getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
             if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_STAT"), null, 1)) {
                 return;
             }
         }
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_STAT"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("attendanceStatisticsPage"));
     }
 
     @PostConstruct
     public void init() {
         System.out.println("INITIALIZE DB STATISTICS BEAN");
         user = sessionBean.getUsers();
-        if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_STAT"), null, 1)) {
-            return;
-        }
 
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         fromAttendanceDate = new java.util.Date();

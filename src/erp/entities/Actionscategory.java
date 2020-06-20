@@ -4,66 +4,88 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.List;
 
-
 /**
  * The persistent class for the ACTIONSCATEGORY database table.
- * 
+ *
  */
 @Entity
-@NamedQuery(name="Actionscategory.findAll", query="SELECT a FROM Actionscategory a")
+@NamedQuery(name = "Actionscategory.findAll", query = "SELECT a FROM Actionscategory a")
 public class Actionscategory implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@SequenceGenerator(name="ACTIONSCATEGORY_CATEGORYID_GENERATOR", sequenceName="ACTIONSCATEGORY_SEQ")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ACTIONSCATEGORY_CATEGORYID_GENERATOR")
-	private long categoryid;
+    private static final long serialVersionUID = 1L;
 
-	private String name;
+    @Id
+    @SequenceGenerator(name = "ACTIONSCATEGORY_CATEGORYID_GENERATOR", sequenceName = "ACTIONSCATEGORY_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ACTIONSCATEGORY_CATEGORYID_GENERATOR")
+    private long categoryid;
 
-	//bi-directional many-to-one association to Action
-	@OneToMany(mappedBy="actionscategory")
-	private List<Action> actions;
+    private String name;
 
-	public Actionscategory() {
-	}
+    //bi-directional many-to-one association to Action
+    @OneToMany(mappedBy = "actionscategory")
+    private List<Action> actions;
 
-	public long getCategoryid() {
-		return this.categoryid;
-	}
+    public Actionscategory() {
+    }
 
-	public void setCategoryid(long categoryid) {
-		this.categoryid = categoryid;
-	}
+    public long getCategoryid() {
+        return this.categoryid;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setCategoryid(long categoryid) {
+        this.categoryid = categoryid;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public List<Action> getActions() {
-		return this.actions;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setActions(List<Action> actions) {
-		this.actions = actions;
-	}
+    public List<Action> getActions() {
+        return this.actions;
+    }
 
-	public Action addAction(Action action) {
-		getActions().add(action);
-		action.setActionscategory(this);
+    public void setActions(List<Action> actions) {
+        this.actions = actions;
+    }
 
-		return action;
-	}
+    public Action addAction(Action action) {
+        getActions().add(action);
+        action.setActionscategory(this);
+        return action;
+    }
 
-	public Action removeAction(Action action) {
-		getActions().remove(action);
-		action.setActionscategory(null);
+    public Action removeAction(Action action) {
+        getActions().remove(action);
+        action.setActionscategory(null);
+        return action;
+    }
 
-		return action;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof Actionscategory)) {
+            return false;
+        }
+
+        Actionscategory compare = (Actionscategory) obj;
+        return compare.categoryid == (this.categoryid);
+    }
+
+    @Override
+    public int hashCode() {
+        return categoryid != 0 ? this.getClass().hashCode() + Long.hashCode(categoryid) : super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Actioncategory{id=" + categoryid + ", name=" + getName() + "}";
+    }
 
 }

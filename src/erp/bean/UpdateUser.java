@@ -51,11 +51,13 @@ public class UpdateUser implements Serializable {
     String password;
 
     public void init() {
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_USER"), null, 1)) {
                 return;
             }
         }
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_UPDATE_USER"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("updateUser"));
 
         if (userID == null) {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noUserSelected"));

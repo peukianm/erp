@@ -8,6 +8,7 @@ import erp.entities.Sector;
 import erp.entities.Staff;
 import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
+import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
 import java.util.List;
@@ -50,11 +51,13 @@ public class InsertUser implements Serializable {
     List<Staff> availableStaff;
 
     public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_USER"), null, 1)) {
                 return;
             }
         }
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_INSERT_USER"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("insertUser"));
     }
 
     @PostConstruct

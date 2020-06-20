@@ -87,6 +87,7 @@
 
     <ui:define name="viewname" >
         <li>
+            <p:link outcome="/dashboardStaff">#{bundle.staffPage}/</p:link> 
             <p:link outcome="/updateStaff.jsf">#{bundle.updateStaff}</p:link> 
         </li>
     </ui:define>
@@ -127,7 +128,10 @@
                                 <p:outputLabel value="#{bundle.active}:" for="act" style="font-weight: bold;text-align: right;"/>
                                 <p:selectBooleanButton id="act" value="#{updateStaff.active}" onLabel="#{bundle.yes}" offLabel="#{bundle.no}" 
                                                        onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px"/>
-
+                                
+                                 <p:outputLabel style="font-weight: bold;" for="birthdate" value="#{bundle.birthDate}:" />
+                                 <p:calendar  locale="el" size="20"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100"
+                                                     pattern="dd/MM/yyyy" value="#{updateStaff.staff.birthdate}" id="birthdate"/>
 
                                 <p:outputLabel value="#{bundle.afm}:" for="afm" style="font-weight: bold;text-align: right;" />                                 
                                 <p:inputText id="afm"  value="#{updateStaff.staff.afm}"  >

@@ -8,6 +8,7 @@ import erp.entities.Sector;
 import erp.entities.Usr;
 import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
+import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -55,11 +56,13 @@ public class DashboardUsers implements Serializable {
     String showNewUser = "hidden='true'";
 
     public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"), null, 1)) {
                 return;
             }
         }
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("usersPage"));
     }
 
     @PostConstruct

@@ -6,6 +6,7 @@ import erp.entities.Sector;
 import erp.entities.Staff;
 import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
+import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,11 +47,13 @@ public class DashboardStaff implements Serializable {
     private List<Staff> staff = new ArrayList<>(0);
 
     public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
+        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_STAFF_ADMIN"), null, 1)) {
                 return;
             }
         }
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_STAFF_ADMIN"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("staffPage"));
     }
 
     @PostConstruct

@@ -1,0 +1,208 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <f:metadata>
+        <f:viewParam name="staffID" value="#{viewStaff.staffID}" />
+        <f:viewAction action="#{viewStaff.init()}" />
+    </f:metadata>
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <style type="text/css">
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
+                position: relative;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
+            }
+            .myclass table {
+                table-layout: auto !important;
+            }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 20px;
+                height: 20px;
+                text-align: right;
+                margin: 0px 0 0 2px !important;
+            }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
+
+            .btn-list {
+                float: right; 
+                width: 23px  !important;  
+                height: 23px  !important; 
+                margin: 0px 4px 0 0  !important;
+            }
+            .title{
+                font-weight: bold;
+                text-align: right;
+            }
+            .data{             
+                text-align: left;
+            }
+            .ui-panelgrid .ui-panelgrid-cell{
+                padding: 3px 1px !important;
+            }
+            .ui-fluid .ui-button {
+                width: auto !important;
+                border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;
+                font-weight: 400;
+            }
+            .ui-fluid .ui-inputtext {
+                width: auto !important;
+            }
+            .ui-fluid .ui-selectonemenu {
+                width: auto !important;
+            }
+            .ui-md-2,  .ui-md-1{
+                text-align: left;
+                font-weight: bold;                
+            }
+
+
+        </style>
+        <script type="text/javascript">
+
+        </script>
+    </ui:define>
+
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/dashboardStaff">#{bundle.staffPage}/</p:link> 
+            <p:link outcome="/viewStaff.jsf">#{bundle.viewStaff}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <ui:include src="/common/status.xhtml" />
+            </div>
+            <div class="ui-fluid">
+                <div class="ui-g">
+
+                    <h:form id="updateStaffForm" class="ui-g-12 ui-lg-8">                       
+                        <div class="card card-w-title" style="border-radius:5px; box-shadow: 4px 4px 4px #5C5C5C;">
+                            <h1>#{bundle.demographicData}</h1>
+                            <p:messages id="msg1" showDetail="true" closable="true" />
+
+                            <p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" 
+                                         style="border:0px none; background-color:transparent;" >
+
+                                <p:outputLabel value="#{bundle.name}:" style="font-weight: bold;text-align: right;" />
+                                <p:outputLabel value="#{viewStaff.staff.name}"/>
+
+
+                                <p:outputLabel value="#{bundle.surname}:" style="font-weight: bold;text-align: right;" />                                   
+                                <p:outputLabel value="#{viewStaff.staff.surname}"/>
+
+
+                                <p:outputLabel value="#{bundle.fatherName}:"  style="font-weight: bold;text-align: right;" />                                                                      
+                                <p:outputLabel value="#{viewStaff.staff.fathername}"/>
+
+                                <p:outputLabel value="#{bundle.active}:"  style="font-weight: bold;text-align: right;"/>
+                                <h:graphicImage rendered="#{viewStaff.staff.active==1}" url="/resources/babylon-layout/images/success.jpg" width="14px" height="14px" />
+                                <h:graphicImage rendered="#{viewStaff.staff.active!=1}" url="/resources/babylon-layout/images/close.gif" width="14px" height="14px" />  
+
+                                <p:outputLabel style="font-weight: bold;"  value="#{bundle.birthDate}:" />
+                                <p:outputLabel value="#{viewStaff.staff.birthdate}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                </p:outputLabel>
+
+                                <p:outputLabel value="#{bundle.afm}:"  style="font-weight: bold;text-align: right;" />                                 
+                                <p:outputLabel value="#{viewStaff.staff.afm}"/>
+
+
+                                <p:outputLabel value="#{bundle.amka}:" style="font-weight: bold;text-align: right;" />                                 
+                                <p:outputLabel value="#{viewStaff.staff.amka}"/>
+
+                                <p:outputLabel value="#{bundle.aat}:" style="font-weight: bold;text-align: right;" />                                 
+                                <p:outputLabel value="#{viewStaff.staff.adt}"/>
+
+                                <p:outputLabel value="#{bundle.address}:" style="font-weight: bold;text-align: right;" />                                 
+                                <p:outputLabel value="#{viewStaff.staff.address}"/>
+
+                                <p:outputLabel value="#{bundle.familyStatus}:"  style="font-weight: bold;text-align: right;"/>                                    
+                                <p:outputLabel value="#{viewStaff.staff.familystatus.name}"/>
+
+                                <p:outputLabel value="#{bundle.workPhone}:" style="font-weight: bold;text-align: right;" />                                 
+                                <p:outputLabel value="#{viewStaff.staff.phone1}"/>
+
+                                <p:outputLabel value="#{bundle.homePhone}:"  style="font-weight: bold;text-align: right;" />                                 
+                                <p:outputLabel value="#{viewStaff.staff.phone2}"/>
+
+                                <p:outputLabel value="#{bundle.mobile}:"  style="font-weight: bold;text-align: right;" />                                 
+                                <p:outputLabel value="#{viewStaff.staff.mobile}"/>
+
+                            </p:panelGrid>
+                            <br/><br/>
+                            <p:linkButton outcome="dashboardStaff" value="#{bundle.exit}" />
+                        </div>
+                    </h:form>
+                    <h:form id="updateProfileDataForm" class="ui-g-12 ui-lg-10">
+                        <div class="card card-w-title" style="border-radius:5px; box-shadow: 4px 4px 4px #5C5C5C;">
+                            <h1>#{bundle.staffy}</h1>
+                            <p:messages id="msg2" showDetail="true" closable="true" />
+                            <p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" 
+                                         style="border:0px none; background-color:transparent;">
+
+
+                                <p:outputLabel value="#{bundle.selectCompany}:"   style="font-weight: bold;text-align: right;" />                                   
+                                <p:outputLabel value="#{viewStaff.staff.company.name}"/>
+
+                                <p:outputLabel value="#{bundle.sector}:"  style="font-weight: bold;text-align: right;" />                                    
+                                <p:outputLabel value="#{viewStaff.staff.sector.name}"/>
+
+                                <p:outputLabel value="#{bundle.department}:"  style="font-weight: bold;text-align: right;"/>                                    
+                                <p:outputLabel value="#{viewStaff.staff.department.name}"/>
+
+                                <p:outputLabel value="#{bundle.loggerCode}:" style="font-weight: bold;text-align: right;" />
+                                <p:outputLabel value="#{viewStaff.staff.loggercode}"/>
+
+                                <p:outputLabel value="#{bundle.empRank}:"  style="font-weight: bold;text-align: right;" />                                    
+                                <p:outputLabel value="#{viewStaff.staff.emprank.name}"/>
+
+                                <p:outputLabel value="#{bundle.speciality}:" style="font-weight: bold;text-align: right;" />                                    
+                                <p:outputLabel value="#{viewStaff.staff.speciality.name}"/>
+
+                                <p:outputLabel value="#{bundle.studyType}:"  style="font-weight: bold;text-align: right;" />                                    
+                                <p:outputLabel value="#{viewStaff.staff.studytype.name}"/>
+
+                                <p:outputLabel value="#{bundle.branch}:" style="font-weight: bold;text-align: right;" />                                    
+                                <p:outputLabel value="#{viewStaff.staff.branch.name}"/>
+
+                                <p:outputLabel value="#{bundle.workShift}:" style="font-weight: bold;text-align: right;" />                                    
+                                <p:outputLabel value="#{viewStaff.staff.workshift.name}"/>
+
+                                <p:outputLabel value="ΑΜΥ:" style="font-weight: bold;text-align: right;" />
+                                <p:outputLabel value="#{viewStaff.staff.amy}"/>
+                            </p:panelGrid>
+                            <br/><br/>
+                            <p:linkButton outcome="dashboardStaff" value="#{bundle.exit}" />
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>                                        
+    </ui:define>
+</ui:composition> 
