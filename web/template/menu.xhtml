@@ -26,6 +26,7 @@
                         </p:submenu>
                         <p:submenu id="om_services" label="#{bundle.services}" icon="fa fa-fw fa-magic">
                             <p:menuitem id="srv_attendanceStatistics" value="#{bundle.statisticsAttendance}" rendered="#{sessionBean.users.role.roleid != 3 or sessionBean.users.role.roleid != 6}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />
+                            <p:menuitem id="srv_account_acc" value="#{bundle.viewProfile}" icon="fa fa-fw fa-cog" outcome="updateAccount?userID=#{sessionBean.users.userid}" />    
                         </p:submenu>
                         <p:submenu id="om_departments" label="#{bundle.perDepartment}" icon="fa fa-fw fa-magic">
                             <p:submenu id="hrDep" label="#{bundle.hrDep}" icon="fa fa-fw fa-users" rendered="#{(sessionBean.users.department!=null and (sessionBean.users.department.departmentid==16)) or sessionBean.users.role.roleid le 2}" >                               

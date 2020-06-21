@@ -47,8 +47,6 @@
             }
 
         </style>
-        <script type="text/javascript">
-        </script>
     </ui:define>
 
     <ui:define name="viewname" >
@@ -167,6 +165,7 @@
                             </div>
 
                             <h:form id="viewAttendanceResults">
+                                <span style="font-weight: bold">#{bundle.sum}=(#{dbStat.attendances.size()})</span> &#160; &#160;
                                 <h:panelGroup rendered="#{dbStat.attendances.size() gt 0}" styleClass="summaryIDClass" layout="block" id="summaryID" class="order-summary order-default selected-order" >   
                                     <p:outputLabel style="font-weight: bold;font-size:13px;" value="Επιλεγμένοι Υπάλληλοι:" />
                                     <span style="font-size:13px;">#{dbStat.selectedStaff.size()}</span>&#160;&#160;
@@ -201,7 +200,7 @@
                                              paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
                                     
                                      <f:facet name="{Exporters}">
-                                        <div style="float:right;">
+                                        <div style="float:right;">                                           
                                             <p:commandLink id="pdf" ajax="false">
                                                 <p:graphicImage name="images/pdf.png" library="babylon-layout" height="20px" width="20px" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />

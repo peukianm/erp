@@ -179,6 +179,8 @@
                                         </p:inputText>
 
                                     </p:panelGrid>
+                                    <br/>
+                                    <p:linkButton outcome="dashboardStaff" value="#{bundle.exit}" style="margin-left: 15px;" />
 
                                 </div>
 
@@ -252,7 +254,7 @@
 
                                     </p:panelGrid>
                                     <br/><br/>
-                                    <p:commandButton value="#{bundle.insert}" action="#{staffAction.insertStaff}" update="growl">
+                                    <p:commandButton value="#{bundle.insert}" action="#{staffAction.insertStaff}" update="growl" style="margin-left: 15px;">
                                         <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationInsertStaff};" icon="pi pi-exclamation-triangle" /> 
                                     </p:commandButton>
                                     <p:spacer width="10" />

@@ -26,7 +26,7 @@
             <p:graphicImage name="images/ajaxloadingbar.gif" library="babylon-layout"  />
         </p:dialog> 
 
-        <p:idleMonitor timeout="5400000" onidle="PF('idleDialog').show()">  
+        <p:idleMonitor timeout="1800000" onidle="PF('idleDialog').show()">  
             <p:ajax event="idle" listener="#{administrationAction.invalidateSession}"/>                  
         </p:idleMonitor>
 
