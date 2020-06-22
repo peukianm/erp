@@ -81,7 +81,6 @@ public class SchedulerDAO implements Serializable {
         }
     }
 
-   
     public Taskstatus getTaskstatus(long statusid) {
         try {
             return (Taskstatus) find(Taskstatus.class, statusid);
@@ -113,9 +112,6 @@ public class SchedulerDAO implements Serializable {
             throw re;
         }
     }
-
-    
-
 
     public void updateCtask(Companytask companyTask) {
         try {
@@ -205,6 +201,24 @@ public class SchedulerDAO implements Serializable {
             return query.getResultList();
         } catch (RuntimeException re) {
             logger.error("Error on finding entity", re);
+            throw re;
+        }
+    }
+
+    public List<Scheduletaskdetail> getScheduletaskdetail(long taskID, Company company, int rows) {
+        Scheduletask task = (Scheduletask) entityManager.find(Scheduletask.class, taskID);
+        Companytask cTask = findCtask(company, task);
+        try {
+            final String queryString = "select model from Scheduletaskdetail model "
+                    + " where model.companytask= :cTask "
+                    + " order by model.detailsid DESC";
+            Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            query.setParameter("cTask", cTask);
+            query.setMaxResults(rows);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            logger.error("Error on getting schedule Task details", re);
             throw re;
         }
     }

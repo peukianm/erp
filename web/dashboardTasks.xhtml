@@ -53,21 +53,16 @@
                 margin: 0px 4px 0 0  !important;
             }
 
+            .listName {
+                ;
+            }
+            .listData {
+                font-weight: bold;
+                text-align: left;
+            }
+
         </style>
-        <script type="text/javascript">
-            function showNewUser() {
-                var x = document.getElementById("showNewUserDivID");
-                var z = document.getElementById("showUsersDivID");
-                z.style.display = "none";
-                x.style.display = "block";
-            }
-            function showUsers() {
-                var x = document.getElementById("showNewUserDivID");
-                var z = document.getElementById("showUsersDivID");
-                z.style.display = "block";
-                x.style.display = "none";
-            }
-        </script>
+
     </ui:define>
 
     <ui:define name="viewname" >
@@ -105,7 +100,30 @@
                                     </td>
                                 </tr>                               
                             </table>
-                            <p:commandButton value="#{bundle.executeUpdateLoggersTask}" action="#{schedulerAction.updateFromLoggers}" update="updateFromLoggersForm growl msgLoggerID"  />                      
+
+                            <h4 style="font-weight: bold"> Ιστορικό Εκτελέσεων</h4>
+                            <p:repeat value="#{dbTasks.loggerDetails}" var="logger">
+                                <h:panelGrid columns="8" style="width:100%" columnClasses="listName,listData,listName,listData,listName,listData,listName,listData">
+                                    <h:outputText value="#{bundle.start}:" />
+                                    <h:outputText value="#{logger.startExecutiontime}" style="font-weight: bold">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                    </h:outputText>
+                                    <h:outputText value="#{bundle.end}:" />
+                                    <h:outputText value="#{logger.endExecutiontime}" style="font-weight: bold">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                    </h:outputText>
+                                    <h:outputText value="#{bundle.time}:" />
+                                    <h:outputText value="#{logger.executiontime}" />
+                                    <h:outputText value="#{bundle.status}:" />
+                                    <h:outputText rendered="#{logger.taskstatus.statusid eq 3}" value="#{logger.taskstatus.name}" style="font-weight: bold; color: green;"/>
+                                    <h:outputText rendered="#{logger.taskstatus.statusid ne 3}" value="#{logger.taskstatus.name}" style="font-weight: bold; color: red;"/>
+
+                                </h:panelGrid>
+                            </p:repeat>
+
+                            <p:commandButton value="#{bundle.executeUpdateLoggersTask}" action="#{schedulerAction.updateFromLoggers}" update="updateFromLoggersForm growl msgLoggerID"  >
+                                <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationUpdateFromLoggers}" icon="pi pi-exclamation-triangle" /> 
+                            </p:commandButton>
                         </div>
                     </h:form>
                 </div>
@@ -133,11 +151,29 @@
                                     </td>
                                 </tr>                               
                             </table>
-                            <p:commandButton value="#{bundle.executeUpdateStaffTask}" action="#{schedulerAction.updateFromStaff}" update="updateFromStaffForm growl msgStaffID"  />                      
 
+                            <h4 style="font-weight: bold"> Ιστορικό Εκτελέσεων</h4>
+                            <p:repeat value="#{dbTasks.staffDetails}" var="staff">
+                                <h:panelGrid columns="8" style="width:100%" columnClasses="listName,listData,listName,listData,listName,listData,listName,listData">
+                                    <h:outputText value="#{bundle.start}:" />
+                                    <h:outputText value="#{staff.startExecutiontime}" style="font-weight: bold">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                    </h:outputText>
+                                    <h:outputText value="#{bundle.end}:" />
+                                    <h:outputText value="#{staff.endExecutiontime}" style="font-weight: bold;">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                    </h:outputText>
+                                    <h:outputText value="#{bundle.time}:" />
+                                    <h:outputText value="#{staff.executiontime}" />
+                                    <h:outputText value="#{bundle.status}:" />
+                                    <h:outputText rendered="#{staff.taskstatus.statusid eq 3}" value="#{staff.taskstatus.name}" style="font-weight: bold; color: green;"/>
+                                    <h:outputText rendered="#{staff.taskstatus.statusid ne 3}" value="#{staff.taskstatus.name}" style="font-weight: bold; color: red;"/>
 
-
-
+                                </h:panelGrid>
+                            </p:repeat>
+                            <p:commandButton value="#{bundle.executeUpdateStaffTask}" action="#{schedulerAction.updateFromStaff}" update="updateFromStaffForm growl msgStaffID"  >                                
+                                <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationUpdateStaff}" icon="pi pi-exclamation-triangle" /> 
+                            </p:commandButton>
                         </div>
                     </h:form>
                 </div>                                        

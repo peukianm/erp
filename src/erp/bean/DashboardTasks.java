@@ -1,11 +1,17 @@
 package erp.bean;
 
+import erp.dao.SchedulerDAO;
 import erp.dao.StaffDAO;
+import erp.entities.Companytask;
+import erp.entities.Scheduletask;
+import erp.entities.Scheduletaskdetail;
 import erp.entities.Usr;
 import erp.util.AccessControl;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.view.ViewScoped;
@@ -32,9 +38,15 @@ public class DashboardTasks implements Serializable {
 
     @Inject
     private StaffDAO staffDao;
+    
+     @Inject
+    private SchedulerDAO schedulerDAO;
 
     Usr user;
-
+    
+    List<Scheduletaskdetail> staffDetails = new ArrayList<>(0);
+    List<Scheduletaskdetail> loggerDetails = new ArrayList<>(0);
+    
     public void preRenderView() {
         if (sessionBean.getUsers().getDepartment() != null && user.getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_TASK_ADMIN"), null, 1)) {
@@ -49,6 +61,10 @@ public class DashboardTasks implements Serializable {
     public void init() {
         System.out.println("INITIALIZE DB TASKS BEAN");
         user = sessionBean.getUsers();
+
+        loggerDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")), user.getCompany(), 10);
+        staffDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")), user.getCompany(), 10);
+        
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         lastStaffExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")));
     }
@@ -74,4 +90,20 @@ public class DashboardTasks implements Serializable {
         this.lastStaffExecution = lastStaffExecution;
     }
 
+    public List<Scheduletaskdetail> getStaffDetails() {
+        return staffDetails;
+    }
+
+    public void setStaffDetails(List<Scheduletaskdetail> staffDetails) {
+        this.staffDetails = staffDetails;
+    }
+
+    public List<Scheduletaskdetail> getLoggerDetails() {
+        return loggerDetails;
+    }
+
+    public void setLoggerDetails(List<Scheduletaskdetail> loggerDetails) {
+        this.loggerDetails = loggerDetails;
+    }
+    
 }
