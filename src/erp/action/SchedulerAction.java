@@ -43,7 +43,7 @@ public class SchedulerAction {
     @Inject
     AuditingDAO auditingDAO;
 
-    public void updateFromLoggers() throws ERPCustomException {
+    public String  updateFromLoggers() throws ERPCustomException {
 
         try {
             int stat = ldrTask.doSchedulerWork(true);
@@ -59,6 +59,7 @@ public class SchedulerAction {
             } else {
                 FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
             }
+            return "dashboardTasks?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -66,7 +67,7 @@ public class SchedulerAction {
         }
     }
 
-    public void updateFromStaff() throws ERPCustomException {
+    public String updateFromStaff() throws ERPCustomException {
 
         try {
             int stat = staffTask.doSchedulerWork(true);
@@ -82,6 +83,7 @@ public class SchedulerAction {
             } else {
                 FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
             }
+             return "dashboardTasks?faces-redirect=true";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
