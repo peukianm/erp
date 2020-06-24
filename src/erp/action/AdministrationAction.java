@@ -501,7 +501,7 @@ public class AdministrationAction implements Serializable {
 
         try {
             Department department = dbTasks.getDepartmentForUpdate();
-            department.setActive(BigDecimal.ZERO);
+            department.setActive(BigDecimal.ONE);
             staffDAO.updateGeneric(department);
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ΑCT_UPDATECOMPANY")), "Department " + department.getName() + " activated");
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("departmentUpdated"));
