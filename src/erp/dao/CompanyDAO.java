@@ -81,6 +81,7 @@ public class CompanyDAO {
 
     public List<Department> getAllDepartment(boolean onlyActive) {
         try {
+            System.out.println("GETTINH ALL DEPARTMETS!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             String sql = "SELECT e FROM Department e "
                     + (onlyActive ? " where e.active = 1 " : " ")
                     + " order by e.name ";
@@ -193,7 +194,7 @@ public class CompanyDAO {
     public List<Sector> getAllSector() {
         try {
             String sql = "SELECT e FROM Sector e "
-                    + " order by e.name ";
+                    + " order by e.ordered ";
             Query query = entityManager.createQuery(sql);
             return query.getResultList();
         } catch (RuntimeException re) {

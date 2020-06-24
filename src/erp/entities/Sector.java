@@ -29,11 +29,11 @@ public class Sector implements Serializable {
     private List<Company> companies;
 
     //bi-directional many-to-one association to Companysector
-    @OneToMany(mappedBy = "sector")
+    @OneToMany(mappedBy = "sector" )
     private List<Companysector> companysectors;
 
     //bi-directional many-to-many association to Department
-    @ManyToMany
+    @ManyToMany (fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "SECTORDEPARTMENT",
             joinColumns = {

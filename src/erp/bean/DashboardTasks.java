@@ -53,6 +53,10 @@ public class DashboardTasks implements Serializable {
     private Department departmentForUpdate;
     private Sector sectorForUpdate;
     private List<Department> departmentsList;
+    private List<Department> activeDepartments;
+    private List<Department> sectorDepartments = new ArrayList<>(0);
+    private List<Sector> sectorsList;
+    private Sector selectedSector;
 
     List<Scheduletaskdetail> staffDetails = new ArrayList<>(0);
     List<Scheduletaskdetail> loggerDetails = new ArrayList<>(0);
@@ -79,11 +83,54 @@ public class DashboardTasks implements Serializable {
         lastStaffExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")));
 
         departmentsList = companyDAO.getAllDepartment(false);
+        activeDepartments = companyDAO.getAllDepartment(true);
+        sectorsList = companyDAO.getAllSector();
     }
 
-    @PreDestroy
-    public void reset() {
+    
+    public void reset() {        
+        departmentsList = companyDAO.getAllDepartment(false);
+        activeDepartments = companyDAO.getAllDepartment(true);
+        sectorsList = companyDAO.getAllSector();
+    }
 
+    public List<Department> getSectorDepartments() {
+        return sectorDepartments;
+    }
+
+    public void setSectorDepartments(List<Department> sectorDepartments) {
+        this.sectorDepartments = sectorDepartments;
+    }
+
+    public void onSectorChange() {
+        if (selectedSector != null) {
+            sectorDepartments.clear();
+           sectorDepartments.addAll(staffDao.getSectorDepartments(sessionBean.getUsers().getCompany(), selectedSector));
+        }
+    }
+
+    public List<Department> getActiveDepartments() {
+        return activeDepartments;
+    }
+
+    public void setActiveDepartments(List<Department> activeDepartments) {
+        this.activeDepartments = activeDepartments;
+    }
+
+    public Sector getSelectedSector() {
+        return selectedSector;
+    }
+
+    public void setSelectedSector(Sector selectedSector) {
+        this.selectedSector = selectedSector;
+    }
+
+    public List<Sector> getSectorsList() {
+        return sectorsList;
+    }
+
+    public void setSectorsList(List<Sector> sectorsList) {
+        this.sectorsList = sectorsList;
     }
 
     public List<Department> getDepartmentsList() {

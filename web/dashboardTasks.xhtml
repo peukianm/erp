@@ -47,9 +47,9 @@
             }
 
             .btn-list {
-                float: right; 
-                width: 26px  !important;  
-                height: 26px  !important; 
+                float: none; 
+                width: 18px  !important;  
+                height: 18px  !important; 
                 margin: 0px 4px 0 0  !important;
             }
 
@@ -101,25 +101,33 @@
                                 </tr>                               
                             </table>
 
-                            <h4 style="font-weight: bold"> Ιστορικό Εκτελέσεων</h4>
-                            <p:repeat value="#{dbTasks.loggerDetails}" var="logger">
-                                <h:panelGrid columns="8" style="width:100%" columnClasses="listName,listData,listName,listData,listName,listData,listName,listData">
-                                    <h:outputText value="#{bundle.start}:" />
-                                    <h:outputText value="#{logger.startExecutiontime}" style="font-weight: bold">
-                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-                                    </h:outputText>
-                                    <h:outputText value="#{bundle.end}:" />
-                                    <h:outputText value="#{logger.endExecutiontime}" style="font-weight: bold">
-                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-                                    </h:outputText>
-                                    <h:outputText value="#{bundle.time}:" />
-                                    <h:outputText value="#{logger.executiontime}" />
-                                    <h:outputText value="#{bundle.status}:" />
-                                    <h:outputText rendered="#{logger.taskstatus.statusid eq 3}" value="#{logger.taskstatus.name}" style="font-weight: bold; color: green;"/>
-                                    <h:outputText rendered="#{logger.taskstatus.statusid ne 3}" value="#{logger.taskstatus.name}" style="font-weight: bold; color: red;"/>
+                            <p:commandButton id="movieBtn" value="#{bundle.showPastExecutions}" type="button" />
+                            <p:overlayPanel id="moviePanel" for="movieBtn" hideEffect="fade" dynamic="true" style="width:600px" modal="true">
+                                <p:dataTable var="logger" value="#{dbTasks.loggerDetails}" rows="5" paginator="true">
+                                    <p:column headerText="#{bundle.start}">
+                                        <h:outputText value="#{logger.startExecutiontime}" style="font-weight: bold">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText>
+                                    </p:column>
 
-                                </h:panelGrid>
-                            </p:repeat>
+                                    <p:column headerText="#{bundle.end}">
+                                        <h:outputText value="#{logger.endExecutiontime}" style="font-weight: bold">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="#{bundle.time}">
+                                        <h:outputText value="#{logger.executiontime}" style="font-weight: bold" />                                            
+                                    </p:column>
+
+                                    <p:column headerText="#{bundle.status}">
+                                        <h:outputText rendered="#{logger.taskstatus.statusid eq 3}" value="#{logger.taskstatus.name}" style="font-weight: bold; color: green;"/>
+                                        <h:outputText rendered="#{logger.taskstatus.statusid ne 3}" value="#{logger.taskstatus.name}" style="font-weight: bold; color: red;"/>                                            
+                                    </p:column>
+                                </p:dataTable>
+                            </p:overlayPanel>
+                            <br/>
+                            <p:separator />
 
                             <p:commandButton value="#{bundle.executeUpdateLoggersTask}" action="#{schedulerAction.updateFromLoggers}" update="updateFromLoggersForm growl msgLoggerID"  >
                                 <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationUpdateFromLoggers}" icon="pi pi-exclamation-triangle" /> 
@@ -133,12 +141,9 @@
                 <div class="p-col-12 p-xl-6"> 
                     <h:form id="updateFromStaffForm" >
                         <div class="card card-w-title statistics">
-
-
                             <div class="erp-panel-titlebar">
                                 #{bundle.staffUpdate}
                             </div>
-
                             <p:messages id="msgStaffID" showDetail="false" closable="true">
                                 <p:autoUpdate disabled="true" />
                             </p:messages>
@@ -146,31 +151,39 @@
                                 <tr>
                                     <td>
                                         <p:outputLabel value="#{bundle.staffUpdate}:" />&#160;
-
                                         <p:outputLabel value="#{dbTasks.lastStaffExecution}" style="font-weight: bold " />
                                     </td>
                                 </tr>                               
                             </table>
 
-                            <h4 style="font-weight: bold"> Ιστορικό Εκτελέσεων</h4>
-                            <p:repeat value="#{dbTasks.staffDetails}" var="staff">
-                                <h:panelGrid columns="8" style="width:100%" columnClasses="listName,listData,listName,listData,listName,listData,listName,listData">
-                                    <h:outputText value="#{bundle.start}:" />
-                                    <h:outputText value="#{staff.startExecutiontime}" style="font-weight: bold">
-                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-                                    </h:outputText>
-                                    <h:outputText value="#{bundle.end}:" />
-                                    <h:outputText value="#{staff.endExecutiontime}" style="font-weight: bold;">
-                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-                                    </h:outputText>
-                                    <h:outputText value="#{bundle.time}:" />
-                                    <h:outputText value="#{staff.executiontime}" />
-                                    <h:outputText value="#{bundle.status}:" />
-                                    <h:outputText rendered="#{staff.taskstatus.statusid eq 3}" value="#{staff.taskstatus.name}" style="font-weight: bold; color: green;"/>
-                                    <h:outputText rendered="#{staff.taskstatus.statusid ne 3}" value="#{staff.taskstatus.name}" style="font-weight: bold; color: red;"/>
+                            <p:commandButton id="movieBtn1" value="#{bundle.showPastExecutions}" type="button" />
+                            <p:overlayPanel id="stafffPanel" for="movieBtn1" hideEffect="fade" dynamic="true" style="width:600px" modal="true">
+                                <p:dataTable var="staff" value="#{dbTasks.staffDetails}" rows="5" paginator="true">
+                                    <p:column headerText="#{bundle.start}">
+                                        <h:outputText value="#{staff.startExecutiontime}" style="font-weight: bold">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText>
+                                    </p:column>
 
-                                </h:panelGrid>
-                            </p:repeat>
+                                    <p:column headerText="#{bundle.end}">
+                                        <h:outputText value="#{staff.endExecutiontime}" style="font-weight: bold">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="#{staff.time}">
+                                        <h:outputText value="#{logger.executiontime}" style="font-weight: bold" />                                            
+                                    </p:column>
+
+                                    <p:column headerText="#{bundle.status}">
+                                        <h:outputText rendered="#{staff.taskstatus.statusid eq 3}" value="#{staff.taskstatus.name}" style="font-weight: bold; color: green;"/>
+                                        <h:outputText rendered="#{staff.taskstatus.statusid ne 3}" value="#{staff.taskstatus.name}" style="font-weight: bold; color: red;"/>                                            
+                                    </p:column>
+                                </p:dataTable>
+                            </p:overlayPanel>
+                            <br/>
+                            <p:separator />
+
                             <p:commandButton value="#{bundle.executeUpdateStaffTask}" action="#{schedulerAction.updateFromStaff}" update="updateFromStaffForm growl msgStaffID"  >                                
                                 <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationUpdateStaff}" icon="pi pi-exclamation-triangle" /> 
                             </p:commandButton>
@@ -179,7 +192,7 @@
                 </div>  
 
 
-                <!--               !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <!--          UPDATE DEPARTMENT     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
                 <div class="p-col-12 p-xl-5"> 
                     <h:form id="updateDepartmentsForm" >
                         <div class="card card-w-title statistics">
@@ -200,15 +213,7 @@
 
                             <p:dataTable id="tbl" var="department" value="#{dbTasks.departmentsList}" styleClass="myclass"
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-                                         paginator="true" rows="15" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
-
-                                <p:column sortBy="#{sessionBean.users.company.abbrev}" >
-                                    <f:facet name="header">
-                                        <h:outputText value="#{bundle.company}" />
-                                    </f:facet>
-                                    <h:outputText value="#{sessionBean.users.company.abbrev}" />
-                                </p:column>
-
+                                         paginator="true" rows="15" style="margin-bottom:10px;font-size: 11px; ">
                                 <p:column sortBy="#{department.name}" >
                                     <f:facet name="header">
                                         <h:outputText value="#{bundle.department}" />
@@ -225,21 +230,69 @@
                                 </p:column>
 
                                 <p:column style="text-align: center;" headerText="#{bundle.actions}" exportable="false" >
-                                    <p:commandButton update="growl updateDepartmentsForm:msgDepartmentID  updateDepartmentsForm" rendered="#{department.active==1}"  icon="pi pi-times"  style="font-size: 16px;" 
+                                    <p:commandButton update="growl updateDepartmentsForm:msgDepartmentID  updateDepartmentsForm updateSectorsForm:selectDepartment" rendered="#{department.active==1}"  icon="pi pi-times"  style="font-size: 16px;" 
                                                      action="#{administrationAction.deactivateDepartment(department.departmentid)}" class="btn-list" title="#{bundle.deactivateDepartment}"  >
                                         <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationDeactivateDepartment};" icon="pi pi-exclamation-triangle" /> 
                                         <f:setPropertyActionListener value="#{department}" target="#{dbTasks.departmentForUpdate}" />                                
                                     </p:commandButton> 
-                                    <p:commandButton update="growl updateDepartmentsForm:msgDepartmentID  updateDepartmentsForm" rendered="#{department.active==0}"  icon="pi pi-check"  style="font-size: 16px;" 
+                                    <p:commandButton update="growl updateDepartmentsForm:msgDepartmentID  updateDepartmentsForm updateSectorsForm:selectDepartment" rendered="#{department.active==0}"  icon="pi pi-check"  style="font-size: 16px;" 
                                                      action="#{administrationAction.activateDepartment(department.departmentid)}" class="btn-list" title="#{bundle.activateDepartment}"  >
                                         <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationΑctivateDepartment };" icon="pi pi-exclamation-triangle" /> 
                                         <f:setPropertyActionListener value="#{department}" target="#{dbTasks.departmentForUpdate}" />                                
                                     </p:commandButton> 
                                 </p:column>  
-
-
                             </p:dataTable>
+                        </div>
+                    </h:form>
+                </div>  
 
+
+
+                <!--          UPDATE SECTOR     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <div class="p-col-12 p-xl-7"> 
+                    <h:form id="updateSectorsForm" >
+                        <div class="card card-w-title statistics">
+                            <div class="erp-panel-titlebar">
+                                #{bundle.updateSector}
+                            </div>
+                            <p:messages id="msgSectorID" showDetail="false" closable="true">
+                                <p:autoUpdate disabled="true" />
+                            </p:messages>
+                           
+                            <table style="width: 100%;margin-top:  10px;" >
+                                <tr>
+                                    <td colspan="4">
+                                        <p:outputLabel value="#{bundle.company}:" />&#160;
+                                        <p:outputLabel value="#{sessionBean.users.company.name}" style="font-weight: bold " />                                        
+                                    </td>
+                                </tr>  
+                                <tr style="margin-top: 10px">
+                                    <td style="vertical-align: top;">
+                                        <p:outputLabel style="font-weight: bold;" for="selectSector" value="#{bundle.sector}:" /> 
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p:selectOneMenu style="width: 100%" value="#{dbTasks.selectedSector}" id="selectSector" converter="omnifaces.SelectItemsConverter" >
+                                            <p:ajax listener="#{dbTasks.onSectorChange}" update="selectDepartment btn1" />   
+                                            <f:selectItem itemLabel="" itemValue=""   />
+                                            <f:selectItems value="#{dbTasks.sectorsList}" var="sector" itemLabel="#{sector.name}" itemValue="#{sector}"   />						                                                                                                                                    
+                                        </p:selectOneMenu>
+
+                                    </td>
+                                    <td>
+                                        <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.department}:" />  
+                                    </td>
+                                    <td>
+                                        <p:selectManyMenu style="width: 100%" value="#{dbTasks.sectorDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                                                                          
+                                            <f:selectItems value="#{dbTasks.activeDepartments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        </p:selectManyMenu>
+                                        <br/>
+                                    </td>
+                                </tr>
+                            </table>
+                             <p:separator />                           
+                             <p:commandButton id="btn1" disabled="#{dbTasks.selectedSector==null}" value="#{bundle.updateSector}" action="#{administrationAction.updateSector}" update="updateSectorsForm growl msgSectorID"  >
+                                <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationUpdateSector}" icon="pi pi-exclamation-triangle" /> 
+                            </p:commandButton>
                         </div>
                     </h:form>
                 </div>  

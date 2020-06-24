@@ -488,6 +488,7 @@ public class AdministrationAction implements Serializable {
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ΑCT_UPDATECOMPANY")), "Department " + department.getName() + " deactivated");
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("departmentUpdated"));
             applicationBean.resetDepartmentList();
+             dbTasks.reset();
             return "";
 
         } catch (Exception e) {
@@ -506,6 +507,7 @@ public class AdministrationAction implements Serializable {
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ΑCT_UPDATECOMPANY")), "Department " + department.getName() + " activated");
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("departmentUpdated"));
             applicationBean.resetDepartmentList();
+            dbTasks.reset();
             return "";
 
         } catch (Exception e) {
@@ -514,8 +516,45 @@ public class AdministrationAction implements Serializable {
             throw new ERPCustomException("Throw From actrivate department ", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
+    
+    public void updateSector() throws ERPCustomException {
+
+        try {
+            Sector sector = dbTasks.getSelectedSector();
+            List<Department> deps = dbTasks.getSectorDepartments();
+             sector.setDepartments(null);
+             sector.setSectordepartments(null);
+            staffDAO.updateGeneric(sector);
+//            for (int i = 0; i < sector.getCompanysectors().size(); i++) {
+//                staffDAO.deleteGeneric(sector.getCompanysectors().get(i));
+//            }
+            
+            for (int i = 0; i < deps.size(); i++) {
+                Sectordepartment sd = new Sectordepartment();
+                sd.setActive(BigDecimal.ONE);
+                sd.setCompany(sessionBean.getUsers().getCompany());
+                sd.setDepartment(deps.get(i));
+                sd.setSector(sector);
+               staffDAO.saveGeneric(sd);
+            }
+            //staffDAO.updateGeneric(sector);
+            
+            auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ΑCT_UPDATECOMPANY")), "Sector " + sector.getName() + " updated");
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("sectorUpdated"));
+            //staffDAO.refreshGeneric(sector);
+            applicationBean.resetSectorList();
+            dbTasks.reset();
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From Sector update ", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
+    }
+
 
 }
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

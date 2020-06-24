@@ -24,6 +24,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
@@ -54,6 +55,26 @@ public class StaffDAO {
         }
 
     }
+    
+     public void saveGeneric(Object entity) {
+        try {
+            entityManager.persist(entity);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on saving  entity", re);
+            throw re;
+        }
+    }
+     
+      public void refreshGeneric(Object entity) {
+        try {
+            entityManager.refresh(entity);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on refreshing  entity", re);
+            throw re;
+        }
+    }
 
     public void update(Staff staff) {
         try {
@@ -80,6 +101,15 @@ public class StaffDAO {
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on deleting Staff entity", re);
+            throw re;
+        }
+    }
+      public void deleteGeneric(Object entity) {
+        try {
+            entityManager.remove(entity);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on deleting entity", re);
             throw re;
         }
     }
@@ -212,6 +242,7 @@ public class StaffDAO {
 
     public List<Department> getSectorDepartments(Company company, Sector sector) {
         try {
+            System.out.println("GETTING ALL DEPARTMENTS ON SECTOR CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             String sql = "SELECT model.department FROM Sectordepartment model where "
                     + " model.company = :company "
                     + " and model.active = 1 "

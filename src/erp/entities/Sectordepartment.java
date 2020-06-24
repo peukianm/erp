@@ -22,10 +22,10 @@ public class Sectordepartment implements Serializable {
 
 	private BigDecimal active;
 
-	@Column(name="CREATED_TIMESTAMP")
+	@Column(name="CREATED_TIMESTAMP", insertable = false, updatable = true)
 	private Timestamp createdTimestamp;
 
-	@Column(name="MODIFIED_TIMESTAMP")
+	@Column(name="MODIFIED_TIMESTAMP", insertable = false, updatable = true)
 	private Timestamp modifiedTimestamp;
 
 	private BigDecimal ordered;

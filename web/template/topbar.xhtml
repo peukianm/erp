@@ -2,7 +2,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
 
     <div class="layout-topbar">
-      <h:link outcome="#{sessionBean.pageTitle}" styleClass="layout-topbar-logo">
+        <h:link id="toplogolink" outcome="dashboardAttendance" styleClass="layout-topbar-logo">
             <p:graphicImage name="images/logo-white.png" library="babylon-layout" />
         </h:link> 
 
@@ -13,55 +13,55 @@
         <a id="topbar-menu-button" href="#">
             <i class="fa fa-ellipsis-v"></i>
         </a>
-                       
+
         <ul class="topbar-menu fadeInDown">
             <li>
-                
+
                 <a href="#" onclick="PF('disconnectDlg').show()">
                     <i class="topbar-icon fa fa-fw  fa-sign-out"></i>
                     <span class="topbar-item-name">#{bundle.disconnect}</span>   
                 </a>
             </li>
             <!--<ui:fragment rendered="true">-->
-                <li class="user-profile">
-                    
-                    <a href="#">                         
-                        <i class="topbar-icon fa fa-fw fa-user"></i>
-                        <span class="topbar-item-name">#{bundle.account}</span>                        
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="updateAccount.jsf?userID=#{sessionBean.users.userid}">
-                                <i class="fa fa-fw fa-user"></i>
-                                <span>#{bundle.account}</span>
-                            </a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#">
-                                <i class="fa fa-fw fa-tasks"></i>
-                                <span>#{bundle.tasks}</span>
-                                <span class="topbar-submenuitem-badge">1</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-fw fa-envelope-o"></i>
-                                <span>#{bundle.requests}</span>
-                                <span class="topbar-submenuitem-badge">4</span>
-                            </a>
-                        </li>
+            <li class="user-profile">
 
-                        <li>
-                            <a href="#" onclick="PF('disconnectDlg').show()">
-                                <i class="fa fa-fw  fa-sign-out"></i>
-                                <span>#{bundle.disconnect}</span>                                
-                            </a>
-                        </li>                       
-                    </ul>
-                </li>
+                <a href="#">                         
+                    <i class="topbar-icon fa fa-fw fa-user"></i>
+                    <span class="topbar-item-name">#{bundle.account}</span>                        
+                </a>
+                <ul>
+                    <li>
+                        <a href="updateAccount.jsf?userID=#{sessionBean.users.userid}">
+                            <i class="fa fa-fw fa-user"></i>
+                            <span>#{bundle.account}</span>
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a href="#">
+                            <i class="fa fa-fw fa-tasks"></i>
+                            <span>#{bundle.tasks}</span>
+                            <span class="topbar-submenuitem-badge">1</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-fw fa-envelope-o"></i>
+                            <span>#{bundle.requests}</span>
+                            <span class="topbar-submenuitem-badge">4</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" onclick="PF('disconnectDlg').show()">
+                            <i class="fa fa-fw  fa-sign-out"></i>
+                            <span>#{bundle.disconnect}</span>                                
+                        </a>
+                    </li>                       
+                </ul>
+            </li>
             <!--</ui:fragment>-->
             <div class="topbar-menu erp-topmenu-user"> 
-                
+
                 #{sessionBean.users.name} #{sessionBean.users.surname}
                 <br/>
                 #{sessionBean.users.role.name} #{sessionBean.users.department.name}

@@ -46,7 +46,7 @@ public class SchedulerAction {
     public String  updateFromLoggers() throws ERPCustomException {
 
         try {
-            int stat = ldrTask.doSchedulerWork(true);
+            int stat = ldrTask.doSchedulerWork(true);           
             Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_EXECUTETASKLOGGERS")));
             Auditing audit = new Auditing(sessionBean.getUsers(), sessionBean.getUsers().getCompany(), action, "Update Data from Loggers executed manually",
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
@@ -59,7 +59,7 @@ public class SchedulerAction {
             } else {
                 FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
             }
-            return "dashboardTasks?faces-redirect=true";
+            return "";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -83,33 +83,11 @@ public class SchedulerAction {
             } else {
                 FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
             }
-             return "dashboardTasks?faces-redirect=true";
+             return "";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             throw new ERPCustomException("Throw From Update From Staff Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
-
-//    public void goError(Exception ex) {
-//        try {
-//            logger.error("-----------AN ERROR HAPPENED !!!! -------------------- : " + ex.toString());
-//            if (sessionBean.getUsers() != null) {
-//                logger.error("User=" + sessionBean.getUsers().getUsername());
-//            }
-//            logger.error("Cause=" + ex.getCause());
-//            logger.error("Class=" + ex.getClass());
-//            logger.error("Message=" + ex.getLocalizedMessage());
-//            logger.error(ex, ex);
-//            logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-//
-//            ErrorBean errorBean = (ErrorBean) FacesUtils.getManagedBean("errorBean");
-//            errorBean.reset();
-//            errorBean.setErrorMSG(MessageBundleLoader.getMessage(sessionBean.getErrorMsgKey()));
-//            //FacesUtils.redirectAJAX("./templates/error.jsf?faces-redirect=true");
-//            FacesUtils.redirectAJAX(FacesUtils.getContextPath() + "/common/error.jsf?faces-redirect=true");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
