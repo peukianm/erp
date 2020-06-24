@@ -226,7 +226,7 @@
 
                                 <p:column style="text-align: center;" headerText="#{bundle.actions}" exportable="false" >
                                     <p:commandButton update="growl updateDepartmentsForm:msgDepartmentID  updateDepartmentsForm" rendered="#{department.active==1}"  icon="pi pi-times"  style="font-size: 16px;" 
-                                                     action="#{administrationAction.deactivateDepartment(department.departmentid)}" class="btn-list" title="#{bundle.deactivateDepartmet}"  >
+                                                     action="#{administrationAction.deactivateDepartment(department.departmentid)}" class="btn-list" title="#{bundle.deactivateDepartment}"  >
                                         <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationDeactivateDepartment};" icon="pi pi-exclamation-triangle" /> 
                                         <f:setPropertyActionListener value="#{department}" target="#{dbTasks.departmentForUpdate}" />                                
                                     </p:commandButton> 
