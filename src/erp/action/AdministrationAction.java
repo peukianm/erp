@@ -37,6 +37,9 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     private SessionBean sessionBean;
+    
+     @Inject
+    private ApplicationBean applicationBean;
 
     @Inject
     UserBean userBean;
@@ -49,7 +52,7 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     DashboardView dbView;
-    
+
     @Inject
     DashboardAudit dbAudit;
 
@@ -58,6 +61,9 @@ public class AdministrationAction implements Serializable {
 
     @Inject
     DashboardAttendance dbAttendance;
+
+    @Inject
+    DashboardTasks dbTasks;
 
     @Inject
     InsertUser insertUser;
@@ -121,16 +127,16 @@ public class AdministrationAction implements Serializable {
     private String mainPageForward(Usr temp) throws ERPCustomException {
         try {
             //if (temp.getRole().getRoleid() == 1 || temp.getRole().getRoleid() == 2 || temp.getRole().getRoleid() == 3) {
-                Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
-                Auditing audit = new Auditing(temp, temp.getCompany(), action, "User " + sessionBean.getUsers().getUsername() + " connected on the platform",
-                        FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
-                        FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
+            Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
+            Auditing audit = new Auditing(temp, temp.getCompany(), action, "User " + sessionBean.getUsers().getUsername() + " connected on the platform",
+                    FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
+                    FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
 
-                auditingDAO.save(audit);
-                sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_ADMIN"));
-                sessionBean.setPageName(MessageBundleLoader.getMessage("attendancePage"));
+            auditingDAO.save(audit);
+            sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_ADMIN"));
+            sessionBean.setPageName(MessageBundleLoader.getMessage("attendancePage"));
 
-                return "dashboardAttendance?faces-redirect=true";
+            return "dashboardAttendance?faces-redirect=true";
             //}
             //return "";
         } catch (Exception e) {
@@ -317,7 +323,7 @@ public class AdministrationAction implements Serializable {
             userDAO.update(user);
 
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
-            
+
             updateUser.setPassword(null);
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
             FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').hide()");
@@ -329,7 +335,7 @@ public class AdministrationAction implements Serializable {
             throw new ERPCustomException("Throw From Reset Password Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
-    
+
     public String resetAccountPassword() throws ERPCustomException {
         try {
             Usr user = updateAccount.getUser();
@@ -425,9 +431,8 @@ public class AdministrationAction implements Serializable {
         FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').show()");
         FacesUtils.updateHTMLComponnetWIthJS("resetPasswordUserPanelID");
     }
-    
-    
-    public void searchAudit()  throws ERPCustomException  {
+
+    public void searchAudit() throws ERPCustomException {
         try {
             Timestamp from = null;
             if (dbAudit.getFromAuditDate() != null) {
@@ -439,7 +444,6 @@ public class AdministrationAction implements Serializable {
                 to = FormatUtils.formatDateToTimestamp(dbAudit.getToAuditDate());
             }
 
-    
             List<Auditing> auditings = auditingDAO.searchAudit(dbAudit.getSearchUser(), dbAudit.getSelectAction(), dbAudit.getSelectCategory(), from, to, dbAudit.getSelectedCompany());
             dbAudit.setSearchAudit(auditings);
         } catch (Exception e) {
@@ -475,6 +479,42 @@ public class AdministrationAction implements Serializable {
 
         }
     }
+
+    public String deactivateDepartment(long departmetID) throws ERPCustomException {
+        try {
+            Department department = dbTasks.getDepartmentForUpdate();
+            department.setActive(BigDecimal.ZERO);
+            staffDAO.updateGeneric(department);
+            auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ΑCT_UPDATECOMPANY")), "Department " + department.getName() + " deactivated");
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("departmentUpdated"));
+            applicationBean.resetDepartmentList();
+            return "";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From deactivate department ", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
+    }
+
+    public String activateDepartment(long departmentID) throws ERPCustomException {
+
+        try {
+            Department department = dbTasks.getDepartmentForUpdate();
+            department.setActive(BigDecimal.ZERO);
+            staffDAO.updateGeneric(department);
+            auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ΑCT_UPDATECOMPANY")), "Department " + department.getName() + " activated");
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("departmentUpdated"));
+            applicationBean.resetDepartmentList();
+            return "";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From actrivate department ", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
+    }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

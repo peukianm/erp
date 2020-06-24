@@ -64,6 +64,15 @@ public class StaffDAO {
             throw re;
         }
     }
+    public void updateGeneric(Object bean) {
+        try {
+            entityManager.merge(bean);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on generic updating ", re);
+            throw re;
+        }
+    }
 
     public void delete(Staff staff) {
         try {

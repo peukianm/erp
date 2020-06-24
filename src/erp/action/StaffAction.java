@@ -150,6 +150,25 @@ public class StaffAction {
             throw new ERPCustomException("Throw From Reset Logger Code Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
+    
+    public String resetStaffDepartment() throws ERPCustomException {
+        try {
+            Staff staff = dbStaff.getStaffForUpdate();
+
+            staffDAO.updateStaff(staff);
+            auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATESTAFF")), "Staff Department " + staff.getSurname() + " " + staff.getName() + " updated");
+
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("departmentUpdated"));
+            FacesUtils.callRequestContext("PF('resetDepartmentDialogWidget').hide()");
+          
+            return "";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From Reset department Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
+    }
 
     public String insertStaff() throws ERPCustomException {
         try {

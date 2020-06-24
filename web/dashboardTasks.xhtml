@@ -129,7 +129,7 @@
                 </div>
 
 
-                <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <!--               !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
                 <div class="p-col-12 p-xl-6"> 
                     <h:form id="updateFromStaffForm" >
                         <div class="card card-w-title statistics">
@@ -176,10 +176,76 @@
                             </p:commandButton>
                         </div>
                     </h:form>
-                </div>                                        
+                </div>  
+
+
+                <!--               !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <div class="p-col-12 p-xl-5"> 
+                    <h:form id="updateDepartmentsForm" >
+                        <div class="card card-w-title statistics">
+                            <div class="erp-panel-titlebar">
+                                #{bundle.updateDepartment}
+                            </div>
+                            <p:messages id="msgDepartmentID" showDetail="false" closable="true">
+                                <p:autoUpdate disabled="true" />
+                            </p:messages>
+                            <table style="width: 100%;margin-bottom: 15px;" >
+                                <tr>
+                                    <td>
+                                        <p:outputLabel value="#{bundle.company}:" />&#160;
+                                        <p:outputLabel value="#{sessionBean.users.company.name}" style="font-weight: bold " />
+                                    </td>
+                                </tr>                               
+                            </table>   
+
+                            <p:dataTable id="tbl" var="department" value="#{dbTasks.departmentsList}" styleClass="myclass"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                         paginator="true" rows="15" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
+
+                                <p:column sortBy="#{sessionBean.users.company.abbrev}" >
+                                    <f:facet name="header">
+                                        <h:outputText value="#{bundle.company}" />
+                                    </f:facet>
+                                    <h:outputText value="#{sessionBean.users.company.abbrev}" />
+                                </p:column>
+
+                                <p:column sortBy="#{department.name}" >
+                                    <f:facet name="header">
+                                        <h:outputText value="#{bundle.department}" />
+                                    </f:facet>
+                                    <h:outputText value="#{department.name}" />
+                                </p:column>
+
+                                <p:column style="text-align: center;" exportable="false">
+                                    <f:facet name="header">
+                                        <h:outputText value="#{bundle.active}" />
+                                    </f:facet>
+                                    <h:graphicImage rendered="#{department.active==1}" url="/resources/babylon-layout/images/success.jpg" width="12px" height="12px" />
+                                    <h:graphicImage rendered="#{department.active!=1}" url="/resources/babylon-layout/images/close.gif" width="12px" height="12px" />   
+                                </p:column>
+
+                                <p:column style="text-align: center;" headerText="#{bundle.actions}" exportable="false" >
+                                    <p:commandButton update="growl updateDepartmentsForm:msgDepartmentID  updateDepartmentsForm" rendered="#{department.active==1}"  icon="pi pi-times"  style="font-size: 16px;" 
+                                                     action="#{administrationAction.deactivateDepartment(department.departmentid)}" class="btn-list" title="#{bundle.deactivateDepartmet}"  >
+                                        <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationDeactivateDepartment};" icon="pi pi-exclamation-triangle" /> 
+                                        <f:setPropertyActionListener value="#{department}" target="#{dbTasks.departmentForUpdate}" />                                
+                                    </p:commandButton> 
+                                    <p:commandButton update="growl updateDepartmentsForm:msgDepartmentID  updateDepartmentsForm" rendered="#{department.active==0}"  icon="pi pi-check"  style="font-size: 16px;" 
+                                                     action="#{administrationAction.activateDepartment(department.departmentid)}" class="btn-list" title="#{bundle.activateDepartment}"  >
+                                        <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationΑctivateDepartment };" icon="pi pi-exclamation-triangle" /> 
+                                        <f:setPropertyActionListener value="#{department}" target="#{dbTasks.departmentForUpdate}" />                                
+                                    </p:commandButton> 
+                                </p:column>  
+
+
+                            </p:dataTable>
+
+                        </div>
+                    </h:form>
+                </div>  
+
+
             </div> 
         </div>
-
-
     </ui:define>
 </ui:composition> 

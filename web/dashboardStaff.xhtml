@@ -250,9 +250,16 @@
 
 
                                     <p:column headerText="#{bundle.actions}" exportable="false" >
-                                        <p:commandButton  icon="pi pi-envelope"  class="btn-list" update="resetLoggerDataFormID" style="font-size: 16px;" title="#{bundle.resetLoggerCode}"   onclick="PF('resetLoggerDataDialogWidget').show()">
+                                        <p:commandButton  icon="pi pi-id-card"  class="btn-list" update="resetLoggerDataFormID" style="font-size: 16px;" title="#{bundle.resetLoggerCode}"   onclick="PF('resetLoggerDataDialogWidget').show()">
                                             <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />                                
                                         </p:commandButton> 
+
+                                        <p:commandButton  icon="pi pi-users"  class="btn-list" update="resetDepartmentFormID" style="font-size: 16px;" title="#{bundle.resetDepartment}"   onclick="PF('resetDepartmentDialogWidget').show()">
+                                            <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />                                
+                                        </p:commandButton> 
+
+
+
                                         <p:commandButton  icon="pi pi-pencil" style="font-size: 16px;" action="#{staffAction.goUpdateStaff(staff.staffid)}"  class="btn-list" title="#{bundle.updateStaff}"  />                                                                            
                                         <p:commandButton update="growl viewStaffResults" rendered="#{staff.active==1}"  icon="pi pi-times"  style="font-size: 16px;" action="#{staffAction.deactivateStaff(staff.staffid)}" class="btn-list" title="#{bundle.deactivateStaff}"  >
                                             <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationDeactivateStaff};" icon="pi pi-exclamation-triangle" /> 
@@ -382,10 +389,41 @@
                         </tr>                        
                     </table>
                 </p:panel>
-                <p:commandButton action="#{staffAction.resetLoggerCode()}" value="#{bundle.changeLoggerCode}" update="growl viewStaffResults msgID" />
+                <p:commandButton action="#{staffAction.resetLoggerCode()}" value="#{bundle.changeLoggerCode}" update="growl viewStaffResults msgID" >
+                    <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationChangeLoggerCode};" icon="pi pi-exclamation-triangle" /> 
+                </p:commandButton>
                 <p:spacer width="10" />
                 <p:commandButton type="button" immediate="true" value="#{bundle.cancel}" onclick="PF('resetLoggerDataDialogWidget').hide()" />
             </h:form>
         </p:dialog>
+
+
+        <p:dialog header="#{bundle.resetDepartment}" id="resetDepartmentDialogID" position="center" widgetVar="resetDepartmentDialogWidget" modal="true" resizable="false" >
+            <h:form id="resetDepartmentFormID">
+                <p:panel id="resetDepartmentPanelID" widgetVar="resetDepartmentPanelWidget">
+                    <p:messages showDetail="false" closable="true">
+                        <p:autoUpdate />
+                    </p:messages>
+                    <table>
+                        <tr>
+                            <td><p:outputLabel for="updateDep" value="#{bundle.department}:" style="font-weight: bold;" /> </td>                                    
+                            <td>
+                                <p:selectOneMenu style="width: 100%;" value="#{dbStaff.staffForUpdate.department}" id="updateDep" converter="omnifaces.SelectItemsConverter" >                                                                  
+                                    <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                </p:selectOneMenu>
+                            </td>
+                        </tr>                        
+                    </table>
+                </p:panel>
+                <p:spacer height="20" />
+                <p:commandButton action="#{staffAction.resetStaffDepartment()}" value="#{bundle.changeDepartment}" update="growl viewStaffResults msgID" >
+                    <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationChangeDepartment};" icon="pi pi-exclamation-triangle" /> 
+                </p:commandButton>
+                <p:spacer width="10" />
+                <p:commandButton type="button" immediate="true" value="#{bundle.cancel}" onclick="PF('resetDepartmentDialogWidget').hide()" />
+            </h:form>
+        </p:dialog>
+
+
     </ui:define>
 </ui:composition>

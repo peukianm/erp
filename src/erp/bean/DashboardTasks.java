@@ -1,10 +1,13 @@
 package erp.bean;
 
+import erp.dao.CompanyDAO;
 import erp.dao.SchedulerDAO;
 import erp.dao.StaffDAO;
 import erp.entities.Companytask;
+import erp.entities.Department;
 import erp.entities.Scheduletask;
 import erp.entities.Scheduletaskdetail;
+import erp.entities.Sector;
 import erp.entities.Usr;
 import erp.util.AccessControl;
 import erp.util.MessageBundleLoader;
@@ -38,15 +41,22 @@ public class DashboardTasks implements Serializable {
 
     @Inject
     private StaffDAO staffDao;
-    
-     @Inject
+
+    @Inject
     private SchedulerDAO schedulerDAO;
 
+    @Inject
+    private CompanyDAO companyDAO;
+
     Usr user;
-    
+
+    private Department departmentForUpdate;
+    private Sector sectorForUpdate;
+    private List<Department> departmentsList;
+
     List<Scheduletaskdetail> staffDetails = new ArrayList<>(0);
     List<Scheduletaskdetail> loggerDetails = new ArrayList<>(0);
-    
+
     public void preRenderView() {
         if (sessionBean.getUsers().getDepartment() != null && user.getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_TASK_ADMIN"), null, 1)) {
@@ -62,16 +72,42 @@ public class DashboardTasks implements Serializable {
         System.out.println("INITIALIZE DB TASKS BEAN");
         user = sessionBean.getUsers();
 
-        loggerDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")), user.getCompany(), 10);
-        staffDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")), user.getCompany(), 10);
-        
+        loggerDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")), user.getCompany(), 5);
+        staffDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")), user.getCompany(), 5);
+
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         lastStaffExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")));
+
+        departmentsList = companyDAO.getAllDepartment(false);
     }
 
     @PreDestroy
     public void reset() {
 
+    }
+
+    public List<Department> getDepartmentsList() {
+        return departmentsList;
+    }
+
+    public void setDepartmentsList(List<Department> departmentsList) {
+        this.departmentsList = departmentsList;
+    }
+
+    public Department getDepartmentForUpdate() {
+        return departmentForUpdate;
+    }
+
+    public void setDepartmentForUpdate(Department departmentForUpdate) {
+        this.departmentForUpdate = departmentForUpdate;
+    }
+
+    public Sector getSectorForUpdate() {
+        return sectorForUpdate;
+    }
+
+    public void setSectorForUpdate(Sector sectorForUpdate) {
+        this.sectorForUpdate = sectorForUpdate;
     }
 
     public String getLastExecution() {
@@ -105,5 +141,5 @@ public class DashboardTasks implements Serializable {
     public void setLoggerDetails(List<Scheduletaskdetail> loggerDetails) {
         this.loggerDetails = loggerDetails;
     }
-    
+
 }

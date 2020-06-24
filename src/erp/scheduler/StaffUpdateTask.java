@@ -150,9 +150,9 @@ public class StaffUpdateTask {
                     + " work_phone as phone1,  home_phone as phone2,  "
                     + " birth_date as birthdate,employee_id as cteamid, active as enable,EM.AMKA as amka,"
                     + " studytype_id as studytypeid,familystatus_id as familystatusid,service_id as sectorid,"
-                    + " bigsection_id as companyid "
+                    + " bigsection_id as companyid, MISTHACTIVE "
                     + " from SYSPROS.EMP_EMPLOYEES em "
-                    + " where em.active=1 AND TODATE >= current_date AND EM.BIGSECTION_ID=1 "
+                    + " where em.active=1 AND TODATE >= current_date AND EM.BIGSECTION_ID=1 AND EM.MISTHACTIVE=1 "
                     + " order by last_name";
 
             Statement stmt = conn.createStatement();

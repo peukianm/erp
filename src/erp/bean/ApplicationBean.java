@@ -60,6 +60,33 @@ public class ApplicationBean implements Serializable {
     public void init() {
     }
 
+    public void resetDepartmentList(){
+        departments = null;
+        getDepartments();        
+    }
+    public void resetSectorList(){
+        sectors = null;
+        getSectors();        
+    }
+    
+    public void resetCompanyList(){
+        companies = null;
+        getCompanies();        
+    }
+    
+    public void resetRoleList(){
+        roles = null;
+        getRoles();        
+    }
+    
+    public void resetAllList(){
+        resetDepartmentList();
+        resetSectorList();
+        resetCompanyList();
+        resetRoleList();
+    }
+            
+            
     public List<Emprank> getEmpranks() {
         if (empranks == null) {
             empranks = companyDAO.getAllEmpRanks();
