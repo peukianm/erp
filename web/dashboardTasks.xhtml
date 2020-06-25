@@ -221,7 +221,7 @@
                                     <h:outputText value="#{department.name}" />
                                 </p:column>
 
-                                <p:column style="text-align: center;" exportable="false">
+                                <p:column style="text-align: center;" sortBy="#{department.active}" exportable="false">
                                     <f:facet name="header">
                                         <h:outputText value="#{bundle.active}" />
                                     </f:facet>
