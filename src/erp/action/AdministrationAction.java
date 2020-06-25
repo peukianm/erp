@@ -2,6 +2,7 @@ package erp.action;
 
 import erp.bean.*;
 import erp.dao.AuditingDAO;
+import erp.dao.CompanyDAO;
 import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
 import erp.entities.*;
@@ -10,6 +11,7 @@ import erp.util.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -33,12 +35,15 @@ public class AdministrationAction implements Serializable {
     AuditingDAO auditingDAO;
 
     @EJB
+    CompanyDAO companyDAO;
+
+    @EJB
     StaffDAO staffDAO;
 
     @Inject
     private SessionBean sessionBean;
-    
-     @Inject
+
+    @Inject
     private ApplicationBean applicationBean;
 
     @Inject
@@ -488,7 +493,7 @@ public class AdministrationAction implements Serializable {
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ΑCT_UPDATECOMPANY")), "Department " + department.getName() + " deactivated");
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("departmentUpdated"));
             applicationBean.resetDepartmentList();
-             dbTasks.reset();
+            dbTasks.reset();
             return "";
 
         } catch (Exception e) {
@@ -516,32 +521,32 @@ public class AdministrationAction implements Serializable {
             throw new ERPCustomException("Throw From actrivate department ", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
-    
+
     public void updateSector() throws ERPCustomException {
 
         try {
             Sector sector = dbTasks.getSelectedSector();
             List<Department> deps = dbTasks.getSectorDepartments();
-             sector.setDepartments(null);
-             sector.setSectordepartments(null);
-            staffDAO.updateGeneric(sector);
-//            for (int i = 0; i < sector.getCompanysectors().size(); i++) {
-//                staffDAO.deleteGeneric(sector.getCompanysectors().get(i));
-//            }
-            
+
+            List<Sectordepartment> sds = companyDAO.getSectorDepartments(sector, sessionBean.getUsers().getCompany());
+            System.out.println("sds size=" + sds.size());
+
+            for (int i = 0; i < sds.size(); i++) {
+                staffDAO.deleteSectordepartment(sds.get(i));
+            }
+
+            sds = new ArrayList<>(0);
             for (int i = 0; i < deps.size(); i++) {
                 Sectordepartment sd = new Sectordepartment();
                 sd.setActive(BigDecimal.ONE);
                 sd.setCompany(sessionBean.getUsers().getCompany());
                 sd.setDepartment(deps.get(i));
                 sd.setSector(sector);
-               staffDAO.saveGeneric(sd);
+                sds.add(sd);
+                staffDAO.saveGeneric(sd);
             }
-            //staffDAO.updateGeneric(sector);
-            
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ΑCT_UPDATECOMPANY")), "Sector " + sector.getName() + " updated");
-            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("sectorUpdated"));
-            //staffDAO.refreshGeneric(sector);
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("sectorUpdated"));            
             applicationBean.resetSectorList();
             dbTasks.reset();
         } catch (Exception e) {
@@ -551,10 +556,7 @@ public class AdministrationAction implements Serializable {
         }
     }
 
-
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

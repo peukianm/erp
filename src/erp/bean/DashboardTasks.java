@@ -87,11 +87,14 @@ public class DashboardTasks implements Serializable {
         sectorsList = companyDAO.getAllSector();
     }
 
-    
-    public void reset() {        
+    public void reset() {
         departmentsList = companyDAO.getAllDepartment(false);
         activeDepartments = companyDAO.getAllDepartment(true);
         sectorsList = companyDAO.getAllSector();
+        if (selectedSector != null) {
+            sectorDepartments.clear();
+            sectorDepartments.addAll(staffDao.getSectorDepartments(sessionBean.getUsers().getCompany(), selectedSector));
+        }
     }
 
     public List<Department> getSectorDepartments() {
@@ -105,7 +108,7 @@ public class DashboardTasks implements Serializable {
     public void onSectorChange() {
         if (selectedSector != null) {
             sectorDepartments.clear();
-           sectorDepartments.addAll(staffDao.getSectorDepartments(sessionBean.getUsers().getCompany(), selectedSector));
+            sectorDepartments.addAll(staffDao.getSectorDepartments(sessionBean.getUsers().getCompany(), selectedSector));
         }
     }
 

@@ -46,7 +46,7 @@ public class Sector implements Serializable {
     private List<Department> departments;
 
     //bi-directional many-to-one association to Sectordepartment
-    @OneToMany(mappedBy = "sector")
+    @OneToMany(mappedBy = "sector", cascade = CascadeType.ALL, fetch = FetchType.LAZY )
     private List<Sectordepartment> sectordepartments;
 
     //bi-directional many-to-one association to Staff

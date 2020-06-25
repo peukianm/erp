@@ -55,8 +55,8 @@ public class StaffDAO {
         }
 
     }
-    
-     public void saveGeneric(Object entity) {
+
+    public void saveGeneric(Object entity) {
         try {
             entityManager.persist(entity);
         } catch (RuntimeException re) {
@@ -65,8 +65,18 @@ public class StaffDAO {
             throw re;
         }
     }
-     
-      public void refreshGeneric(Object entity) {
+
+    public void persistGeneric(Object entity) {
+        try {
+            entityManager.persist(entity);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on saving  entity", re);
+            throw re;
+        }
+    }
+
+    public void refreshGeneric(Object entity) {
         try {
             entityManager.refresh(entity);
         } catch (RuntimeException re) {
@@ -75,6 +85,8 @@ public class StaffDAO {
             throw re;
         }
     }
+
+
 
     public void update(Staff staff) {
         try {
@@ -85,9 +97,20 @@ public class StaffDAO {
             throw re;
         }
     }
+
     public void updateGeneric(Object bean) {
         try {
             entityManager.merge(bean);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on generic updating ", re);
+            throw re;
+        }
+    }
+    
+     public Object mergeGeneric(Object bean) {
+        try {
+            return entityManager.merge(bean);
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on generic updating ", re);
@@ -104,9 +127,10 @@ public class StaffDAO {
             throw re;
         }
     }
-      public void deleteGeneric(Object entity) {
+
+    public void deleteSectordepartment(Object entity) {
         try {
-            entityManager.remove(entity);
+            entityManager.remove(entityManager.merge(entity));
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on deleting entity", re);
@@ -193,7 +217,7 @@ public class StaffDAO {
             throw re;
         }
     }
-    
+
     public Company getCompany(long id) {
         try {
             return entityManager.find(Company.class, id);
@@ -203,7 +227,7 @@ public class StaffDAO {
             throw re;
         }
     }
-    
+
     public Workshift getShift(long id) {
         try {
             return entityManager.find(Workshift.class, id);
@@ -214,9 +238,6 @@ public class StaffDAO {
         }
     }
 
-    
-    
-    
     public void updateStaff(Staff staff) {
         try {
             entityManager.merge(staff);

@@ -6,6 +6,7 @@ import erp.entities.Department;
 import erp.entities.Emprank;
 import erp.entities.Familystatus;
 import erp.entities.Sector;
+import erp.entities.Sectordepartment;
 import erp.entities.Speciality;
 import erp.entities.Studytype;
 import erp.entities.Workshift;
@@ -81,7 +82,6 @@ public class CompanyDAO {
 
     public List<Department> getAllDepartment(boolean onlyActive) {
         try {
-            System.out.println("GETTINH ALL DEPARTMETS!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             String sql = "SELECT e FROM Department e "
                     + (onlyActive ? " where e.active = 1 " : " ")
                     + " order by e.name ";
@@ -196,6 +196,25 @@ public class CompanyDAO {
             String sql = "SELECT e FROM Sector e "
                     + " order by e.ordered ";
             Query query = entityManager.createQuery(sql);
+            return query.getResultList();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting all sectors", re);
+            throw re;
+        }
+
+    }
+    
+     public List<Sectordepartment> getSectorDepartments(Sector sector, Company company) {
+        try {
+            String sql = "SELECT e FROM Sectordepartment e "
+                    + " where e.company = :company "
+                    + " and e.sector = :sector "
+                    + "  ";
+            Query query = entityManager.createQuery(sql);
+            query.setParameter("company", company);
+            query.setParameter("sector", sector);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
