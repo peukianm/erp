@@ -237,7 +237,7 @@
                                 </div>
                                 
                                 <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="#{bundle.department}" for="department" styleClass="form-label erp-display-block" />                                    
+                                    <p:outputLabel value="#{bundle.primaryDepartment}" for="department" styleClass="form-label erp-display-block" />                                    
                                     <p:selectOneMenu   value="#{updateUser.user.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
                                         <f:selectItem itemLabel="" itemValue=""  />
                                         <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    

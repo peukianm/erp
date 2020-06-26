@@ -17,7 +17,7 @@ public class Usr implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "USR_USERID_GENERATOR", sequenceName = "USERS_SEQ")
+    @SequenceGenerator(name = "USR_USERID_GENERATOR", sequenceName = "USR_SEQ")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USR_USERID_GENERATOR")
     private long userid;
 
@@ -54,32 +54,40 @@ public class Usr implements Serializable {
     @OneToMany(mappedBy = "usr")
     private List<Loggerdata> loggerdata;
 
+    //bi-directional many-to-one association to Userdepartment
+    @OneToMany(mappedBy = "usr", fetch = FetchType.EAGER)
+    private List<Userdepartment> userdepartments;
+
     //bi-directional many-to-one association to Userrole
     @OneToMany(mappedBy = "usr", fetch = FetchType.EAGER)
     private List<Userrole> userroles;
 
-    //bi-directional many-to-one association to Company
-    @ManyToOne(fetch = FetchType.EAGER)
+    //bi-directional many-to-one association to COMPANY
+    @ManyToOne
     @JoinColumn(name = "COMPANYID")
     private Company company;
 
-    //bi-directional many-to-one association to Company
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "STAFFID")
-    private Staff staff;
-
     //bi-directional many-to-one association to Department
+      //bi-directional many-to-one association to Department
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "DEPARTMENTID")
     private Department department;
-    
-     //bi-directional many-to-one association to Department
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "SECTORID")
-    private Sector sector;
+
+    //bi-directional many-to-many association to Department
+    @ManyToMany
+    @JoinTable(
+            name = "USERDEPARTMENT",
+            joinColumns = {
+                @JoinColumn(name = "USERID")
+            },
+            inverseJoinColumns = {
+                @JoinColumn(name = "DEPARTMENTID")
+            }
+    )
+    private List<Department> departments;
 
     //bi-directional many-to-many association to Role
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "USERROLE",
             joinColumns = {
@@ -90,6 +98,16 @@ public class Usr implements Serializable {
             }
     )
     private List<Role> roles;
+
+    //bi-directional many-to-one association to Sector
+    @ManyToOne
+    @JoinColumn(name = "SECTORID")
+    private Sector sector;
+
+    //bi-directional many-to-one association to Staff
+    @ManyToOne
+    @JoinColumn(name = "STAFFID")
+    private Staff staff;
 
     public Usr() {
     }
@@ -226,6 +244,28 @@ public class Usr implements Serializable {
         return loggerdata;
     }
 
+    public List<Userdepartment> getUserdepartments() {
+        return this.userdepartments;
+    }
+
+    public void setUserdepartments(List<Userdepartment> userdepartments) {
+        this.userdepartments = userdepartments;
+    }
+
+    public Userdepartment addUserdepartment(Userdepartment userdepartment) {
+        getUserdepartments().add(userdepartment);
+        userdepartment.setUsr(this);
+
+        return userdepartment;
+    }
+
+    public Userdepartment removeUserdepartment(Userdepartment userdepartment) {
+        getUserdepartments().remove(userdepartment);
+        userdepartment.setUsr(null);
+
+        return userdepartment;
+    }
+
     public List<Userrole> getUserroles() {
         return this.userroles;
     }
@@ -264,6 +304,14 @@ public class Usr implements Serializable {
         this.department = department;
     }
 
+    public List<Department> getDepartments() {
+        return this.departments;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
+
     public List<Role> getRoles() {
         return this.roles;
     }
@@ -272,12 +320,12 @@ public class Usr implements Serializable {
         this.roles = roles;
     }
 
-    public Role getRole() {
-        return this.role;
+    public Sector getSector() {
+        return this.sector;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setSector(Sector sector) {
+        this.sector = sector;
     }
 
     public Staff getStaff() {
@@ -288,15 +336,16 @@ public class Usr implements Serializable {
         this.staff = staff;
     }
 
-    public Sector getSector() {
-        return sector;
+    public Role getRole() {
+        return role;
     }
 
-    public void setSector(Sector sector) {
-        this.sector = sector;
+    public void setRole(Role role) {
+        this.role = role;
     }
     
     
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

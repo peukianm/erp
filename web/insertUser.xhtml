@@ -244,11 +244,17 @@
                                     </p:selectOneMenu >
                                 </div>
                                 <div class="p-col-12 p-md-6 wizard-forms">
-                                    <p:outputLabel value="#{bundle.department}" for="department" styleClass="form-label erp-display-block" />                                    
-                                    <p:selectOneMenu   value="#{insertUser.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                    <p:outputLabel value="#{bundle.primaryDepartment}" for="department" styleClass="form-label erp-display-block" />                                    
+                                    <p:selectOneMenu widgetVar="department"  required="#{insertUser.depsPickList.target.size() gt 0}"  value="#{insertUser.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
                                         <f:selectItem itemLabel="" itemValue=""  />
                                         <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                     </p:selectOneMenu >
+                                </div>
+                                <div class="p-col-12 p-md-10 wizard-forms">
+                                    <p:outputLabel value="#{bundle.controlDepartment}" for="cdepartment" styleClass="form-label erp-display-block" />                                    
+                                    <p:pickList onTransfer="#{insertUser.onDepartmentChange()}"   id="cdepartment" value="#{insertUser.depsPickList}" var="deps" itemLabel="#{deps.name}" itemValue="#{deps}" />
+
+                                        
                                 </div>
                             </div>
 

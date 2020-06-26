@@ -8,9 +8,11 @@ import erp.entities.Sector;
 import erp.entities.Staff;
 import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
+import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -19,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.DualListModel;
 
 /**
  *
@@ -32,6 +35,9 @@ public class InsertUser implements Serializable {
 
     @Inject
     private SessionBean sessionBean;
+    
+     @Inject
+    private ApplicationBean applicationBean;
 
     @Inject
     private StaffDAO staffDao;
@@ -44,11 +50,13 @@ public class InsertUser implements Serializable {
     String phone;
     String email;
     List<Role> selectedRoles;
+    List<Department> selectedDepartments;
     Staff staff;
     Company company;
     Sector sector;
     Department department;
     List<Staff> availableStaff;
+    private DualListModel<Department> depsPickList;
 
     public void preRenderView() {
         if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
@@ -62,6 +70,12 @@ public class InsertUser implements Serializable {
 
     @PostConstruct
     public void init() {
+        List<Department> depsSource = new ArrayList<>(0);
+        List<Department> depstarget = new ArrayList<>(0);
+        Department emptyDep = new Department();
+        depsSource.add(emptyDep);
+        depsSource.addAll(applicationBean.getDepartments());        
+        depsPickList = new DualListModel<Department>(depsSource, depstarget);
     }
 
     @PreDestroy
@@ -83,7 +97,31 @@ public class InsertUser implements Serializable {
             throw new ERPCustomException("Throw From Autocomplete Staff Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
+    
+    public void onDepartmentChange(){
+        System.out.println("ON DEPARTMET CHANGE");
+        FacesUtils.updateHTMLComponnetWIthJS("insertUserFormID");
+        
+    }
 
+    public DualListModel<Department> getDepsPickList() {
+        return depsPickList;
+    }
+
+    public void setDepsPickList(DualListModel<Department> depsPickList) {
+        this.depsPickList = depsPickList;
+    }
+
+    
+    
+    public List<Department> getSelectedDepartments() {
+        return selectedDepartments;
+    }
+
+    public void setSelectedDepartments(List<Department> selectedDepartments) {
+        this.selectedDepartments = selectedDepartments;
+    }    
+    
     public Sector getSector() {
         return sector;
     }

@@ -69,6 +69,7 @@ public class DashboardStaff implements Serializable {
         selectedDepartments = null;
         selectedSectors = null;
         staff = new ArrayList<>(0);
+        loggerCode=null;
 
     }
 

@@ -52,20 +52,22 @@ public class StaffAction {
     public void fetchStaff() throws ERPCustomException {
         try {
             List<Staff> retValue = new ArrayList<>(0);
-            if (!dbStaff.getSelectedSectors().isEmpty()) {
-                dbStaff.getSelectedSectors().forEach((temp) -> {
-                    List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), temp, null, dbStaff.isActive());
-                    retValue.addAll(staff);
-                });
-
-            } else if (!dbStaff.getSelectedDepartments().isEmpty()) {
+//            if (!dbStaff.getSelectedSectors().isEmpty()) {
+//                dbStaff.getSelectedSectors().forEach((temp) -> {
+//                    List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), temp, null, dbStaff.isActive(), dbStaff.getLoggerCode());
+//                    retValue.addAll(staff);
+//                });
+//
+//            } else 
+                
+                if (!dbStaff.getSelectedDepartments().isEmpty()) {
                 dbStaff.getSelectedDepartments().forEach((temp) -> {
-                    List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), null, temp, dbStaff.isActive());
+                    List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), null, temp, dbStaff.isActive(), dbStaff.getLoggerCode());
                     retValue.addAll(staff);
                 });
 
             } else {
-                List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), null, null, dbStaff.isActive());
+                List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), null, null, dbStaff.isActive(), dbStaff.getLoggerCode());
                 retValue.addAll(staff);
             }
             dbStaff.setStaff(retValue);

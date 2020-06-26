@@ -33,14 +33,14 @@ public class Department implements Serializable {
 
     private String name;
 
+    //bi-directional many-to-one association to Attendance
+    @OneToMany(mappedBy = "department")
+    private List<Attendance> attendances;
+
     //bi-directional many-to-one association to Departmenttype
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "TYPEID")
     private Departmenttype departmenttype;
-
-    //bi-directional many-to-many association to Equipment
-    @ManyToMany(mappedBy = "departments")
-    private List<Equipment> equipments;
 
     //bi-directional many-to-one association to Equipmentdepartment
     @OneToMany(mappedBy = "department")
@@ -58,13 +58,17 @@ public class Department implements Serializable {
     @OneToMany(mappedBy = "department")
     private List<Staff> staffs;
 
+    //bi-directional many-to-one association to Userdepartment
+    @OneToMany(mappedBy = "department")
+    private List<Userdepartment> userdepartments;
+
     //bi-directional many-to-one association to Usr
     @OneToMany(mappedBy = "department")
-    private List<Usr> usrs;
+    private List<Usr> primaryUsers;
 
-    //bi-directional many-to-one association to Attendance
-    @OneToMany(mappedBy = "department")
-    private List<Attendance> attendances;
+    //bi-directional many-to-many association to Usr
+    @ManyToMany(mappedBy = "departments")
+    private List<Usr> usrs;
 
     public Department() {
     }
@@ -117,20 +121,34 @@ public class Department implements Serializable {
         this.name = name;
     }
 
+    public List<Attendance> getAttendances() {
+        return this.attendances;
+    }
+
+    public void setAttendances(List<Attendance> attendances) {
+        this.attendances = attendances;
+    }
+
+    public Attendance addAttendance(Attendance attendance) {
+        getAttendances().add(attendance);
+        attendance.setDepartment(this);
+
+        return attendance;
+    }
+
+    public Attendance removeAttendance(Attendance attendance) {
+        getAttendances().remove(attendance);
+        attendance.setDepartment(null);
+
+        return attendance;
+    }
+
     public Departmenttype getDepartmenttype() {
         return this.departmenttype;
     }
 
     public void setDepartmenttype(Departmenttype departmenttype) {
         this.departmenttype = departmenttype;
-    }
-
-    public List<Equipment> getEquipments() {
-        return this.equipments;
-    }
-
-    public void setEquipments(List<Equipment> equipments) {
-        this.equipments = equipments;
     }
 
     public List<Equipmentdepartment> getEquipmentdepartments() {
@@ -207,6 +225,29 @@ public class Department implements Serializable {
         return staff;
     }
 
+    public List<Userdepartment> getUserdepartments() {
+        return this.userdepartments;
+    }
+
+    public void setUserdepartments(List<Userdepartment> userdepartments) {
+        this.userdepartments = userdepartments;
+    }
+
+    public Userdepartment addUserdepartment(Userdepartment userdepartment) {
+        getUserdepartments().add(userdepartment);
+        userdepartment.setDepartment(this);
+
+        return userdepartment;
+    }
+
+    public Userdepartment removeUserdepartment(Userdepartment userdepartment) {
+        getUserdepartments().remove(userdepartment);
+        userdepartment.setDepartment(null);
+
+        return userdepartment;
+    }
+
+    
     public List<Usr> getUsrs() {
         return this.usrs;
     }
@@ -215,41 +256,15 @@ public class Department implements Serializable {
         this.usrs = usrs;
     }
 
-    public Usr addUsr(Usr usr) {
-        getUsrs().add(usr);
-        usr.setDepartment(this);
-
-        return usr;
+    public List<Usr> getPrimaryUsers() {
+        return primaryUsers;
     }
 
-    public Usr removeUsr(Usr usr) {
-        getUsrs().remove(usr);
-        usr.setDepartment(null);
-
-        return usr;
+    public void setPrimaryUsers(List<Usr> primaryUsers) {
+        this.primaryUsers = primaryUsers;
     }
-
-    public List<Attendance> getAttendances() {
-        return this.attendances;
-    }
-
-    public void setAttendances(List<Attendance> attendances) {
-        this.attendances = attendances;
-    }
-
-    public Attendance addAttendance(Attendance attendance) {
-        getAttendances().add(attendance);
-        attendance.setDepartment(this);
-
-        return attendance;
-    }
-
-    public Attendance removeAttendance(Attendance attendance) {
-        getAttendances().remove(attendance);
-        attendance.setDepartment(null);
-        return attendance;
-    }
-
+    
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

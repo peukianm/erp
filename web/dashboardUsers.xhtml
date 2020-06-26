@@ -303,8 +303,13 @@
                         <h:outputText value="#{bundle.sector}:" />
                         <h:outputText value="#{updateUser.user.sector.name}" />
 
-                        <h:outputText value="#{bundle.department}:" />
-                        <h:outputText value="#{updateUser.user.department.name}" />
+                        <h:outputText value="#{bundle.departments}:" />
+                        <ui:repeat var="userdepartment" value="#{updateUser.user.userdepartments}">
+                            <h:outputText value="#{userdepartment.department.name}" /> <br/>
+                        </ui:repeat>
+                        
+                        <h:outputText value="#{bundle.primaryDepartment}:" />
+                        <h:outputText value="#{updateUser.user.department.name}" />                         
 
                         <h:outputText value="#{bundle.phone}:" />
                         <h:outputText value="#{updateUser.user.phone}" />
