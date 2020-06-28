@@ -60,12 +60,12 @@
                 </ul>
             </li>
             <!--</ui:fragment>-->
-            <div class="topbar-menu erp-topmenu-user"> 
+            <h:panelGroup  layout="block" id="topSessionDataID" class="topbar-menu erp-topmenu-user"> 
 
                 #{sessionBean.users.name} #{sessionBean.users.surname}
                 <br/>
                 #{sessionBean.users.role.name} #{sessionBean.users.department.name}
-            </div>
+            </h:panelGroup>
         </ul>
     </div>
 </ui:composition>

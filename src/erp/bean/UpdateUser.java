@@ -2,6 +2,7 @@ package erp.bean;
 
 import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
+import erp.entities.Department;
 import erp.entities.Role;
 import erp.entities.Staff;
 import erp.entities.Usr;
@@ -12,6 +13,7 @@ import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -20,6 +22,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.model.DualListModel;
 
 /**
  *
@@ -35,22 +38,27 @@ public class UpdateUser implements Serializable {
     private SessionBean sessionBean;
 
     @Inject
+    private ApplicationBean applicationBean;
+
+    @Inject
     private StaffDAO staffDao;
 
     @Inject
     private UsrDAO userDao;
 
-    List<Role> selectedRoles;
-    Staff staff;
+    private List<Role> selectedRoles;
+    private Staff staff;
 
-    List<Staff> availableStaff;
-    Usr user;
+    private List<Staff> availableStaff;
+    private Usr user;
 
-    boolean active;
-    String userID;
-    String password;
+    private boolean active;
+    private String userID;
+
+    private DualListModel<Department> depsPickList;
 
     public void init() {
+        System.out.println("PRERENDER UPDATE USER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_USER"), null, 1)) {
                 return;
@@ -75,11 +83,17 @@ public class UpdateUser implements Serializable {
             active = false;
         }
         setUser(user);
+        List<Department> depsSource = applicationBean.getDepartments();
+        depsSource.removeAll(user.getDepartments());
+        List<Department> depstarget = user.getDepartments();
+        depsPickList = new DualListModel<Department>(depsSource, depstarget);
 
     }
 
     @PostConstruct
     public void pc() {
+        System.out.println("POST CONSTRUCT UPDATE USER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
     }
 
     @PreDestroy
@@ -102,12 +116,18 @@ public class UpdateUser implements Serializable {
         }
     }
 
-    public String getPassword() {
-        return password;
+    public void onDepartmentChange() {
+        List<Department> temp = depsPickList.getTarget();
+        user.setDepartments(new ArrayList<Department>(0));
+        user.setDepartments(temp);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public DualListModel<Department> getDepsPickList() {
+        return depsPickList;
+    }
+
+    public void setDepsPickList(DualListModel<Department> depsPickList) {
+        this.depsPickList = depsPickList;
     }
 
     public String getUserID() {

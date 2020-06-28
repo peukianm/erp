@@ -238,10 +238,17 @@
                                 
                                 <div class="p-col-12 p-md-6 wizard-forms">
                                     <p:outputLabel value="#{bundle.primaryDepartment}" for="department" styleClass="form-label erp-display-block" />                                    
-                                    <p:selectOneMenu   value="#{updateUser.user.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
+                                    <p:selectOneMenu required="#{updateUser.depsPickList.target.size() gt 0}"   value="#{updateUser.user.department}" id="department" converter="omnifaces.SelectItemsConverter" >                                                                                     
                                         <f:selectItem itemLabel="" itemValue=""  />
-                                        <f:selectItems value="#{applicationBean.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        <f:selectItems value="#{updateUser.user.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                     </p:selectOneMenu >
+                                </div>
+                                <div class="p-col-12 p-md-10 wizard-forms">
+                                    <p:outputLabel value="#{bundle.controlDepartment}" for="cdepartment" styleClass="form-label erp-display-block" />                                    
+                                    <p:pickList converter="DepartmentConverter"  id="cdepartment" value="#{updateUser.depsPickList}" var="deps" itemLabel="#{deps.name}" 
+                                                itemValue="#{deps}" >                                         
+                                        <p:ajax event="transfer"  listener="#{updateUser.onDepartmentChange}" update="department"  />
+                                    </p:pickList>                                        
                                 </div>
                             </div>
 

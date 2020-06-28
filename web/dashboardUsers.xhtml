@@ -252,12 +252,12 @@
                                     </p:column>
 
                                     <p:column headerText="#{bundle.actions}" exportable="false" >
-                                        <p:commandButton style="font-size: 16px;" icon="pi pi-envelope" action="#{administrationAction.goResetPasword()}"  class="btn-list" update="" title="#{bundle.resetPassword}">
-                                            <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />                                
+                                        <p:commandButton style="font-size: 16px;" icon="pi pi-envelope" action="#{administrationAction.goResetPasword()}" update="@widgetVar(resetPasswordDialogWidget)"  class="btn-list"  title="#{bundle.resetPassword}">
+                                            <f:setPropertyActionListener value="#{user}" target="#{dbUsers.passwordUpdateUser}" />                                
                                         </p:commandButton>
                                         <p:commandButton  style="font-size: 16px;" icon="pi pi-pencil" action="#{administrationAction.goUpdateUser(user.userid)}"  class="btn-list" title="#{bundle.updateUser}"  /> 
                                         <p:commandButton id="bt1" icon="pi pi-search" style="font-size: 16px;"  title="#{bundle.viewUser}"  onclick="PF('userDialog').show()" class="btn-list" update="userDetail">
-                                            <f:setPropertyActionListener value="#{user}" target="#{updateUser.user}" />
+                                            <f:setPropertyActionListener value="#{user}" target="#{dbUsers.viewUser}" />
                                         </p:commandButton>
                                     </p:column>  
 
@@ -282,45 +282,45 @@
                 <p:outputPanel id="userDetail" style="text-align:center;">
                     <p:panelGrid  columns="4" columnClasses="title, data, title, data" >
                         <h:outputText value="#{bundle.username}:" />
-                        <h:outputText value="#{updateUser.user.username}" />
+                        <h:outputText value="#{dbUsers.viewUser.username}" />
 
                         <h:outputText value="#{bundle.active}:" />
-                        <h:graphicImage rendered="#{updateUser.user.active==1}" url="/resources/babylon-layout/images/success.jpg" width="14px" height="14px" />
-                        <h:graphicImage rendered="#{updateUser.user.active!=1}" url="/resources/babylon-layout/images/close.gif" width="14px" height="14px" />   
+                        <h:graphicImage rendered="#{dbUsers.viewUser.active==1}" url="/resources/babylon-layout/images/success.jpg" width="14px" height="14px" />
+                        <h:graphicImage rendered="#{dbUsers.viewUser.active!=1}" url="/resources/babylon-layout/images/close.gif" width="14px" height="14px" />   
 
                         <h:outputText value="#{bundle.name}:" />
-                        <h:outputText value="#{updateUser.user.name}" />
+                        <h:outputText value="#{dbUsers.viewUser.name}" />
 
                         <h:outputText value="#{bundle.surname}:" />
-                        <h:outputText value="#{updateUser.user.surname}" />
+                        <h:outputText value="#{dbUsers.viewUser.surname}" />
 
                         <h:outputText value="#{bundle.email}:" />
-                        <h:outputText value="#{updateUser.user.email}" />
+                        <h:outputText value="#{dbUsers.viewUser.email}" />
 
                         <h:outputText value="#{bundle.company}:" />
-                        <h:outputText value="#{updateUser.user.company.name}" />
+                        <h:outputText value="#{dbUsers.viewUser.company.name}" />
                         
                         <h:outputText value="#{bundle.sector}:" />
-                        <h:outputText value="#{updateUser.user.sector.name}" />
+                        <h:outputText value="#{dbUsers.viewUser.sector.name}" />
 
-                        <h:outputText value="#{bundle.departments}:" />
-                        <ui:repeat var="userdepartment" value="#{updateUser.user.userdepartments}">
+                        <h:outputText value="#{bundle.controlDepartment}:" />
+                        <ui:repeat var="userdepartment" value="#{dbUsers.viewUser.userdepartments}">
                             <h:outputText value="#{userdepartment.department.name}" /> <br/>
                         </ui:repeat>
                         
                         <h:outputText value="#{bundle.primaryDepartment}:" />
-                        <h:outputText value="#{updateUser.user.department.name}" />                         
+                        <h:outputText value="#{dbUsers.viewUser.department.name}" />                         
 
                         <h:outputText value="#{bundle.phone}:" />
-                        <h:outputText value="#{updateUser.user.phone}" />
+                        <h:outputText value="#{dbUsers.viewUser.phone}" />
 
                         <h:outputText value="#{bundle.role}:" />
-                        <ui:repeat var="userrole" value="#{updateUser.user.userroles}">
+                        <ui:repeat var="userrole" value="#{dbUsers.viewUser.userroles}">
                             <h:outputText value="#{userrole.role.name}" /> <br/>
                         </ui:repeat>
                         
                          <h:outputText value="#{bundle.connectedStaff}:" />
-                         <h:outputText rendered="#{updateUser.user.staff!=null}" value="#{updateUser.user.staff.name} #{updateUser.user.staff.surname}" />
+                         <h:outputText rendered="#{dbUsers.viewUser.staff!=null}" value="#{dbUsers.viewUser.staff.name} #{dbUsers.viewUser.staff.surname}" />
                          
 
 
@@ -330,7 +330,7 @@
         </p:dialog>
 
 
-        <p:dialog header="#{bundle.resetPassword}" id="resetPasswordDialogID" position="center" widgetVar="resetPasswordDialogWidget" modal="true" resizable="false" >
+        <p:dialog header="#{bundle.resetPassword}" widgetVar="resetPasswordDialogWidget" id="resetPasswordDialogID" position="center" modal="true" resizable="false" >
             <h:form id="resetPasswordFormID">
                 <p:panel id="resetPasswordPanelID" widgetVar="resetPassowrdPanelWidget">
                     <p:messages showDetail="false" closable="true">
@@ -339,7 +339,7 @@
                     <table>
                         <tr>
                             <td><p:outputLabel for="upassword" value="#{bundle.password}:" style="font-weight: bold;" /> </td>                                    
-                            <td><p:password  match="urepassword" id="upassword" value="#{updateUser.password}" required="true"
+                            <td><p:password  match="urepassword" id="upassword" value="#{dbUsers.password}" required="true"
                                              requiredMessage="#{bundle.password}:#{bundle.mandatoryField}" >                                                    
                                     <f:validateLength minimum="4" maximum="15" />
                                 </p:password>
@@ -347,7 +347,7 @@
                         </tr>
                         <tr>                                    
                             <td><p:outputLabel for="urepassword" value="#{bundle.confirm}:" style="font-weight: bold;" /></td>
-                            <td><p:password value="#{updateUser.password}" id="urepassword"  
+                            <td><p:password value="#{dbUsers.password}" id="urepassword"  
                                             required="true" requiredMessage="#{bundle.reEnterPassword}:#{bundle.mandatoryField}" >
                                     <f:validateLength minimum="4" maximum="15" />      
                                 </p:password>

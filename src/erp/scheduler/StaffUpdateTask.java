@@ -166,7 +166,6 @@ public class StaffUpdateTask {
             List<String> amies = new ArrayList<>(0);
             while (rset.next()) {                
                 index++;
-                System.out.println(rset.getString(1));
                 amies.add(rset.getString(1));
                 
                 staffs = staffDAO.findByProperty("amy", rset.getString(1));
@@ -282,7 +281,6 @@ public class StaffUpdateTask {
             System.out.println("index=" + index + " insert=" + insert + " updata=" + update);
             
             List<Staff> allStaff = staffDAO.getAllStaff(true);                     
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!AMIES SIZE="+amies.size());
             int disabled=0;
             for (int i = 0; i < allStaff.size(); i++) {
                 Staff staff = allStaff.get(i);                                        
@@ -293,7 +291,7 @@ public class StaffUpdateTask {
                     staffDAO.update(staff);
                 }                
             }
-            System.out.println("Disabled="+disabled);
+            System.out.println("Update Staff: All entries="+index+" updated="+update+" inserted="+insert+" disabled="+disabled);
         } catch (Exception e) {
             goError(e);
             throw e;

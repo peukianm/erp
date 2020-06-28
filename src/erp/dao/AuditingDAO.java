@@ -100,10 +100,11 @@ public class AuditingDAO implements Serializable {
         }
         //executeInsideTransaction(entityManager -> entityManager.remove(auditing));
     }
-    
-     public List<Action> getAllActions() {
+
+    public List<Action> getAllActions() {
         try {
             Query query = entityManager.createQuery("SELECT e FROM Action e");
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -111,10 +112,11 @@ public class AuditingDAO implements Serializable {
             throw re;
         }
     }
-     
-     public List<Actionscategory> getAllActionsCtegories() {
+
+    public List<Actionscategory> getAllActionsCtegories() {
         try {
             Query query = entityManager.createQuery("SELECT e FROM Actionscategory e");
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -122,8 +124,6 @@ public class AuditingDAO implements Serializable {
             throw re;
         }
     }
-     
-     
 
     public Action getAction(long id) {
         try {
@@ -254,8 +254,8 @@ public class AuditingDAO implements Serializable {
             throw re;
         }
     }
-    
-        public void audit(Usr user, long actionID, String comments) throws Exception {
+
+    public void audit(Usr user, long actionID, String comments) throws Exception {
         try {
             Action action = entityManager.find(Action.class, actionID);
             Auditing auditing = new Auditing();

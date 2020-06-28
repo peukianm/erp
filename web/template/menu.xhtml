@@ -14,7 +14,7 @@
                     <pb:menu>
                         <p:submenu id="om_account" label="#{bundle.userData}" icon="fa fa-fw fa-user">
                             <p:submenu id="ggg" label="#{sessionBean.users.username}" icon="fa fa-fw fa-user">
-                                <p:menuitem id="om_account_acc" value="#{bundle.viewProfile}" icon="fa fa-fw fa-cog" outcome="updateAccount?userID=#{sessionBean.users.userid}" />                   
+                                <p:menuitem style="#{sessionBean.pageCode eq 12 ? 'background-color: #628292 !important;':''}" id="om_account_acc" value="#{bundle.viewProfile}" icon="fa fa-fw fa-cog" outcome="updateAccount?userID=#{sessionBean.users.userid}" />                   
                                 <p:menuitem id="om_account_not" value="#{bundle.tasks}" icon="fa fa-fw fa-bell-o"  />
                                 <p:menuitem id="om_account_mess" value="#{bundle.requests}" icon="fa fa-fw fa-envelope-o"  />
                                 <p:menuitem id="om_account_dis" value="#{bundle.disconnect}" onclick="PF('disconnectDlg').show()" icon="fa fa-fw fa-sign-out" />                                
@@ -22,25 +22,25 @@
                         </p:submenu>
 
                         <p:submenu id="om_homepage" label="#{bundle.homePage}" icon="fa fa-fw fa-home">
-                            <p:menuitem id="om_dashboard" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
+                            <p:menuitem style="#{sessionBean.pageCode eq 4 ? 'background-color: #628292 !important;':''}" id="om_dashboard" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
                         </p:submenu>
                         <p:submenu id="om_services" label="#{bundle.services}" icon="fa fa-fw fa-magic">
-                            <p:menuitem id="srv_attendanceStatistics" value="#{bundle.statisticsAttendance}" rendered="#{sessionBean.users.role.roleid != 3 or sessionBean.users.role.roleid != 6}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />
-                            <p:menuitem id="srv_account_acc" value="#{bundle.viewProfile}" icon="fa fa-fw fa-cog" outcome="updateAccount?userID=#{sessionBean.users.userid}" />    
+                            <p:menuitem style="#{sessionBean.pageCode eq 10 ? 'background-color: #628292 !important;':''}" id="srv_attendanceStatistics" value="#{bundle.statisticsAttendance}" rendered="#{sessionBean.users.role.roleid != 3 and sessionBean.users.role.roleid != 6}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />
+                            <p:menuitem style="#{sessionBean.pageCode eq 12 ? 'background-color: #628292 !important;':''}" id="srv_account_acc" value="#{bundle.viewProfile}" icon="fa fa-fw fa-cog" outcome="updateAccount?userID=#{sessionBean.users.userid}" />    
                         </p:submenu>
-                        <p:submenu id="om_departments" label="#{bundle.perDepartment}" icon="fa fa-fw fa-magic">
+                        <p:submenu rendered="#{(sessionBean.users.department!=null and (sessionBean.users.department.departmentid==16)) or sessionBean.users.role.roleid le 2}" id="om_departments" label="#{bundle.perDepartment}" icon="fa fa-fw fa-magic">
                             <p:submenu id="hrDep" label="#{bundle.hrDep}" icon="fa fa-fw fa-users" rendered="#{(sessionBean.users.department!=null and (sessionBean.users.department.departmentid==16)) or sessionBean.users.role.roleid le 2}" >                               
-                                <p:menuitem id="hr_companyAttedance" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
-                                <p:menuitem id="hr_companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars"  outcome="dashboardStaff" />
-                                <p:menuitem id="hr_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />
+                                <p:menuitem style="#{sessionBean.pageCode eq 4 ? 'background-color: #628292 !important;':''}" id="hr_companyAttedance" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
+                                <p:menuitem style="#{sessionBean.pageCode eq 3 ? 'background-color: #628292 !important;':''}" id="hr_companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars"  outcome="dashboardStaff" />
+                                <p:menuitem style="#{sessionBean.pageCode eq 10 ? 'background-color: #628292 !important;':''}" id="hr_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />
                             </p:submenu>
                             <p:submenu  id="om_userprofile_mode" label="#{bundle.itDep}" icon="fa fa-fw fa-desktop" rendered="#{(sessionBean.users.department!=null and sessionBean.users.department.departmentid==14) or sessionBean.users.role.roleid le 2}">
-                                <p:menuitem id="it_companyAttedance" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
-                                <p:menuitem id="it_companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars"  outcome="dashboardStaff" />
-                                <p:menuitem id="it_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />                                
-                                <p:menuitem id="it_userMgt" value="#{bundle.userMgt}" icon="fa fa-user-plus" outcome="dashboardUsers" />
-                                <p:menuitem id="it_auditMgt" value="#{bundle.auditPage}" icon="fa fa-th-list" outcome="dashboardAudit" /> 
-                                <p:menuitem id="it_systemMgt" value="#{bundle.systemAdmin}" icon="fa fa-tasks" outcome="dashboardTasks" />    
+                                <p:menuitem style="#{sessionBean.pageCode eq 4 ? 'background-color: #628292 !important;':''}" id="it_companyAttedance" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
+                                <p:menuitem style="#{sessionBean.pageCode eq 3 ? 'background-color: #628292 !important;':''}" id="it_companyStuff" value="#{bundle.companyStuff}" icon="fa fa-fw fa-bars"  outcome="dashboardStaff" />
+                                <p:menuitem style="#{sessionBean.pageCode eq 10 ? 'background-color: #628292 !important;':''}" id="it_attendanceStatistics" value="#{bundle.statisticsAttendance}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />                                
+                                <p:menuitem style="#{sessionBean.pageCode eq 2 ? 'background-color: #628292 !important;':''}" id="it_userMgt" value="#{bundle.userMgt}" icon="fa fa-user-plus" outcome="dashboardUsers" />
+                                <p:menuitem style="#{sessionBean.pageCode eq 14 ? 'background-color: #628292 !important;':''}" id="it_auditMgt" value="#{bundle.auditPage}" icon="fa fa-th-list" outcome="dashboardAudit" /> 
+                                <p:menuitem style="#{sessionBean.pageCode eq 6 ? 'background-color: #628292 !important;':''}" id="it_systemMgt" value="#{bundle.systemAdmin}" icon="fa fa-tasks" outcome="dashboardTasks" />    
                             </p:submenu>
 
                         </p:submenu>

@@ -35,27 +35,28 @@ public class InsertUser implements Serializable {
 
     @Inject
     private SessionBean sessionBean;
-    
-     @Inject
+
+    @Inject
     private ApplicationBean applicationBean;
 
     @Inject
     private StaffDAO staffDao;
 
-    String name;
-    String surname;
-    String username;
-    String password;
-    String repassword;
-    String phone;
-    String email;
-    List<Role> selectedRoles;
-    List<Department> selectedDepartments;
-    Staff staff;
-    Company company;
-    Sector sector;
-    Department department;
-    List<Staff> availableStaff;
+    private String name;
+    private String surname;
+    private String username;
+    private String password;
+    private String repassword;
+    private String phone;
+    private String email;
+    private List<Role> selectedRoles;
+    private List<Department> depsToPickPrimary = new ArrayList<>(0);
+
+    private Staff staff;
+    private Company company;
+    private Sector sector;
+    private Department department;
+    private List<Staff> availableStaff;
     private DualListModel<Department> depsPickList;
 
     public void preRenderView() {
@@ -70,11 +71,9 @@ public class InsertUser implements Serializable {
 
     @PostConstruct
     public void init() {
-        List<Department> depsSource = new ArrayList<>(0);
-        List<Department> depstarget = new ArrayList<>(0);
-        Department emptyDep = new Department();
-        depsSource.add(emptyDep);
-        depsSource.addAll(applicationBean.getDepartments());        
+         System.out.println("POST CONSTRUCT INSERT USER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        List<Department> depsSource = applicationBean.getDepartments();
+        List<Department> depstarget = new ArrayList<>();
         depsPickList = new DualListModel<Department>(depsSource, depstarget);
     }
 
@@ -97,11 +96,21 @@ public class InsertUser implements Serializable {
             throw new ERPCustomException("Throw From Autocomplete Staff Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
+
+    public List<Department> getDepsToPickPrimary() {
+        return depsToPickPrimary;
+    }
+
+    public void setDepsToPickPrimary(List<Department> depsToPickPrimary) {
+        this.depsToPickPrimary = depsToPickPrimary;
+    }
+
     
-    public void onDepartmentChange(){
-        System.out.println("ON DEPARTMET CHANGE");
-        FacesUtils.updateHTMLComponnetWIthJS("insertUserFormID");
-        
+    
+    public void onDepartmentChange() {
+        List<Department> temp = depsPickList.getTarget();
+        depsToPickPrimary.clear();
+        depsToPickPrimary.addAll(temp);        
     }
 
     public DualListModel<Department> getDepsPickList() {
@@ -112,16 +121,6 @@ public class InsertUser implements Serializable {
         this.depsPickList = depsPickList;
     }
 
-    
-    
-    public List<Department> getSelectedDepartments() {
-        return selectedDepartments;
-    }
-
-    public void setSelectedDepartments(List<Department> selectedDepartments) {
-        this.selectedDepartments = selectedDepartments;
-    }    
-    
     public Sector getSector() {
         return sector;
     }

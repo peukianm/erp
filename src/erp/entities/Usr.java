@@ -17,7 +17,7 @@ public class Usr implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "USR_USERID_GENERATOR", sequenceName = "USR_SEQ")
+    @SequenceGenerator(name = "USR_USERID_GENERATOR", sequenceName = "USERS_SEQ")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USR_USERID_GENERATOR")
     private long userid;
 

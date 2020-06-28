@@ -47,6 +47,9 @@ public class DashboardUsers implements Serializable {
     private Company selectedCompany;
     private String surname;
     private boolean active = true;
+    private Usr viewUser;
+    private Usr passwordUpdateUser;
+    private String password;
 
     List<Usr> availableUsers;
 
@@ -108,6 +111,32 @@ public class DashboardUsers implements Serializable {
         }
         searchUser = null;
     }
+
+    public Usr getViewUser() {
+        return viewUser;
+    }
+
+    public void setViewUser(Usr viewUser) {
+        this.viewUser = viewUser;
+    }
+
+    public Usr getPasswordUpdateUser() {
+        return passwordUpdateUser;
+    }
+
+    public void setPasswordUpdateUser(Usr passwordUpdateUser) {
+        this.passwordUpdateUser = passwordUpdateUser;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    
 
     public void goAddNewUser() {
         showUsers = "hidden='true'";

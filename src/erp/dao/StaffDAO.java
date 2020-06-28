@@ -86,8 +86,6 @@ public class StaffDAO {
         }
     }
 
-
-
     public void update(Staff staff) {
         try {
             entityManager.merge(staff);
@@ -107,8 +105,8 @@ public class StaffDAO {
             throw re;
         }
     }
-    
-     public Object mergeGeneric(Object bean) {
+
+    public Object mergeGeneric(Object bean) {
         try {
             return entityManager.merge(bean);
         } catch (RuntimeException re) {
@@ -253,6 +251,7 @@ public class StaffDAO {
             String sql = "SELECT e FROM Staff e "
                     + (onlyActive ? " where e.active = 1 " : " ");
             Query query = entityManager.createQuery(sql);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -262,15 +261,18 @@ public class StaffDAO {
     }
 
     public List<Department> getSectorDepartments(Company company, Sector sector) {
-        try {
-            System.out.println("GETTING ALL DEPARTMENTS ON SECTOR CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        try {            
             String sql = "SELECT model.department FROM Sectordepartment model where "
-                    + " model.company = :company "
-                    + " and model.active = 1 "
+                    + "  model.active = 1 "
+                     + " and model.department.active = 1 "
+                    + (company != null ? " and model.company = :company " : " " )                                      
                     + (sector != null ? " and model.sector = :sector " : " ");
 
             Query query = entityManager.createQuery(sql);
-            query.setParameter("company", company);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            if (company != null) {
+                query.setParameter("company", company);
+            }
             if (sector != null) {
                 query.setParameter("sector", sector);
             }
@@ -289,6 +291,7 @@ public class StaffDAO {
             final String queryString = "select model from Staff model where "
                     + " model.loggercode = '" + loggerCode + "'";
             Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList().size() == 0 ? null : (Staff) query.getResultList().get(0);
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -335,6 +338,7 @@ public class StaffDAO {
                     + " order by staff.surname";
 
             Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             if (department != null) {
                 query.setParameter("department", department);
             }
@@ -359,7 +363,7 @@ public class StaffDAO {
                     + (department != null ? " and model.department = :department  " : " ")
                     + (sector != null ? " and model.sector = :sector  " : " ")
                     + (active ? " and model.active = 1  " : "  and model.active = 0  ")
-                    + (loggerCode!=null && !(loggerCode.trim()).equals("") ? " and model.loggercode  like '" + loggerCode + "%' " : " ")
+                    + (loggerCode != null && !(loggerCode.trim()).equals("") ? " and model.loggercode  like '" + loggerCode + "%' " : " ")
                     + " order by model.surname";
 
             Query query = entityManager.createQuery(queryString);

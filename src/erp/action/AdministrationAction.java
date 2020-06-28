@@ -102,17 +102,10 @@ public class AdministrationAction implements Serializable {
             }
 
             List<Userrole> userroles = temp.getUserroles();
-            //roleSelectionBean.setUserroles(userroles);
-            //temp.setUserroles(userroles);
+            temp.setRole(userroles.get(0).getRole());
             sessionBean.setUsers(temp);
+            return mainPageForward(temp);
 
-            if (userroles.size() > 1) {
-                FacesUtils.callRequestContext("PF('selectRoleDialog').show()");
-            } else if (userroles.size() == 1) {
-                temp.setRole(userroles.get(0).getRole());
-                return mainPageForward(temp);
-            }
-            return "";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -130,8 +123,7 @@ public class AdministrationAction implements Serializable {
     }
 
     private String mainPageForward(Usr temp) throws ERPCustomException {
-        try {
-            //if (temp.getRole().getRoleid() == 1 || temp.getRole().getRoleid() == 2 || temp.getRole().getRoleid() == 3) {
+        try {            
             Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_LOGINUSER")));
             Auditing audit = new Auditing(temp, temp.getCompany(), action, "User " + sessionBean.getUsers().getUsername() + " connected on the platform",
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
@@ -142,8 +134,6 @@ public class AdministrationAction implements Serializable {
             sessionBean.setPageName(MessageBundleLoader.getMessage("attendancePage"));
 
             return "dashboardAttendance?faces-redirect=true";
-            //}
-            //return "";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -202,6 +192,7 @@ public class AdministrationAction implements Serializable {
             newUser.setUsername(insertUser.getUsername());
             newUser.setCompany(insertUser.getCompany());
             newUser.setDepartment(insertUser.getDepartment());
+            newUser.setDepartments(insertUser.getDepsPickList().getTarget());
             newUser.setEmail(insertUser.getEmail());
             newUser.setPassword(hashedPassword);
             newUser.setPhone(insertUser.getPhone());
@@ -278,6 +269,13 @@ public class AdministrationAction implements Serializable {
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
             auditingDAO.save(audit);
 
+            if (sessionBean.getUsers().equals(updateUser.getUser())) {
+                Usr newUser = userDAO.get(updateUser.getUser().getUserid());
+                newUser.setRole(newUser.getUserroles().get(0).getRole());
+                sessionBean.setUsers(newUser);
+                FacesUtils.updateHTMLComponnetWIthJS("topSessionDataID");
+            }
+
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
             sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_USER_ADMIN"));
             sessionBean.setPageName(MessageBundleLoader.getMessage("usersPage"));
@@ -308,6 +306,11 @@ public class AdministrationAction implements Serializable {
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));
             auditingDAO.save(audit);
 
+            Usr newUser = userDAO.get(updateAccount.getUser().getUserid());
+            newUser.setRole(newUser.getUserroles().get(0).getRole());
+            sessionBean.setUsers(newUser);
+            FacesUtils.updateHTMLComponnetWIthJS("topSessionDataID");
+
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("accountUpdated"));
             sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ATTENDANCE_ADMIN"));
             sessionBean.setPageName(MessageBundleLoader.getMessage("attendancePage"));
@@ -321,15 +324,15 @@ public class AdministrationAction implements Serializable {
 
     public String resetPassword() throws ERPCustomException {
         try {
-            Usr user = updateUser.getUser();
-            String hashedPassword = ErpUtil.getSaltedHash(updateUser.getPassword());
+            Usr user = dbUsers.getPasswordUpdateUser();
+            String hashedPassword = ErpUtil.getSaltedHash(dbUsers.getPassword());
             user.setPassword(hashedPassword);
 
             userDAO.update(user);
 
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEPASSWORD")), "User Password " + user.getUsername() + " updated");
 
-            updateUser.setPassword(null);
+            dbUsers.setPassword(null);
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("userUpdated"));
             FacesUtils.callRequestContext("PF('resetPasswordDialogWidget').hide()");
             return "";
@@ -527,9 +530,7 @@ public class AdministrationAction implements Serializable {
         try {
             Sector sector = dbTasks.getSelectedSector();
             List<Department> deps = dbTasks.getSectorDepartments();
-
             List<Sectordepartment> sds = companyDAO.getSectorDepartments(sector, sessionBean.getUsers().getCompany());
-            System.out.println("sds size=" + sds.size());
 
             for (int i = 0; i < sds.size(); i++) {
                 staffDAO.deleteSectordepartment(sds.get(i));
@@ -546,7 +547,7 @@ public class AdministrationAction implements Serializable {
                 staffDAO.saveGeneric(sd);
             }
             auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ΑCT_UPDATECOMPANY")), "Sector " + sector.getName() + " updated");
-            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("sectorUpdated"));            
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("sectorUpdated"));
             applicationBean.resetSectorList();
             dbTasks.reset();
         } catch (Exception e) {

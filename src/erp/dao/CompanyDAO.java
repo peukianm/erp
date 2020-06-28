@@ -72,6 +72,7 @@ public class CompanyDAO {
             String sql = "SELECT e FROM Company e "
                     + (onlyActive ? " where e.active = 1 " : " ");
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -86,6 +87,7 @@ public class CompanyDAO {
                     + (onlyActive ? " where e.active = 1 " : " ")
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -100,6 +102,7 @@ public class CompanyDAO {
                     + (onlyActive ? " where e.active = 1 " : " ")
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -114,6 +117,7 @@ public class CompanyDAO {
                     + (onlyActive ? " where e.active = 1 " : " ")
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -128,6 +132,7 @@ public class CompanyDAO {
                     + (onlyActive ? " where e.active = 1 " : " ")
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -142,6 +147,7 @@ public class CompanyDAO {
                     + (onlyActive ? " where e.active = 1 " : " ")
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -155,6 +161,7 @@ public class CompanyDAO {
             String sql = "SELECT e FROM Familystatus e "                   
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -168,6 +175,7 @@ public class CompanyDAO {
             String sql = "SELECT e FROM Emprank e "
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -182,6 +190,7 @@ public class CompanyDAO {
                     + (onlyActive ? " where e.active = 1 " : " ")
                     + " order by e.name ";
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -196,6 +205,7 @@ public class CompanyDAO {
             String sql = "SELECT e FROM Sector e "
                     + " order by e.ordered ";
             Query query = entityManager.createQuery(sql);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -341,6 +351,7 @@ public class CompanyDAO {
             final String queryString = "select model from Company model where model." + propertyName + "= :propertyValue";
             Query query = entityManager.createQuery(queryString);
             query.setParameter("propertyValue", value);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
                 int rowStartIdx = Math.max(0, rowStartIdxAndCount[0]);
                 if (rowStartIdx > 0) {
@@ -376,6 +387,7 @@ public class CompanyDAO {
         try {
             final String queryString = "select model from Company model";
             Query query = entityManager.createQuery(queryString);
+             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
                 int rowStartIdx = Math.max(0, rowStartIdxAndCount[0]);
                 if (rowStartIdx > 0) {

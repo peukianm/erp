@@ -110,7 +110,7 @@ public class DashboardAttendance implements Serializable {
                     enableSector = false;
                     enableStaff = true;
                     selectedDepartments = new ArrayList<>(0);
-                    selectedDepartments.add(user.getStaff().getDepartment());
+                    selectedDepartments.addAll(user.getDepartments());
                     break;
                 }
             case 5:
@@ -119,8 +119,8 @@ public class DashboardAttendance implements Serializable {
                     enableDepartment = true;
                     enableStaff = true;
                     selectedSectors = new ArrayList<>(0);
-                    selectedSectors.add(user.getStaff().getSector());
-                    departments = staffDao.getSectorDepartments(user.getCompany(), user.getStaff().getSector());
+                    selectedSectors.add(user.getSector());
+                    departments = staffDao.getSectorDepartments(user.getCompany(), user.getSector());
                     selectedDepartments.addAll(departments);
                     break;
                 }
@@ -139,8 +139,8 @@ public class DashboardAttendance implements Serializable {
                     enableStaff = true;
                     enableDepartment = true;
                     selectedSectors = new ArrayList<>(0);
-                    selectedSectors.add(user.getStaff().getSector());
-                    departments = staffDao.getSectorDepartments(user.getCompany(), user.getStaff().getSector());
+                    selectedSectors.add(user.getSector());
+                    departments = staffDao.getSectorDepartments(user.getCompany(), user.getSector());
                     selectedDepartments.addAll(departments);
                     break;
                 }
@@ -222,9 +222,9 @@ public class DashboardAttendance implements Serializable {
                 if (enableSector) {
                     availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, null, null);
                 } else if (enableDepartment) {
-                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getStaff().getSector(), null);
+                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getSector(), null);
                 } else {
-                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getStaff().getSector(), user.getStaff().getDepartment());
+                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getSector(), user.getDepartment());
                 }
                 return availableStaff;
             } else {
@@ -241,10 +241,10 @@ public class DashboardAttendance implements Serializable {
         if (selectedStaff != null && selectedStaff.size() > 0 && selectedStaff.size() > index) {
             selectedStaff.remove(index);            
             if (selectedStaff.size()==0 && selectedDepartments.size() ==0 && !enableSector && !enableDepartment && enableStaff && user.getStaff()!= null){               
-                selectedDepartments.add(user.getStaff().getDepartment());
+                selectedDepartments.add(user.getDepartment());
             }
             if (selectedStaff.size()==0 && selectedDepartments.size() ==0 && !enableSector && enableDepartment && enableStaff && user.getStaff()!= null){               
-                selectedDepartments.addAll(user.getStaff().getSector().getDepartments());
+                selectedDepartments.addAll(user.getSector().getDepartments());
             }
             
         }

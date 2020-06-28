@@ -55,7 +55,7 @@ public class DashboardAudit implements Serializable {
                 return;
             }
         }
-        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_AUDIT_ADMIN"));
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_AUDIT_CONTROL"));
         sessionBean.setPageName(MessageBundleLoader.getMessage("auditPage"));
     }
 

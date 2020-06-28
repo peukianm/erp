@@ -63,7 +63,6 @@ public class UpdateAccount implements Serializable {
         sessionBean.setPageName(MessageBundleLoader.getMessage("updateAccount"));
         
         user = userDao.get(Long.parseLong(userID));
-        System.out.println("User="+user);
         if (user == null) {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("invalidUserSelected"));
             FacesUtils.redirectWithNavigationID("dashboardUsers");
@@ -80,7 +79,6 @@ public class UpdateAccount implements Serializable {
 
     @PostConstruct
     public void pc() {
-        System.out.println("POST CONSTRACT UPDATE ACCOUNT");
     }
 
     @PreDestroy

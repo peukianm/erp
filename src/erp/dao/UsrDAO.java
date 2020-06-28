@@ -44,10 +44,22 @@ public class UsrDAO implements Serializable {
             throw re;
         }
     }
+    
+    public void refresh(Usr user) {
+        try {
+            entityManager.refresh(user);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on refreshing entity", re);
+            throw re;
+        }
+    }
+
 
     public List<Usr> getAll() {
         try {
             Query query = entityManager.createQuery("SELECT e FROM Usr e");
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -59,6 +71,7 @@ public class UsrDAO implements Serializable {
     public List<Role> getAllRoles() {
         try {
             Query query = entityManager.createQuery("SELECT e FROM Role e");
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -66,8 +79,6 @@ public class UsrDAO implements Serializable {
             throw re;
         }
     }
-
-   
 
     public void save(Usr user) {
         try {
@@ -119,6 +130,7 @@ public class UsrDAO implements Serializable {
             final String queryString = "select model from Usr model where model." + propertyName + "= :propertyValue";
             Query query = entityManager.createQuery(queryString);
             query.setParameter("propertyValue", value);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             if (rowStartIdxAndCount != null && rowStartIdxAndCount.length > 0) {
                 int rowStartIdx = Math.max(0, rowStartIdxAndCount[0]);
                 if (rowStartIdx > 0) {
@@ -147,6 +159,7 @@ public class UsrDAO implements Serializable {
                     + " AND u.password like '" + password + "' ";
 
             Query query = entityManager.createQuery(sql);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return (Usr) query.getSingleResult();
 
         } catch (NoResultException | NonUniqueResultException nre) {
@@ -186,10 +199,10 @@ public class UsrDAO implements Serializable {
                     + " where u.userid IS NOT NULL "
                     + (company != null ? " and u.company=:company " : " ")
                     + (department != null ? " and u.department=:department " : " ")
-                    + (role != null ? " and userrole.role=:role " : " ")                   
+                    + (role != null ? " and userrole.role=:role " : " ")
                     + (surname != null ? " and (LOWER(u.surname) like '" + ((String) surname).toLowerCase() + "%'"
                             + " OR UPPER(u.surname)  like '" + ((String) surname).toUpperCase() + "%') " : " ")
-                     + (active ? " and u.active=1 " : " and u.active=0 ")
+                    + (active ? " and u.active=1 " : " and u.active=0 ")
                     + " order by u.username DESC";
 
             Query query = entityManager.createQuery(queryString);
