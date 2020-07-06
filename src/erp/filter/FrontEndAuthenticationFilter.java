@@ -53,10 +53,10 @@ public class FrontEndAuthenticationFilter implements Filter {
             if (!isLoggedIn) {
                 if ("partial/ajax".equals(httpRequest.getHeader("Faces-Request"))) {                   
                     httpResponse.setContentType("text/xml");
-                    httpResponse.getWriter().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").printf("<partial-response><redirect url=\"%s\"></redirect></partial-response>", "/erp/index.jsp?faces-redirect=true");                           	            	
+                    httpResponse.getWriter().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").printf("<partial-response><redirect url=\"%s\"></redirect></partial-response>", "/index.jsp?faces-redirect=true");                           	            	
                 } else {                    
                     System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NORMAL CALL--->REDIRECTING fROM SECURITY FILTER " + servletPath);
-                    httpResponse.sendRedirect("/erp/index.jsp?faces-redirect=true");
+                    httpResponse.sendRedirect("/index.jsp?faces-redirect=true");
                 }
                 return;
             }
