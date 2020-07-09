@@ -156,7 +156,7 @@
                                 </tr>                               
                             </table>
 
-                            <p:commandButton id="movieBtn1" value="#{bundle.showPastExecutions}" type="button" />
+                            <p:commandButton id="movieBtn1" value="#{bundle.showPastExecutions}" type="button" update="stafffPanel" />
                             <p:overlayPanel id="stafffPanel" for="movieBtn1" hideEffect="fade" dynamic="true" style="width:600px" modal="true">
                                 <p:dataTable var="staff" value="#{dbTasks.staffDetails}" rows="5" paginator="true">
                                     <p:column headerText="#{bundle.start}">

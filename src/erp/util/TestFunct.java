@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -56,6 +58,8 @@ import java.sql.*;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import okhttp3.*;
 
@@ -115,7 +119,9 @@ public class TestFunct {
                     + " from SYSPROS.EMP_EMPLOYEES em "
                     + " where em.active=1 AND TODATE >= current_date AND EM.BIGSECTION_ID=1 "
                     + " order by last_name";
-            DBQueryExample(sqlSelect);
+           // DBQueryExample(sqlSelect);
+            
+            readFile("E:\\temp",1);
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -126,6 +132,43 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static void readFile(String file, int n) {
+        
+        String date = new SimpleDateFormat(FormatUtils.yyyyMMdd).format(new Date());
+        System.out.println("Date="+date);
+        try (BufferedReader br = new BufferedReader(new FileReader(file+"\\"+date+".txt"))) {
+            for(int i = 0; i < n-1; ++i){
+                br.readLine();
+            }
+            
+            for (String line; (line = br.readLine()) != null;) {
+                System.out.println(line);
+                String[] parts = line.split("\\t");
+                //System.out.println(parts[0] + parts[1]+ parts[2] + parts[3]);
+                Date dt = FormatUtils.getDate(parts[1], FormatUtils.LOGGERFULLDATEPATTERN);
+                System.out.println(FormatUtils.formatDateToTimestamp(dt, FULLDATEPATTERN));
+                
+            }
+            // line is not visible here.
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(TestFunct.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TestFunct.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+//        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+//            
+//            String line;
+//            while ((line = br.readLine()) != null) {
+//                // process the line.
+//            }
+//        } catch (FileNotFoundException ex) {
+//            Logger.getLogger(TestFunct.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(TestFunct.class.getName()).log(Level.SEVERE, null, ex);
+//        } 
+    }
 
     private static void openPDF() {
         Document document = new Document();
@@ -354,9 +397,7 @@ public class TestFunct {
                         break;
                     }
                     currentRow = iterator.next();
-                    LoggerData logerData = new LoggerData(currentRow.getCell(0).getNumericCellValue(), currentRow.getCell(1).getDateCellValue(),
-                            currentRow.getCell(2).getNumericCellValue(), staffDAO.findStaffFromLoggerCode(String.valueOf(currentRow.getCell(0).getNumericCellValue())));
-                    logerDataList.add(logerData);
+                    
                 }
                 workbook.close();
                 System.out.println(logerDataList.size());

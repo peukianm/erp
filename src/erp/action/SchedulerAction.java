@@ -5,6 +5,7 @@
  */
 package erp.action;
 
+import erp.bean.DashboardTasks;
 import erp.bean.ErrorBean;
 import erp.bean.SessionBean;
 import erp.dao.AuditingDAO;
@@ -43,10 +44,13 @@ public class SchedulerAction {
     @Inject
     AuditingDAO auditingDAO;
 
-    public String  updateFromLoggers() throws ERPCustomException {
+    @Inject
+    DashboardTasks dbTasks;
+
+    public String updateFromLoggers() throws ERPCustomException {
 
         try {
-            int stat = ldrTask.doSchedulerWork(true);           
+            int stat = ldrTask.doSchedulerWork(true);
             Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_EXECUTETASKLOGGERS")));
             Auditing audit = new Auditing(sessionBean.getUsers(), sessionBean.getUsers().getCompany(), action, "Update Data from Loggers executed manually",
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
@@ -59,6 +63,7 @@ public class SchedulerAction {
             } else {
                 FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
             }
+            dbTasks.resetLoggerPanel();
             return "";
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +88,8 @@ public class SchedulerAction {
             } else {
                 FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("taskInUse"));
             }
-             return "";
+            dbTasks.resetStaffPanel();
+            return "";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");

@@ -23,7 +23,9 @@ public class FormatUtils {
     public static final String DATEPATTERN = "dd/MM/yyyy";
     public static final String TIMEPATTERN = "HH:mm";
     public static final String FULLDATEPATTERN = "dd/MM/yyyy HH:mm:ss";
+    public static final String LOGGERFULLDATEPATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String TIMESTAMPDATEPATTERN = "yyyy-MM-dd";
+    public static final String yyyyMMdd = "yyyyMMdd";
     /**
      * European date format without time
      */
@@ -266,6 +268,17 @@ public class FormatUtils {
 
     public static Date getDate(String date) {
         DateFormat df = new SimpleDateFormat(DATEPATTERN);
+        try {
+            return df.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return new Date();
+
+        }
+    }
+    
+     public static Date getDate(String date, String pattern) {
+        DateFormat df = new SimpleDateFormat(pattern);
         try {
             return df.parse(date);
         } catch (ParseException e) {

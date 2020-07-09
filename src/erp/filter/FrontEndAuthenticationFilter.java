@@ -55,7 +55,7 @@ public class FrontEndAuthenticationFilter implements Filter {
                     httpResponse.setContentType("text/xml");
                     httpResponse.getWriter().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").printf("<partial-response><redirect url=\"%s\"></redirect></partial-response>", "/index.jsp?faces-redirect=true");                           	            	
                 } else {                    
-                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NORMAL CALL--->REDIRECTING fROM SECURITY FILTER " + servletPath);
+                    //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!NORMAL CALL--->REDIRECTING fROM SECURITY FILTER " + servletPath);
                     httpResponse.sendRedirect("/index.jsp?faces-redirect=true");
                 }
                 return;

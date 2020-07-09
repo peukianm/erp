@@ -97,6 +97,17 @@ public class DashboardTasks implements Serializable {
         }
     }
 
+    public void resetLoggerPanel() {
+        loggerDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")), user.getCompany(), 5);
+        lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
+    }
+
+    public void resetStaffPanel() {
+        staffDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")), user.getCompany(), 5);
+        lastStaffExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")));
+
+    }
+
     public List<Department> getSectorDepartments() {
         return sectorDepartments;
     }

@@ -20,24 +20,24 @@ public class LoggerData implements Comparable<LoggerData> {
         this.staff = staff;
     }
 
-    public double getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(double code) {
+    public void setCode(String code) {
         this.code = code;
     }
 
-    public double getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(double status) {
+    public void setStatus(String status) {
         this.status = status;
     }
     
-  private double code;
-  private double status;
+  private String code;
+  private String status;
   
 
   public Date getDateTime() {
@@ -48,7 +48,7 @@ public class LoggerData implements Comparable<LoggerData> {
     this.dateTime = datetime;
   }
   
-  public LoggerData(double code, Date datetime, double status, Staff staff){
+  public LoggerData(String code, Date datetime, String status, Staff staff){
       this.code = code;
       this.status = status;
       this.dateTime = datetime;
@@ -57,7 +57,7 @@ public class LoggerData implements Comparable<LoggerData> {
 
   @Override
   public int compareTo(LoggerData o) {
-      int result = (int)(getCode() - o.getCode()) ;
+      int result = getCode().compareTo(o.getCode());
       if (result==0)
           result = getDateTime().compareTo(o.getDateTime());
       return result;

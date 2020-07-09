@@ -14,12 +14,16 @@ import erp.entities.Staff;
 import erp.entities.Taskstatus;
 import erp.util.FormatUtils;
 import erp.util.SystemParameters;
+import static erp.util.TestFunct.FULLDATEPATTERN;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -51,9 +55,9 @@ public class LoggerDataRetrieveTask {
 
     @EJB
     StaffDAO staffDAO;
-    
+
     @EJB
-   AttendanceDAO attendanceDAO;
+    AttendanceDAO attendanceDAO;
 
     @EJB
     CompanyDAO companyDAO;
@@ -141,84 +145,50 @@ public class LoggerDataRetrieveTask {
     }
 
     public void taskMainBody(Companytask cTask) throws Exception {
-
-        try {
-            int loggerscount = Integer.parseInt(SystemParameters.getInstance().getProperty("COMPANYLOGGERS"));
-            File file = null;
-            List<LoggerData> logerDataList = new ArrayList<LoggerData>();
-            for (int i = 1; i <= loggerscount; i++) {
-
-                file = new File(SystemParameters.getInstance().getProperty("LOGGER" + i + "_PATH"));
-
-                FileInputStream excelFile = new FileInputStream(file);
-                Workbook workbook = new XSSFWorkbook(excelFile);
-                Sheet datatypeSheet = workbook.getSheetAt(0);
-
-                int pointer = 0;
-                switch (i) {  //CHANGE!!!!!!!!!!!!!!!!!
-                    case 1:
-                        pointer = cTask.getTaskdata1() == null ? 0 : Integer.parseInt(cTask.getTaskdata1());
-                        break;
-                    case 2:
-                        pointer = cTask.getTaskdata2() == null ? 0 : Integer.parseInt(cTask.getTaskdata2());
-                        break;
-                    case 3:
-                        pointer = cTask.getTaskdata3() == null ? 0 : Integer.parseInt(cTask.getTaskdata3());
-                        break;
-                    default:
-                        pointer = cTask.getTaskdata4() == null ? 0 : Integer.parseInt(cTask.getTaskdata4());
-                        break;
-                }
-
-                int counter = 0;
-                Row currentRow = null;
-                Iterator<Row> iterator = datatypeSheet.iterator();
-                Staff staff = null;
-
-                for (int j = 0; j < pointer; j++) {
-                    iterator.next();
-                }
-
-                List<Staff> allStaff = staffDAO.getAllStaff(true);
-                while (iterator.hasNext()) {    
-                    counter++;
-                    currentRow = iterator.next();
-                    String lc = String.valueOf((int) currentRow.getCell(0).getNumericCellValue());
-                    staff = allStaff.stream().filter(stf -> lc
-                            .equals(stf.getLoggercode()))
-                            .findAny()
-                            .orElse(null);
-
-                    if (staff != null) {
-                        LoggerData logerData = new LoggerData(currentRow.getCell(0).getNumericCellValue(),
-                                currentRow.getCell(1).getDateCellValue(),
-                                currentRow.getCell(2).getNumericCellValue(), staff);
-                        logerDataList.add(logerData);
-                    }
-                }
-                switch (i) {
-                    case 1:
-                        cTask.setTaskdata1(String.valueOf(counter + pointer));
-                        System.out.println(counter + " new values from elogger data 1");
-                        break;
-                    case 2:
-                        cTask.setTaskdata2(String.valueOf(counter + pointer));
-                        System.out.println(counter + " new valued from elogger data 2");
-                        break;
-                    case 3:
-                        cTask.setTaskdata3(String.valueOf(counter + pointer));
-                        System.out.println(counter + " new valued from elogger data 3");
-                        break;
-                    default:
-                        cTask.setTaskdata4(String.valueOf(counter + pointer));
-                        System.out.println(counter + " new valued from elogger data 4");
-                        break;
-                }
-
-                workbook.close();
+        List<LoggerData> logerDataList = new ArrayList<LoggerData>();
+        String currentDate = new SimpleDateFormat(FormatUtils.yyyyMMdd).format(new Date());
+        try (BufferedReader br = new BufferedReader(new FileReader(SystemParameters.getInstance().getProperty("LOGGER_PATH") + "\\" + currentDate + ".txt"))) {
+            int pointer = 0;
+            String dbDate =  cTask.getTaskdata1() == null ? "" : cTask.getTaskdata1();
+            if (dbDate.equals(currentDate)) {
+                pointer = cTask.getTaskdata2() == null ? 0 : Integer.parseInt(cTask.getTaskdata2());
+            } else {
+                cTask.setTaskdata1(currentDate);
+                pointer = 0;
             }
 
+            int counter = 0;
+            Staff staff = null;
+            List<Staff> allStaff = staffDAO.getAllStaff(true);
+
+            for (int i = 0; i <= pointer - 1; ++i) {
+                br.readLine();
+            }
+
+            for (String line; (line = br.readLine()) != null;) {
+                
+                System.out.println(line);
+                String[] parts = line.split("\\t");
+                String afm = parts[0];
+                staff = allStaff.stream().filter(stf -> afm
+                        .equals(stf.getAfm()))
+                        .findAny()
+                        .orElse(null);
+
+                if (staff != null) {                   
+                    LoggerData logerData = new LoggerData(parts[0],
+                            FormatUtils.getDate(parts[1], FormatUtils.LOGGERFULLDATEPATTERN),
+                            parts[2], staff);
+                    logerDataList.add(logerData);
+                     counter++;
+                }
+            }
+
+
+            cTask.setTaskdata2(String.valueOf(counter + pointer));
+            System.out.println(counter + " new values from eloggers");
             System.out.println("Total entries from all loggers=" + logerDataList.size());
+
             Collections.sort(logerDataList);
             updateAttendance(logerDataList);
         } catch (FileNotFoundException e) {
@@ -233,6 +203,98 @@ public class LoggerDataRetrieveTask {
         }
     }
 
+//    public void taskMainBody(Companytask cTask) throws Exception {
+//
+//        try {
+//            int loggerscount = Integer.parseInt(SystemParameters.getInstance().getProperty("COMPANYLOGGERS"));
+//            File file = null;
+//            List<LoggerData> logerDataList = new ArrayList<LoggerData>();
+//            for (int i = 1; i <= loggerscount; i++) {
+//
+//                file = new File(SystemParameters.getInstance().getProperty("LOGGER" + i + "_PATH"));
+//
+//                FileInputStream excelFile = new FileInputStream(file);
+//                Workbook workbook = new XSSFWorkbook(excelFile);
+//                Sheet datatypeSheet = workbook.getSheetAt(0);
+//
+//                int pointer = 0;
+//                switch (i) {  //CHANGE!!!!!!!!!!!!!!!!!
+//                    case 1:
+//                        pointer = cTask.getTaskdata1() == null ? 0 : Integer.parseInt(cTask.getTaskdata1());
+//                        break;
+//                    case 2:
+//                        pointer = cTask.getTaskdata2() == null ? 0 : Integer.parseInt(cTask.getTaskdata2());
+//                        break;
+//                    case 3:
+//                        pointer = cTask.getTaskdata3() == null ? 0 : Integer.parseInt(cTask.getTaskdata3());
+//                        break;
+//                    default:
+//                        pointer = cTask.getTaskdata4() == null ? 0 : Integer.parseInt(cTask.getTaskdata4());
+//                        break;
+//                }
+//
+//                int counter = 0;
+//                Row currentRow = null;
+//                Iterator<Row> iterator = datatypeSheet.iterator();
+//                Staff staff = null;
+//
+//                for (int j = 0; j < pointer; j++) {
+//                    iterator.next();
+//                }
+//
+//                List<Staff> allStaff = staffDAO.getAllStaff(true);
+//                while (iterator.hasNext()) {    
+//                    counter++;
+//                    currentRow = iterator.next();
+//                    String lc = String.valueOf((int) currentRow.getCell(0).getNumericCellValue());
+//                    staff = allStaff.stream().filter(stf -> lc
+//                            .equals(stf.getLoggercode()))
+//                            .findAny()
+//                            .orElse(null);
+//
+//                    if (staff != null) {
+//                        LoggerData logerData = new LoggerData(currentRow.getCell(0).getNumericCellValue(),
+//                                currentRow.getCell(1).getDateCellValue(),
+//                                currentRow.getCell(2).getNumericCellValue(), staff);
+//                        logerDataList.add(logerData);
+//                    }
+//                }
+//                switch (i) {
+//                    case 1:
+//                        cTask.setTaskdata1(String.valueOf(counter + pointer));
+//                        System.out.println(counter + " new values from elogger data 1");
+//                        break;
+//                    case 2:
+//                        cTask.setTaskdata2(String.valueOf(counter + pointer));
+//                        System.out.println(counter + " new valued from elogger data 2");
+//                        break;
+//                    case 3:
+//                        cTask.setTaskdata3(String.valueOf(counter + pointer));
+//                        System.out.println(counter + " new valued from elogger data 3");
+//                        break;
+//                    default:
+//                        cTask.setTaskdata4(String.valueOf(counter + pointer));
+//                        System.out.println(counter + " new valued from elogger data 4");
+//                        break;
+//                }
+//
+//                workbook.close();
+//            }
+//
+//            System.out.println("Total entries from all loggers=" + logerDataList.size());
+//            Collections.sort(logerDataList);
+//            updateAttendance(logerDataList);
+//        } catch (FileNotFoundException e) {
+//            goError(e);
+//            throw e;
+//        } catch (IOException e) {
+//            goError(e);
+//            throw e;
+//        } catch (Exception e) {
+//            goError(e);
+//            throw e;
+//        }
+//    }
     private void updateAttendance(List<LoggerData> loggerDataList) throws Exception {
         String currentDate = "";
         String previousDate = "";
@@ -241,7 +303,8 @@ public class LoggerDataRetrieveTask {
             previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()), FormatUtils.TIMESTAMPDATEPATTERN);
 
             List<Attendance> temp = attendanceDAO.findOpenAttendance(loggerData.getStaff(), Timestamp.valueOf(previousDate + " 00:00:00"), Timestamp.valueOf(currentDate + " 23:59:59"));
-            if (temp.size() > 0) {
+            if (temp.size() > 0)   
+            {
                 Attendance attendance = temp.get(0);
                 if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 16) {
                     Attendance newAttendance = new Attendance();
@@ -253,9 +316,11 @@ public class LoggerDataRetrieveTask {
                     newAttendance.setSector(loggerData.getStaff().getSector());
                     attendanceDAO.saveAttendance(newAttendance);
                 } else {
-                    attendance.setEnded(BigDecimal.ONE);
-                    attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
-                    attendanceDAO.updateAttendance(attendance);
+                    if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES) > 5) {
+                        attendance.setEnded(BigDecimal.ONE);
+                        attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                        attendanceDAO.updateAttendance(attendance);
+                    }
                 }
             } else {
                 Attendance newAttendance = new Attendance();
