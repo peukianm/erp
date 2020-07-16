@@ -1,0 +1,154 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <!--<ui:define name="title">Dashboard</ui:define>-->
+    <f:metadata>        
+        <f:viewAction action="#{dashboard.preRenderView}"/>
+    </f:metadata>
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <style type="text/css">
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
+                position: relative;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
+            }
+            .myclass table {
+                table-layout: auto !important;
+            }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                --width: 25px;
+                --height: 25px;
+                text-align: right;
+                --margin: 0px 0 0 2px !important;
+            }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
+            .layout-dashboard .user-card .user-card-header img {
+                width: 100%;
+                height: 100%;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/dashboard">#{bundle.workerDashboardPage}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="layout-dashboard">
+            <div class="p-grid">
+
+                <div class="p-col-12 p-lg-8">
+                    <div class="card card-w-title statistics">
+                        <h1>Statistics</h1>
+                        <canvas id="dashboard-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="p-col-12 p-lg-4">
+                    <div class="card user-card">
+                        <div class="user-card-header">
+                            <p:graphicImage name="images/dashboard/bg-header.png" library="babylon-layout" class="profile-image" />
+                        </div>
+                        <div class="user-card-content">
+                            <p:graphicImage name="images/avatar.png" library="babylon-layout" class="profile-image" />
+                            <p:commandButton id="user-button" type="button" icon="fa fa-cog" />
+
+                            <p:menu overlay="true" trigger="user-button" my="left top" at="left bottom">
+                                <p:menuitem value="Save" icon="fa fa-check" url="#"/>
+                                <p:menuitem value="Update" icon="fa fa-refresh" url="#"/>
+                                <p:menuitem value="Delete" icon="fa fa-trash" url="#"/>
+                            </p:menu>
+
+                            <div class="user-card-name">
+                                <span>Arlene Welch</span>
+                            </div>
+
+                            <div class="user-detail">
+                                <ul>
+                                    <li>
+                                        <i class="fa fa-tasks fa-fw"></i>
+                                        <span class="project-title">Tasks</span>
+                                        <span class="project-detail">3 open</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 50%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-usd fa-fw"></i>
+                                        <span class="project-title">Revenue</span>
+                                        <span class="project-detail">+20%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 20%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-credit-card fa-fw"></i>
+                                        <span class="project-title">Payments</span>
+                                        <span class="project-detail">24 new</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 65%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-users fa-fw"></i>
+                                        <span class="project-title">Clients</span>
+                                        <span class="project-detail">+80%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 80%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-credit-card fa-fw"></i>
+                                        <span class="project-title">Sales</span>
+                                        <span class="project-detail">+45%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 45%"></div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-line-chart fa-fw"></i>
+                                        <span class="project-title">Performance</span>
+                                        <span class="project-detail">+75%</span>
+                                        <div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 75%"></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
