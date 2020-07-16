@@ -147,27 +147,52 @@ public class LoggerDataRetrieveTask {
     public void taskMainBody(Companytask cTask) throws Exception {
         List<LoggerData> logerDataList = new ArrayList<LoggerData>();
         String currentDate = new SimpleDateFormat(FormatUtils.yyyyMMdd).format(new Date());
-        try (BufferedReader br = new BufferedReader(new FileReader(SystemParameters.getInstance().getProperty("LOGGER_PATH") + "\\" + currentDate + ".txt"))) {
-            int pointer = 0;
-            String dbDate =  cTask.getTaskdata1() == null ? "" : cTask.getTaskdata1();
-            if (dbDate.equals(currentDate)) {
-                pointer = cTask.getTaskdata2() == null ? 0 : Integer.parseInt(cTask.getTaskdata2());
-            } else {
-                cTask.setTaskdata1(currentDate);
-                pointer = 0;
-            }
+        int pointer = cTask.getTaskdata2() == null ? 0 : Integer.parseInt(cTask.getTaskdata2());
+        System.out.println("Pointer=" + pointer);
+        String dbDate = cTask.getTaskdata1() == null ? currentDate : cTask.getTaskdata1();
+        System.out.println("DBADATE=" + dbDate);
+        if (!dbDate.equals(currentDate)) {
+            long days = FormatUtils.getDateDiff(FormatUtils.getDate(dbDate, FormatUtils.yyyyMMdd), new Date(), TimeUnit.DAYS);
+            System.out.println("DAYS difference = " + days);
+            for (int i = 0; i <= days - 1; i++) {
+                System.out.println("PATH=" + FormatUtils.addDays(dbDate, i, FormatUtils.yyyyMMdd) + ".txt");
+                try (BufferedReader br = new BufferedReader(new FileReader(SystemParameters.getInstance().getProperty("LOGGER_PATH") + "\\" + FormatUtils.addDays(dbDate, i, FormatUtils.yyyyMMdd) + ".txt"))) {
+                    Staff staff = null;
+                    List<Staff> allStaff = staffDAO.getAllStaff(true);
 
+                    for (String line; (line = br.readLine()) != null;) {
+                        System.out.println(line);
+                        String[] parts = line.split("\\t");
+                        String afm = parts[0];
+                        staff = allStaff.stream().filter(stf -> afm
+                                .equals(stf.getAfm()))
+                                .findAny()
+                                .orElse(null);
+
+                        if (staff != null) {
+                            LoggerData logerData = new LoggerData(parts[0],
+                                    FormatUtils.getDate(parts[1], FormatUtils.LOGGERFULLDATEPATTERN),
+                                    parts[2], staff);
+                            logerDataList.add(logerData);
+                        }
+                    }
+                }
+            }
+        }
+
+        //ΦΟΡΤΩΣΗ ΚΑΤΑΓΡΑΦΕΩΝ ΣΗΜΕΡΙΝΗΣ ΗΜΕΡΟΜΗΝΙΑ
+        try (BufferedReader br = new BufferedReader(new FileReader(SystemParameters.getInstance().getProperty("LOGGER_PATH") + "\\" + currentDate + ".txt"))) {
             int counter = 0;
             Staff staff = null;
             List<Staff> allStaff = staffDAO.getAllStaff(true);
-
+            System.out.println("Pointer inside cirrent date=" + pointer);
             for (int i = 0; i <= pointer - 1; ++i) {
                 br.readLine();
             }
 
             for (String line; (line = br.readLine()) != null;) {
-                
                 System.out.println(line);
+                counter++;
                 String[] parts = line.split("\\t");
                 String afm = parts[0];
                 staff = allStaff.stream().filter(stf -> afm
@@ -175,22 +200,22 @@ public class LoggerDataRetrieveTask {
                         .findAny()
                         .orElse(null);
 
-                if (staff != null) {                   
+                if (staff != null) {
                     LoggerData logerData = new LoggerData(parts[0],
                             FormatUtils.getDate(parts[1], FormatUtils.LOGGERFULLDATEPATTERN),
                             parts[2], staff);
                     logerDataList.add(logerData);
-                     counter++;
                 }
             }
 
-
             cTask.setTaskdata2(String.valueOf(counter + pointer));
-            System.out.println(counter + " new values from eloggers");
+            cTask.setTaskdata1(currentDate);
+            System.out.println(counter + " new values from last day loggers");
             System.out.println("Total entries from all loggers=" + logerDataList.size());
 
             Collections.sort(logerDataList);
             updateAttendance(logerDataList);
+
         } catch (FileNotFoundException e) {
             goError(e);
             throw e;
@@ -202,6 +227,56 @@ public class LoggerDataRetrieveTask {
             throw e;
         }
     }
+
+    private void updateAttendance(List<LoggerData> loggerDataList) throws Exception {
+        String currentDate = "";
+        String previousDate = "";
+        for (LoggerData loggerData : loggerDataList) {
+            currentDate = FormatUtils.formatDate(loggerData.getDateTime(), FormatUtils.TIMESTAMPDATEPATTERN);
+            previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()), FormatUtils.TIMESTAMPDATEPATTERN);
+
+            List<Attendance> temp = attendanceDAO.findOpenAttendance(loggerData.getStaff(), Timestamp.valueOf(previousDate + " 00:00:00"), Timestamp.valueOf(currentDate + " 23:59:59"));
+            if (temp.size() > 0) {
+                Attendance attendance = temp.get(0);
+                if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 16) {
+                    Attendance newAttendance = new Attendance();
+                    newAttendance.setCompany(loggerData.getStaff().getCompany());
+                    newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                    newAttendance.setDepartment(loggerData.getStaff().getDepartment());
+                    newAttendance.setEnded(BigDecimal.ZERO);
+                    newAttendance.setStaff(loggerData.getStaff());
+                    newAttendance.setSector(loggerData.getStaff().getSector());
+                    attendanceDAO.saveAttendance(newAttendance);
+                } else {
+                    if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES) > 5) {
+                        attendance.setEnded(BigDecimal.ONE);
+                        attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                        attendanceDAO.updateAttendance(attendance);
+                    }
+                }
+            } else {
+                Attendance newAttendance = new Attendance();
+                newAttendance.setCompany(loggerData.getStaff().getCompany());
+                newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                newAttendance.setDepartment(loggerData.getStaff().getDepartment());
+                newAttendance.setEnded(BigDecimal.ZERO);
+                newAttendance.setStaff(loggerData.getStaff());
+                newAttendance.setSector(loggerData.getStaff().getSector());
+                attendanceDAO.saveAttendance(newAttendance);
+            }
+        }
+    }
+
+    public void goError(Exception ex) {
+        logger.error("-----------AN ERROR HAPPENED ON RETRIEVE LOGGER DATA SCHEDULER !!!! -------------------- : " + ex.toString());
+        logger.error("Cause=" + ex.getCause());
+        logger.error("Class=" + ex.getClass());
+        logger.error("Message=" + ex.getLocalizedMessage());
+        logger.error(ex, ex);
+        logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
+    }
+
+}
 
 //    public void taskMainBody(Companytask cTask) throws Exception {
 //
@@ -294,54 +369,4 @@ public class LoggerDataRetrieveTask {
 //            goError(e);
 //            throw e;
 //        }
-//    }
-    private void updateAttendance(List<LoggerData> loggerDataList) throws Exception {
-        String currentDate = "";
-        String previousDate = "";
-        for (LoggerData loggerData : loggerDataList) {
-            currentDate = FormatUtils.formatDate(loggerData.getDateTime(), FormatUtils.TIMESTAMPDATEPATTERN);
-            previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()), FormatUtils.TIMESTAMPDATEPATTERN);
-
-            List<Attendance> temp = attendanceDAO.findOpenAttendance(loggerData.getStaff(), Timestamp.valueOf(previousDate + " 00:00:00"), Timestamp.valueOf(currentDate + " 23:59:59"));
-            if (temp.size() > 0)   
-            {
-                Attendance attendance = temp.get(0);
-                if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 16) {
-                    Attendance newAttendance = new Attendance();
-                    newAttendance.setCompany(loggerData.getStaff().getCompany());
-                    newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
-                    newAttendance.setDepartment(loggerData.getStaff().getDepartment());
-                    newAttendance.setEnded(BigDecimal.ZERO);
-                    newAttendance.setStaff(loggerData.getStaff());
-                    newAttendance.setSector(loggerData.getStaff().getSector());
-                    attendanceDAO.saveAttendance(newAttendance);
-                } else {
-                    if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES) > 5) {
-                        attendance.setEnded(BigDecimal.ONE);
-                        attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
-                        attendanceDAO.updateAttendance(attendance);
-                    }
-                }
-            } else {
-                Attendance newAttendance = new Attendance();
-                newAttendance.setCompany(loggerData.getStaff().getCompany());
-                newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
-                newAttendance.setDepartment(loggerData.getStaff().getDepartment());
-                newAttendance.setEnded(BigDecimal.ZERO);
-                newAttendance.setStaff(loggerData.getStaff());
-                newAttendance.setSector(loggerData.getStaff().getSector());
-                attendanceDAO.saveAttendance(newAttendance);
-            }
-        }
-    }
-
-    public void goError(Exception ex) {
-        logger.error("-----------AN ERROR HAPPENED ON RETRIEVE LOGGER DATA SCHEDULER !!!! -------------------- : " + ex.toString());
-        logger.error("Cause=" + ex.getCause());
-        logger.error("Class=" + ex.getClass());
-        logger.error("Message=" + ex.getLocalizedMessage());
-        logger.error(ex, ex);
-        logger.error("--------------------- END OF ERROR --------------------------------------------------------\n\n");
-    }
-
-}
+    //    }

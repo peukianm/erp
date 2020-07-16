@@ -7,7 +7,11 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -107,6 +111,21 @@ public class FormatUtils {
             return null;
         }
     }
+
+    public static String addDays(String date, int days, String pattern) {
+        Date tempDate = getDate(date, pattern);
+         try {
+            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+            Calendar c = Calendar.getInstance();
+            c.setTime(tempDate);
+            c.add(Calendar.DATE, days);  // number of days to add			
+            return formatDate(c.getTime(), pattern);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }             
+    }
+    
 
     public static Date minusOneDay(Date date) {
         // Start date
@@ -248,6 +267,7 @@ public class FormatUtils {
             return "";
         }
     }
+
     public static String formatTimeStamp(Timestamp date, String patern) {
         if (date != null) {
             DateFormat df = new SimpleDateFormat(patern);
@@ -276,8 +296,8 @@ public class FormatUtils {
 
         }
     }
-    
-     public static Date getDate(String date, String pattern) {
+
+    public static Date getDate(String date, String pattern) {
         DateFormat df = new SimpleDateFormat(pattern);
         try {
             return df.parse(date);
@@ -300,7 +320,7 @@ public class FormatUtils {
         }
     }
 
-    public static Timestamp formatDateToTimestamp(java.util.Date date)  {
+    public static Timestamp formatDateToTimestamp(java.util.Date date) {
         Timestamp timestamp = null;
         try {
             DateFormat df = new SimpleDateFormat(DATEPATTERN);
@@ -309,7 +329,7 @@ public class FormatUtils {
             return timestamp;
         } catch (Exception e) {
             return null;
-        } 
+        }
     }
 
     public static Timestamp formatDateToTimestamp(java.util.Date date, String pattern) {
@@ -747,4 +767,16 @@ public class FormatUtils {
         long seconds = totalSecs % 60;
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
+
+//    public static long dayDifferencebetwwenDates(String inputdate1, String inputdate2) {
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd MM yyyy");
+//        try {
+//            LocalDateTime date1 = LocalDate.parse(inputdate1, dtf);
+//            LocalDateTime date2 = LocalDate.parse(inputdate2, dtf);
+//            long daysBetween = Duration.between(date1, date2).toDays();
+//            System.out.println("Days: " + daysBetween);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

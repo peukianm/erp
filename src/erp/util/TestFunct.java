@@ -119,9 +119,10 @@ public class TestFunct {
                     + " from SYSPROS.EMP_EMPLOYEES em "
                     + " where em.active=1 AND TODATE >= current_date AND EM.BIGSECTION_ID=1 "
                     + " order by last_name";
-           // DBQueryExample(sqlSelect);
-            
-            readFile("E:\\temp",1);
+            // DBQueryExample(sqlSelect);
+
+            //readFile("E:\\temp",1);
+            accessDB();
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -133,22 +134,86 @@ public class TestFunct {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static void readFile(String file, int n) {
+    private static void accessDB() {
+        // variables
+        java.sql.Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        // Step 1: Loading or registering Oracle JDBC driver class
+        try {
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+        } catch (ClassNotFoundException cnfex) {
+
+            System.out.println("Problem in loading or "
+                    + "registering MS Access JDBC driver");
+            cnfex.printStackTrace();
+        }
         
-        String date = new SimpleDateFormat(FormatUtils.yyyyMMdd).format(new Date());
-        System.out.println("Date="+date);
-        try (BufferedReader br = new BufferedReader(new FileReader(file+"\\"+date+".txt"))) {
-            for(int i = 0; i < n-1; ++i){
-                br.readLine();
+        try {
+            String msAccDB = "C:\\Program Files (x86)\\Anviz\\CrossChex Standard\\DB\\CrossChex.mdb";
+            String dbURL = "jdbc:ucanaccess://" + msAccDB;
+
+            // Step 2.A: Create and get connection using DriverManager class
+            connection = DriverManager.getConnection(dbURL);
+
+            // Step 2.B: Creating JDBC Statement 
+            statement = connection.createStatement();
+
+            // Step 2.C: Executing SQL & retrieve data into ResultSet
+            resultSet = statement.executeQuery("SELECT * FROM V_RECORD");
+
+            System.out.println("ID     \tName            \tAge\tMatches");
+            System.out.println("=======\t================\t===\t=======");
+
+            // processing returned data and printing into console
+            while (resultSet.next()) {
+                System.out.println(resultSet.getInt(1) + "\t"
+                        + resultSet.getString(2) + "\t"
+                        + resultSet.getString(3) + "\t"
+                        + resultSet.getString(4));
             }
             
+            String sqlUpdate = "update checkinout  set checked=true where logid=2";
+            statement.executeUpdate(sqlUpdate);
+            
+        } catch (SQLException sqlex) {
+            sqlex.printStackTrace();
+        } finally {
+
+            // Step 3: Closing database connection
+            try {
+                if (null != connection) {
+
+                    // cleanup resources, once after processing
+                    resultSet.close();
+                    statement.close();
+
+                    // and then finally close connection
+                    connection.close();
+                }
+            } catch (SQLException sqlex) {
+                sqlex.printStackTrace();
+            }
+        }
+    }
+
+    private static void readFile(String file, int n) {
+
+        String date = new SimpleDateFormat(FormatUtils.yyyyMMdd).format(new Date());
+        System.out.println("Date=" + date);
+        try (BufferedReader br = new BufferedReader(new FileReader(file + "\\" + date + ".txt"))) {
+            for (int i = 0; i < n - 1; ++i) {
+                br.readLine();
+            }
+
             for (String line; (line = br.readLine()) != null;) {
                 System.out.println(line);
                 String[] parts = line.split("\\t");
                 //System.out.println(parts[0] + parts[1]+ parts[2] + parts[3]);
                 Date dt = FormatUtils.getDate(parts[1], FormatUtils.LOGGERFULLDATEPATTERN);
                 System.out.println(FormatUtils.formatDateToTimestamp(dt, FULLDATEPATTERN));
-                
+
             }
             // line is not visible here.
         } catch (FileNotFoundException ex) {
@@ -397,7 +462,7 @@ public class TestFunct {
                         break;
                     }
                     currentRow = iterator.next();
-                    
+
                 }
                 workbook.close();
                 System.out.println(logerDataList.size());
