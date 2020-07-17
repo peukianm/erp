@@ -81,4 +81,38 @@ public class Dashboard implements Serializable {
     public void setLastExecution(String lastExecution) {
         this.lastExecution = lastExecution;
     }
+
+    public Attendance getDayAttendance() {
+        return dayAttendance;
+    }
+
+    public void setDayAttendance(Attendance dayAttendance) {
+        this.dayAttendance = dayAttendance;
+    }
+
+    public String getEntryTime() {
+        return entryTime;
+    }
+
+    public void setEntryTime(String entryTime) {
+        this.entryTime = entryTime;
+    }
+
+    public String getExitTime() {
+        return exitTime;
+    }
+
+    public void setExitTime(String exitTime) {
+        this.exitTime = exitTime;
+    }
+
+    public String getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public void setAttendanceDate(String attendanceDate) {
+        this.attendanceDate = attendanceDate;
+    }
+    
+    
 }

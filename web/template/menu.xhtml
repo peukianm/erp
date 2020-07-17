@@ -22,9 +22,10 @@
                         </p:submenu>
 
                         <p:submenu id="om_homepage" label="#{bundle.homePage}" icon="fa fa-fw fa-home">
-                            <p:menuitem style="#{sessionBean.pageCode eq 4 ? 'background-color: #628292 !important;':''}" id="om_dashboard" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
+                            <p:menuitem style="#{sessionBean.pageCode eq 1 ? 'background-color: #628292 !important;':''}" id="hp_dashboard" value="#{bundle.workerDashboardPage}" icon="fa fa-id-card-o" outcome="dashboard" />
                         </p:submenu>
                         <p:submenu id="om_services" label="#{bundle.services}" icon="fa fa-fw fa-magic">
+                            <p:menuitem style="#{sessionBean.pageCode eq 4 ? 'background-color: #628292 !important;':''}" id="srv_attendanceAdmin" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
                             <p:menuitem style="#{sessionBean.pageCode eq 10 ? 'background-color: #628292 !important;':''}" id="srv_attendanceStatistics" value="#{bundle.statisticsAttendance}" rendered="#{sessionBean.users.role.roleid != 3 and sessionBean.users.role.roleid != 6}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />
                             <p:menuitem style="#{sessionBean.pageCode eq 12 ? 'background-color: #628292 !important;':''}" id="srv_account_acc" value="#{bundle.viewProfile}" icon="fa fa-fw fa-cog" outcome="updateAccount?userID=#{sessionBean.users.userid}" />    
                         </p:submenu>

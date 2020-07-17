@@ -14,7 +14,7 @@
                 font-size: 20px;
                 color: #ffffff;
                 position: relative;
-                top: -92px;
+                top: -122px;
                 margin-left: 10px;
                 font-weight: 700;
                 white-space: nowrap; }
@@ -50,6 +50,18 @@
                 height: 100%;
             }
 
+            .attendance-btn {
+                float: left !important;     
+                width: 150px  !important;
+                height: 35px  !important;                               
+                border-radius: 5%  !important; 
+            }
+
+            .ui-button-text-only .ui-button-text {
+                 padding: 0px 1px !important; 
+            }
+
+
         </style>
     </ui:define>
 
@@ -63,14 +75,7 @@
         <div class="layout-dashboard">
             <div class="p-grid">
 
-                <div class="p-col-12 p-lg-8">
-                    <div class="card card-w-title statistics">
-                        <h1>Statistics</h1>
-                        <canvas id="dashboard-chart"></canvas>
-                    </div>
-                </div>
-
-                <div class="p-col-12 p-lg-4">
+                <div class="p-col-12 p-lg-3">
                     <div class="card user-card">
                         <div class="user-card-header">
                             <p:graphicImage name="images/dashboard/bg-header.png" library="babylon-layout" class="profile-image" />
@@ -86,64 +91,99 @@
                             </p:menu>
 
                             <div class="user-card-name">
-                                <span>Arlene Welch</span>
+                                <span>#{sessionBean.users.staff.name} #{sessionBean.users.staff.surname}</span><br/>    
+                                <span style="font-weight: 600;font-size: 12px;font-style: italic">(#{sessionBean.users.staff.company.abbrev} - #{sessionBean.users.staff.department.name})</span>
                             </div>
 
                             <div class="user-detail">
                                 <ul>
+
+                                    <li>
+                                        <i class="fa fa-barcode fa-fw"></i>
+                                        <span class="project-title">#{bundle.attendance}-#{dashboard.attendanceDate}</span>
+                                        <div class="" style="text-align: right;">
+                                            #{bundle.entryTime}: <span style="font-weight: 900;font-size: 13px">#{dashboard.entryTime}</span><br/>
+                                            #{bundle.exitTime}: <span style="font-weight: 900;font-size: 13px">#{dashboard.exitTime}</span><br/>
+                                        </div>
+                                        <p:commandButton class="attendance-btn" value="#{bundle.attendanceDetails}" action="dashboardAttendance?faces-redirect=true"  /> 
+                                        <!--<div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 50%"></div>
+                                        </div>-->
+                                    </li>
+
                                     <li>
                                         <i class="fa fa-tasks fa-fw"></i>
-                                        <span class="project-title">Tasks</span>
-                                        <span class="project-detail">3 open</span>
-                                        <div class="project-progressbar">
+                                        <span class="project-title">#{bundle.tasks}</span><br/>
+                                        <div class="" style="text-align: right">
+                                            #{bundle.openTask}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
+                                            #{bundle.closedTask}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
+                                        </div>
+                                        <p:commandButton class="attendance-btn" value="#{bundle.viewTasks}" action="#"  /> 
+                                        <!--<div class="project-progressbar">
                                             <div class="project-progressbar-value" style="width: 50%"></div>
-                                        </div>
+                                        </div>-->
                                     </li>
                                     <li>
-                                        <i class="fa fa-usd fa-fw"></i>
-                                        <span class="project-title">Revenue</span>
-                                        <span class="project-detail">+20%</span>
-                                        <div class="project-progressbar">
+                                        <i class="fa fa-search fa-fw"></i>
+                                        <span class="project-title">#{bundle.reqs}</span>
+                                        <div class="" style="text-align: right">
+                                            #{bundle.openReqs}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
+                                            #{bundle.totalReqs}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
+                                        </div>
+                                        <p:commandButton class="attendance-btn" value="#{bundle.viewRegs}" action="#"  /> 
+                                        <!--<div class="project-progressbar">
                                             <div class="project-progressbar-value" style="width: 20%"></div>
-                                        </div>
+                                        </div>-->
                                     </li>
                                     <li>
-                                        <i class="fa fa-credit-card fa-fw"></i>
-                                        <span class="project-title">Payments</span>
-                                        <span class="project-detail">24 new</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 65%"></div>
+                                        <i class="fa fa-calendar fa-fw"></i>
+                                        <span class="project-title">#{bundle.calendar}</span>
+                                        <div class="" style="text-align: right">
+                                            #{bundle.todayEvents}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
+                                            #{bundle.weekEvents}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
                                         </div>
+                                        <p:commandButton class="attendance-btn" value="#{bundle.viewCalendar}" action="#"  /> 
+                                        <!--<div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 20%"></div>
+                                        </div>-->
                                     </li>
-                                    <li>
-                                        <i class="fa fa-users fa-fw"></i>
-                                        <span class="project-title">Clients</span>
-                                        <span class="project-detail">+80%</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 80%"></div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <i class="fa fa-credit-card fa-fw"></i>
-                                        <span class="project-title">Sales</span>
-                                        <span class="project-detail">+45%</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 45%"></div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <i class="fa fa-line-chart fa-fw"></i>
-                                        <span class="project-title">Performance</span>
-                                        <span class="project-detail">+75%</span>
-                                        <div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 75%"></div>
-                                        </div>
-                                    </li>
+                                    <!--  <li>
+                                          <i class="fa fa-users fa-fw"></i>
+                                          <span class="project-title">Clients</span>
+                                          <span class="project-detail">+80%</span>
+                                          <div class="project-progressbar">
+                                              <div class="project-progressbar-value" style="width: 80%"></div>
+                                          </div>
+                                      </li>
+                                      <li>
+                                          <i class="fa fa-credit-card fa-fw"></i>
+                                          <span class="project-title">Sales</span>
+                                          <span class="project-detail">+45%</span>
+                                          <div class="project-progressbar">
+                                              <div class="project-progressbar-value" style="width: 45%"></div>
+                                          </div>
+                                      </li>
+                                      <li>
+                                          <i class="fa fa-line-chart fa-fw"></i>
+                                          <span class="project-title">Performance</span>
+                                          <span class="project-detail">+75%</span>
+                                          <div class="project-progressbar">
+                                              <div class="project-progressbar-value" style="width: 75%"></div>
+                                          </div>
+                                      </li> -->
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="p-col-12 p-lg-9">
+                    <div class="card card-w-title statistics">
+                        <h1>Statistics</h1>
+                        <canvas id="dashboard-chart"></canvas>
+                    </div>
+                </div>
+
 
 
 

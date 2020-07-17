@@ -1379,7 +1379,7 @@ a {
     margin: 0;
     list-style-type: none; }
 .layout-dashboard .user-card .user-card-content .user-detail ul li {
-    padding: 16px 24px;
+    padding: 4px 8px;
     border-bottom: 1px solid #e0e0e0; }
 .layout-dashboard .user-card .user-card-content .user-detail ul li:after {
     content: "";

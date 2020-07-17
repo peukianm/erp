@@ -62,7 +62,7 @@
             <!--</ui:fragment>-->
             <h:panelGroup  layout="block" id="topSessionDataID" class="topbar-menu erp-topmenu-user"> 
 
-                #{sessionBean.users.name} #{sessionBean.users.surname}
+                #{sessionBean.users.name} #{sessionBean.users.surname} - #{sessionBean.users.company.abbrev}
                 <br/>
                 #{sessionBean.users.role.name} #{sessionBean.users.department.name}
             </h:panelGroup>
