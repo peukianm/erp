@@ -73,9 +73,7 @@ public class DashboardTasks implements Serializable {
 
     @PostConstruct
     public void init() {
-        System.out.println("INITIALIZE DB TASKS BEAN");
         user = sessionBean.getUsers();
-
         loggerDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")), user.getCompany(), 5);
         staffDetails = schedulerDAO.getScheduletaskdetail(Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_UPDATE_STAFF")), user.getCompany(), 5);
 

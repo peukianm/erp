@@ -56,7 +56,6 @@ public class Dashboard implements Serializable {
 
     @PostConstruct
     public void init() {
-        System.out.println("INITIALIZE Dashboard BEAN");
         user = sessionBean.getUsers();
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         dayAttendance = attendanceDAO.getDayAttendance(user.getStaff(), false);

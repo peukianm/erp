@@ -78,7 +78,6 @@ public class DashboardAttendance implements Serializable {
 
     @PostConstruct
     public void init() {
-        System.out.println("INITIALIZE DB Attendance BEAN");
         user = sessionBean.getUsers();
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         fromAttendanceDate = new java.util.Date();

@@ -61,7 +61,6 @@ public class DashboardAudit implements Serializable {
 
     @PostConstruct
     public void init() {
-        System.out.println("INITIALIZE DB AUDIT BEAN");
         fromAuditDate = new java.util.Date();
         toAuditDate = new java.util.Date();
         users = userDao.getAll();

@@ -140,14 +140,14 @@
                                         </p:panel>
                                     </td>
                                 </tr>
-                                <tr>
+                                <!--<tr>
                                     <td colspan="2">
                                         <p:outputLabel style="font-weight: bold;" for="loggerCode" value="#{bundle.loggerCode}:" /><p:spacer width="20" height="20" /> 
                                         <p:inputText id="loggerCode" value="#{dbStaff.loggerCode}" >
                                              <f:validateLength minimum="2" maximum="20" />
                                         </p:inputText>
                                     </td>
-                                </tr>
+                                </tr> -->
 
 
                             </table>
@@ -239,14 +239,14 @@
                                         <h:outputText value="#{bundle.position}"/>
                                     </f:facet>
                                     <h:outputText value="#{staff.emprank.name}" />
-                                </p:column> -->
+                                </p:column> 
 
                                     <p:column style="width:1% !important;white-space:nowrap;">
                                         <f:facet name="header" >
                                             <h:outputText value="#{bundle.loggerCode}"/>
                                         </f:facet>
                                         <h:outputText value="#{staff.loggercode}" />
-                                    </p:column>
+                                    </p:column> -->
 
                                     <p:column style="text-align: center;" exportable="false">
                                         <f:facet name="header">
@@ -258,9 +258,9 @@
 
 
                                     <p:column headerText="#{bundle.actions}" exportable="false" >
-                                        <p:commandButton  icon="pi pi-id-card"  class="btn-list" update="resetLoggerDataFormID" style="font-size: 16px;" title="#{bundle.resetLoggerCode}"   onclick="PF('resetLoggerDataDialogWidget').show()">
+                                        <!--<p:commandButton  icon="pi pi-id-card"  class="btn-list" update="resetLoggerDataFormID" style="font-size: 16px;" title="#{bundle.resetLoggerCode}"   onclick="PF('resetLoggerDataDialogWidget').show()">
                                             <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />                                
-                                        </p:commandButton> 
+                                        </p:commandButton> -->
 
                                         <p:commandButton  icon="pi pi-users"  class="btn-list" update="resetDepartmentFormID" style="font-size: 16px;" title="#{bundle.resetDepartment}"   onclick="PF('resetDepartmentDialogWidget').show()">
                                             <f:setPropertyActionListener value="#{staff}" target="#{dbStaff.staffForUpdate}" />                                
