@@ -14,10 +14,7 @@ import erp.entities.Staff;
 import erp.entities.Taskstatus;
 import erp.util.FormatUtils;
 import erp.util.SystemParameters;
-import static erp.util.TestFunct.FULLDATEPATTERN;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -35,10 +31,6 @@ import javax.ejb.*;
 import javax.ejb.Singleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -147,18 +139,35 @@ public class LoggerDataRetrieveTask {
     public void taskMainBody(Companytask cTask) throws Exception {
         List<LoggerData> logerDataList = new ArrayList<LoggerData>();
         String currentDate = new SimpleDateFormat(FormatUtils.yyyyMMdd).format(new Date());
+        
         int pointer = cTask.getTaskdata2() == null ? 0 : Integer.parseInt(cTask.getTaskdata2());
         System.out.println("Pointer=" + pointer);
+        
         String dbDate = cTask.getTaskdata1() == null ? currentDate : cTask.getTaskdata1();
         System.out.println("DBADATE=" + dbDate);
+        
         if (!dbDate.equals(currentDate)) {
+            cTask.setTaskdata2(String.valueOf(0));
+            cTask.setTaskdata1(currentDate);
+            
             long days = FormatUtils.getDateDiff(FormatUtils.getDate(dbDate, FormatUtils.yyyyMMdd), new Date(), TimeUnit.DAYS);
             System.out.println("DAYS difference = " + days);
             for (int i = 0; i <= days - 1; i++) {
-                System.out.println("PATH=" + FormatUtils.addDays(dbDate, i, FormatUtils.yyyyMMdd) + ".txt");
-                try (BufferedReader br = new BufferedReader(new FileReader(SystemParameters.getInstance().getProperty("LOGGER_PATH") + "\\" + FormatUtils.addDays(dbDate, i, FormatUtils.yyyyMMdd) + ".txt"))) {
+                Date tempDate = FormatUtils.addDaysDate(dbDate, i, FormatUtils.yyyyMMdd);
+                String tempDateString = FormatUtils.formatDate(tempDate, FormatUtils.yyyyMMdd);
+                System.out.println("TempDate=" + tempDate);
+                System.out.println("TempDateString=" + tempDateString);
+                try (BufferedReader br = new BufferedReader(new FileReader(SystemParameters.getInstance().getProperty("LOGGER_PATH") + "\\" + tempDateString + ".txt"))) {
                     Staff staff = null;
                     List<Staff> allStaff = staffDAO.getAllStaff(true);
+                    
+                    
+                    if (tempDate.equals(dbDate)) {
+                        System.out.println("Moving cursor forward for previous Date!!!!");
+                        for (int j = 0; j <= pointer - 1; ++j) {
+                            br.readLine();
+                        }
+                    }
 
                     for (String line; (line = br.readLine()) != null;) {
                         System.out.println(line);
@@ -176,6 +185,8 @@ public class LoggerDataRetrieveTask {
                             logerDataList.add(logerData);
                         }
                     }
+                } catch (Exception ex) {
+                    System.out.println("FILE NOT FOUND=" + dbDate + "+" + i + " day");
                 }
             }
         }
@@ -186,8 +197,12 @@ public class LoggerDataRetrieveTask {
             Staff staff = null;
             List<Staff> allStaff = staffDAO.getAllStaff(true);
             System.out.println("Pointer inside cirrent date=" + pointer);
-            for (int i = 0; i <= pointer - 1; ++i) {
-                br.readLine();
+            if (currentDate.equals(dbDate)) {
+                System.out.println("Moving cursor forward for current Date!!!!");
+                for (int i = 0; i <= pointer - 1; ++i) {
+                    counter++;
+                    br.readLine();
+                }
             }
 
             for (String line; (line = br.readLine()) != null;) {
@@ -208,23 +223,23 @@ public class LoggerDataRetrieveTask {
                 }
             }
 
-            cTask.setTaskdata2(String.valueOf(counter + pointer));
-            cTask.setTaskdata1(currentDate);
+            cTask.setTaskdata2(String.valueOf(counter));            
             System.out.println(counter + " new values from last day loggers");
             System.out.println("Total entries from all loggers=" + logerDataList.size());
 
-            Collections.sort(logerDataList);
-            updateAttendance(logerDataList);
-
         } catch (FileNotFoundException e) {
-            goError(e);
-            throw e;
+            System.out.println("FILE NOT FOUND FOR CURRENT DATE=" + currentDate);
         } catch (IOException e) {
             goError(e);
             throw e;
         } catch (Exception e) {
             goError(e);
             throw e;
+        }
+
+        if (logerDataList.size() > 0) {
+            Collections.sort(logerDataList);
+            updateAttendance(logerDataList);
         }
     }
 
@@ -238,7 +253,7 @@ public class LoggerDataRetrieveTask {
             List<Attendance> temp = attendanceDAO.findOpenAttendance(loggerData.getStaff(), Timestamp.valueOf(previousDate + " 00:00:00"), Timestamp.valueOf(currentDate + " 23:59:59"));
             if (temp.size() > 0) {
                 Attendance attendance = temp.get(0);
-                if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 16) {
+                if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 12) {
                     Attendance newAttendance = new Attendance();
                     newAttendance.setCompany(loggerData.getStaff().getCompany());
                     newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));

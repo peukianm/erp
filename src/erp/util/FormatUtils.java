@@ -126,6 +126,20 @@ public class FormatUtils {
         }             
     }
     
+    public static Date addDaysDate(String date, int days, String pattern) {
+        Date tempDate = getDate(date, pattern);
+         try {
+            SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+            Calendar c = Calendar.getInstance();
+            c.setTime(tempDate);
+            c.add(Calendar.DATE, days);  // number of days to add			
+            return c.getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }             
+    }
+    
 
     public static Date minusOneDay(Date date) {
         // Start date
