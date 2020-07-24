@@ -211,7 +211,7 @@ public class LoggerDataRetrieveTask {
                 String[] parts = line.split("\\t");
                 String afm = parts[0];
                 staff = allStaff.stream().filter(stf -> afm
-                        .equals(stf.getAfm()))
+                        .equals("1"+stf.getAfm()))
                         .findAny()
                         .orElse(null);
 
@@ -220,6 +220,8 @@ public class LoggerDataRetrieveTask {
                             FormatUtils.getDate(parts[1], FormatUtils.LOGGERFULLDATEPATTERN),
                             parts[2], staff);
                     logerDataList.add(logerData);
+                } else {
+                    System.out.println("!!!!!!!!!!!!!!!!!SOS!!! No staff found for AFM="+afm);
                 }
             }
 

@@ -90,9 +90,9 @@
                             <p:commandButton id="user-button" type="button" icon="fa fa-cog" />
 
                             <p:menu overlay="true" trigger="user-button" my="left top" at="left bottom">
-                                <p:menuitem value="Save" icon="fa fa-check" url="#"/>
-                                <p:menuitem value="Update" icon="fa fa-refresh" url="#"/>
-                                <p:menuitem value="Delete" icon="fa fa-trash" url="#"/>
+                                <p:menuitem value="#{bundle.save}" icon="fa fa-check" url="#"/>
+                                <p:menuitem value="#{bundle.update}" icon="fa fa-refresh" url="#"/>
+                                <p:menuitem value="#{bundle.delete}" icon="fa fa-trash" url="#"/>
                             </p:menu>
 
                             <div class="user-card-name">
@@ -104,7 +104,7 @@
                                 <ul>
 
                                     <li>
-                                        <i class="fa fa-barcode fa-fw"></i>
+                                        <i class="fa fa-id-card fa-fw"></i>
                                         <span class="project-title">#{bundle.attendance}-#{dashboard.attendanceDate}</span>
                                         <div class="" style="text-align: right;">
                                             #{bundle.entryTime}: <span style="font-weight: 900;font-size: 13px">#{dashboard.entryTime}</span><br/>
@@ -118,39 +118,39 @@
 
                                     <li>
                                         <i class="fa fa-tasks fa-fw"></i>
-                                        <span class="project-title">#{bundle.tasks}</span><br/>
+                                        <span class="project-title">#{bundle.tasks}</span><span style="color: red;font-weight: bolder;font-size: 13px"> (OFF)</span>
                                         <div class="" style="text-align: right">
                                             #{bundle.openTask}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
                                             #{bundle.closedTask}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
                                         </div>
-                                        <p:commandButton class="attendance-btn" value="#{bundle.viewTasks}" action="#"  /> 
-                                        <!--<div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 50%"></div>
-                                        </div>-->
+                                        <p:commandButton class="attendance-btn" value="#{bundle.viewTasks}" action="#"  disabled="true"/> 
                                     </li>
                                     <li>
                                         <i class="fa fa-search fa-fw"></i>
-                                        <span class="project-title">#{bundle.reqs}</span>
+                                        <span class="project-title">#{bundle.reqs}</span><span style="color: red;font-weight: bolder;font-size: 13px"> (OFF)</span>
                                         <div class="" style="text-align: right">
                                             #{bundle.openReqs}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
                                             #{bundle.totalReqs}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
                                         </div>
-                                        <p:commandButton class="attendance-btn" value="#{bundle.viewRegs}" action="#"  /> 
-                                        <!--<div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 20%"></div>
-                                        </div>-->
+                                        <p:commandButton class="attendance-btn" value="#{bundle.viewRegs}" action="#"  disabled="true"/> 
                                     </li>
                                     <li>
                                         <i class="fa fa-calendar fa-fw"></i>
-                                        <span class="project-title">#{bundle.calendar}</span>
+                                        <span class="project-title">#{bundle.calendar}</span><span style="color: red;font-weight: bolder;font-size: 13px"> (OFF)</span>
                                         <div class="" style="text-align: right">
                                             #{bundle.todayEvents}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
                                             #{bundle.weekEvents}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
                                         </div>
-                                        <p:commandButton class="attendance-btn" value="#{bundle.viewCalendar}" action="#"  /> 
-                                        <!--<div class="project-progressbar">
-                                            <div class="project-progressbar-value" style="width: 20%"></div>
-                                        </div>-->
+                                        <p:commandButton class="attendance-btn" value="#{bundle.viewCalendar}" action="#"  disabled="true"/> 
+                                    </li>
+                                    <li>
+                                        <i class="fa fa-comments fa-fw"></i>
+                                        <span class="project-title">#{bundle.messages}</span><span style="color: red;font-weight: bolder;font-size: 13px"> (OFF)</span>
+                                        <div class="" style="text-align: right">
+                                            #{bundle.unReadead}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
+                                            #{bundle.totalMsgs}: <span style="font-weight: 900;font-size: 13px">N/A</span><br/>
+                                        </div>
+                                        <p:commandButton class="attendance-btn" value="#{bundle.viewCalendar}" action="#" disabled="true"/> 
                                     </li>
                                     <!--  <li>
                                           <i class="fa fa-users fa-fw"></i>
@@ -185,7 +185,7 @@
                 <div class="p-col-12 p-lg-8">
                     <div class="card card-w-title statistics" > 
                         <h1 style="background-color: #00bcd4 !important; margin: 0px !important; ">#{bundle.hospitsSite}</h1>
-                        <iframe src="http://www.noskard.gr" style="width: 100%; height: 500px;"></iframe>
+                        <iframe src="http://www.noskard.gr" style="width: 100%; height: 700px;"></iframe>
                     </div>
                 </div>
 

@@ -46,11 +46,11 @@ public class FrontEndAuthenticationFilter implements Filter {
         httpResponse = (HttpServletResponse) response;
         String servletPath = httpRequest.getServletPath();
         HttpSession session = httpRequest.getSession(false);
-
+        System.out.println("servletPath="+servletPath);
         if (request.getAttribute(FILTER_APPLIED) == null && !notRequiredLogin(servletPath) ) {
             request.setAttribute(FILTER_APPLIED, Boolean.TRUE);
             boolean isLoggedIn = (session != null && sessionBean != null && sessionBean.getUsers() != null);
-            if (!isLoggedIn) {
+            if (!isLoggedIn) { 
                 if ("partial/ajax".equals(httpRequest.getHeader("Faces-Request"))) {                   
                     httpResponse.setContentType("text/xml");
                     httpResponse.getWriter().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").printf("<partial-response><redirect url=\"%s\"></redirect></partial-response>", "/index.jsp?faces-redirect=true");                           	            	
