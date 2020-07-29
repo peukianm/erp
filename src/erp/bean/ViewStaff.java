@@ -36,9 +36,7 @@ public class ViewStaff implements Serializable {
     boolean active;
     String staffID;
 
-    public void init() {
-        System.out.println("INIT VIEW STAFF!!!!!!");
-        
+    public void init() {        
         if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("hrID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_VIEW_STAFF"), null, 1)) {
                 return;

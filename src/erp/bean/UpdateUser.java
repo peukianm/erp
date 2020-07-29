@@ -57,8 +57,7 @@ public class UpdateUser implements Serializable {
 
     private DualListModel<Department> depsPickList;
 
-    public void init() {
-        System.out.println("PRERENDER UPDATE USER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    public void init() {        
         if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_USER"), null, 1)) {
                 return;
@@ -91,9 +90,7 @@ public class UpdateUser implements Serializable {
     }
 
     @PostConstruct
-    public void pc() {
-        System.out.println("POST CONSTRUCT UPDATE USER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
+    public void pc() {        
     }
 
     @PreDestroy

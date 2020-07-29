@@ -137,6 +137,26 @@ public class AttendanceDAO {
             throw re;
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    public Boolean findLoggerHitsFromUser(Staff staff, Timestamp previous, Timestamp next) {
+        try {
+            final String queryString = "select model from Attendance model where "
+                    + " ( model.entrance BETWEEN :previous AND :current OR "
+                    + " model.exit BETWEEN :previous AND :current ) AND "
+                    + " model.staff = :staff " ;
+                  
+            Query query = entityManager.createQuery(queryString);
+            query.setParameter("previous", previous);
+            query.setParameter("current", next);
+            query.setParameter("staff", staff);
+            return query.getResultList().size()>0 ? true : false;
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on getting Staff from Code ", re);
+            throw re;
+        }
+    }
 
     public void saveAttendance(Attendance attendance) {
         try {

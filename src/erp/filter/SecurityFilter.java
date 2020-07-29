@@ -66,7 +66,7 @@ public class SecurityFilter implements Filter {
                 //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!REDIRECTING fROM SECURITY FILTER " + checkforloginpage);
                 if ("partial/ajax".equals(hreq.getHeader("Faces-Request"))) {
                     // It's a JSF ajax request.            	           	
-                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!AJAX CALL--->REDIRECTING fROM SECURITY FILTER " + checkforloginpage);
+                    //System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!AJAX CALL--->REDIRECTING fROM SECURITY FILTER " + checkforloginpage);
                     hres.setContentType("text/xml");
                     hres.getWriter().append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").printf("<partial-response><redirect url=\"%s\"></redirect></partial-response>", "/erp/index.jsp?faces-redirect=true");
                     //hres.sendRedirect("herp/index.jsp?faces-redirect=true");            	            	

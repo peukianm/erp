@@ -45,8 +45,7 @@ public class FrontEndAuthenticationFilter implements Filter {
         httpRequest = (HttpServletRequest) request;
         httpResponse = (HttpServletResponse) response;
         String servletPath = httpRequest.getServletPath();
-        HttpSession session = httpRequest.getSession(false);
-        System.out.println("servletPath="+servletPath);
+        HttpSession session = httpRequest.getSession(false);        
         if (request.getAttribute(FILTER_APPLIED) == null && !notRequiredLogin(servletPath) ) {
             request.setAttribute(FILTER_APPLIED, Boolean.TRUE);
             boolean isLoggedIn = (session != null && sessionBean != null && sessionBean.getUsers() != null);

@@ -70,8 +70,7 @@ public class InsertUser implements Serializable {
     }
 
     @PostConstruct
-    public void init() {
-         System.out.println("POST CONSTRUCT INSERT USER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    public void init() {        
         List<Department> depsSource = applicationBean.getDepartments();
         List<Department> depstarget = new ArrayList<>();
         depsPickList = new DualListModel<Department>(depsSource, depstarget);
