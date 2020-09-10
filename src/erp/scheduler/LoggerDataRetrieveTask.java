@@ -141,32 +141,32 @@ public class LoggerDataRetrieveTask {
         String currentDate = new SimpleDateFormat(FormatUtils.yyyyMMdd).format(new Date());
 
         int pointer = cTask.getTaskdata2() == null ? 0 : Integer.parseInt(cTask.getTaskdata2());
-        System.out.println("Pointer=" + pointer);
-
         String dbDate = cTask.getTaskdata1() == null ? currentDate : cTask.getTaskdata1();
-        System.out.println("DBADATE=" + dbDate);
+        System.out.println("INITIAL POINTER="+pointer+ " and DATABASE DATE=" + dbDate);
 
         if (!dbDate.equals(currentDate)) {
-            cTask.setTaskdata2(String.valueOf(0));
-            cTask.setTaskdata1(currentDate);
 
-            long days = FormatUtils.getDateDiff(FormatUtils.getDate(dbDate, FormatUtils.yyyyMMdd), new Date(), TimeUnit.DAYS);
-            System.out.println("DAYS difference = " + days);
+            long days = FormatUtils.getDateDiff(FormatUtils.getDate(dbDate, FormatUtils.yyyyMMdd), new Date(), TimeUnit.DAYS);            
             for (int i = 0; i <= days - 1; i++) {
-                Date tempDate = FormatUtils.addDaysDate(dbDate, i, FormatUtils.yyyyMMdd);
-                System.out.println("Proccessing File "+tempDate+".txt");
+                Date tempDate = FormatUtils.addDaysDate(dbDate, i, FormatUtils.yyyyMMdd);                
                 String tempDateString = FormatUtils.formatDate(tempDate, FormatUtils.yyyyMMdd);
+                System.out.println("Proccessing File " + tempDateString + ".txt");
+                cTask.setTaskdata1(tempDateString);
                 try (BufferedReader br = new BufferedReader(new FileReader(SystemParameters.getInstance().getProperty("LOGGER_PATH") + "\\" + tempDateString + ".txt"))) {
                     Staff staff = null;
                     List<Staff> allStaff = staffDAO.getAllStaff(true);
-
-                    if (tempDate.equals(dbDate)) {                   
+                    
+                    int counter = 0;
+                    if (tempDateString.equals(dbDate)) {
                         for (int j = 0; j <= pointer - 1; ++j) {
+                            counter++;                            
                             br.readLine();
                         }
                     }
 
-                    for (String line; (line = br.readLine()) != null;) {                       
+                    
+                    for (String line; (line = br.readLine()) != null;) {
+                        counter++;
                         String[] parts = line.split("\\t");
                         String afm = parts[0];
                         staff = allStaff.stream().filter(stf -> afm
@@ -180,7 +180,9 @@ public class LoggerDataRetrieveTask {
                                     parts[2], staff);
                             logerDataList.add(logerData);
                         }
-                    }
+                    }    
+                    cTask.setTaskdata1(tempDateString);
+                    cTask.setTaskdata2(String.valueOf(counter));
                 } catch (Exception ex) {
                     System.out.println("FILE NOT FOUND=" + dbDate + "+" + i + " day");
                 }
@@ -189,19 +191,19 @@ public class LoggerDataRetrieveTask {
 
         //ΦΟΡΤΩΣΗ ΚΑΤΑΓΡΑΦΕΩΝ ΣΗΜΕΡΙΝΗΣ ΗΜΕΡΟΜΗΝΙΑ
         try (BufferedReader br = new BufferedReader(new FileReader(SystemParameters.getInstance().getProperty("LOGGER_PATH") + "\\" + currentDate + ".txt"))) {
-            System.out.println("Proccessing File current Date "+ currentDate+".txt");
+            System.out.println("Proccessing File current Date " + currentDate + ".txt");
             int counter = 0;
             Staff staff = null;
             List<Staff> allStaff = staffDAO.getAllStaff(true);
             System.out.println("Pointer inside current date=" + pointer);
-            if (currentDate.equals(dbDate)) {            
+            if (currentDate.equals(dbDate)) {
                 for (int i = 0; i <= pointer - 1; ++i) {
                     counter++;
                     br.readLine();
                 }
             }
 
-            for (String line; (line = br.readLine()) != null;) {               
+            for (String line; (line = br.readLine()) != null;) {
                 counter++;
                 String[] parts = line.split("\\t");
                 String afm = parts[0];
@@ -250,12 +252,12 @@ public class LoggerDataRetrieveTask {
         for (LoggerData loggerData : loggerDataList) {
             minusFiveMins = new Timestamp(loggerData.getDateTime().getTime() - delay);
             plusFiveMins = new Timestamp(loggerData.getDateTime().getTime() + delay);
-           
+
             if (attendanceDAO.findLoggerHitsFromUser(loggerData.getStaff(), minusFiveMins, plusFiveMins)) {
-                System.out.println("REMOVING ENTRY FROM FILE BECAUSE OF CONTINUE HIT!!!!!!!!!!!!!!!! "+ loggerData.getStaff().getSurname() +" DATE="+ loggerData.getDateTime() );
+                System.out.println("!!!!!!!!!!!!!!!!REMOVING ENTRY FROM FILE BECAUSE OF CONTINUE HIT!!!!!!!!!!!!!!!! " + loggerData.getStaff().getSurname() + " " + loggerData.getStaff().getName() + " DATE=" + loggerData.getDateTime());
                 continue;
             }
-            
+
             currentDate = FormatUtils.formatDate(loggerData.getDateTime(), FormatUtils.TIMESTAMPDATEPATTERN);
             previousDate = FormatUtils.formatDate(FormatUtils.minusOneDay(loggerData.getDateTime()), FormatUtils.TIMESTAMPDATEPATTERN);
             List<Attendance> temp = attendanceDAO.findOpenAttendance(loggerData.getStaff(), Timestamp.valueOf(previousDate + " 00:00:00"), Timestamp.valueOf(currentDate + " 23:59:59"));
@@ -263,7 +265,7 @@ public class LoggerDataRetrieveTask {
             if (temp.size() > 0) {
                 Attendance attendance = temp.get(0);
                 if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 12) {
-                    System.out.println("Attendanse "+attendance.getEntrance()+" for staff "+ attendance.getStaff().getSurname()+" will remain open!!!!!!!!!!!!!!!!!!");
+                    System.out.println("!!!!!!!!!!Attendanse " + attendance.getEntrance() + " for staff " + attendance.getStaff().getSurname() + " " + attendance.getStaff().getName() + " will remain open!!!!!!!!!!!!!!!!!!");
                     Attendance newAttendance = new Attendance();
                     newAttendance.setCompany(loggerData.getStaff().getCompany());
                     newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));

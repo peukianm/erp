@@ -65,7 +65,7 @@
                     <p:autoUpdate />
                 </p:messages>
                 <!--<div class="p-col-12 p-lg-8">-->
-                <div class="p-col-12 p-xl-4">    
+                <div class="p-col-12 p-xl-5">    
                     <h:form id="searchStaffForm">
                         <div class="card card-w-title statistics">
                             <div class="erp-panel-titlebar">
@@ -78,7 +78,8 @@
                                     <td colspan="2">
                                         <p:outputLabel value="#{bundle.selectAllStaff}:" style="font-weight: bold;" for="selectAllStaff" />
                                         &#160;&#160;
-                                        <p:selectBooleanButton id="selectAllStaff" value="#{dbStat.all}" onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
+                                        <p:selectBooleanButton disabled="#{sessionBean.users.role.roleid gt 2 and (not empty sessionBean.users.department and sessionBean.users.department.departmentid ne 16 and sessionBean.users.department.departmentid ne 14)}"
+                                            id="selectAllStaff" value="#{dbStat.all}" onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
                                             <p:ajax listener="#{dbStat.onAllChange()}" update="selectSector selectDepartment basicId @(.depsIDtyleclass) :viewAttendanceResults:summaryID" />      
                                         </p:selectBooleanButton>
                                     </td>
@@ -155,7 +156,7 @@
 
 
                 <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-                <div class="p-col-12 p-xl-8">    
+                <div class="p-col-12 p-xl-7">    
                     <div class="card user-card">
 
                         <div class="card card-w-title statistics">

@@ -76,8 +76,8 @@
                                     <td colspan="2">
                                         <p:outputLabel value="#{bundle.selectAllStaff}:" style="font-weight: bold;" for="selectAllStaff" />
                                         &#160;&#160; 
-                                        <p:selectBooleanButton id="selectAllStaff" disabled="#{sessionBean.users.role.roleid gt 2 and (not empty sessionBean.users.department and sessionBean.users.department.departmentid ne 16 and sessionBean.users.department.departmentid ne 14)}" value="#{dbAttendance.all}" 
-                                                               onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
+                                        <p:selectBooleanButton id="selectAllStaff" disabled="#{sessionBean.users.role.roleid gt 2 and (not empty sessionBean.users.department and sessionBean.users.department.departmentid ne 16 and sessionBean.users.department.departmentid ne 14)}" 
+                                                               value="#{dbAttendance.all}" onLabel="Yes" offLabel="No" onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" >
                                             <p:ajax listener="#{dbAttendance.onAllChange()}" update="selectSector selectDepartment basicId @(.depsIDtyleclass)" />      
                                         </p:selectBooleanButton>
                                     </td>

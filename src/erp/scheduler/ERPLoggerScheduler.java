@@ -23,7 +23,7 @@ public class ERPLoggerScheduler {
     private LoggerDataRetrieveTask retrieverTask;
   
     @Lock(LockType.READ)     
-    @Schedule(second = "0", minute = "0", hour = "0,6,7,8,9,10,11,12,13,14,15,16,17,18", persistent = false)
+    @Schedule(second = "0", minute = "50", hour = "8,11,15,23", persistent = false)
     public void atScheduleLoggers() throws InterruptedException {
         if (SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE") != null && SystemParameters.getInstance().getProperty("SCHEDULER_ENABLE").equals("true")
                 && SystemParameters.getInstance().getProperty("LOGGER_RETRIEVER_TASK_ENABLE").equals("true")) {
