@@ -270,7 +270,7 @@ public class LoggerDataRetrieveTask {
 
             if (attendanceDAO.findLoggerHitsFromUser(loggerData.getStaff(), minusFiveMins, plusFiveMins)) {
                 removed++;
-                //System.out.println("!!!!!!!!!!!!!!!!REMOVING ENTRY FROM FILE BECAUSE OF CONTINUE HIT!!!!!!!!!!!!!!!! " + loggerData.getStaff().getSurname() + " " + loggerData.getStaff().getName() + " DATE=" + loggerData.getDateTime());
+                System.out.println("!!!!!!!!!!!!!!!!REMOVING ENTRY FROM FILE BECAUSE OF CONTINUE HIT!!!!!!!!!!!!!!!! " + loggerData.getStaff().getSurname() + " " + loggerData.getStaff().getName() + " DATE=" + loggerData.getDateTime());
                 continue;
             }
 
