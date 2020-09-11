@@ -29,8 +29,17 @@ public class AttendanceBean implements Serializable {
     private String max;
     private String average;
     private String count;
+    private String afm;
 
-    
+    public String getAfm() {
+        return afm;
+    }
+
+    public void setAfm(String afm) {
+        this.afm = afm;
+    }
+
+        
     public long getSecondsDuration() {
         return secondsDuration;
     }

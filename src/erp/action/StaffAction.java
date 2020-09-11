@@ -62,12 +62,12 @@ public class StaffAction {
                 
                 if (!dbStaff.getSelectedDepartments().isEmpty()) {
                 dbStaff.getSelectedDepartments().forEach((temp) -> {
-                    List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), null, temp, dbStaff.isActive(), dbStaff.getLoggerCode());
+                    List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), null, temp, dbStaff.isActive(), dbStaff.getAfm());
                     retValue.addAll(staff);
                 });
 
             } else {
-                List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), null, null, dbStaff.isActive(), dbStaff.getLoggerCode());
+                List<Staff> staff = staffDAO.getStaff(sessionBean.getUsers().getCompany(), null, null, dbStaff.isActive(), dbStaff.getAfm());
                 retValue.addAll(staff);
             }
             dbStaff.setStaff(retValue);

@@ -356,14 +356,14 @@ public class StaffDAO {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Staff> getStaff(Company company, Sector sector, Department department, boolean active, String loggerCode) {
+    public List<Staff> getStaff(Company company, Sector sector, Department department, boolean active, String afm) {
         try {
             final String queryString = "select model from Staff model where "
                     + " model.company = :company  "
                     + (department != null ? " and model.department = :department  " : " ")
                     + (sector != null ? " and model.sector = :sector  " : " ")
                     + (active ? " and model.active = 1  " : "  and model.active = 0  ")
-                    + (loggerCode != null && !(loggerCode.trim()).equals("") ? " and model.loggercode  like '" + loggerCode + "%' " : " ")
+                    + (afm != null && !(afm.trim()).equals("") ? " and model.afm  like '" + afm + "%' " : " ")
                     + " order by model.surname";
 
             Query query = entityManager.createQuery(queryString);

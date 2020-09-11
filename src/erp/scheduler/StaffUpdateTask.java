@@ -152,7 +152,7 @@ public class StaffUpdateTask {
                     + " studytype_id as studytypeid,familystatus_id as familystatusid,service_id as sectorid,"
                     + " bigsection_id as companyid, MISTHACTIVE "
                     + " from SYSPROS.EMP_EMPLOYEES em "
-                    + " where em.active=1 AND TODATE >= current_date AND EM.BIGSECTION_ID=1 AND EM.MISTHACTIVE=1 "
+                    + " where em.active=1 AND TODATE >= current_date AND EM.MISTHACTIVE=1 "
                     + " order by last_name";
 
             Statement stmt = conn.createStatement();

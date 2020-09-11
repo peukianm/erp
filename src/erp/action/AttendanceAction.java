@@ -62,6 +62,7 @@ public class AttendanceAction {
                     attendances.forEach((temp1) -> {
                         AttendanceBean bean = new AttendanceBean();
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                        bean.setAfm(temp1.getStaff().getAfm());
                         bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                         bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
                         if (temp1.getExit() != null) {
@@ -80,6 +81,7 @@ public class AttendanceAction {
                     attendances.forEach((temp1) -> {
                         AttendanceBean bean = new AttendanceBean();
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                        bean.setAfm(temp1.getStaff().getAfm());
                         bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                         bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
                         if (temp1.getExit() != null) {
@@ -98,6 +100,7 @@ public class AttendanceAction {
                     attendances.forEach((temp1) -> {
                         AttendanceBean bean = new AttendanceBean();
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                        bean.setAfm(temp1.getStaff().getAfm());
                         bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                         bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
                         if (temp1.getExit() != null) {
@@ -114,6 +117,7 @@ public class AttendanceAction {
                 attendances.forEach((temp1) -> {
                     AttendanceBean bean = new AttendanceBean();
                     bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
+                    bean.setAfm(temp1.getStaff().getAfm());
                     bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                     bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
                     if (temp1.getExit() != null) {
@@ -144,8 +148,12 @@ public class AttendanceAction {
                         AttendanceBean bean = new AttendanceBean();
                         bean.setStaff(temp1.getStaff());
                         bean.setStaffID(temp1.getStaff().getStaffid());
-                        bean.setDepartmentID(temp1.getStaff().getDepartment().getDepartmentid());
-                        bean.setSectorID(temp1.getStaff().getSector().getSectorid());
+                        if (temp1.getStaff().getDepartment() != null) {
+                            bean.setDepartmentID(temp1.getStaff().getDepartment().getDepartmentid());
+                        }
+                        if (temp1.getStaff().getSector() != null) {
+                            bean.setSectorID(temp1.getStaff().getSector().getSectorid());
+                        }
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
                         bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                         bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
@@ -167,8 +175,12 @@ public class AttendanceAction {
                         AttendanceBean bean = new AttendanceBean();
                         bean.setStaff(temp1.getStaff());
                         bean.setStaffID(temp1.getStaff().getStaffid());
-                        bean.setDepartmentID(temp1.getStaff().getDepartment().getDepartmentid());
-                        bean.setSectorID(temp1.getStaff().getSector().getSectorid());
+                        if (temp1.getStaff().getDepartment() != null) {
+                            bean.setDepartmentID(temp1.getStaff().getDepartment().getDepartmentid());
+                        }
+                        if (temp1.getStaff().getSector() != null) {
+                            bean.setSectorID(temp1.getStaff().getSector().getSectorid());
+                        }
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
                         bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                         bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
@@ -190,8 +202,12 @@ public class AttendanceAction {
                         AttendanceBean bean = new AttendanceBean();
                         bean.setStaff(temp1.getStaff());
                         bean.setStaffID(temp1.getStaff().getStaffid());
-                        bean.setDepartmentID(temp1.getStaff().getDepartment().getDepartmentid());
-                        bean.setSectorID(temp1.getStaff().getSector().getSectorid());
+                        if (temp1.getStaff().getDepartment() != null) {
+                            bean.setDepartmentID(temp1.getStaff().getDepartment().getDepartmentid());
+                        }
+                        if (temp1.getStaff().getSector() != null) {
+                            bean.setSectorID(temp1.getStaff().getSector().getSectorid());
+                        }
                         bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
                         bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                         bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());
@@ -212,8 +228,12 @@ public class AttendanceAction {
                     AttendanceBean bean = new AttendanceBean();
                     bean.setStaff(temp1.getStaff());
                     bean.setStaffID(temp1.getStaff().getStaffid());
-                    bean.setDepartmentID(temp1.getStaff().getDepartment().getDepartmentid());
-                    bean.setSectorID(temp1.getStaff().getSector().getSectorid());
+                    if (temp1.getStaff().getDepartment() != null) {
+                        bean.setDepartmentID(temp1.getStaff().getDepartment().getDepartmentid());
+                    }
+                    if (temp1.getStaff().getSector() != null) {
+                        bean.setSectorID(temp1.getStaff().getSector().getSectorid());
+                    }
                     bean.setName(temp1.getStaff().getSurname() + " " + temp1.getStaff().getName());
                     bean.setDate(temp1.getEntrance().toLocalDateTime().toLocalDate());
                     bean.setEntrance(temp1.getEntrance().toLocalDateTime().toLocalTime());

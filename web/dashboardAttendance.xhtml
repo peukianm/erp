@@ -194,7 +194,7 @@
 
                                     </f:facet>
 
-                                    <p:column sortBy="#{attendance.name}">
+                                    <p:column sortBy="#{attendance.name}" >
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.fullName}" />
                                         </f:facet>
@@ -215,7 +215,7 @@
                                         <h:outputText value="#{attendance.entrance}" />
                                     </p:column>
 
-                                    <p:column>
+                                    <p:column sortBy="#{attendance.exit}">
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.exitTime}" />
                                         </f:facet>

@@ -44,6 +44,7 @@ public class DashboardStaff implements Serializable {
 
     private Staff staffForUpdate;
     private String loggerCode;
+    private String afm;
     private List<Staff> staff = new ArrayList<>(0);
 
     public void preRenderView() {
@@ -116,6 +117,15 @@ public class DashboardStaff implements Serializable {
         }
     }
 
+    public String getAfm() {
+        return afm;
+    }
+
+    public void setAfm(String afm) {
+        this.afm = afm;
+    }
+
+        
     public String getLoggerCode() {
         return loggerCode;
     }
