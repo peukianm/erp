@@ -117,11 +117,12 @@ public class DashboardStatistics implements Serializable {
                 }
             case 4:
                 if (user.getStaff() != null) {
-                    enableDepartment = false;
+                    enableDepartment = true;
                     enableSector = false;
                     enableStaff = true;
                     selectedDepartments = new ArrayList<>(0);
                     selectedDepartments.addAll(user.getDepartments());
+                    departments = user.getDepartments();
                     break;
                 }
             case 5:
@@ -173,6 +174,7 @@ public class DashboardStatistics implements Serializable {
             enableStaff = true;
             selectedSectors = new ArrayList<>(0);
             selectedDepartments = new ArrayList<>(0);
+            departments = applicationBean.getDepartments();
         }
     }
 
@@ -261,10 +263,10 @@ public class DashboardStatistics implements Serializable {
     public void removeStaff(int index) {
         if (selectedStaff != null && selectedStaff.size() > 0 && selectedStaff.size() > index) {
             selectedStaff.remove(index);
-             if (selectedStaff.size()==0 && selectedDepartments.size() ==0 && !enableSector && !enableDepartment && enableStaff && user.getStaff()!= null){               
+            if (selectedStaff.size() == 0 && selectedDepartments.size() == 0 && !enableSector && !enableDepartment && enableStaff && user.getStaff() != null) {
                 selectedDepartments.add(user.getDepartment());
             }
-            if (selectedStaff.size()==0 && selectedDepartments.size() ==0 && !enableSector && enableDepartment && enableStaff && user.getStaff()!= null){               
+            if (selectedStaff.size() == 0 && selectedDepartments.size() == 0 && !enableSector && enableDepartment && enableStaff && user.getStaff() != null) {
                 selectedDepartments.addAll(user.getSector().getDepartments());
             }
         }

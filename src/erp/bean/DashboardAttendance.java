@@ -105,11 +105,12 @@ public class DashboardAttendance implements Serializable {
                 }
             case 4:
                 if (user.getStaff() != null) {
-                    enableDepartment = false;
+                    enableDepartment = true;
                     enableSector = false;
                     enableStaff = true;
                     selectedDepartments = new ArrayList<>(0);
                     selectedDepartments.addAll(user.getDepartments());
+                    departments = user.getDepartments();
                     break;
                 }
             case 5:
@@ -161,6 +162,7 @@ public class DashboardAttendance implements Serializable {
             enableStaff = true;
             selectedSectors = new ArrayList<>(0);
             selectedDepartments = new ArrayList<>(0);
+            departments = applicationBean.getDepartments();
 
         }
     }
@@ -217,14 +219,30 @@ public class DashboardAttendance implements Serializable {
             user = sessionBean.getUsers();
             if (surname != null && !surname.trim().isEmpty() && surname.trim().length() >= 1) {
                 surname = surname.trim();
+                String srnm = surname;
 
                 if (enableSector) {
                     availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, null, null);
-                } else if (enableDepartment) {
-                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getSector(), null);
                 } else {
-                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getSector(), user.getDepartment());
+                    if (user.getRole().getRoleid() == 5 || user.getRole().getRoleid() == 7) {
+                        availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getSector(), null);
+                    } else if (user.getRole().getRoleid() == 4) {
+                        availableStaff = new ArrayList<>(0);
+                        user.getDepartments().forEach((temp) -> {
+                            availableStaff.addAll(staffDao.fetchStaffAutoCompleteSurname(srnm, null, temp));
+                        });
+                    } else {
+                        availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getSector(), user.getDepartment());
+                    }
                 }
+
+//                if (enableSector) {
+//                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, null, null);
+//                } else if (enableDepartment) {
+//                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getSector(), null);
+//                } else {
+//                    availableStaff = staffDao.fetchStaffAutoCompleteSurname(surname, user.getSector(), user.getDepartment());
+//                }
                 return availableStaff;
             } else {
                 return null;
@@ -238,14 +256,14 @@ public class DashboardAttendance implements Serializable {
 
     public void removeStaff(int index) {
         if (selectedStaff != null && selectedStaff.size() > 0 && selectedStaff.size() > index) {
-            selectedStaff.remove(index);            
-            if (selectedStaff.size()==0 && selectedDepartments.size() ==0 && !enableSector && !enableDepartment && enableStaff && user.getStaff()!= null){               
+            selectedStaff.remove(index);
+            if (selectedStaff.size() == 0 && selectedDepartments.size() == 0 && !enableSector && !enableDepartment && enableStaff && user.getStaff() != null) {
                 selectedDepartments.add(user.getDepartment());
             }
-            if (selectedStaff.size()==0 && selectedDepartments.size() ==0 && !enableSector && enableDepartment && enableStaff && user.getStaff()!= null){               
+            if (selectedStaff.size() == 0 && selectedDepartments.size() == 0 && !enableSector && enableDepartment && enableStaff && user.getStaff() != null) {
                 selectedDepartments.addAll(user.getSector().getDepartments());
             }
-            
+
         }
     }
 

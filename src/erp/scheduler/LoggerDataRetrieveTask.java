@@ -79,7 +79,9 @@ public class LoggerDataRetrieveTask {
 
         try {
             busy.set(true);
-            System.out.println("START TASK RETRIEVE DATA FROM LOGGERS !!!!!!!!!!!!!!!!");
+            System.out.println("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            System.out.println("START TASK RETRIEVE DATA FROM LOGGERS !!!!!!!!!!!!!!!! ");
             Timestamp startTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " at " + startTaskTime);
             cTask.setLastexecutiontime(startTaskTime);
@@ -109,6 +111,8 @@ public class LoggerDataRetrieveTask {
             schedulerDAO.saveTaskDetails(taskDetails);
 
             System.out.println("TASK DATA RETRIEVE FORM LOGGERS ENDED WITH SUCESSS in " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!!!");
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " SUCCEDED at " + endTaskTime + " in " + FormatUtils.splitSecondsToTime(secs));
             return 1;
         } catch (Exception ex) {
@@ -127,6 +131,8 @@ public class LoggerDataRetrieveTask {
             schedulerDAO.updateCtask(cTask);
             schedulerDAO.saveTaskDetails(taskDetails);
             System.out.println("TASK DATA RETRIEVE FORM LOGGERS FAILED " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!");
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " failed " + endTaskTime);
             ex.printStackTrace();
             return -1;
@@ -142,7 +148,7 @@ public class LoggerDataRetrieveTask {
 
         int pointer = cTask.getTaskdata2() == null ? 0 : Integer.parseInt(cTask.getTaskdata2());
         String dbDate = cTask.getTaskdata1() == null ? currentDate : cTask.getTaskdata1();
-        System.out.println("INITIAL POINTER=" + pointer + " and DATABASE DATE=" + dbDate+"\n");
+        System.out.println("INITIAL POINTER=" + pointer + " and DATABASE DATE=" + dbDate + "\n");
 
         if (!dbDate.equals(currentDate)) {
 
@@ -152,7 +158,7 @@ public class LoggerDataRetrieveTask {
                 String tempDateString = FormatUtils.formatDate(tempDate, FormatUtils.yyyyMMdd);
                 System.out.println("------------------------------------------------------------------------------------");
                 System.out.println("Proccessing File " + tempDateString + ".txt");
-                cTask.setTaskdata1(tempDateString);
+                //cTask.setTaskdata1(tempDateString);
                 try (BufferedReader br = new BufferedReader(new FileReader(SystemParameters.getInstance().getProperty("LOGGER_PATH") + "\\" + tempDateString + ".txt"))) {
                     Staff staff = null;
                     List<Staff> allStaff = staffDAO.getAllStaff(true);
@@ -183,12 +189,14 @@ public class LoggerDataRetrieveTask {
                             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!SOS!!! No staff found for AFM=" + afm);
                         }
                     }
+                    System.out.println("Setting Date="+tempDateString);
                     cTask.setTaskdata1(tempDateString);
                     cTask.setTaskdata2(String.valueOf(counter));
-                    
+                          
+
                     System.out.println("For Date=" + tempDateString + " counter=" + counter + " (File pointer)");
                     System.out.println("Until Date=" + tempDateString + " LoggerDataList size=" + logerDataList.size());
-                    System.out.println("------------------------------------------------------------------------------------\n");
+                    System.out.println("------------------------------------------------------------------------------------");
                 } catch (Exception ex) {
                     System.out.println("FILE NOT FOUND=" + tempDateString + " date");
                 }
@@ -269,8 +277,7 @@ public class LoggerDataRetrieveTask {
             plusFiveMins = new Timestamp(loggerData.getDateTime().getTime() + delay);
 
             if (attendanceDAO.findLoggerHitsFromUser(loggerData.getStaff(), minusFiveMins, plusFiveMins)) {
-                removed++;
-                System.out.println("!!!!!!!!!!!!!!!!REMOVING ENTRY FROM FILE BECAUSE OF CONTINUE HIT!!!!!!!!!!!!!!!! " + loggerData.getStaff().getSurname() + " " + loggerData.getStaff().getName() + " DATE=" + loggerData.getDateTime());
+                removed++;                
                 continue;
             }
 
@@ -281,8 +288,7 @@ public class LoggerDataRetrieveTask {
             if (temp.size() > 0) {
                 Attendance attendance = temp.get(0);
                 if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.HOURS) > 12) {
-                    newEntry++;
-                    //System.out.println("!!!!!!!!!!Attendanse " + attendance.getEntrance() + " for staff " + attendance.getStaff().getSurname() + " " + attendance.getStaff().getName() + " will remain open!!!!!!!!!!!!!!!!!!");
+                    newEntry++;                    
                     Attendance newAttendance = new Attendance();
                     newAttendance.setCompany(loggerData.getStaff().getCompany());
                     newAttendance.setEntrance(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
@@ -292,14 +298,17 @@ public class LoggerDataRetrieveTask {
                     newAttendance.setSector(loggerData.getStaff().getSector());
                     attendanceDAO.saveAttendance(newAttendance);
                 } else {
+                    closesdEntry++;
+                    attendance.setEnded(BigDecimal.ONE);
+                    attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
+                    attendanceDAO.updateAttendance(attendance);
                     if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES) > 5) {
-                        closesdEntry++;
-                        attendance.setEnded(BigDecimal.ONE);
-                        attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
-                        attendanceDAO.updateAttendance(attendance);
+                        ;
                     } else {
                         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!SOS ENTRY NOT INSERTED BECAUSE AN UNKNOWN REASON " + loggerData.getStaff().getSurname() + " " + loggerData.getStaff().getName() + " "
                                 + " entry " + loggerData.getDateTime());
+                        System.out.println("FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES)=" + FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES));
+                        System.out.println("Problem with attendance="+attendance);
                     }
                 }
             } else {

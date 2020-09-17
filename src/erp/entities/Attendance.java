@@ -5,135 +5,159 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-
 /**
  * The persistent class for the ATTENDANCE database table.
- * 
+ *
  */
 @Entity
-@NamedQuery(name="Attendance.findAll", query="SELECT a FROM Attendance a")
+@NamedQuery(name = "Attendance.findAll", query = "SELECT a FROM Attendance a")
 public class Attendance implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@SequenceGenerator(name="ATTENDANCE_ID_GENERATOR", sequenceName="ATTENDANCE_SEQ")
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ATTENDANCE_ID_GENERATOR")
-	private long id;
+    private static final long serialVersionUID = 1L;
 
-	private BigDecimal ended;
+    @Id
+    @SequenceGenerator(name = "ATTENDANCE_ID_GENERATOR", sequenceName = "ATTENDANCE_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ATTENDANCE_ID_GENERATOR")
+    private long id;
 
-	private Timestamp entrance;
+    private BigDecimal ended;
 
-	@Column(name="\"EXIT\"")
-	private Timestamp exit;
+    private Timestamp entrance;
 
-	@Column(name="\"HOUR\"")
-	private BigDecimal hour;
+    @Column(name = "\"EXIT\"")
+    private Timestamp exit;
 
-	@Column(name="\"MINUTE\"")
-	private BigDecimal minute;
+    @Column(name = "\"HOUR\"")
+    private BigDecimal hour;
 
-	//bi-directional many-to-one association to Company
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="COMPANYID")
-	private Company company;
+    @Column(name = "\"MINUTE\"")
+    private BigDecimal minute;
 
-	//bi-directional many-to-one association to Department
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="DEPARTMENTID")
-	private Department department;
+    //bi-directional many-to-one association to Company
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COMPANYID")
+    private Company company;
 
-	//bi-directional many-to-one association to Sector
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="SECTORID")
-	private Sector sector;
+    //bi-directional many-to-one association to Department
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DEPARTMENTID")
+    private Department department;
 
-	//bi-directional many-to-one association to Staff
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="STAFFID")
-	private Staff staff;
+    //bi-directional many-to-one association to Sector
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SECTORID")
+    private Sector sector;
 
-	public Attendance() {
-	}
+    //bi-directional many-to-one association to Staff
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STAFFID")
+    private Staff staff;
 
-	public long getId() {
-		return this.id;
-	}
+    public Attendance() {
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public long getId() {
+        return this.id;
+    }
 
-	public BigDecimal getEnded() {
-		return this.ended;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setEnded(BigDecimal ended) {
-		this.ended = ended;
-	}
+    public BigDecimal getEnded() {
+        return this.ended;
+    }
 
-	public Timestamp getEntrance() {
-		return this.entrance;
-	}
+    public void setEnded(BigDecimal ended) {
+        this.ended = ended;
+    }
 
-	public void setEntrance(Timestamp entrance) {
-		this.entrance = entrance;
-	}
+    public Timestamp getEntrance() {
+        return this.entrance;
+    }
 
-	public Timestamp getExit() {
-		return this.exit;
-	}
+    public void setEntrance(Timestamp entrance) {
+        this.entrance = entrance;
+    }
 
-	public void setExit(Timestamp exit) {
-		this.exit = exit;
-	}
+    public Timestamp getExit() {
+        return this.exit;
+    }
 
-	public BigDecimal getHour() {
-		return this.hour;
-	}
+    public void setExit(Timestamp exit) {
+        this.exit = exit;
+    }
 
-	public void setHour(BigDecimal hour) {
-		this.hour = hour;
-	}
+    public BigDecimal getHour() {
+        return this.hour;
+    }
 
-	public BigDecimal getMinute() {
-		return this.minute;
-	}
+    public void setHour(BigDecimal hour) {
+        this.hour = hour;
+    }
 
-	public void setMinute(BigDecimal minute) {
-		this.minute = minute;
-	}
+    public BigDecimal getMinute() {
+        return this.minute;
+    }
 
-	public Company getCompany() {
-		return this.company;
-	}
+    public void setMinute(BigDecimal minute) {
+        this.minute = minute;
+    }
 
-	public void setCompany(Company company) {
-		this.company = company;
-	}
+    public Company getCompany() {
+        return this.company;
+    }
 
-	public Department getDepartment() {
-		return this.department;
-	}
+    public void setCompany(Company company) {
+        this.company = company;
+    }
 
-	public void setDepartment(Department department) {
-		this.department = department;
-	}
+    public Department getDepartment() {
+        return this.department;
+    }
 
-	public Sector getSector() {
-		return this.sector;
-	}
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
 
-	public void setSector(Sector sector) {
-		this.sector = sector;
-	}
+    public Sector getSector() {
+        return this.sector;
+    }
 
-	public Staff getStaff() {
-		return this.staff;
-	}
+    public void setSector(Sector sector) {
+        this.sector = sector;
+    }
 
-	public void setStaff(Staff staff) {
-		this.staff = staff;
-	}
+    public Staff getStaff() {
+        return this.staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof Attendance)) {
+            return false;
+        }
+
+        Attendance compare = (Attendance) obj;
+        return compare.id == (this.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != 0 ? this.getClass().hashCode() + Long.hashCode(id) : super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Attendance{Employee=" + staff.getSurname() +" " + staff.getName() + ", entrance=" + entrance + " ended=" +ended+"}";
+    }
 
 }
