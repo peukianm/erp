@@ -257,12 +257,15 @@ public class DashboardAttendance implements Serializable {
     public void removeStaff(int index) {
         if (selectedStaff != null && selectedStaff.size() > 0 && selectedStaff.size() > index) {
             selectedStaff.remove(index);
-            if (selectedStaff.size() == 0 && selectedDepartments.size() == 0 && !enableSector && !enableDepartment && enableStaff && user.getStaff() != null) {
-                selectedDepartments.add(user.getDepartment());
+            if (user.getRole().getRoleid()!=4 && user.getRole().getRoleid()!=6) {
+                //selectedDepartments.addAll(user.getDepartments());
             }
-            if (selectedStaff.size() == 0 && selectedDepartments.size() == 0 && !enableSector && enableDepartment && enableStaff && user.getStaff() != null) {
-                selectedDepartments.addAll(user.getSector().getDepartments());
-            }
+//            if (selectedStaff.size() == 0 && selectedDepartments.size() == 0 && !enableSector && !enableDepartment && enableStaff && user.getStaff() != null) {
+//                selectedDepartments.add(user.getDepartment());
+//            }
+//            if (selectedStaff.size() == 0 && selectedDepartments.size() == 0 && !enableSector && enableDepartment && enableStaff && user.getStaff() != null) {
+//                selectedDepartments.addAll(user.getSector().getDepartments());
+//            }
 
         }
     }

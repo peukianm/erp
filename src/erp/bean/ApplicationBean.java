@@ -139,7 +139,7 @@ public class ApplicationBean implements Serializable {
 
     public List<Department> getDepartments() {
         if (departments == null) {
-            departments = companyDAO.getAllDepartment(true);
+                departments = companyDAO.getAllDepartment(true);
         }
         return departments;
     }

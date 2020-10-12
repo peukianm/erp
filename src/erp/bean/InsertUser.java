@@ -1,5 +1,6 @@
 package erp.bean;
 
+import erp.dao.CompanyDAO;
 import erp.dao.StaffDAO;
 import erp.entities.Company;
 import erp.entities.Department;
@@ -37,7 +38,7 @@ public class InsertUser implements Serializable {
     private SessionBean sessionBean;
 
     @Inject
-    private ApplicationBean applicationBean;
+    CompanyDAO companyDAO;
 
     @Inject
     private StaffDAO staffDao;
@@ -71,7 +72,7 @@ public class InsertUser implements Serializable {
 
     @PostConstruct
     public void init() {        
-        List<Department> depsSource = applicationBean.getDepartments();
+        List<Department> depsSource = companyDAO.getAllDepartment(true);;
         List<Department> depstarget = new ArrayList<>();
         depsPickList = new DualListModel<Department>(depsSource, depstarget);
     }

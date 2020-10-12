@@ -79,7 +79,7 @@ public class LoggerDataRetrieveTask {
 
         try {
             busy.set(true);
-            System.out.println("\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            System.out.println("\n\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
             System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
             System.out.println("START TASK RETRIEVE DATA FROM LOGGERS !!!!!!!!!!!!!!!! ");
             Timestamp startTaskTime = FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN);
@@ -112,7 +112,7 @@ public class LoggerDataRetrieveTask {
 
             System.out.println("TASK DATA RETRIEVE FORM LOGGERS ENDED WITH SUCESSS in " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!!!");
             System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n");
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " SUCCEDED at " + endTaskTime + " in " + FormatUtils.splitSecondsToTime(secs));
             return 1;
         } catch (Exception ex) {
@@ -132,7 +132,7 @@ public class LoggerDataRetrieveTask {
             schedulerDAO.saveTaskDetails(taskDetails);
             System.out.println("TASK DATA RETRIEVE FORM LOGGERS FAILED " + FormatUtils.splitSecondsToTime(secs) + " !!!!!!!!!!!!!!");
             System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
+            System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n");
             logger.info("Starting Schedule Task " + task.getName() + " for Company " + company.getAbbrev() + " failed " + endTaskTime);
             ex.printStackTrace();
             return -1;
@@ -302,14 +302,14 @@ public class LoggerDataRetrieveTask {
                     attendance.setEnded(BigDecimal.ONE);
                     attendance.setExit(FormatUtils.formatDateToTimestamp(loggerData.getDateTime(), FULLDATEPATTERN));
                     attendanceDAO.updateAttendance(attendance);
-                    if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES) > 5) {
-                        ;
-                    } else {
-                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!SOS ENTRY NOT INSERTED BECAUSE AN UNKNOWN REASON " + loggerData.getStaff().getSurname() + " " + loggerData.getStaff().getName() + " "
-                                + " entry " + loggerData.getDateTime());
-                        System.out.println("FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES)=" + FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES));
-                        System.out.println("Problem with attendance="+attendance);
-                    }
+//                    if (FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES) > 5) {
+//                        ;
+//                    } else {
+//                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!SOS ENTRY NOT INSERTED BECAUSE AN UNKNOWN REASON " + loggerData.getStaff().getSurname() + " " + loggerData.getStaff().getName() + " "
+//                                + " entry " + loggerData.getDateTime());
+//                        System.out.println("FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES)=" + FormatUtils.getDateDiff(attendance.getEntrance(), loggerData.getDateTime(), TimeUnit.MINUTES));
+//                        System.out.println("Problem with attendance="+attendance);
+//                    }
                 }
             } else {
                 newEntry++;

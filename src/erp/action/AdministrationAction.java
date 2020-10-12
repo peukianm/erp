@@ -84,9 +84,9 @@ public class AdministrationAction implements Serializable {
 
     public String loginAction() throws ERPCustomException {
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("LOGIN ACTION!!!!!!");
-            }
+//            if (logger.isDebugEnabled()) {
+//                logger.debug("LOGIN ACTION!!!!!!");
+//            }
 
             Usr temp = null;
             List<Usr> users = userDAO.findByProperty("username", userBean.getUsername());
@@ -100,6 +100,8 @@ public class AdministrationAction implements Serializable {
                 FacesUtils.addErrorMessage(MessageBundleLoader.getMessage("errMsg_InvalidCredentials"));
                 return "loginPage";
             }
+            
+            logger.debug("User "+userBean.getUsername() + " is logged on!!!");
 
             List<Userrole> userroles = temp.getUserroles();
             temp.setRole(userroles.get(0).getRole());

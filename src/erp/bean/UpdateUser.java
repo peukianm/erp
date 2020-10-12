@@ -1,5 +1,6 @@
 package erp.bean;
 
+import erp.dao.CompanyDAO;
 import erp.dao.StaffDAO;
 import erp.dao.UsrDAO;
 import erp.entities.Department;
@@ -38,7 +39,7 @@ public class UpdateUser implements Serializable {
     private SessionBean sessionBean;
 
     @Inject
-    private ApplicationBean applicationBean;
+    private CompanyDAO companyDAO;
 
     @Inject
     private StaffDAO staffDao;
@@ -82,7 +83,7 @@ public class UpdateUser implements Serializable {
             active = false;
         }
         setUser(user);
-        List<Department> depsSource = applicationBean.getDepartments();
+        List<Department> depsSource = companyDAO.getAllDepartment(true);;
         depsSource.removeAll(user.getDepartments());
         List<Department> depstarget = user.getDepartments();
         depsPickList = new DualListModel<Department>(depsSource, depstarget);
