@@ -5,20 +5,20 @@
  */
 package erp.action;
 
+import erp.bean.DashboardAdmission;
 import erp.bean.InsertProadmission;
 import erp.bean.SessionBean;
 import erp.dao.AuditingDAO;
 import erp.dao.ProadmissionDAO;
 import erp.entities.Action;
 import erp.entities.Auditing;
+import erp.entities.Proadmission;
 import erp.entities.Usr;
 import erp.exception.ERPCustomException;
-import erp.util.ErpUtil;
 import erp.util.FacesUtils;
 import erp.util.FormatUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -45,6 +45,9 @@ public class AdmissionAction {
 
     @Inject
     InsertProadmission insertProadmission;
+    
+    @Inject
+    DashboardAdmission dbAdmission;
 
     public String insertProadmission() throws ERPCustomException {
         try {
@@ -66,6 +69,22 @@ public class AdmissionAction {
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             throw new ERPCustomException("Throw From insert Proadmission Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
+    }
+    
+    public void fetchAdmissions() throws ERPCustomException {
+        try {
+            List<Proadmission> admissions = proadmissionDAO.getProadmissions(department, fromAdmission, toAdmission, patient, 
+                    fromRelease, toRelease, Integer.BYTES, Integer.BYTES, true)
+            dbAdmission.setSearchAdmissions(admissions);
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From fetch users Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
+    }
+    
+    public String goUpdateAdmission(long admissionID) {
+        return "updateAdmission?faces-redirect=true&admissionID=" + admissionID;
     }
 
 }

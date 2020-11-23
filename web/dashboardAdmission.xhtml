@@ -1,0 +1,291 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
+
+    
+    <f:metadata>        
+        <f:viewAction action="#{dbAdmission.preRenderView}"/>
+    </f:metadata>
+
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <style type="text/css">
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
+                position: relative;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
+            }
+            .myclass table {
+                table-layout: auto !important;
+            }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 20px;
+                height: 20px;
+                text-align: right;
+                margin: 0px 0 0 2px !important;
+            }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
+
+            .btn-list {
+                float: right; 
+                width: 23px  !important;  
+                height: 23px  !important; 
+                margin: 0px 4px 0 0  !important;
+            }
+            .title{
+                font-weight: bold;
+                text-align: right;
+            }
+            .data{             
+                text-align: left;
+            }
+
+        </style>        
+    </ui:define>
+
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/dashboardAdmission">#{bundle.admissionPage}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <ui:include src="/common/status.xhtml" />
+
+                <!--          ΚΡΙΤΗΡΙΑ ΑΝΑΖΗΤΗΣΗ ΠΡΟΣΩΠΙΚΟΥ !!!!!!!!!!!!!!!!!!!!! -->
+                <!--<div class="p-col-12 p-lg-8">-->
+                <div class="p-col-12 p-xl-5">    
+                    <h:form id="searchAdmissionForm">
+                        <div class="card card-w-title statistics">
+                            <div class="erp-panel-titlebar">
+                                #{bundle.searchAdmission} 
+                            </div>
+                            <table style="width: 100%">
+                                <tr>
+                                    <td>
+                                        <p:outputLabel style="" for="patientComplete" value="#{bundle.selectPatientSurname}:" />
+                                    </td>
+
+                                    <td colspan="3">                                        
+                                        <p:autoComplete widgetVar="acPatient" minQueryLength="2" queryDelay="300" scrollHeight="300" id="patientComplete" value="#{dbAdmission.searchPatient}" completeMethod="#{dbAdmission.completePatientSurname(surname)}" size="65" required="false"  
+                                                        var="patient" itemLabel="#{patient.surname} #{patient.name} - #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
+                                            <o:converter converterId="omnifaces.ListConverter"  list="#{dbAdmission.availablepatients}" />
+                                            <p:ajax event="itemSelect" listener="#{dbAdmission.autocompleteSurnameSelectPatient}" update="patientComplete viewPatientResults"  />  
+                                        </p:autoComplete>
+                                    </td>
+                                </tr>  
+                                <tr>
+                                    <td>
+                                        <p:outputLabel style="font-weight: bold;" for="fromAdmissionDate" value="#{bundle.fromAdmission}:" /><p:spacer width="20" height="20" />
+                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5"
+                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.fromAdmissionDate}" id="fromAttendanceDate"/>
+                                    </td>
+                                    <td>          
+                                        <p:outputLabel style="font-weight: bold;" for="toAdmissionDate" value="#{bundle.toAdmission}:" /><p:spacer width="20" height="20" />
+                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5"
+                                                    pattern="dd/MM/yyyy" value="#{dbAdmission.toAdmissionDate}" id="toAdmissionDate"/>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <p:outputLabel value="#{bundle.release}:" style="" for="release" />&#160;
+
+                                        <p:selectBooleanButton id="release" value="#{dbAdmission.release}" onLabel="Yes" offLabel="No" 
+                                                               onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" />
+                                    </td>
+
+                                    <td>
+                                        <p:outputLabel style="" for="selectDepartment" value="#{bundle.clinic}:" />  
+                                    </td>
+                                    <td>                                         
+                                        <p:selectOneMenu  value="#{dbAdmission.selectedDepartment}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                                                                          
+                                            <f:selectItem rendered="#{dbAdmission.admin}" itemLabel="" itemValue=""  />
+                                            <f:selectItems value="#{dbAdmission.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        </p:selectOneMenu >
+
+                                    </td>
+                                </tr> 
+
+
+                            </table>
+
+                            <p:commandButton value="#{bundle.search}" action="#{admissionAction.fetchAdmissions}" update="searchAdmissionForm viewAdmissionResults"  />  
+                            <p:spacer width="10" />
+                            <p:commandButton  value="#{bundle.reset}" action="#{dbAdmission.resetSearchAdmissionForm()}"  ajax="false" />
+                            <p:spacer width="10" />                            
+                        </div>
+                        <p:linkButton outcome="insertAdmission" value="#{bundle.mewAdmission}" />
+                    </h:form>
+                </div>
+
+
+
+
+
+
+
+
+                <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <div class="p-col-12 p-xl-7"> 
+                    <div class="card user-card">
+                        <div id="showUsersDivID" style="display: block" class="user-card-content">
+                            <div class="erp-panel-titlebar">
+                                #{bundle.admissionsList}
+                            </div>
+                            <h:form id="viewAdmissionResults" >
+                                <p:dataTable id="tbl" var="admission" value="#{dbAdmission.searchAdmissions}" styleClass="myclass"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                             paginator="true" rows="20" style="margin-bottom:10px;font-size: 12px;    padding: 0.1em 0.2em ;  ">
+
+                                    <f:facet name="{Exporters}">
+                                        <div style="float:right;">
+
+
+                                            <p:commandLink id="pdf" ajax="false">
+                                                <p:graphicImage name="images/pdf.png" library="babylon-layout" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle="Λίστα Χρηστών" orientation="Landscape"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
+                                                             cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+                                            <p:commandLink id="xlsx" ajax="false">
+                                                <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
+                                                <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
+                                                <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" Λίστα Χρηστών"
+                                                             facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
+                                                             cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
+                                            </p:commandLink>
+                                        </div>
+
+                                    </f:facet>
+
+                                    <p:column sortBy="#{admission.patient.surname}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.name}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{admission.patient.surname} #{admission.patient.name}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{admission.admissiondate}">
+                                        <f:facet name="header" >
+                                            <h:outputText value="#{bundle.admissiinDate}"/>
+                                        </f:facet>
+                                        <h:outputText value="#{admission.admissiondate}" />
+                                    </p:column>
+
+                                    <p:column sortBy="#{admission.department.name}">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.clinic}" />
+                                        </f:facet>
+                                        <h:outputText value="#{admission.department.name}" style="font-size: 11px;" />
+                                    </p:column>
+
+                                    <p:column style="text-align: center;" exportable="false">
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.release}" />
+                                        </f:facet>
+                                        <h:outputText rendered="#{admission.released==0}" value="OXI" style="font-size: 11px;" />
+                                        <h:outputText rendered="#{admission.released==1}" value="#{admission.releasedate}" style="font-size: 11px;" />
+                                       <!-- <h:graphicImage rendered="#{user.active==1}" url="/resources/babylon-layout/images/success.jpg" width="12px" height="12px" />
+                                        <h:graphicImage rendered="#{user.active!=1}" url="/resources/babylon-layout/images/close.gif" width="12px" height="12px" /> -->  
+                                    </p:column>
+
+                                    <p:column headerText="#{bundle.actions}" exportable="false" >
+                                        <p:commandButton  style="font-size: 16px;" icon="pi pi-pencil" action="#{admissionAction.goUpdateAdmission(admission.admissionid)}"  class="btn-list" title="#{bundle.updateAdmission}"  /> 
+                                        <p:commandButton id="bt1" icon="pi pi-search" style="font-size: 16px;"  title="#{bundle.viewAdmission}"  onclick="PF('admissionDialog').show()" class="btn-list" update="admissionDetail">
+                                            <f:setPropertyActionListener value="#{admission}" target="#{dbAdmission.viewAdmission}" />
+                                        </p:commandButton>
+                                    </p:column>  
+                                </p:dataTable>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>                                        
+            </div> 
+        </div>
+
+
+
+        <p:dialog header="#{bundle.admissionData}" widgetVar="admissionDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <div id="admissionDialogDiv" class="ui-widget" style="border-radius:7px; margin-top: 0.8% ; box-shadow: 4px 4px 4px #5C5C5C; ">	
+                <p:outputPanel id="admissionDetail" style="text-align:center;">
+                    <p:panelGrid  columns="4" columnClasses="title, data, title, data" >
+                        <h:outputText value="#{bundle.username}:" />
+                        <h:outputText value="#{dbUsers.viewUser.username}" />
+
+                        <h:outputText value="#{bundle.active}:" />
+                        <h:graphicImage rendered="#{dbUsers.viewUser.active==1}" url="/resources/babylon-layout/images/success.jpg" width="14px" height="14px" />
+                        <h:graphicImage rendered="#{dbUsers.viewUser.active!=1}" url="/resources/babylon-layout/images/close.gif" width="14px" height="14px" />   
+
+                        <h:outputText value="#{bundle.name}:" />
+                        <h:outputText value="#{dbUsers.viewUser.name}" />
+
+                        <h:outputText value="#{bundle.surname}:" />
+                        <h:outputText value="#{dbUsers.viewUser.surname}" />
+
+                        <h:outputText value="#{bundle.email}:" />
+                        <h:outputText value="#{dbUsers.viewUser.email}" />
+
+                        <h:outputText value="#{bundle.company}:" />
+                        <h:outputText value="#{dbUsers.viewUser.company.name}" />
+
+                        <h:outputText value="#{bundle.sector}:" />
+                        <h:outputText value="#{dbUsers.viewUser.sector.name}" />
+
+                        <h:outputText value="#{bundle.controlDepartment}:" />
+                        <ui:repeat var="userdepartment" value="#{dbUsers.viewUser.userdepartments}">
+                            <h:outputText value="#{userdepartment.department.name}" /> <br/>
+                        </ui:repeat>
+
+                        <h:outputText value="#{bundle.primaryDepartment}:" />
+                        <h:outputText value="#{dbUsers.viewUser.department.name}" />                         
+
+                        <h:outputText value="#{bundle.phone}:" />
+                        <h:outputText value="#{dbUsers.viewUser.phone}" />
+
+                        <h:outputText value="#{bundle.role}:" />
+                        <ui:repeat var="userrole" value="#{dbUsers.viewUser.userroles}">
+                            <h:outputText value="#{userrole.role.name}" /> <br/>
+                        </ui:repeat>
+
+                        <h:outputText value="#{bundle.connectedStaff}:" />
+                        <h:outputText rendered="#{dbUsers.viewUser.staff!=null}" value="#{dbUsers.viewUser.staff.name} #{dbUsers.viewUser.staff.surname}" />
+
+
+
+                    </p:panelGrid>
+                </p:outputPanel>
+            </div>
+        </p:dialog>
+
+
+
+
+    </ui:define>
+</ui:composition> 

@@ -6,6 +6,7 @@
 package erp.bean;
 
 import erp.dao.ProadmissionDAO;
+import erp.entities.Department;
 import erp.entities.Patient;
 import erp.entities.Proadmission;
 import erp.exception.ERPCustomException;
@@ -38,13 +39,17 @@ public class InsertProadmission implements Serializable {
     @Inject
     private SessionBean sessionBean;
 
+    @Inject
+    private ApplicationBean applicationBean;
+
     @EJB
     ProadmissionDAO proadmissionDAO;
 
     private Proadmission proadmission;
     private Patient searchPatient;
     private List<Patient> availablePatient;
-    
+    private List<Department> departments;
+
     private boolean release = false;
 
     boolean active;
@@ -62,6 +67,12 @@ public class InsertProadmission implements Serializable {
 
     @PostConstruct
     public void init() {
+        if (sessionBean.getUsers().getRole().getRoleid() < 3 || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
+                || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))) {
+            departments = applicationBean.getClinics();
+        } else {
+            departments = sessionBean.getUsers().getDepartments();
+        }        
     }
 
     @PreDestroy
@@ -99,13 +110,24 @@ public class InsertProadmission implements Serializable {
             throw new ERPCustomException("Throw From Autocomplete Patient Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
-    
-    
+
+    public List<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(List<Department> departments) {
+        this.departments = departments;
+    }
+
     public void autocompleteSelectPatient(SelectEvent event) {
     }
-    
+
+    public void checkRelease() {
+        System.out.println(release);
+    }
+
     public void removeSelectedPatient() {
-         searchPatient = null;
+        searchPatient = null;
     }
 
     public boolean isRelease() {
@@ -115,14 +137,6 @@ public class InsertProadmission implements Serializable {
     public void setRelease(boolean release) {
         this.release = release;
     }
-    
-    
-    
-    
-    
-    
-    
-    
 
     public Proadmission getProadmission() {
         return proadmission;

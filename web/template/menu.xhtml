@@ -28,6 +28,8 @@
                             <p:menuitem style="#{sessionBean.pageCode eq 4 ? 'background-color: #515158 !important;':''}" id="srv_attendanceAdmin" value="#{bundle.personelAttendance}" icon="fa fa-id-card-o" outcome="dashboardAttendance" />
                             <p:menuitem style="#{sessionBean.pageCode eq 10 ? 'background-color: #515158 !important;':''}" id="srv_attendanceStatistics" value="#{bundle.statisticsAttendance}" rendered="#{sessionBean.users.role.roleid != 3 and sessionBean.users.role.roleid != 6}" icon="fa fa-area-chart"  outcome="dashboardAttendanceStatistics" />
                             <p:menuitem style="#{sessionBean.pageCode eq 12 ? 'background-color: #515158 !important;':''}" id="srv_account_acc" value="#{bundle.viewProfile}" icon="fa fa-fw fa-cog" outcome="updateAccount?userID=#{sessionBean.users.userid}" />    
+                            <p:menuitem style="#{sessionBean.pageCode eq 16 ? 'background-color: #515158 !important;':''}" id="srv_insert_adm" value="#{bundle.insertAdmission}" icon="fa fa-fw fa-cog" outcome="insertProadmission" />    
+                         
                         </p:submenu>
                         <p:submenu rendered="#{(sessionBean.users.department!=null and (sessionBean.users.department.departmentid==16)) or sessionBean.users.role.roleid le 2}" id="om_departments" label="#{bundle.perDepartment}" icon="fa fa-fw fa-magic">
                             <p:submenu id="hrDep" label="#{bundle.hrDep}" icon="fa fa-fw fa-users" rendered="#{(sessionBean.users.department!=null and (sessionBean.users.department.departmentid==16)) or sessionBean.users.role.roleid le 2}" >                               

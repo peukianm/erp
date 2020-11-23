@@ -5,29 +5,14 @@
  */
 package erp.dao;
 
-import erp.entities.Branch;
-import erp.entities.Company;
-import erp.entities.Companytask;
 import erp.entities.Department;
-import erp.entities.Emprank;
-import erp.entities.Familystatus;
 import erp.entities.Patient;
 import erp.entities.Proadmission;
-import erp.entities.Scheduletask;
-import erp.entities.Scheduletaskdetail;
-import erp.entities.Sector;
-import erp.entities.Speciality;
 import erp.entities.Staff;
-import erp.entities.Studytype;
-import erp.entities.Workshift;
-import erp.util.FormatUtils;
-import erp.util.SystemParameters;
 import java.sql.Timestamp;
 import java.util.List;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;

@@ -46,6 +46,7 @@ public class ApplicationBean implements Serializable {
     List<Speciality> specialities;
     List<Familystatus> familystatuses;
     List<Actionscategory> actionscategories;
+    List<Department> clinics;
 
     @Inject
     CompanyDAO companyDAO;
@@ -206,6 +207,18 @@ public class ApplicationBean implements Serializable {
 
     public void setActions(List<Action> actions) {
         this.actions = actions;
+    }
+    
+    
+    public List<Department> getClinics() {
+        if (clinics == null) {
+                clinics = companyDAO.getClinics(true);
+        }
+        return clinics;
+    }
+
+    public void setClinics(List<Department> clinics) {
+        this.clinics = clinics;
     }
 
 }
