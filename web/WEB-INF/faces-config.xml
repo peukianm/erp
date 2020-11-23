@@ -38,6 +38,11 @@
         <managed-bean-class>erp.action.SchedulerAction</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+        <managed-bean>
+        <managed-bean-name>admissionAction</managed-bean-name>
+        <managed-bean-class>erp.action.AdmissionAction</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
     
     
     <converter>
@@ -118,6 +123,12 @@
         <navigation-case>
             <from-outcome>dashboardAudit</from-outcome>
             <to-view-id>/dashboardAudit.jsf</to-view-id>   
+        </navigation-case>
+    </navigation-rule> 
+     <navigation-rule>
+        <navigation-case>
+            <from-outcome>dashboardAdmission</from-outcome>
+            <to-view-id>/dashboardAdmission.jsf</to-view-id>   
         </navigation-case>
     </navigation-rule> 
     

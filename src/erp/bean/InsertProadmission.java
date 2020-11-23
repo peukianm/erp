@@ -13,6 +13,7 @@ import erp.util.AccessControl;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -42,17 +44,19 @@ public class InsertProadmission implements Serializable {
     private Proadmission proadmission;
     private Patient searchPatient;
     private List<Patient> availablePatient;
+    
+    private boolean release = false;
 
     boolean active;
 
     public void preRenderView() {
         if (sessionBean.getUsers().getDepartment() != null
                 && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
-            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_PROADMISSION"), null, 1)) {
+            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_ADMISSION"), null, 1)) {
                 return;
             }
         }
-        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_INSERT_PROADMISSION"));
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_INSERT_ADMISSION"));
         sessionBean.setPageName(MessageBundleLoader.getMessage("insertAdmission"));
     }
 
@@ -95,6 +99,30 @@ public class InsertProadmission implements Serializable {
             throw new ERPCustomException("Throw From Autocomplete Patient Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
+    
+    
+    public void autocompleteSelectPatient(SelectEvent event) {
+    }
+    
+    public void removeSelectedPatient() {
+         searchPatient = null;
+    }
+
+    public boolean isRelease() {
+        return release;
+    }
+
+    public void setRelease(boolean release) {
+        this.release = release;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 
     public Proadmission getProadmission() {
         return proadmission;

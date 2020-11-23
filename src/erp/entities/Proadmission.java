@@ -173,7 +173,7 @@ public class Proadmission implements Serializable {
 
     @Override
     public String toString() {
-        return "Proadmission{id=" + admissionid + ", surname=" + patient.getSurname() + "}";
+        return "Proadmission{id=" + admissionid + ", surname=" + patient.getSurname() + " admissiondate="+admissiondate+" }";
     }
 
 }
