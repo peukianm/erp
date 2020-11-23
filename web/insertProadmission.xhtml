@@ -1,0 +1,180 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <f:metadata>        
+        <f:viewAction action="#{insertProadmission.preRenderView}"/>
+    </f:metadata>
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <style type="text/css">
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
+                position: relative;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
+            }
+            .myclass table {
+                table-layout: auto !important;
+            }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 20px;
+                height: 20px;
+                text-align: right;
+                margin: 0px 0 0 2px !important;
+            }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
+
+            .btn-list {
+                float: right; 
+                width: 23px  !important;  
+                height: 23px  !important; 
+                margin: 0px 4px 0 0  !important;
+            }
+            .title{
+                font-weight: bold;
+                text-align: right;
+            }
+            .data{             
+                text-align: left;
+            }
+            .ui-panelgrid .ui-panelgrid-cell{
+                padding: 3px 1px !important;
+            }
+            .ui-fluid .ui-button {
+                width: auto !important;
+                border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;
+                font-weight: 400;
+            }
+            .ui-fluid .ui-inputtext {
+                width: auto !important;
+            }
+            .ui-fluid .ui-selectonemenu {
+                width: auto !important;
+            }
+            .ui-md-2,  .ui-md-1{
+                text-align: right;
+                font-weight: bold;                
+            }
+
+
+        </style>
+        <script type="text/javascript">
+
+        </script>
+    </ui:define>
+
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/dashboardProadmission">#{bundle.proadmissionPage}/</p:link> 
+            <p:link outcome="/insertProadmission.jsf">#{bundle.insertProadmission}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <ui:include src="/common/status.xhtml" />
+            </div>
+            <div class="ui-fluid">
+                <div class="ui-g">
+
+                    <h:form id="updateStaffForm" class="ui-g-12 ui-lg-12"> 
+                        <p:messages id="msg" showDetail="true" closable="true" >
+                            <p:autoUpdate />
+                        </p:messages>
+                        <p:tabView>
+                            <p:tab title="#{bundle.proadmissionData}">
+                                <div class="card card-w-title" style="border-radius:5px; box-shadow: 4px 4px 4px #5C5C5C;">
+                                    <h1>#{bundle.proadmissionData}</h1>
+
+                                    <p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-9" layout="grid" 
+                                                 style="border:0px none; background-color:transparent;width: 70%" >
+
+                                        <p:outputLabel value="#{bundle.clinic}:" for="department"  style="font-weight: bold;text-align: right;" />                                   
+                                        <p:selectOneMenu value="#{insertProadmission.proadmission.department}" id="department" converter="omnifaces.SelectItemsConverter" 
+                                                         required="true" requiredMessage="#{bundle.clinic}: #{bundle.mandatoryField}" >                                                                                                                            
+                                            <f:selectItems value="#{sessionBean.users.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />                                    
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel style="font-weight: bold;" for="patientComplete" value="#{bundle.selectPatientAmka}:" /><p:spacer width="20" height="20" />
+                                        <p:autoComplete widgetVar="acPatient" minQueryLength="3" queryDelay="300" scrollHeight="300" id="staffComplete" value="#{insertProadmission.searchPatient}" completeMethod="#{insertProadmission.completePatientAMKA}" size="60" required="false"  
+                                                        var="patient" itemLabel="#{patient.surname} #{patient.name}  #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
+                                            <o:converter converterId="omnifaces.ListConverter"  list="#{insertProadmission.availablePatient}" />
+                                            <p:ajax event="itemSelect" listener="#{insertProadmission.autocompleteSurnameSelectPatient}" update="@widgetVar(acPatient) @(.basicstyleclass)"  />  
+                                        </p:autoComplete>
+                                        
+                                        
+                                        
+                                        
+                                        <br/><br/>
+                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbAttendance.selectedStaff.size() gt 0}" header="#{bundle.patientSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                            #{insertProadmission.searchPatient.surname} #{insertProadmission.searchPatient.name} - #{insertProadmission.searchPatient.amka} 
+                                            <p:commandButton disabled="#{!dbAttendance.enableStaff}" process="@this" update="@(.basicstyleclass)" action="#{insertProadmission.removeSelectedPatient}"  id="removePatient" icon="fa fa-fw fa-remove" title="Remove Patient" />                                                   
+                                        </p:panel>
+
+
+                                        <p:outputLabel value="icd10:" for="icd10" style="font-weight: bold;text-align: right;" />
+                                        <p:inputText id="name"  value="#{insertProadmission.proadmission.icd10}" required="true" requiredMessage="icd10: #{bundle.mandatoryField}">                                       
+                                            <f:validateLength minimum="2" maximum="25" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.diagnosis}:" for="diagnosis" style="font-weight: bold;text-align: right;" />                                   
+                                        <p:inputText id="surname" value="#{insertProadmission.proadmission.diagnosis}" required="true" requiredMessage="#{bundle.diagnosis}: #{bundle.mandatoryField}" >
+                                            <f:validateLength minimum="2" maximum="50" /> 
+                                        </p:inputText>
+
+
+                                        <p:outputLabel value="#{bundle.release}:" for="release" style="font-weight: bold;text-align: right;"/>
+                                        <p:selectBooleanButton id="act" value="#{insertStaff.release}" onLabel="#{bundle.yes}" offLabel="#{bundle.no}" 
+                                                               onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px"/>
+
+                                        <p:outputLabel style="font-weight: bold;" for="admissionDate" value="#{bundle.admissionDate}:" />
+                                        <p:calendar  locale="el" size="20"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100" 
+                                                     pattern="dd/MM/yyyy" value="#insertProadmission.proadmission.admissiondate}" id="admissionDate"/>
+                                        
+                                        <p:outputLabel style="font-weight: bold;" for="releaseDate" value="#{bundle.releaseDate}:" />
+                                        <p:calendar  locale="el" size="20"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100" 
+                                                     pattern="dd/MM/yyyy" value="#insertProadmission.proadmission.releaseDate}" id="releaseDate"/>
+
+
+                                    </p:panelGrid>
+                                    <br/><br/>
+                                    <p:commandButton value="#{bundle.insert}" action="#{admissionAction.insertProadmission}" update="growl" style="margin-left: 15px;">
+                                        <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationInsertAdmission};" icon="pi pi-exclamation-triangle" /> 
+                                    </p:commandButton>
+                                    <p:spacer width="10" />
+                                    <p:linkButton outcome="dashboardStaff" value="#{bundle.exit}" style="margin-left: 15px;" />
+
+                                </div>
+
+                            </p:tab>                             
+                        </p:tabView>
+
+                    </h:form>
+
+                </div>
+            </div>
+        </div>                                        
+    </ui:define>
+</ui:composition> 

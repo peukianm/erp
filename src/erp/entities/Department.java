@@ -70,6 +70,10 @@ public class Department implements Serializable {
     @ManyToMany(mappedBy = "departments")
     private List<Usr> usrs;
 
+    //bi-directional many-to-one association to Proadmission
+    @OneToMany(mappedBy = "department")
+    private List<Proadmission> proadmissions;
+
     public Department() {
     }
 
@@ -247,7 +251,6 @@ public class Department implements Serializable {
         return userdepartment;
     }
 
-    
     public List<Usr> getUsrs() {
         return this.usrs;
     }
@@ -263,8 +266,28 @@ public class Department implements Serializable {
     public void setPrimaryUsers(List<Usr> primaryUsers) {
         this.primaryUsers = primaryUsers;
     }
-    
-    
+
+    public List<Proadmission> getProadmissions() {
+        return this.proadmissions;
+    }
+
+    public void setProadmissions(List<Proadmission> proadmissions) {
+        this.proadmissions = proadmissions;
+    }
+
+    public Proadmission addProadmission(Proadmission proadmission) {
+        getProadmissions().add(proadmission);
+        proadmission.setDepartment(this);
+
+        return proadmission;
+    }
+
+    public Proadmission removeProadmission(Proadmission proadmission) {
+        getProadmissions().remove(proadmission);
+        proadmission.setDepartment(null);
+        return proadmission;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

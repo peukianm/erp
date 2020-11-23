@@ -34,7 +34,9 @@
         <class>erp.entities.Speciality</class>
         <class>erp.entities.Familystatus</class>
         <class>erp.entities.Branch</class> 
-        <class>erp.entities.Userdepartment</class>   
+        <class>erp.entities.Userdepartment</class>  
+        <class>erp.entities.Patient</class>   
+        <class>erp.entities.Proadmission</class>    
         <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>
         <properties>
             <property name="eclipselink.jdbc.native-sql" value="true"/>
