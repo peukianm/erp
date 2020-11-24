@@ -19,8 +19,10 @@ import erp.util.FacesUtils;
 import erp.util.FormatUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +47,7 @@ public class AdmissionAction {
 
     @Inject
     InsertProadmission insertProadmission;
-    
+
     @Inject
     DashboardAdmission dbAdmission;
 
@@ -70,19 +72,73 @@ public class AdmissionAction {
             throw new ERPCustomException("Throw From insert Proadmission Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
-    
+
     public void fetchAdmissions() throws ERPCustomException {
         try {
-            List<Proadmission> admissions = proadmissionDAO.getProadmissions(department, fromAdmission, toAdmission, patient, 
-                    fromRelease, toRelease, Integer.BYTES, Integer.BYTES, true)
-            dbAdmission.setSearchAdmissions(admissions);
+            List<Proadmission> retValue = new ArrayList<>(0);
+
+            if (!dbAdmission.getSearchPatients().isEmpty()) {
+
+                dbAdmission.getSearchPatients().forEach((patient) -> {
+                    if (dbAdmission.getSelectedDepartments().isEmpty()) {
+                        Integer release = null;
+                        if (dbAdmission.isRelease()) {
+                            release = 1;
+                        }
+                        List<Proadmission> admissions = proadmissionDAO.getProadmissions(null, FormatUtils.formatDateToTimestamp(dbAdmission.getFromAdmissionDate(), FormatUtils.DATEPATTERN),
+                                FormatUtils.formatDateToTimestamp(dbAdmission.getToAdmissionDate(), FormatUtils.DATEPATTERN), patient, FormatUtils.formatDateToTimestamp(dbAdmission.getFromReleaseDate(),
+                                FormatUtils.DATEPATTERN), FormatUtils.formatDateToTimestamp(dbAdmission.getToReleaseDate(), FormatUtils.DATEPATTERN), release, null, true);
+
+                        retValue.addAll(admissions);
+                    } else {
+                        dbAdmission.getSelectedDepartments().forEach((department) -> {
+                            Integer release = null;
+                            if (dbAdmission.isRelease()) {
+                                release = 1;
+                            }
+                            List<Proadmission> admissions = proadmissionDAO.getProadmissions(department, FormatUtils.formatDateToTimestamp(dbAdmission.getFromAdmissionDate(), FormatUtils.DATEPATTERN),
+                                    FormatUtils.formatDateToTimestamp(dbAdmission.getToAdmissionDate(), FormatUtils.DATEPATTERN), patient, FormatUtils.formatDateToTimestamp(dbAdmission.getFromReleaseDate(),
+                                    FormatUtils.DATEPATTERN), FormatUtils.formatDateToTimestamp(dbAdmission.getToReleaseDate(), FormatUtils.DATEPATTERN), release, null, true);
+                            retValue.addAll(admissions);
+                        });
+                    }
+                });
+
+            } else {
+
+                if (dbAdmission.getSelectedDepartments().isEmpty()) {
+                    Integer release = null;
+                    if (dbAdmission.isRelease()) {
+                        release = 1;
+                    }
+                    List<Proadmission> admissions = proadmissionDAO.getProadmissions(null, FormatUtils.formatDateToTimestamp(dbAdmission.getFromAdmissionDate(), FormatUtils.DATEPATTERN),
+                            FormatUtils.formatDateToTimestamp(dbAdmission.getToAdmissionDate(), FormatUtils.DATEPATTERN), null, FormatUtils.formatDateToTimestamp(dbAdmission.getFromReleaseDate(),
+                            FormatUtils.DATEPATTERN), FormatUtils.formatDateToTimestamp(dbAdmission.getToReleaseDate(), FormatUtils.DATEPATTERN), release, null, true);
+
+                    retValue.addAll(admissions);
+                } else {
+                    dbAdmission.getSelectedDepartments().forEach((department) -> {
+                        Integer release = null;
+                        if (dbAdmission.isRelease()) {
+                            release = 1;
+                        }
+                        List<Proadmission> admissions = proadmissionDAO.getProadmissions(department, FormatUtils.formatDateToTimestamp(dbAdmission.getFromAdmissionDate(), FormatUtils.DATEPATTERN),
+                                FormatUtils.formatDateToTimestamp(dbAdmission.getToAdmissionDate(), FormatUtils.DATEPATTERN), null, FormatUtils.formatDateToTimestamp(dbAdmission.getFromReleaseDate(),
+                                FormatUtils.DATEPATTERN), FormatUtils.formatDateToTimestamp(dbAdmission.getToReleaseDate(), FormatUtils.DATEPATTERN), release, null, true);
+                        retValue.addAll(admissions);
+                    });
+                }
+
+            }
+
+            dbAdmission.setSearchAdmissions(retValue);
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
             throw new ERPCustomException("Throw From fetch users Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
         }
     }
-    
+
     public String goUpdateAdmission(long admissionID) {
         return "updateAdmission?faces-redirect=true&admissionID=" + admissionID;
     }

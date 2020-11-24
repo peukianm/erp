@@ -2,7 +2,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
                 xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
 
-    
+
     <f:metadata>        
         <f:viewAction action="#{dbAdmission.preRenderView}"/>
     </f:metadata>
@@ -84,63 +84,96 @@
                                 #{bundle.searchAdmission} 
                             </div>
                             <table style="width: 100%">
+
+                                <tr>
+                                    <td style="vertical-align: top">
+                                        <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.clinic}:" />  
+                                    </td>
+                                    <td colspan="3">                                         
+                                        <p:selectManyMenu  value="#{dbAdmission.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                                                                          
+                                            <f:selectItems value="#{dbAdmission.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
+                                        </p:selectManyMenu>
+                                        <br/>
+                                    </td>
+                                </tr>
+                              
                                 <tr>
                                     <td>
-                                        <p:outputLabel style="" for="patientComplete" value="#{bundle.selectPatientSurname}:" />
+                                        <p:outputLabel style="font-weight: bold;" for="patientComplete" value="#{bundle.selectPatientSurname}:" />
                                     </td>
 
                                     <td colspan="3">                                        
                                         <p:autoComplete widgetVar="acPatient" minQueryLength="2" queryDelay="300" scrollHeight="300" id="patientComplete" value="#{dbAdmission.searchPatient}" completeMethod="#{dbAdmission.completePatientSurname(surname)}" size="65" required="false"  
-                                                        var="patient" itemLabel="#{patient.surname} #{patient.name} - #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
+                                                        var="patient" itemLabel="#{patient.surname} #{patient.name} #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter"  list="#{dbAdmission.availablepatients}" />
-                                            <p:ajax event="itemSelect" listener="#{dbAdmission.autocompleteSurnameSelectPatient}" update="patientComplete viewPatientResults"  />  
+                                            <p:ajax event="itemSelect" listener="#{dbAdmission.autocompleteSurnameSelectPatient}" update="patientComplete viewAdmissionResults"  />  
                                         </p:autoComplete>
+                                        <br/>
                                     </td>
-                                </tr>  
+                                </tr> 
                                 <tr>
-                                    <td>
-                                        <p:outputLabel style="font-weight: bold;" for="fromAdmissionDate" value="#{bundle.fromAdmission}:" /><p:spacer width="20" height="20" />
-                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5"
-                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.fromAdmissionDate}" id="fromAttendanceDate"/>
+                                    <td colspan="4">
+                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbAdmission.searchPatients.size() gt 0}" header="#{bundle.patientSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                            <p:repeat value="#{dbAdmission.searchPatients}" var="pat" varStatus="myVarStatus">
+                                                #{pat.surname} #{pat.name}  - #{pat.amka} 
+                                                <p:commandButton process="@this" update="@(.basicstyleclass)" action="#{dbAdmission.removePatient(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" />                                                   
+                                                <hr/>
+                                            </p:repeat>
+                                        </p:panel>                                      
                                     </td>
-                                    <td>          
+
+                                </tr>
+                                
+                                
+                                <tr>
+                                    <td colspan="2">
+                                        <p:outputLabel style="font-weight: bold;" for="fromAdmissionDate" value="#{bundle.fromAdmission}:" /><p:spacer width="20" height="20" />
+                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5" 
+                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.fromAdmissionDate}" id="fromAdmissionDate"/>
+                                    </td>
+                                    <td colspan="2">          
                                         <p:outputLabel style="font-weight: bold;" for="toAdmissionDate" value="#{bundle.toAdmission}:" /><p:spacer width="20" height="20" />
                                         <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5"
                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.toAdmissionDate}" id="toAdmissionDate"/>
+                                        <br/>
                                     </td>
+                                    
                                 </tr>
-
-
+                               
                                 <tr>
-
-                                    <td>
-                                        <p:outputLabel value="#{bundle.release}:" style="" for="release" />&#160;
-
+                                    <td colspan="4">
+                                        <br/>
+                                        <p:outputLabel value="#{bundle.release}:" style="font-weight: bold;" for="release" />&#160;
                                         <p:selectBooleanButton id="release" value="#{dbAdmission.release}" onLabel="Yes" offLabel="No" 
                                                                onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" />
                                     </td>
-
-                                    <td>
-                                        <p:outputLabel style="" for="selectDepartment" value="#{bundle.clinic}:" />  
+                                </tr>
+                                
+                                <tr>
+                                    <td colspan="2">
+                                        <p:outputLabel style="font-weight: bold;" for="fromReleaseDate" value="#{bundle.fromRelease}:" /><p:spacer width="20" height="20" />
+                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5" 
+                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.fromReleaseDate}" id="fromReleaseDate"/>
                                     </td>
-                                    <td>                                         
-                                        <p:selectOneMenu  value="#{dbAdmission.selectedDepartment}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                                                                          
-                                            <f:selectItem rendered="#{dbAdmission.admin}" itemLabel="" itemValue=""  />
-                                            <f:selectItems value="#{dbAdmission.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
-                                        </p:selectOneMenu >
-
+                                    <td colspan="2">          
+                                        <p:outputLabel style="font-weight: bold;" for="toReleaseDate" value="#{bundle.toRelease}:" /><p:spacer width="20" height="20" />
+                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5"
+                                                    pattern="dd/MM/yyyy" value="#{dbAdmission.toReleaseDate}" id="toReleaseDate"/>
+                                        <br/>
                                     </td>
-                                </tr> 
+                                    
+                                </tr>
 
 
                             </table>
-
-                            <p:commandButton value="#{bundle.search}" action="#{admissionAction.fetchAdmissions}" update="searchAdmissionForm viewAdmissionResults"  />  
+                            <br/><br/>  
+                            
+                            <p:commandButton value="#{bundle.searchAdmission}" action="#{admissionAction.fetchAdmissions}" update="searchAdmissionForm viewAdmissionResults"  />  
                             <p:spacer width="10" />
                             <p:commandButton  value="#{bundle.reset}" action="#{dbAdmission.resetSearchAdmissionForm()}"  ajax="false" />
                             <p:spacer width="10" />                            
                         </div>
-                        <p:linkButton outcome="insertAdmission" value="#{bundle.mewAdmission}" />
+                        <p:linkButton outcome="insertProadmission" value="#{bundle.newAdmission}" />
                     </h:form>
                 </div>
 
@@ -151,7 +184,7 @@
 
 
 
-                <!--              ΠΡΟΒΟΛΗ ΠΡΟΣΩΠΙΚΟΥ    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+                <!--              ΠΡΟΒΟΛΗ EISITHRIWN    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
                 <div class="p-col-12 p-xl-7"> 
                     <div class="card user-card">
                         <div id="showUsersDivID" style="display: block" class="user-card-content">
@@ -194,7 +227,7 @@
 
                                     <p:column sortBy="#{admission.admissiondate}">
                                         <f:facet name="header" >
-                                            <h:outputText value="#{bundle.admissiinDate}"/>
+                                            <h:outputText value="#{bundle.admissionDate}"/>
                                         </f:facet>
                                         <h:outputText value="#{admission.admissiondate}" />
                                     </p:column>

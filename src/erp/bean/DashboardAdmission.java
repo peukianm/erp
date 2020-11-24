@@ -50,13 +50,15 @@ public class DashboardAdmission implements Serializable {
     private List<Patient> availablepatients;
     private List<Patient> searchPatients = new ArrayList<>(0);
     private Patient searchPatient;
-    private Department selectedDepartment;
+    private List<Department> selectedDepartments = new ArrayList<>(0);
     private List<Department> departments;
     private boolean admin = false;
     private boolean release = false;
     private List<Proadmission> searchAdmissions = new ArrayList<>(0);
     private Date fromAdmissionDate;
     private Date toAdmissionDate;
+    private Date fromReleaseDate;
+    private Date toReleaseDate;
     private Proadmission viewAdmission;
 
     public void preRenderView() {
@@ -79,6 +81,7 @@ public class DashboardAdmission implements Serializable {
             admin = true;
         } else {
             departments = sessionBean.getUsers().getDepartments();
+            selectedDepartments.add(sessionBean.getUsers().getDepartment());
             admin = false;
         }
     }
@@ -93,6 +96,14 @@ public class DashboardAdmission implements Serializable {
         release = false;
         fromAdmissionDate = new java.util.Date();
         toAdmissionDate = new java.util.Date();
+        fromReleaseDate = null;
+        toReleaseDate = null;
+        if (admin) {
+            selectedDepartments = new ArrayList<>(0);
+        } else {
+            selectedDepartments = new ArrayList<>(0);
+            selectedDepartments.add(sessionBean.getUsers().getDepartment());
+        }
     }
 
     public List<Patient> completePatientSurname(String surname) throws ERPCustomException {
@@ -119,6 +130,22 @@ public class DashboardAdmission implements Serializable {
         searchPatient = null;
     }
 
+    public void removePatient(int index) {
+        if (searchPatients != null && searchPatients.size() > 0 && searchPatients.size() > index) {
+            searchPatients.remove(index);
+        }
+    }
+
+    
+
+    public List<Department> getSelectedDepartments() {
+        return selectedDepartments;
+    }
+
+    public void setSelectedDepartments(List<Department> selectedDepartments) {
+        this.selectedDepartments = selectedDepartments;
+    }
+
     public Proadmission getViewAdmission() {
         return viewAdmission;
     }
@@ -127,10 +154,22 @@ public class DashboardAdmission implements Serializable {
         this.viewAdmission = viewAdmission;
     }
 
-    
-    
-    
-    
+    public Date getFromReleaseDate() {
+        return fromReleaseDate;
+    }
+
+    public void setFromReleaseDate(Date fromReleaseDate) {
+        this.fromReleaseDate = fromReleaseDate;
+    }
+
+    public Date getToReleaseDate() {
+        return toReleaseDate;
+    }
+
+    public void setToReleaseDate(Date toReleaseDate) {
+        this.toReleaseDate = toReleaseDate;
+    }
+
     public boolean isRelease() {
         return release;
     }
@@ -138,8 +177,7 @@ public class DashboardAdmission implements Serializable {
     public void setRelease(boolean release) {
         this.release = release;
     }
-    
-        
+
     public Date getFromAdmissionDate() {
         return fromAdmissionDate;
     }
@@ -154,8 +192,8 @@ public class DashboardAdmission implements Serializable {
 
     public void setToAdmissionDate(Date toAdmissionDate) {
         this.toAdmissionDate = toAdmissionDate;
-    }    
-    
+    }
+
     public boolean isAdmin() {
         return admin;
     }
@@ -170,14 +208,6 @@ public class DashboardAdmission implements Serializable {
 
     public void setSearchAdmissions(List<Proadmission> searchAdmissions) {
         this.searchAdmissions = searchAdmissions;
-    }
-
-    public Department getSelectedDepartment() {
-        return selectedDepartment;
-    }
-
-    public void setSelectedDepartment(Department selectedDepartment) {
-        this.selectedDepartment = selectedDepartment;
     }
 
     public List<Department> getDepartments() {

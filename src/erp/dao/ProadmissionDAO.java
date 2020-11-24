@@ -155,7 +155,7 @@ public class ProadmissionDAO {
         }
     }
 
-    public List<Department> getProadmissions(Department department, Timestamp fromAdmission, Timestamp toAdmission, Patient patient,
+    public List<Proadmission> getProadmissions(Department department, Timestamp fromAdmission, Timestamp toAdmission, Patient patient,
             Timestamp fromRelease, Timestamp toRelease, Integer release, Integer processed, boolean active) {
         try {
             String sql = "SELECT model.proadmission FROM Proadmission model where "
@@ -201,6 +201,7 @@ public class ProadmissionDAO {
     public List<Patient> fetchPatientAutoCompleteSurname(String surname, boolean active) {
         try {
             surname = surname.trim();
+            System.out.println("surname="+surname);
             String queryString = "Select patient from Patient patient  "
                     + " where (LOWER(patient.surname) like '" + ((String) surname).toLowerCase() + "%'"
                     + " OR UPPER(patient.surname)  like '" + ((String) surname).toUpperCase() + "%') "
@@ -209,7 +210,7 @@ public class ProadmissionDAO {
 
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            query.setMaxResults(40);
+            query.setMaxResults(40);            
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
