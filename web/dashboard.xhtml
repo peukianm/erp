@@ -115,6 +115,18 @@
                                             <div class="project-progressbar-value" style="width: 50%"></div>
                                         </div>-->
                                     </li>
+                                    
+                                    <li>
+                                        <i class="fa fa-bed fa-fw"></i>
+                                        <span class="project-title">#{bundle.admissions}-#{dashboard.attendanceDate}</span>
+                                        <div class="" style="text-align: right;">
+                                            #{bundle.dayAdmissions}: <span style="font-weight: 900;font-size: 13px;color: green">#{dashboard.dayAdmissions}</span><br/>                                           
+                                        </div>
+                                        <p:commandButton disabled="#{!dashboard.nos}" class="attendance-btn" value="#{bundle.admissionDetails}" action="dashboardAdmission?faces-redirect=true"  /> 
+                                        <!--<div class="project-progressbar">
+                                            <div class="project-progressbar-value" style="width: 50%"></div>
+                                        </div>-->
+                                    </li>
 
                                     <li>
                                         <i class="fa fa-tasks fa-fw"></i>

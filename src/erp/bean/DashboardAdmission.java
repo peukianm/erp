@@ -62,7 +62,11 @@ public class DashboardAdmission implements Serializable {
     private Proadmission viewAdmission;
 
     public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))) {
+        if (sessionBean.getUsers().getDepartment() != null
+                && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
+                && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))
+                && sessionBean.getUsers().getDepartment().getDepartmenttype() != null
+                && sessionBean.getUsers().getDepartment().getDepartmenttype().getTypeid() != Long.parseLong(SystemParameters.getInstance().getProperty("clinicType"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_ADMISSION_ADMIN"), null, 1)) {
                 return;
             }
@@ -123,6 +127,23 @@ public class DashboardAdmission implements Serializable {
         }
     }
 
+    public List<Patient> completePatientAmka(String amka) throws ERPCustomException {
+        try {
+            if (amka != null && !amka.trim().isEmpty() && amka.trim().length() >= 1) {
+                amka = amka.trim();
+                availablepatients = proadmissionDAO.fetchPatientAutoCompleteAmka(amka, true);
+                return availablepatients;
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From Autocomplete Patient Action", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
+    }
+
     public void autocompleteSurnameSelectPatient(SelectEvent event) {
         if (!searchPatients.contains(searchPatient)) {
             searchPatients.add(searchPatient);
@@ -135,8 +156,6 @@ public class DashboardAdmission implements Serializable {
             searchPatients.remove(index);
         }
     }
-
-    
 
     public List<Department> getSelectedDepartments() {
         return selectedDepartments;

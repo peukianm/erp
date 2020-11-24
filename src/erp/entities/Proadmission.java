@@ -26,14 +26,14 @@ public class Proadmission implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date admissiondate;
 
-    @Column(name = "CREATED_TIMESTAMP")
+    @Column(name = "CREATED_TIMESTAMP", insertable = false, updatable = true)
     private Timestamp createdTimestamp;
 
     private String diagnosis;
 
     private String icd10;
 
-    @Column(name = "MODIFIED_TIMESTAMP")
+    @Column(name = "MODIFIED_TIMESTAMP", insertable = false, updatable = true)
     private String modifiedTimestamp;
 
     private BigDecimal processed;

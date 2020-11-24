@@ -49,6 +49,7 @@ public class InsertProadmission implements Serializable {
     private Patient searchPatient;
     private List<Patient> availablePatient;
     private List<Department> departments;
+    private String patientInserted;
 
     private boolean release = false;
 
@@ -56,7 +57,10 @@ public class InsertProadmission implements Serializable {
 
     public void preRenderView() {
         if (sessionBean.getUsers().getDepartment() != null
-                && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))) {
+                && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
+                && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))
+                && sessionBean.getUsers().getDepartment().getDepartmenttype() != null
+                && sessionBean.getUsers().getDepartment().getDepartmenttype().getTypeid() != Long.parseLong(SystemParameters.getInstance().getProperty("clinicType"))) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_ADMISSION"), null, 1)) {
                 return;
             }
@@ -67,6 +71,7 @@ public class InsertProadmission implements Serializable {
 
     @PostConstruct
     public void init() {
+        proadmission = new Proadmission();
         if (sessionBean.getUsers().getRole().getRoleid() < 3 || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
                 || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))) {
             departments = applicationBean.getClinics();
@@ -77,6 +82,7 @@ public class InsertProadmission implements Serializable {
 
     @PreDestroy
     public void reset() {
+        patientInserted = null;
     }
 
     public List<Patient> completePatientSurname(String surname) throws ERPCustomException {
@@ -99,7 +105,7 @@ public class InsertProadmission implements Serializable {
         try {
             if (amka != null && !amka.trim().isEmpty() && amka.trim().length() >= 1) {
                 amka = amka.trim();
-                availablePatient = proadmissionDAO.fetchPatientAutoCompleteSurname(amka, true);
+                availablePatient = proadmissionDAO.fetchPatientAutoCompleteAmka(amka, true);
                 return availablePatient;
             } else {
                 return null;
@@ -111,6 +117,15 @@ public class InsertProadmission implements Serializable {
         }
     }
 
+    public String getPatientInserted() {
+        return patientInserted;
+    }
+
+    public void setPatientInserted(String patientInserted) {
+        this.patientInserted = patientInserted;
+    }
+
+        
     public List<Department> getDepartments() {
         return departments;
     }
@@ -120,6 +135,9 @@ public class InsertProadmission implements Serializable {
     }
 
     public void autocompleteSelectPatient(SelectEvent event) {
+        proadmission.setPatient(searchPatient);
+        patientInserted = "1";
+        searchPatient = null;
     }
 
     public void checkRelease() {
@@ -127,7 +145,8 @@ public class InsertProadmission implements Serializable {
     }
 
     public void removeSelectedPatient() {
-        searchPatient = null;
+         proadmission.setPatient(null);
+         patientInserted = null;
     }
 
     public boolean isRelease() {

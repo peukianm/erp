@@ -10,6 +10,7 @@ import erp.entities.Patient;
 import erp.entities.Proadmission;
 import erp.entities.Staff;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -206,11 +207,11 @@ public class ProadmissionDAO {
                     + " where (LOWER(patient.surname) like '" + ((String) surname).toLowerCase() + "%'"
                     + " OR UPPER(patient.surname)  like '" + ((String) surname).toUpperCase() + "%') "
                     + (active ? " and patient.active =1 " : " ")
-                    + " order by patient.surname";
+                    + " order by patient.surname, patient.name";
 
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            query.setMaxResults(40);            
+            query.setMaxResults(90);            
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -230,7 +231,7 @@ public class ProadmissionDAO {
 
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            query.setMaxResults(40);
+            query.setMaxResults(20);
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -238,6 +239,29 @@ public class ProadmissionDAO {
             throw re;
         }
     }
+    
+     public Object getDayAdmissionCount(Date admissionDate, boolean active, boolean proceed) {
+        try {
+           
+            String queryString = "Select count(pa) from Proadmission pa where "                   
+                    + (active ?  " pa.active = 1 " : " pa.active = 0 ")                    
+                    + (proceed ? " and pa.processed = 1 " : " ")
+                    + (admissionDate != null ? " and pa.admissiondate = :admissionDate " : " ");
+                  
+
+            Query query = entityManager.createQuery(queryString);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            if (admissionDate != null) {
+                query.setParameter("admissionDate", admissionDate);
+            }
+            
+            return query.getSingleResult();
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on finding entity", re);
+            throw re;
+        }
+     }
 
     @SuppressWarnings("unchecked")
     public List<Staff> getPatients(boolean active, String surname, String name, String amka, String cteamID) {

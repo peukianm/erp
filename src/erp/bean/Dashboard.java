@@ -1,6 +1,7 @@
 package erp.bean;
 
 import erp.dao.AttendanceDAO;
+import erp.dao.ProadmissionDAO;
 import erp.dao.StaffDAO;
 import erp.entities.Attendance;
 import erp.entities.Usr;
@@ -31,6 +32,9 @@ public class Dashboard implements Serializable {
 
     @Inject
     private AttendanceDAO attendanceDAO;
+    
+      @Inject
+    private ProadmissionDAO proadmissionDAO;
 
     @Inject
     private StaffDAO staffDao;
@@ -39,6 +43,8 @@ public class Dashboard implements Serializable {
     private String entryTime = "N/A";
     private String exitTime = "N/A";
     private String attendanceDate = "N/A";
+    private String dayAdmissions = "N/A";
+    private boolean nos = false;
 
     private String lastExecution;
 
@@ -49,6 +55,17 @@ public class Dashboard implements Serializable {
         if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"), null, 1)) {
             return;
         }
+        
+        if (sessionBean.getUsers().getRole().getRoleid() < 3 || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
+                || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))) {            
+            nos = true;
+        } else {            
+            if (sessionBean.getUsers().getDepartment().getDepartmenttype().getTypeid() == Long.parseLong(SystemParameters.getInstance().getProperty("clinicType")))
+                nos = true;
+            else
+                nos = false;
+        }
+        
         sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"));
         sessionBean.setPageName(MessageBundleLoader.getMessage("workerDashboardPage"));
 
@@ -56,6 +73,7 @@ public class Dashboard implements Serializable {
 
     @PostConstruct
     public void init() {
+        dayAdmissions = proadmissionDAO.getDayAdmissionCount(new java.util.Date(), true, false).toString();
         user = sessionBean.getUsers();
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         dayAttendance = attendanceDAO.getDayAttendance(user.getStaff(), false);
@@ -73,6 +91,24 @@ public class Dashboard implements Serializable {
 
     }
 
+    public String getDayAdmissions() {
+        return dayAdmissions;
+    }
+
+    public void setDayAdmissions(String dayAdmissions) {
+        this.dayAdmissions = dayAdmissions;
+    }
+
+    public boolean isNos() {
+        return nos;
+    }
+
+    public void setNos(boolean nos) {
+        this.nos = nos;
+    }
+
+    
+    
     public String getLastExecution() {
         return lastExecution;
     }

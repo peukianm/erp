@@ -19,6 +19,7 @@ import erp.util.FacesUtils;
 import erp.util.FormatUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,10 +54,19 @@ public class AdmissionAction {
 
     public String insertProadmission() throws ERPCustomException {
         try {
+            System.out.println(insertProadmission.getProadmission().getDepartment());
+            insertProadmission.getProadmission().setProcessed(BigDecimal.ZERO);
+            insertProadmission.getProadmission().setActive(BigDecimal.ONE);
+            
+            if (insertProadmission.isRelease()) {
+                insertProadmission.getProadmission().setReleased(BigDecimal.ONE);
+            } else {
+                insertProadmission.getProadmission().setReleased(BigDecimal.ZERO);
+            }
 
             proadmissionDAO.save(insertProadmission.getProadmission());
 
-            Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_INSERTPROADMISSION")));
+            Action action = auditingDAO.getAction(Long.parseLong(SystemParameters.getInstance().getProperty("ACT_INSERTADMISSION")));
             Auditing audit = new Auditing(sessionBean.getUsers(), sessionBean.getUsers().getCompany(), action, "Proadmission " + insertProadmission.getProadmission() + " inserted",
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.DATEPATTERN),
                     FormatUtils.formatDateToTimestamp(new Date(), FormatUtils.FULLDATEPATTERN));

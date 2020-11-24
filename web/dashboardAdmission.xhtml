@@ -103,10 +103,24 @@
                                     </td>
 
                                     <td colspan="3">                                        
-                                        <p:autoComplete widgetVar="acPatient" minQueryLength="2" queryDelay="300" scrollHeight="300" id="patientComplete" value="#{dbAdmission.searchPatient}" completeMethod="#{dbAdmission.completePatientSurname(surname)}" size="65" required="false"  
+                                        <p:autoComplete widgetVar="acPatientSurname" minQueryLength="3" queryDelay="300" scrollHeight="400" id="patientComplete" value="#{dbAdmission.searchPatient}" completeMethod="#{dbAdmission.completePatientSurname}" size="40" required="false"  
                                                         var="patient" itemLabel="#{patient.surname} #{patient.name} #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter"  list="#{dbAdmission.availablepatients}" />
-                                            <p:ajax event="itemSelect" listener="#{dbAdmission.autocompleteSurnameSelectPatient}" update="patientComplete viewAdmissionResults"  />  
+                                            <p:ajax event="itemSelect" listener="#{dbAdmission.autocompleteSurnameSelectPatient}" update="patientComplete @(.basicstyleclass)"  />  
+                                        </p:autoComplete>
+                                        <br/>
+                                    </td>
+                                </tr> 
+                                 <tr>
+                                    <td>
+                                        <p:outputLabel style="font-weight: bold;" for="patientCompleteAmka" value="#{bundle.selectPatientAmka}:" />
+                                    </td>
+
+                                    <td colspan="3">                                        
+                                        <p:autoComplete widgetVar="acPatientAmka" minQueryLength="3" queryDelay="300" scrollHeight="400" id="patientCompleteAmka" value="#{dbAdmission.searchPatient}" completeMethod="#{dbAdmission.completePatientAmka}" size="40" required="false"  
+                                                        var="patient" itemLabel="#{patient.surname} #{patient.name} #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
+                                            <o:converter converterId="omnifaces.ListConverter"  list="#{dbAdmission.availablepatients}" />
+                                            <p:ajax event="itemSelect" listener="#{dbAdmission.autocompleteSurnameSelectPatient}" update="patientCompleteAmka @(.basicstyleclass)"  />  
                                         </p:autoComplete>
                                         <br/>
                                     </td>
@@ -114,6 +128,7 @@
                                 <tr>
                                     <td colspan="4">
                                         <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbAdmission.searchPatients.size() gt 0}" header="#{bundle.patientSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                            <br/>
                                             <p:repeat value="#{dbAdmission.searchPatients}" var="pat" varStatus="myVarStatus">
                                                 #{pat.surname} #{pat.name}  - #{pat.amka} 
                                                 <p:commandButton process="@this" update="@(.basicstyleclass)" action="#{dbAdmission.removePatient(myVarStatus.index)}"  id="removeStaff" icon="fa fa-fw fa-remove" title="Remove Staff" />                                                   
@@ -127,12 +142,12 @@
                                 
                                 <tr>
                                     <td colspan="2">
-                                        <p:outputLabel style="font-weight: bold;" for="fromAdmissionDate" value="#{bundle.fromAdmission}:" /><p:spacer width="20" height="20" />
+                                        <p:outputLabel style="font-weight: bold;" for="fromAdmissionDate" value="#{bundle.fromAdmission}:" />
                                         <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5" 
-                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.fromAdmissionDate}" id="fromAdmissionDate"/>
+                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.fromAdmissionDate}" id="fromAdmissionDate"/>                                        
                                     </td>
                                     <td colspan="2">          
-                                        <p:outputLabel style="font-weight: bold;" for="toAdmissionDate" value="#{bundle.toAdmission}:" /><p:spacer width="20" height="20" />
+                                        <p:outputLabel style="font-weight: bold;" for="toAdmissionDate" value="#{bundle.toAdmission}:" />
                                         <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5"
                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.toAdmissionDate}" id="toAdmissionDate"/>
                                         <br/>
@@ -151,12 +166,12 @@
                                 
                                 <tr>
                                     <td colspan="2">
-                                        <p:outputLabel style="font-weight: bold;" for="fromReleaseDate" value="#{bundle.fromRelease}:" /><p:spacer width="20" height="20" />
+                                        <p:outputLabel style="font-weight: bold;" for="fromReleaseDate" value="#{bundle.fromRelease}:" />
                                         <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5" 
                                                      pattern="dd/MM/yyyy" value="#{dbAdmission.fromReleaseDate}" id="fromReleaseDate"/>
                                     </td>
                                     <td colspan="2">          
-                                        <p:outputLabel style="font-weight: bold;" for="toReleaseDate" value="#{bundle.toRelease}:" /><p:spacer width="20" height="20" />
+                                        <p:outputLabel style="font-weight: bold;" for="toReleaseDate" value="#{bundle.toRelease}:" />
                                         <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5"
                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.toReleaseDate}" id="toReleaseDate"/>
                                         <br/>

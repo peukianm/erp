@@ -107,37 +107,40 @@
                                 <div class="card card-w-title" style="border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;">
                                     <h1>#{bundle.admissionData}</h1>
 
-                                    <p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-4,ui-g-12 ui-md-8" layout="grid" 
-                                                 style="border:0px none; background-color:transparent;width: 75%" >
+                                    <p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-8" layout="grid" 
+                                                 style="border:0px none; background-color:transparent;width: 65%" >
 
                                         <p:outputLabel value="#{bundle.clinic}:" for="department"  style="font-weight: bold;text-align: right;" />                                   
                                         <p:selectOneMenu value="#{insertProadmission.proadmission.department}" id="department" converter="omnifaces.SelectItemsConverter" 
-                                                         required="true" requiredMessage="#{bundle.clinic}: #{bundle.mandatoryField}" disabled="#{insertProadmission.release}" >                                                                                                                            
+                                                         required="true" requiredMessage="#{bundle.clinic}: #{bundle.mandatoryField}"  >                                                                                                                            
                                             <f:selectItems value="#{insertProadmission.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />                                    
                                         </p:selectOneMenu >
 
                                         <p:outputLabel style="font-weight: bold;" for="patientComplete" value="#{bundle.selectPatientAmka}:" />
-                                        <p:autoComplete widgetVar="acPatient" minQueryLength="3" queryDelay="300" scrollHeight="300" id="patientComplete" value="#{insertProadmission.searchPatient}" completeMethod="#{insertProadmission.completePatientAMKA}" size="60" required="false"  
+                                        <p:autoComplete widgetVar="acPatient" minQueryLength="2" queryDelay="300" scrollHeight="300" id="patientComplete" value="#{insertProadmission.searchPatient}" completeMethod="#{insertProadmission.completePatientAMKA}" size="60" required="false"  
                                                         var="patient" itemLabel="#{patient.surname} #{patient.name}  #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter"  list="#{insertProadmission.availablePatient}" />
-                                            <p:ajax event="itemSelect" listener="#{insertProadmission.autocompleteSelectPatient}" update="@widgetVar(acPatient) @(.basicstyleclass)"  />  
+                                            <p:ajax event="itemSelect" listener="#{insertProadmission.autocompleteSelectPatient}" update="patientComplete @(.basicstyleclass)"  />  
                                         </p:autoComplete>
 
                                         <p:outputLabel style="font-weight: bold;" for="patientCompleteSurname" value="#{bundle.selectPatientSurname}:" />
-                                        <p:autoComplete widgetVar="acPatientSurname" minQueryLength="3" queryDelay="300" scrollHeight="300" id="patientCompleteSurname" value="#{insertProadmission.searchPatient}" completeMethod="#{insertProadmission.completePatientSurname}" size="60" required="false"  
+                                        <p:autoComplete widgetVar="acPatientSurname" minQueryLength="2" queryDelay="300" scrollHeight="300" id="patientCompleteSurname" value="#{insertProadmission.searchPatient}" completeMethod="#{insertProadmission.completePatientSurname}" size="60" required="false"  
                                                         var="patient" itemLabel="#{patient.surname} #{patient.name}  #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
                                             <o:converter converterId="omnifaces.ListConverter"  list="#{insertProadmission.availablePatient}" />
-                                            <p:ajax event="itemSelect" listener="#{insertProadmission.autocompleteSelectPatient}" update="@widgetVar(acPatientSurname) @(.basicstyleclass)"  />  
+                                            <p:ajax event="itemSelect" listener="#{insertProadmission.autocompleteSelectPatient}" update="patientCompleteSurname @(.basicstyleclass)"  />  
                                         </p:autoComplete>
+
+
                                         <br/>
 
-                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{insertProadmission.searchPatient != null}" header="#{bundle.patientSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
-                                            #{insertProadmission.searchPatient.surname} #{insertProadmission.searchPatient.name} - #{insertProadmission.searchPatient.amka} 
+                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{insertProadmission.proadmission.patient != null}" header="#{bundle.patientSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                            <p:inputText value="#{insertProadmission.patientInserted}" id="patientHidden" type="hidden" required="true" requiredMessage="#{bundle.patient}: #{bundle.mandatoryField}" />
+                                            #{insertProadmission.proadmission.patient.surname} #{insertProadmission.proadmission.patient.name} - #{insertProadmission.proadmission.patient.amka} 
                                             <p:commandButton  process="@this" update="@(.basicstyleclass)" action="#{insertProadmission.removeSelectedPatient}"  id="removePatient" icon="fa fa-fw fa-remove" title="Remove Patient" />                                                   
                                         </p:panel>
 
 
-                                        <p:outputLabel value="icd10:" for="icd10" style="font-weight: bold;text-align: right;" />
+                                        <p:outputLabel value="ICD10:" for="icd10" style="font-weight: bold;text-align: right;" />
                                         <p:inputText id="icd10"  value="#{insertProadmission.proadmission.icd10}" required="true" requiredMessage="icd10: #{bundle.mandatoryField}">                                       
                                             <f:validateLength minimum="2" maximum="25" />
                                         </p:inputText>
@@ -158,14 +161,16 @@
                                         <p:outputLabel value="#{bundle.release}:" for="release" style="font-weight: bold;text-align: right;"/>
                                         <p:selectBooleanButton id="release" value="#{insertProadmission.release}" onLabel="#{bundle.yes}" offLabel="#{bundle.no}" 
                                                                onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px">
-                                            <p:ajax update="panelReleaseDate" listener="#{insertProadmission.checkRelease}" />
+                                            <p:ajax update="releaseDate releaseDateLabel" listener="#{insertProadmission.checkRelease}" />
                                         </p:selectBooleanButton>
-                                        
-                                        <p:panel id="panelReleaseDate"  styleClass="basicstyleclass" visible="#{insertProadmission.release}"  > 
-                                            <p:outputLabel id="releaseDateLabel" style="font-weight: bold;" for="releaseDate" value="#{bundle.releaseDate}:" />
-                                            <p:calendar locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100" 
+
+
+                                     
+                                            <p:outputLabel   id="releaseDateLabel" style="font-weight: bold;" for="releaseDate" value="#{bundle.releaseDate}:" />
+                                            <p:calendar    disabled="#{!insertProadmission.release}" locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100" 
                                                         pattern="dd/MM/yyyy" value="#{insertProadmission.proadmission.releasedate}" id="releaseDate" required="true" requiredMessage="#{bundle.releaseDate}: #{bundle.mandatoryField}" />
-                                        </p:panel>
+                                      <!--  </p:panel> -->
+
 
                                     </p:panelGrid>
                                     <br/><br/>
