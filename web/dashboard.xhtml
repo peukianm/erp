@@ -4,7 +4,7 @@
 
     <!--<ui:define name="title">Dashboard</ui:define>-->
     <f:metadata>        
-        <f:viewAction action="#{dashboard.preRenderView}"/>
+        <f:viewAction action="#{dashboard.init()}"/>
     </f:metadata>
 
     <ui:define name="head">
@@ -122,7 +122,7 @@
                                         <div class="" style="text-align: right;">
                                             #{bundle.dayAdmissions}: <span style="font-weight: 900;font-size: 13px;color: green">#{dashboard.dayAdmissions}</span><br/>                                           
                                         </div>
-                                        <p:commandButton disabled="#{!dashboard.nos}" class="attendance-btn" value="#{bundle.admissionDetails}" action="dashboardAdmission?faces-redirect=true"  /> 
+                                        <p:commandButton disabled="#{sessionBean.users.nosStatus == null}" class="attendance-btn" value="#{bundle.admissionDetails}" action="dashboardAdmission?faces-redirect=true"  /> 
                                         <!--<div class="project-progressbar">
                                             <div class="project-progressbar-value" style="width: 50%"></div>
                                         </div>-->

@@ -60,13 +60,10 @@ public class DashboardAdmission implements Serializable {
     private Date fromReleaseDate;
     private Date toReleaseDate;
     private Proadmission viewAdmission;
+    private Proadmission admissionForUpdate;
 
-    public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null
-                && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
-                && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))
-                && sessionBean.getUsers().getDepartment().getDepartmenttype() != null
-                && sessionBean.getUsers().getDepartment().getDepartmenttype().getTypeid() != Long.parseLong(SystemParameters.getInstance().getProperty("clinicType"))) {
+    public void preRenderView() {            
+        if (sessionBean.getUsers().getNosStatus() == null) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_ADMISSION_ADMIN"), null, 1)) {
                 return;
             }
@@ -79,11 +76,10 @@ public class DashboardAdmission implements Serializable {
     public void init() {
         fromAdmissionDate = new java.util.Date();
         toAdmissionDate = new java.util.Date();
-        if (sessionBean.getUsers().getRole().getRoleid() < 3 || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
-                || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))) {
+        if (sessionBean.getUsers().getNosStatus() != null && sessionBean.getUsers().getNosStatus().equals("nosAdmin")) {
             departments = applicationBean.getClinics();
             admin = true;
-        } else {
+        } else if (sessionBean.getUsers().getNosStatus() != null && sessionBean.getUsers().getNosStatus().equals("nos")) {
             departments = sessionBean.getUsers().getDepartments();
             selectedDepartments.add(sessionBean.getUsers().getDepartment());
             admin = false;
@@ -102,6 +98,7 @@ public class DashboardAdmission implements Serializable {
         toAdmissionDate = new java.util.Date();
         fromReleaseDate = null;
         toReleaseDate = null;
+        searchAdmissions = new ArrayList<>(0);
         if (admin) {
             selectedDepartments = new ArrayList<>(0);
         } else {
@@ -259,6 +256,14 @@ public class DashboardAdmission implements Serializable {
 
     public void setSearchPatient(Patient searchPatient) {
         this.searchPatient = searchPatient;
+    }
+
+    public Proadmission getAdmissionForUpdate() {
+        return admissionForUpdate;
+    }
+
+    public void setAdmissionForUpdate(Proadmission admissionForUpdate) {
+        this.admissionForUpdate = admissionForUpdate;
     }
 
 }

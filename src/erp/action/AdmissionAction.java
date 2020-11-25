@@ -75,7 +75,8 @@ public class AdmissionAction {
             FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("newAdmissionInserted"));
             sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ADMISSION_ADMIN"));
             sessionBean.setPageName(MessageBundleLoader.getMessage("admissionPage"));
-            return "dashboardAdmission";
+            insertProadmission.resetInsertAdmissionForm();
+            return "insertProadmission";
         } catch (Exception e) {
             e.printStackTrace();
             sessionBean.setErrorMsgKey("errMsg_GeneralError");
@@ -151,6 +152,24 @@ public class AdmissionAction {
 
     public String goUpdateAdmission(long admissionID) {
         return "updateAdmission?faces-redirect=true&admissionID=" + admissionID;
+    }
+    
+     public String deleteAdmission(long admissionID) throws ERPCustomException {
+        try {
+            Proadmission admission= dbAdmission.getAdmissionForUpdate();
+            admission.setActive(BigDecimal.ZERO);
+            //proadmissionDAO.merge(admission);
+            proadmissionDAO.delete(admission);
+            auditingDAO.audit(sessionBean.getUsers(), Long.parseLong(SystemParameters.getInstance().getProperty("ACT_UPDATEADMISSION")), "Admission " + admission + " deleted");
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("admissionDeleted"));
+            fetchAdmissions() ;
+            return "";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionBean.setErrorMsgKey("errMsg_GeneralError");
+            throw new ERPCustomException("Throw From deactivate staff ", e, sessionBean.getUsers(), "errMsg_GeneralError");
+        }
     }
 
 }

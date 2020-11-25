@@ -62,7 +62,8 @@
             }
             .ui-fluid .ui-button {                
                 border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;
-                font-weight: 400;
+                font-size: 13px !important;
+                font-weight: 700;
             }
             .ui-fluid .ui-inputtext {
                 width: auto !important;
@@ -99,11 +100,11 @@
                 <div class="ui-g">
 
                     <h:form id="insertAdmissionForm" class="ui-g-12 ui-lg-12"> 
-                        <p:messages id="msg" showDetail="true" closable="true" >
+                        <p:messages id="msg" showDetail="false" closable="true" >
                             <p:autoUpdate />
                         </p:messages>
                         <p:tabView>
-                            <p:tab title="#{bundle.insertAdmission}">
+                            <p:tab title="#{bundle.newAdmission}">
                                 <div class="card card-w-title" style="border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;">
                                     <h1>#{bundle.admissionData}</h1>
 
@@ -141,14 +142,14 @@
 
 
                                         <p:outputLabel value="ICD10:" for="icd10" style="font-weight: bold;text-align: right;" />
-                                        <p:inputText id="icd10"  value="#{insertProadmission.proadmission.icd10}" required="true" requiredMessage="icd10: #{bundle.mandatoryField}">                                       
-                                            <f:validateLength minimum="2" maximum="25" />
+                                        <p:inputText id="icd10" size="60" value="#{insertProadmission.proadmission.icd10}" required="true" requiredMessage="icd10: #{bundle.mandatoryField}">                                       
+                                            <f:validateLength minimum="2" maximum="80" />
                                         </p:inputText>
 
                                         <p:outputLabel value="#{bundle.diagnosis}:" for="diagnosis" style="font-weight: bold;text-align: right;" />                                   
-                                        <p:inputText id="diagnosis" value="#{insertProadmission.proadmission.diagnosis}" required="true" requiredMessage="#{bundle.diagnosis}: #{bundle.mandatoryField}" >
-                                            <f:validateLength minimum="2" maximum="80" /> 
-                                        </p:inputText>
+                                        <p:inputTextarea id="diagnosis" rows="4"    value="#{insertProadmission.proadmission.diagnosis}" required="true" requiredMessage="#{bundle.diagnosis}: #{bundle.mandatoryField}" >
+                                            <f:validateLength minimum="2" maximum="150" /> 
+                                        </p:inputTextarea>
 
 
 
@@ -174,11 +175,11 @@
 
                                     </p:panelGrid>
                                     <br/><br/>
-                                    <p:commandButton  value="#{bundle.insertAdmission}" action="#{admissionAction.insertProadmission}" update="growl" style="margin-left: 15px; width: auto !important;">
+                                    <p:commandButton  value="#{bundle.insert}" action="#{admissionAction.insertProadmission}" update="growl insertAdmissionForm insertAdmissionForm:msg" style="margin-left: 15px; width: auto !important;">
                                         <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationInsertAdmission};" icon="pi pi-exclamation-triangle" /> 
                                     </p:commandButton>
-                                    <p:spacer width="10" />
-                                    <p:linkButton outcome="dashboardAdmission" value="#{bundle.exit}" style="margin-left: 15px; width: auto !important;" />
+                                    <p:spacer width="5" />
+                                    <p:linkButton outcome="dashboardAdmission" value="#{bundle.exit}" style="margin-left: 10px; width: auto !important;" />
 
                                 </div>
 

@@ -32,8 +32,8 @@ public class Dashboard implements Serializable {
 
     @Inject
     private AttendanceDAO attendanceDAO;
-    
-      @Inject
+
+    @Inject
     private ProadmissionDAO proadmissionDAO;
 
     @Inject
@@ -44,37 +44,34 @@ public class Dashboard implements Serializable {
     private String exitTime = "N/A";
     private String attendanceDate = "N/A";
     private String dayAdmissions = "N/A";
-    private boolean nos = false;
-
     private String lastExecution;
 
     Usr user;
 
-    public void preRenderView() {
+//    public void preRenderView() {
+//        if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"), null, 1)) {
+//            return;
+//        }
+//        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"));
+//        sessionBean.setPageName(MessageBundleLoader.getMessage("workerDashboardPage"));
+//    }
+
+    @PostConstruct
+    public void init() {
         user = sessionBean.getUsers();
         if (!AccessControl.control(user, SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"), null, 1)) {
             return;
         }
-        
-        if (sessionBean.getUsers().getRole().getRoleid() < 3 || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
-                || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))) {            
-            nos = true;
-        } else {            
-            if (sessionBean.getUsers().getDepartment().getDepartmenttype().getTypeid() == Long.parseLong(SystemParameters.getInstance().getProperty("clinicType")))
-                nos = true;
-            else
-                nos = false;
-        }
-        
+
         sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_ERP_HOME"));
         sessionBean.setPageName(MessageBundleLoader.getMessage("workerDashboardPage"));
+        
+        if (user.getNosStatus() != null && user.getNosStatus().equals("nosAdmin")) {
+            dayAdmissions = proadmissionDAO.getDayAdmissionCount(new java.util.Date(), true, false, null).toString();
+        } else if (user.getNosStatus() != null && user.getNosStatus().equals("nos")) {
+            dayAdmissions = proadmissionDAO.getDayAdmissionCount(new java.util.Date(), true, false, sessionBean.getUsers().getDepartment()).toString();
+        }
 
-    }
-
-    @PostConstruct
-    public void init() {
-        dayAdmissions = proadmissionDAO.getDayAdmissionCount(new java.util.Date(), true, false).toString();
-        user = sessionBean.getUsers();
         lastExecution = staffDao.getTaskLastExecutionTime(user.getCompany(), Long.parseLong(SystemParameters.getInstance().getProperty("SCHEDULE_TASK_READ_LOGGERS")));
         dayAttendance = attendanceDAO.getDayAttendance(user.getStaff(), false);
         if (dayAttendance != null) {
@@ -99,16 +96,6 @@ public class Dashboard implements Serializable {
         this.dayAdmissions = dayAdmissions;
     }
 
-    public boolean isNos() {
-        return nos;
-    }
-
-    public void setNos(boolean nos) {
-        this.nos = nos;
-    }
-
-    
-    
     public String getLastExecution() {
         return lastExecution;
     }
@@ -148,6 +135,5 @@ public class Dashboard implements Serializable {
     public void setAttendanceDate(String attendanceDate) {
         this.attendanceDate = attendanceDate;
     }
-    
-    
+
 }

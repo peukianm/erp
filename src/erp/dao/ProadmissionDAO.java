@@ -102,9 +102,22 @@ public class ProadmissionDAO {
         }
     }
 
+    public Proadmission merge(Proadmission bean) {
+        try {
+            return entityManager.merge(bean);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on generic updating ", re);
+            throw re;
+        }
+    }
+
     public void delete(Proadmission proadmission) {
         try {
-            entityManager.remove(proadmission);
+            if (!entityManager.contains(proadmission)) {
+                proadmission = entityManager.merge(proadmission);
+            }
+            entityManager.remove(proadmission);            
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on deleting proadmission entity", re);
@@ -159,7 +172,7 @@ public class ProadmissionDAO {
     public List<Proadmission> getProadmissions(Department department, Timestamp fromAdmission, Timestamp toAdmission, Patient patient,
             Timestamp fromRelease, Timestamp toRelease, Integer release, Integer processed, boolean active) {
         try {
-            String sql = "SELECT model.proadmission FROM Proadmission model where "
+            String sql = "SELECT model FROM Proadmission model where "
                     + (active ? " model.active = 1 " : " model.active = 0 ")
                     + (processed != null ? " and model.processed = " + processed.intValue() : " ")
                     + (release != null ? " and model.released = " + release.intValue() : " ")
@@ -202,7 +215,7 @@ public class ProadmissionDAO {
     public List<Patient> fetchPatientAutoCompleteSurname(String surname, boolean active) {
         try {
             surname = surname.trim();
-            System.out.println("surname="+surname);
+            System.out.println("surname=" + surname);
             String queryString = "Select patient from Patient patient  "
                     + " where (LOWER(patient.surname) like '" + ((String) surname).toLowerCase() + "%'"
                     + " OR UPPER(patient.surname)  like '" + ((String) surname).toUpperCase() + "%') "
@@ -211,7 +224,7 @@ public class ProadmissionDAO {
 
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            query.setMaxResults(90);            
+            query.setMaxResults(90);
             return query.getResultList();
         } catch (RuntimeException re) {
             re.printStackTrace();
@@ -239,29 +252,32 @@ public class ProadmissionDAO {
             throw re;
         }
     }
-    
-     public Object getDayAdmissionCount(Date admissionDate, boolean active, boolean proceed) {
+
+    public Object getDayAdmissionCount(Date admissionDate, boolean active, boolean proceed, Department department) {
         try {
-           
-            String queryString = "Select count(pa) from Proadmission pa where "                   
-                    + (active ?  " pa.active = 1 " : " pa.active = 0 ")                    
+
+            String queryString = "Select count(pa) from Proadmission pa where "
+                    + (active ? " pa.active = 1 " : " pa.active = 0 ")
                     + (proceed ? " and pa.processed = 1 " : " ")
-                    + (admissionDate != null ? " and pa.admissiondate = :admissionDate " : " ");
-                  
+                    + (admissionDate != null ? " and pa.admissiondate = :admissionDate " : " ")
+                    + (department != null ? " and pa.department = :department " : " ");
 
             Query query = entityManager.createQuery(queryString);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             if (admissionDate != null) {
                 query.setParameter("admissionDate", admissionDate);
             }
-            
+            if (department != null) {
+                query.setParameter("department", department);
+            }
+
             return query.getSingleResult();
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on finding entity", re);
-            throw re;
+            throw re; 
         }
-     }
+    }
 
     @SuppressWarnings("unchecked")
     public List<Staff> getPatients(boolean active, String surname, String name, String amka, String cteamID) {

@@ -90,13 +90,13 @@
                                         <p:outputLabel style="font-weight: bold;" for="selectDepartment" value="#{bundle.clinic}:" />  
                                     </td>
                                     <td colspan="3">                                         
-                                        <p:selectManyMenu  value="#{dbAdmission.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" >                                                                          
+                                        <p:selectManyMenu style="width: 80%" value="#{dbAdmission.selectedDepartments}" id="selectDepartment" converter="omnifaces.SelectItemsConverter" showCheckbox="#{dbAdmission.admin}" >                                                                                                                      
                                             <f:selectItems value="#{dbAdmission.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />						                                                                                                                                    
                                         </p:selectManyMenu>
                                         <br/>
                                     </td>
                                 </tr>
-                              
+
                                 <tr>
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="patientComplete" value="#{bundle.selectPatientSurname}:" />
@@ -111,7 +111,7 @@
                                         <br/>
                                     </td>
                                 </tr> 
-                                 <tr>
+                                <tr>
                                     <td>
                                         <p:outputLabel style="font-weight: bold;" for="patientCompleteAmka" value="#{bundle.selectPatientAmka}:" />
                                     </td>
@@ -126,7 +126,8 @@
                                     </td>
                                 </tr> 
                                 <tr>
-                                    <td colspan="4">
+                                    <td> </td>
+                                    <td colspan="3">
                                         <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{dbAdmission.searchPatients.size() gt 0}" header="#{bundle.patientSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
                                             <br/>
                                             <p:repeat value="#{dbAdmission.searchPatients}" var="pat" varStatus="myVarStatus">
@@ -137,24 +138,25 @@
                                         </p:panel>                                      
                                     </td>
 
+
                                 </tr>
-                                
-                                
+
+
                                 <tr>
                                     <td colspan="2">
                                         <p:outputLabel style="font-weight: bold;" for="fromAdmissionDate" value="#{bundle.fromAdmission}:" />
-                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5" 
+                                        <p:calendar  locale="el" size="10"  readonlyInput="false"  navigator="true" showOn="button" yearRange="c-2:c+0" 
                                                      pattern="dd/MM/yyyy" value="#{dbAdmission.fromAdmissionDate}" id="fromAdmissionDate"/>                                        
                                     </td>
                                     <td colspan="2">          
                                         <p:outputLabel style="font-weight: bold;" for="toAdmissionDate" value="#{bundle.toAdmission}:" />
-                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5"
+                                        <p:calendar locale="el" size="10"  readonlyInput="false"  navigator="true" showOn="button" yearRange="c-2:c+0"
                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.toAdmissionDate}" id="toAdmissionDate"/>
                                         <br/>
                                     </td>
-                                    
+
                                 </tr>
-                               
+
                                 <tr>
                                     <td colspan="4">
                                         <br/>
@@ -163,26 +165,26 @@
                                                                onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px" />
                                     </td>
                                 </tr>
-                                
+
                                 <tr>
                                     <td colspan="2">
                                         <p:outputLabel style="font-weight: bold;" for="fromReleaseDate" value="#{bundle.fromRelease}:" />
-                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5" 
+                                        <p:calendar  locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-2:c+0" 
                                                      pattern="dd/MM/yyyy" value="#{dbAdmission.fromReleaseDate}" id="fromReleaseDate"/>
                                     </td>
                                     <td colspan="2">          
                                         <p:outputLabel style="font-weight: bold;" for="toReleaseDate" value="#{bundle.toRelease}:" />
-                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-5:c+5"
+                                        <p:calendar locale="el" size="10"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-2:c+0"
                                                     pattern="dd/MM/yyyy" value="#{dbAdmission.toReleaseDate}" id="toReleaseDate"/>
                                         <br/>
                                     </td>
-                                    
+
                                 </tr>
 
 
                             </table>
                             <br/><br/>  
-                            
+
                             <p:commandButton value="#{bundle.searchAdmission}" action="#{admissionAction.fetchAdmissions}" update="searchAdmissionForm viewAdmissionResults"  />  
                             <p:spacer width="10" />
                             <p:commandButton  value="#{bundle.reset}" action="#{dbAdmission.resetSearchAdmissionForm()}"  ajax="false" />
@@ -244,27 +246,37 @@
                                         <f:facet name="header" >
                                             <h:outputText value="#{bundle.admissionDate}"/>
                                         </f:facet>
-                                        <h:outputText value="#{admission.admissiondate}" />
+                                        <h:outputText value="#{admission.admissiondate}" >
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText>
                                     </p:column>
 
                                     <p:column sortBy="#{admission.department.name}">
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.clinic}" />
                                         </f:facet>
-                                        <h:outputText value="#{admission.department.name}" style="font-size: 11px;" />
+                                        <h:outputText value="#{admission.department.name}"  />
                                     </p:column>
 
                                     <p:column style="text-align: center;" exportable="false">
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.release}" />
                                         </f:facet>
-                                        <h:outputText rendered="#{admission.released==0}" value="OXI" style="font-size: 11px;" />
-                                        <h:outputText rendered="#{admission.released==1}" value="#{admission.releasedate}" style="font-size: 11px;" />
+                                        <h:outputText rendered="#{admission.released==0}" value="OXI" style="color: red; font-weight: bold;" />
+                                        <h:outputText rendered="#{admission.released==1}" value="#{admission.releasedate}" style="color: green; font-weight: bold;" >
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText>
                                        <!-- <h:graphicImage rendered="#{user.active==1}" url="/resources/babylon-layout/images/success.jpg" width="12px" height="12px" />
                                         <h:graphicImage rendered="#{user.active!=1}" url="/resources/babylon-layout/images/close.gif" width="12px" height="12px" /> -->  
                                     </p:column>
 
                                     <p:column headerText="#{bundle.actions}" exportable="false" >
+
+                                        <p:commandButton update="growl viewAdmissionResults" icon="pi pi-times"  style="font-size: 16px;" action="#{admissionAction.deleteAdmission(admission.admissionid)}" class="btn-list" title="#{bundle.deleteAdmission}"  >
+                                            <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationDeactivateAdmission};" icon="pi pi-exclamation-triangle" /> 
+                                            <f:setPropertyActionListener value="#{admission}" target="#{dbAdmission.admissionForUpdate}" />                                
+                                        </p:commandButton> 
+
                                         <p:commandButton  style="font-size: 16px;" icon="pi pi-pencil" action="#{admissionAction.goUpdateAdmission(admission.admissionid)}"  class="btn-list" title="#{bundle.updateAdmission}"  /> 
                                         <p:commandButton id="bt1" icon="pi pi-search" style="font-size: 16px;"  title="#{bundle.viewAdmission}"  onclick="PF('admissionDialog').show()" class="btn-list" update="admissionDetail">
                                             <f:setPropertyActionListener value="#{admission}" target="#{dbAdmission.viewAdmission}" />
@@ -284,49 +296,34 @@
             <div id="admissionDialogDiv" class="ui-widget" style="border-radius:7px; margin-top: 0.8% ; box-shadow: 4px 4px 4px #5C5C5C; ">	
                 <p:outputPanel id="admissionDetail" style="text-align:center;">
                     <p:panelGrid  columns="4" columnClasses="title, data, title, data" >
-                        <h:outputText value="#{bundle.username}:" />
-                        <h:outputText value="#{dbUsers.viewUser.username}" />
+                        <h:outputText value="#{bundle.fullName}:" />
+                        <h:outputText value="#{dbAdmission.viewAdmission.patient.surname} #{dbAdmission.viewAdmission.patient.name}" />
 
-                        <h:outputText value="#{bundle.active}:" />
-                        <h:graphicImage rendered="#{dbUsers.viewUser.active==1}" url="/resources/babylon-layout/images/success.jpg" width="14px" height="14px" />
-                        <h:graphicImage rendered="#{dbUsers.viewUser.active!=1}" url="/resources/babylon-layout/images/close.gif" width="14px" height="14px" />   
+                        <h:outputText value="#{bundle.amka}:" />
+                        <h:outputText value="#{dbAdmission.viewAdmission.patient.amka}" />
 
-                        <h:outputText value="#{bundle.name}:" />
-                        <h:outputText value="#{dbUsers.viewUser.name}" />
+                        <h:outputText value="#{bundle.admissionDate}:" />
+                        <h:outputText value="#{dbAdmission.viewAdmission.admissiondate}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
 
-                        <h:outputText value="#{bundle.surname}:" />
-                        <h:outputText value="#{dbUsers.viewUser.surname}" />
+                        <h:outputText value="#{bundle.department}:" />
+                        <h:outputText value="#{dbAdmission.viewAdmission.department.name}" />   
 
-                        <h:outputText value="#{bundle.email}:" />
-                        <h:outputText value="#{dbUsers.viewUser.email}" />
+                        <h:outputText value="ICD10:" />
+                        <h:outputText value="#{dbAdmission.viewAdmission.icd10}" />
 
-                        <h:outputText value="#{bundle.company}:" />
-                        <h:outputText value="#{dbUsers.viewUser.company.name}" />
+                        <h:outputText value="#{bundle.diagnosis}:" />
+                        <h:outputText value="#{dbAdmission.viewAdmission.diagnosis}" />
 
-                        <h:outputText value="#{bundle.sector}:" />
-                        <h:outputText value="#{dbUsers.viewUser.sector.name}" />
+                        <h:outputText value="#{bundle.release}:" />
+                        <h:graphicImage rendered="#{dbAdmission.viewAdmission.released==1}" url="/resources/babylon-layout/images/success.jpg" width="14px" height="14px" />
+                        <h:graphicImage rendered="#{dbAdmission.viewAdmission.released!=1}" url="/resources/babylon-layout/images/close.gif" width="14px" height="14px" />   
 
-                        <h:outputText value="#{bundle.controlDepartment}:" />
-                        <ui:repeat var="userdepartment" value="#{dbUsers.viewUser.userdepartments}">
-                            <h:outputText value="#{userdepartment.department.name}" /> <br/>
-                        </ui:repeat>
-
-                        <h:outputText value="#{bundle.primaryDepartment}:" />
-                        <h:outputText value="#{dbUsers.viewUser.department.name}" />                         
-
-                        <h:outputText value="#{bundle.phone}:" />
-                        <h:outputText value="#{dbUsers.viewUser.phone}" />
-
-                        <h:outputText value="#{bundle.role}:" />
-                        <ui:repeat var="userrole" value="#{dbUsers.viewUser.userroles}">
-                            <h:outputText value="#{userrole.role.name}" /> <br/>
-                        </ui:repeat>
-
-                        <h:outputText value="#{bundle.connectedStaff}:" />
-                        <h:outputText rendered="#{dbUsers.viewUser.staff!=null}" value="#{dbUsers.viewUser.staff.name} #{dbUsers.viewUser.staff.surname}" />
-
-
-
+                        <h:outputText value="#{bundle.releaseDate}:" />
+                        <h:outputText value="#{dbAdmission.viewAdmission.releasedate}" >
+                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                        </h:outputText>
                     </p:panelGrid>
                 </p:outputPanel>
             </div>

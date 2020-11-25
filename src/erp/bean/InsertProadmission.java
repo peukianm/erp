@@ -56,11 +56,7 @@ public class InsertProadmission implements Serializable {
     boolean active;
 
     public void preRenderView() {
-        if (sessionBean.getUsers().getDepartment() != null
-                && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
-                && sessionBean.getUsers().getDepartment().getDepartmentid() != Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))
-                && sessionBean.getUsers().getDepartment().getDepartmenttype() != null
-                && sessionBean.getUsers().getDepartment().getDepartmenttype().getTypeid() != Long.parseLong(SystemParameters.getInstance().getProperty("clinicType"))) {
+        if (sessionBean.getUsers().getNosStatus() == null) {
             if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_ADMISSION"), null, 1)) {
                 return;
             }
@@ -72,17 +68,24 @@ public class InsertProadmission implements Serializable {
     @PostConstruct
     public void init() {
         proadmission = new Proadmission();
-        if (sessionBean.getUsers().getRole().getRoleid() < 3 || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
-                || sessionBean.getUsers().getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))) {
+        proadmission.setAdmissiondate(new java.util.Date());
+        if (sessionBean.getUsers().getNosStatus() != null && sessionBean.getUsers().getNosStatus().equals("nosAdmin")) {
             departments = applicationBean.getClinics();
-        } else {
+        } else if (sessionBean.getUsers().getNosStatus() != null && sessionBean.getUsers().getNosStatus().equals("nos")) {
             departments = sessionBean.getUsers().getDepartments();
-        }        
+        }
     }
 
     @PreDestroy
     public void reset() {
         patientInserted = null;
+    }
+
+    public void resetInsertAdmissionForm() {
+        proadmission = new Proadmission();
+        proadmission.setAdmissiondate(new java.util.Date());
+        patientInserted = null;
+        release = false;
     }
 
     public List<Patient> completePatientSurname(String surname) throws ERPCustomException {
@@ -125,7 +128,6 @@ public class InsertProadmission implements Serializable {
         this.patientInserted = patientInserted;
     }
 
-        
     public List<Department> getDepartments() {
         return departments;
     }
@@ -145,8 +147,8 @@ public class InsertProadmission implements Serializable {
     }
 
     public void removeSelectedPatient() {
-         proadmission.setPatient(null);
-         patientInserted = null;
+        proadmission.setPatient(null);
+        patientInserted = null;
     }
 
     public boolean isRelease() {

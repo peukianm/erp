@@ -34,7 +34,7 @@ public class Proadmission implements Serializable {
     private String icd10;
 
     @Column(name = "MODIFIED_TIMESTAMP", insertable = false, updatable = true)
-    private String modifiedTimestamp;
+    private Timestamp modifiedTimestamp;
 
     private BigDecimal processed;
 
@@ -104,11 +104,11 @@ public class Proadmission implements Serializable {
         this.icd10 = icd10;
     }
 
-    public String getModifiedTimestamp() {
+    public Timestamp getModifiedTimestamp() {
         return this.modifiedTimestamp;
     }
 
-    public void setModifiedTimestamp(String modifiedTimestamp) {
+    public void setModifiedTimestamp(Timestamp modifiedTimestamp) {
         this.modifiedTimestamp = modifiedTimestamp;
     }
 

@@ -1,5 +1,6 @@
 package erp.entities;
 
+import erp.util.SystemParameters;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -45,6 +46,9 @@ public class Usr implements Serializable {
 
     @Transient
     private Role role;
+    
+    @Transient
+    private String nosStatus;
 
     //bi-directional many-to-one association to Auditing
     @OneToMany(mappedBy = "usr")
@@ -342,6 +346,26 @@ public class Usr implements Serializable {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getNosStatus() {
+        
+         if (getRole().getRoleid() < 3 || getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("itID"))
+                || getDepartment().getDepartmentid() == Integer.parseInt(SystemParameters.getInstance().getProperty("kinisisID"))) {            
+            nosStatus ="nosAdmin";
+        } else {            
+            if (getDepartment().getDepartmenttype()!=null && getDepartment().getDepartmenttype().getTypeid() == Long.parseLong(SystemParameters.getInstance().getProperty("clinicType"))){
+                nosStatus = "nos";
+            }
+            else {
+                nosStatus = null;
+            }
+        }       
+        return nosStatus;
+    }
+
+    public void setNosStatus(String nosStatus) {
+        this.nosStatus = nosStatus;
     }
     
     
