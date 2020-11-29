@@ -131,6 +131,9 @@
                                             <p:ajax event="itemSelect" listener="#{insertProadmission.autocompleteSelectPatient}" update="patientCompleteSurname @(.basicstyleclass)"  />  
                                         </p:autoComplete>
 
+                                        <p:commandButton id="btInsertPatient" value="#{bundle.insertPatient}"  style="font-size: 16px; width:auto !important; height: auto !important;"  title="#{bundle.newPatient}"  
+                                                         onclick="PF('patientDialogWidget').show()" class="btn-list" update="insertPatientForm" process="@none"/>
+                                        <p:outputLabel style="font-weight: bold;" value="  " />
 
                                         <br/>
 
@@ -166,21 +169,21 @@
                                         </p:selectBooleanButton>
 
 
-                                     
-                                            <p:outputLabel   id="releaseDateLabel" style="font-weight: bold;" for="releaseDate" value="#{bundle.releaseDate}:" />
-                                            <p:calendar    disabled="#{!insertProadmission.release}" locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100" 
-                                                        pattern="dd/MM/yyyy" value="#{insertProadmission.proadmission.releasedate}" id="releaseDate" required="true" requiredMessage="#{bundle.releaseDate}: #{bundle.mandatoryField}" />
-                                      <!--  </p:panel> -->
+
+                                        <p:outputLabel   id="releaseDateLabel" style="font-weight: bold;" for="releaseDate" value="#{bundle.releaseDate}:" />
+                                        <p:calendar    disabled="#{!insertProadmission.release}" locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100" 
+                                                       pattern="dd/MM/yyyy" value="#{insertProadmission.proadmission.releasedate}" id="releaseDate" required="true" requiredMessage="#{bundle.releaseDate}: #{bundle.mandatoryField}" />
+                                        <!--  </p:panel> -->
 
 
                                     </p:panelGrid>
-                                    <br/><br/>
+                                    <br/>
                                     <p:commandButton  value="#{bundle.insert}" action="#{admissionAction.insertProadmission}" update="growl insertAdmissionForm insertAdmissionForm:msg" style="margin-left: 15px; width: auto !important;">
                                         <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationInsertAdmission};" icon="pi pi-exclamation-triangle" /> 
                                     </p:commandButton>
                                     <p:spacer width="5" />
                                     <p:linkButton outcome="dashboardAdmission" value="#{bundle.exit}" style="margin-left: 10px; width: auto !important;" />
-
+                                    <br/>
                                 </div>
 
                             </p:tab>                             
@@ -190,6 +193,62 @@
 
                 </div>
             </div>
-        </div>                                        
+        </div>  
+
+        <p:dialog header="#{bundle.newPatient}" widgetVar="patientDialogWidget" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <h:form id="insertPatientForm" class="ui-g-12 ui-lg-12"> 
+                <div id="patientDialogDiv" class="ui-widget" style="border-radius:7px; margin-top: 0.8% ; box-shadow: 4px 4px 4px #5C5C5C; ">	
+                    <p:outputPanel id="patientData" style="text-align:center;">
+                        <p:panelGrid  columns="4" columnClasses="title, data, title, data" >
+                            <h:outputText value="#{bundle.surname}:" />
+                            <p:inputText id="patientLastName" size="60" value="#{insertProadmission.newPatient.surname}" required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}">                                       
+                                <f:validateLength minimum="2" maximum="100" />
+                            </p:inputText>
+
+                            <h:outputText value="#{bundle.name}:" />
+                            <p:inputText id="patientFirstName" size="60" value="#{insertProadmission.newPatient.name}" required="true" requiredMessage="#{bundle.name}: #{bundle.mandatoryField}">                                       
+                                <f:validateLength minimum="2" maximum="80" />
+                            </p:inputText>
+
+                            <h:outputText value="#{bundle.fatherName}:" />
+                            <p:inputText id="patientLastFatherName" size="60" value="#{insertProadmission.newPatient.fathername}" required="true" requiredMessage="#{bundle.fatherName}: #{bundle.mandatoryField}">                                       
+                                <f:validateLength minimum="2" maximum="80" />
+                            </p:inputText>
+
+                            <h:outputText value="#{bundle.amka}:" />
+                            <p:inputText id="patientLastAmka" size="60" value="#{insertProadmission.newPatient.amka}" required="true" requiredMessage="#{bundle.amka}: #{bundle.mandatoryField}">                                       
+                                <f:validateLength minimum="2" maximum="20" />
+                            </p:inputText>
+
+                            <h:outputText value="#{bundle.birthDate}" />
+                            <p:calendar  locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-120:c+10" 
+                                         pattern="dd/MM/yyyy" value="#{insertProadmission.newPatient.birthdate}" id="patientBirthDate" required="true" requiredMessage="#{bundle.birthDate}: #{bundle.mandatoryField}"/>
+
+                            <h:outputText value="#{bundle.phone}" />
+                            <p:inputText id="patientPhone" size="60" value="#{insertProadmission.newPatient.phone1}" required="true" requiredMessage="#{bundle.phonee}: #{bundle.mandatoryField}">                                       
+                                <f:validateLength minimum="2" maximum="20" />
+                            </p:inputText>
+
+                            <h:outputText value="#{bundle.address}" />
+                            <p:inputText id="patientLPhone" size="60" value="#{insertProadmission.newPatient.phone1}" required="false" >                                       
+                                <f:validateLength minimum="2" maximum="80" />
+                            </p:inputText>
+
+                        </p:panelGrid>
+
+                        <br/><br/>
+                        <p:commandButton  value="#{bundle.insertPatient}" action="#{admissionAction.insertPatient}" update="growl insertAdmissionForm:msg @(.basicstyleclass)" 
+                                          style="margin-left: 15px; width: auto !important;" onclick="PF('patientDialogWidget').hide()" >
+                            <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationInsertPatient};" icon="pi pi-exclamation-triangle"  /> 
+                        </p:commandButton>
+                        <p:spacer width="5" />
+                        <p:commandButton type="button" immediate="true" value="#{bundle.cancel}" onclick="PF('patientDialogWidget').hide()" />
+                        <p:spacer width="5" height="10" />
+
+                    </p:outputPanel>
+                </div>
+            </h:form>
+        </p:dialog>
+
     </ui:define>
 </ui:composition> 

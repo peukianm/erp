@@ -1,0 +1,194 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml" 
+                xmlns:o="http://omnifaces.org/ui" xmlns:of="http://omnifaces.org/functions" xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <f:metadata>
+        <f:viewParam name="admissionID" value="#{updateProadmission.admissionID}" />
+        <f:viewAction action="#{updateProadmission.init()}" />
+    </f:metadata>
+    <ui:define name="head">
+        <h:outputScript name="chartjs/chart.js" library="demo" />
+        <style type="text/css">
+            .layout-dashboard .user-card .user-card-content .user-card-name {
+                font-size: 20px;
+                color: #ffffff;
+                position: relative;
+                top: -92px;
+                margin-left: 10px;
+                font-weight: 700;
+                white-space: nowrap; }
+            body .ui-panel .ui-panel-titlebar {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-panel .ui-panel-content {
+                padding: 0.1em 0.1em;
+            }
+            body .ui-button.ui-button-icon-only .ui-button-text {
+                padding: 0.0em;
+            }
+            .myclass table {
+                table-layout: auto !important;
+            }
+
+            .myclass th, .myclass td, .myclass thead th, .myclass tbody td, .myclass tfoot td, .myclass tfoot th {
+                width: auto !important;
+            }
+            .layout-dashboard .user-card .user-card-content img {
+                width: 20px;
+                height: 20px;
+                text-align: right;
+                margin: 0px 0 0 2px !important;
+            }
+            .layout-wrapper .layout-menu-container .layout-menu-logo a img {
+                margin-top: 0px;
+                height: 60px;
+                width: 245px;
+            }
+
+            .btn-list {
+                float: right; 
+                width: 23px  !important;  
+                height: 23px  !important; 
+                margin: 0px 4px 0 0  !important;
+            }
+            .title{
+                font-weight: bold;
+                text-align: right;
+            }
+            .data{             
+                text-align: left;
+            }
+            .ui-panelgrid .ui-panelgrid-cell{
+                padding: 3px 1px !important;
+            }
+            .ui-fluid .ui-button {                
+                border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;
+                font-size: 13px !important;
+                font-weight: 700;
+            }
+            .ui-fluid .ui-inputtext {
+                width: auto !important;
+            }
+            .ui-fluid .ui-selectonemenu {
+                width: auto !important;
+            }
+            .ui-md-2,  .ui-md-1{
+                text-align: right;
+                font-weight: bold;                
+            }
+
+
+        </style>
+        <script type="text/javascript">
+
+        </script>
+    </ui:define>
+
+    <ui:define name="viewname" >
+        <li>
+            <p:link outcome="/dashboardAdmission">#{bundle.admissionPage}/</p:link>
+            <p:link outcome="/updateProadmission.jsf">#{bundle.updateAdmission}</p:link> 
+        </li>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:growl id="growl" showDetail="false" sticky="false" life="4000"  />  
+        <div class="layout-dashboard">
+            <div class="p-grid">
+                <ui:include src="/common/status.xhtml" />
+            </div>
+            <div class="ui-fluid">
+                <div class="ui-g">
+
+                    <h:form id="updateAdmissionForm" class="ui-g-12 ui-lg-12"> 
+                        <p:messages id="msg" showDetail="false" closable="true" >
+                            <p:autoUpdate />
+                        </p:messages>
+                        <p:tabView>
+                            <p:tab title="#{bundle.updateAdmission}">
+                                <div class="card card-w-title" style="border-radius:3px; box-shadow: 4px 4px 4px #5C5C5C;">
+                                    <h1>#{bundle.admissionData}</h1>
+
+                                    <p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-3,ui-g-12 ui-md-8" layout="grid" 
+                                                 style="border:0px none; background-color:transparent;width: 65%" >
+
+                                        <p:outputLabel value="#{bundle.clinic}:" for="department"  style="font-weight: bold;text-align: right;" />                                   
+                                        <p:selectOneMenu value="#{updateProadmission.proadmission.department}" id="department" converter="omnifaces.SelectItemsConverter" 
+                                                         required="true" requiredMessage="#{bundle.clinic}: #{bundle.mandatoryField}"  >                                                                                                                            
+                                            <f:selectItems value="#{updateProadmission.departments}" var="department" itemLabel="#{department.name}" itemValue="#{department}"   />                                    
+                                        </p:selectOneMenu >
+
+                                        <p:outputLabel style="font-weight: bold;" for="patientComplete" value="#{bundle.selectPatientAmka}:" />
+                                        <p:autoComplete widgetVar="acPatient" minQueryLength="2" queryDelay="300" scrollHeight="300" id="patientComplete" value="#{updateProadmission.searchPatient}" completeMethod="#{updateProadmission.completePatientAMKA}" size="60" required="false"  
+                                                        var="patient" itemLabel="#{patient.surname} #{patient.name}  #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
+                                            <o:converter converterId="omnifaces.ListConverter"  list="#{updateProadmission.availablePatient}" />
+                                            <p:ajax event="itemSelect" listener="#{updateProadmission.autocompleteSelectPatient}" update="patientComplete @(.basicstyleclass)"  />  
+                                        </p:autoComplete>
+
+                                        <p:outputLabel style="font-weight: bold;" for="patientCompleteSurname" value="#{bundle.selectPatientSurname}:" />
+                                        <p:autoComplete widgetVar="acPatientSurname" minQueryLength="2" queryDelay="300" scrollHeight="300" id="patientCompleteSurname" value="#{updateProadmission.searchPatient}" completeMethod="#{updateProadmission.completePatientSurname}" size="60" required="false"  
+                                                        var="patient" itemLabel="#{patient.surname} #{patient.name}  #{patient.amka}" itemValue="#{patient}" converter="omnifaces.SelectItemsConverter" forceSelection="true" >  
+                                            <o:converter converterId="omnifaces.ListConverter"  list="#{updateProadmission.availablePatient}" />
+                                            <p:ajax event="itemSelect" listener="#{updateProadmission.autocompleteSelectPatient}" update="patientCompleteSurname @(.basicstyleclass)"  />  
+                                        </p:autoComplete>
+
+
+                                        <br/>
+
+                                        <p:panel id="basicId"  styleClass="basicstyleclass" visible="#{updateProadmission.proadmission.patient != null}" header="#{bundle.patientSelected}" style="padding: 0em 0em;font-weight: 400;font-size: 11px;">
+                                            <p:inputText value="#{updateProadmission.patientInserted}" id="patientHidden" type="hidden" required="true" requiredMessage="#{bundle.patient}: #{bundle.mandatoryField}" />
+                                            #{updateProadmission.proadmission.patient.surname} #{updateProadmission.proadmission.patient.name} - #{updateProadmission.proadmission.patient.amka} 
+                                            <p:commandButton  process="@this" update="@(.basicstyleclass)" action="#{updateProadmission.removeSelectedPatient}"  id="removePatient" icon="fa fa-fw fa-remove" title="Remove Patient" />                                                   
+                                        </p:panel>
+
+
+                                        <p:outputLabel value="ICD10:" for="icd10" style="font-weight: bold;text-align: right;" />
+                                        <p:inputText id="icd10" size="60" value="#{updateProadmission.proadmission.icd10}" required="true" requiredMessage="icd10: #{bundle.mandatoryField}">                                       
+                                            <f:validateLength minimum="2" maximum="80" />
+                                        </p:inputText>
+
+                                        <p:outputLabel value="#{bundle.diagnosis}:" for="diagnosis" style="font-weight: bold;text-align: right;" />                                   
+                                        <p:inputTextarea id="diagnosis" rows="4"    value="#{updateProadmission.proadmission.diagnosis}" required="true" requiredMessage="#{bundle.diagnosis}: #{bundle.mandatoryField}" >
+                                            <f:validateLength minimum="2" maximum="150" /> 
+                                        </p:inputTextarea>
+
+
+
+
+                                        <p:outputLabel style="font-weight: bold;" for="admissionDate" value="#{bundle.admissionDate}:" />
+                                        <p:calendar  locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100" 
+                                                     pattern="dd/MM/yyyy" value="#{updateProadmission.proadmission.admissiondate}" id="admissionDate" required="true" requiredMessage="#{bundle.admissionDate}: #{bundle.mandatoryField}"/>
+
+
+                                        <p:outputLabel value="#{bundle.release}:" for="release" style="font-weight: bold;text-align: right;"/>
+                                        <p:selectBooleanButton id="release" value="#{updateProadmission.release}" onLabel="#{bundle.yes}" offLabel="#{bundle.no}" 
+                                                               onIcon="pi pi-check" offIcon="pi pi-times" style="width:60px">
+                                            <p:ajax update="releaseDate releaseDateLabel" listener="#{updateProadmission.checkRelease}" />
+                                        </p:selectBooleanButton>
+
+
+
+                                        <p:outputLabel   id="releaseDateLabel" style="font-weight: bold;" for="releaseDate" value="#{bundle.releaseDate}:" />
+                                        <p:calendar    disabled="#{!updateProadmission.release}" locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-100:c+100" 
+                                                       pattern="dd/MM/yyyy" value="#{updateProadmission.proadmission.releasedate}" id="releaseDate" required="true" requiredMessage="#{bundle.releaseDate}: #{bundle.mandatoryField}" />
+
+                                    </p:panelGrid>
+                                    <br/><br/>
+                                    <p:commandButton  value="#{bundle.update}" action="#{admissionAction.updateAdmission()}" update="growl updateAdmissionForm updateAdmissionForm:msg" style="margin-left: 15px; width: auto !important;">
+                                        <p:confirm header="#{bundle.confirmation}" message="#{bundle.confirmationUpdateAdmission};" icon="pi pi-exclamation-triangle" /> 
+                                    </p:commandButton>
+                                    <p:spacer width="5" />
+                                    <p:linkButton outcome="dashboardAdmission" value="#{bundle.exit}" style="margin-left: 10px; width: auto !important;" />
+
+                                </div>
+
+                            </p:tab>                             
+                        </p:tabView>
+
+                    </h:form>
+
+                </div>
+            </div>
+        </div>                                        
+    </ui:define>
+</ui:composition> 

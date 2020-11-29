@@ -220,14 +220,14 @@
                                             <p:commandLink id="pdf" ajax="false">
                                                 <p:graphicImage name="images/pdf.png" library="babylon-layout" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
-                                                <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle="Λίστα Χρηστών" orientation="Landscape"
+                                                <pe:exporter type="pdf" target="tbl" fileName="exportData" tableTitle="Λίστα Εισιτηρίων" orientation="Landscape"
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff"
                                                              cellFontSize="9" cellFontStyle="NORMAL"  fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
                                             <p:commandLink id="xlsx" ajax="false">
                                                 <p:graphicImage name="images/xlsx.png"  library="babylon-layout" />
                                                 <f:setPropertyActionListener value="false" target="#{exporterController.customExporter}" />
-                                                <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" Λίστα Χρηστών"
+                                                <pe:exporter type="xlsx" target="tbl" fileName="exportData" tableTitle=" Λίστα Εισιτηρίων" 
                                                              facetBackground="#F88017" facetFontSize="10" facetFontColor="#0000ff" facetFontStyle="BOLD" 
                                                              cellFontSize="9" cellFontStyle="NORMAL" fontName="verdana.ttf" encoding="Identity-H" />
                                             </p:commandLink>
@@ -241,6 +241,13 @@
                                         </f:facet>
                                         <h:outputText value="#{admission.patient.surname} #{admission.patient.name}" />
                                     </p:column>
+                                    
+                                     <p:column  visible="false" >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.amka}" />
+                                        </f:facet>
+                                        <h:outputText value="#{admission.patient.amka}"  />
+                                    </p:column>
 
                                     <p:column sortBy="#{admission.admissiondate}">
                                         <f:facet name="header" >
@@ -250,24 +257,37 @@
                                             <f:convertDateTime pattern="dd/MM/yyyy" />
                                         </h:outputText>
                                     </p:column>
+                                                                       
 
-                                    <p:column sortBy="#{admission.department.name}">
+                                    <p:column  sortBy="#{admission.department.name}">
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.clinic}" />
                                         </f:facet>
                                         <h:outputText value="#{admission.department.name}"  />
                                     </p:column>
-
-                                    <p:column style="text-align: center;" exportable="false">
+                                    
+                                     <p:column  visible="false" >
+                                        <f:facet name="header">
+                                            <h:outputText value="ICD10" />
+                                        </f:facet>
+                                         <h:outputText value="#{admission.icd10}"  />
+                                    </p:column>
+                                    
+                                    <p:column  visible="false" >
+                                        <f:facet name="header">
+                                            <h:outputText value="#{bundle.diagnosis}" />
+                                        </f:facet>
+                                        <h:outputText value="#{admission.diagnosis}"  />
+                                    </p:column>
+                                    
+                                    <p:column style="text-align: center;">
                                         <f:facet name="header">
                                             <h:outputText value="#{bundle.release}" />
                                         </f:facet>
                                         <h:outputText rendered="#{admission.released==0}" value="OXI" style="color: red; font-weight: bold;" />
                                         <h:outputText rendered="#{admission.released==1}" value="#{admission.releasedate}" style="color: green; font-weight: bold;" >
                                             <f:convertDateTime pattern="dd/MM/yyyy" />
-                                        </h:outputText>
-                                       <!-- <h:graphicImage rendered="#{user.active==1}" url="/resources/babylon-layout/images/success.jpg" width="12px" height="12px" />
-                                        <h:graphicImage rendered="#{user.active!=1}" url="/resources/babylon-layout/images/close.gif" width="12px" height="12px" /> -->  
+                                        </h:outputText>                                       
                                     </p:column>
 
                                     <p:column headerText="#{bundle.actions}" exportable="false" >

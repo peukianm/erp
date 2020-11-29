@@ -11,9 +11,11 @@ import erp.entities.Patient;
 import erp.entities.Proadmission;
 import erp.exception.ERPCustomException;
 import erp.util.AccessControl;
+import erp.util.FacesUtils;
 import erp.util.MessageBundleLoader;
 import erp.util.SystemParameters;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -29,11 +31,11 @@ import org.primefaces.event.SelectEvent;
  *
  * @author peukianm
  */
-@Named("insertProadmission")
+@Named("updateProadmission")
 @ViewScoped
-public class InsertProadmission implements Serializable {
+public class UpdateProadmission implements Serializable {
 
-    private static final Logger logger = LogManager.getLogger(InsertProadmission.class);
+    private static final Logger logger = LogManager.getLogger(UpdateProadmission.class);
 
     @Inject
     private SessionBean sessionBean;
@@ -49,45 +51,53 @@ public class InsertProadmission implements Serializable {
     private List<Patient> availablePatient;
     private List<Department> departments;
     private String patientInserted;
-
     private boolean release = false;
-    boolean active;
-    
-     private Patient newPatient;
+
+    String admissionID;
 
     public void preRenderView() {
+
+    }
+
+    public void init() {
         if (sessionBean.getUsers().getNosStatus() == null) {
-            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_INSERT_ADMISSION"), null, 1)) {
+            if (!AccessControl.control(sessionBean.getUsers(), SystemParameters.getInstance().getProperty("PAGE_UPDATE_ADMISSION"), null, 1)) {
                 return;
             }
         }
-        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_INSERT_ADMISSION"));
-        sessionBean.setPageName(MessageBundleLoader.getMessage("insertAdmission"));
-    }
 
-    @PostConstruct
-    public void init() {
-        proadmission = new Proadmission();
-        newPatient = new Patient();
-        proadmission.setAdmissiondate(new java.util.Date());
+        if (admissionID == null || admissionID.equals("")) {
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("noAdmissionSelected"));
+            FacesUtils.redirectWithNavigationID("dashboardAdmission");
+        }
+        proadmission = proadmissionDAO.getProadmission(Long.parseLong(admissionID));
+
+        if (proadmission == null) {
+            FacesUtils.addInfoMessage(MessageBundleLoader.getMessage("invalidAdmissionSelected"));
+            FacesUtils.redirectWithNavigationID("dashboardAdmission");
+        }
+
+        sessionBean.setPageCode(SystemParameters.getInstance().getProperty("PAGE_UPDATE_ADMISSION"));
+        sessionBean.setPageName(MessageBundleLoader.getMessage("updateAdmission"));
+
         if (sessionBean.getUsers().getNosStatus() != null && sessionBean.getUsers().getNosStatus().equals("nosAdmin")) {
             departments = applicationBean.getClinics();
         } else if (sessionBean.getUsers().getNosStatus() != null && sessionBean.getUsers().getNosStatus().equals("nos")) {
             departments = sessionBean.getUsers().getDepartments();
         }
+
+        if (proadmission.getReleased().equals(BigDecimal.ONE)) {
+            release = true;
+        } else {
+            release = false;
+        }
+        patientInserted = "1";
+
     }
 
     @PreDestroy
     public void reset() {
         patientInserted = null;
-    }
-
-    public void resetInsertAdmissionForm() {
-        newPatient =  new Patient();
-        proadmission = new Proadmission();
-        proadmission.setAdmissiondate(new java.util.Date());
-        patientInserted = null;
-        release = false;
     }
 
     public List<Patient> completePatientSurname(String surname) throws ERPCustomException {
@@ -122,14 +132,6 @@ public class InsertProadmission implements Serializable {
         }
     }
 
-    public Patient getNewPatient() {
-        return newPatient;
-    }
-
-    public void setNewPatient(Patient newPatient) {
-        this.newPatient = newPatient;
-    }
-
     public String getPatientInserted() {
         return patientInserted;
     }
@@ -155,7 +157,7 @@ public class InsertProadmission implements Serializable {
     public void checkRelease() {
         if (!release){
             proadmission.setReleasedate(null);
-        }          
+        }            
     }
 
     public void removeSelectedPatient() {
@@ -187,20 +189,21 @@ public class InsertProadmission implements Serializable {
         this.searchPatient = searchPatient;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
+   
     public List<Patient> getAvailablePatient() {
         return availablePatient;
     }
 
     public void setAvailablePatient(List<Patient> availablePatient) {
         this.availablePatient = availablePatient;
+    }
+
+    public String getAdmissionID() {
+        return admissionID;
+    }
+
+    public void setAdmissionID(String admissionID) {
+        this.admissionID = admissionID;
     }
 
 }

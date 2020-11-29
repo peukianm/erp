@@ -42,6 +42,17 @@ public class ProadmissionDAO {
 
     }
 
+     public void save(Patient patient) {
+        try {
+            entityManager.persist(patient);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on saving patient entity", re);
+            throw re;
+        }
+
+    }
+     
     public void saveGeneric(Object entity) {
         try {
             entityManager.persist(entity);
@@ -78,6 +89,16 @@ public class ProadmissionDAO {
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on updating proadmission", re);
+            throw re;
+        }
+    }
+    
+    public void update(Patient patient) {
+        try {
+            entityManager.merge(patient);
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on updating patient", re);
             throw re;
         }
     }
@@ -121,6 +142,19 @@ public class ProadmissionDAO {
         } catch (RuntimeException re) {
             re.printStackTrace();
             logger.error("Error on deleting proadmission entity", re);
+            throw re;
+        }
+    }
+    
+    public void delete(Patient patient) {
+        try {
+            if (!entityManager.contains(patient)) {
+                patient = entityManager.merge(patient);
+            }
+            entityManager.remove(patient);            
+        } catch (RuntimeException re) {
+            re.printStackTrace();
+            logger.error("Error on deleting patient entity", re);
             throw re;
         }
     }
@@ -214,8 +248,7 @@ public class ProadmissionDAO {
 
     public List<Patient> fetchPatientAutoCompleteSurname(String surname, boolean active) {
         try {
-            surname = surname.trim();
-            System.out.println("surname=" + surname);
+            surname = surname.trim();           
             String queryString = "Select patient from Patient patient  "
                     + " where (LOWER(patient.surname) like '" + ((String) surname).toLowerCase() + "%'"
                     + " OR UPPER(patient.surname)  like '" + ((String) surname).toUpperCase() + "%') "

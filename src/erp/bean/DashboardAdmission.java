@@ -61,6 +61,8 @@ public class DashboardAdmission implements Serializable {
     private Date toReleaseDate;
     private Proadmission viewAdmission;
     private Proadmission admissionForUpdate;
+    
+   
 
     public void preRenderView() {            
         if (sessionBean.getUsers().getNosStatus() == null) {
