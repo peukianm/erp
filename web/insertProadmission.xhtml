@@ -200,36 +200,36 @@
                 <div id="patientDialogDiv" class="ui-widget" style="border-radius:7px; margin-top: 0.8% ; box-shadow: 4px 4px 4px #5C5C5C; ">	
                     <p:outputPanel id="patientData" style="text-align:center;">
                         <p:panelGrid  columns="4" columnClasses="title, data, title, data" >
-                            <h:outputText value="#{bundle.surname}:" />
+                            <h:outputText value="#{bundle.surname}:*" />
                             <p:inputText id="patientLastName" size="60" value="#{insertProadmission.newPatient.surname}" required="true" requiredMessage="#{bundle.surname}: #{bundle.mandatoryField}">                                       
                                 <f:validateLength minimum="2" maximum="100" />
                             </p:inputText>
 
-                            <h:outputText value="#{bundle.name}:" />
+                            <h:outputText value="#{bundle.name}:*" />
                             <p:inputText id="patientFirstName" size="60" value="#{insertProadmission.newPatient.name}" required="true" requiredMessage="#{bundle.name}: #{bundle.mandatoryField}">                                       
                                 <f:validateLength minimum="2" maximum="80" />
                             </p:inputText>
 
-                            <h:outputText value="#{bundle.fatherName}:" />
+                            <h:outputText value="#{bundle.fatherName}:*" />
                             <p:inputText id="patientLastFatherName" size="60" value="#{insertProadmission.newPatient.fathername}" required="true" requiredMessage="#{bundle.fatherName}: #{bundle.mandatoryField}">                                       
                                 <f:validateLength minimum="2" maximum="80" />
                             </p:inputText>
 
-                            <h:outputText value="#{bundle.amka}:" />
+                            <h:outputText value="#{bundle.amka}:*" />
                             <p:inputText id="patientLastAmka" size="60" value="#{insertProadmission.newPatient.amka}" required="true" requiredMessage="#{bundle.amka}: #{bundle.mandatoryField}">                                       
                                 <f:validateLength minimum="2" maximum="20" />
                             </p:inputText>
 
-                            <h:outputText value="#{bundle.birthDate}" />
+                            <h:outputText value="#{bundle.birthDate}:*" />
                             <p:calendar  locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-120:c+10" 
                                          pattern="dd/MM/yyyy" value="#{insertProadmission.newPatient.birthdate}" id="patientBirthDate" required="true" requiredMessage="#{bundle.birthDate}: #{bundle.mandatoryField}"/>
 
-                            <h:outputText value="#{bundle.phone}" />
+                            <h:outputText value="#{bundle.phone}:" />
                             <p:inputText id="patientPhone" size="60" value="#{insertProadmission.newPatient.phone1}" required="true" requiredMessage="#{bundle.phonee}: #{bundle.mandatoryField}">                                       
                                 <f:validateLength minimum="2" maximum="20" />
                             </p:inputText>
 
-                            <h:outputText value="#{bundle.address}" />
+                            <h:outputText value="#{bundle.address}:" />
                             <p:inputText id="patientLPhone" size="60" value="#{insertProadmission.newPatient.phone1}" required="false" >                                       
                                 <f:validateLength minimum="2" maximum="80" />
                             </p:inputText>
