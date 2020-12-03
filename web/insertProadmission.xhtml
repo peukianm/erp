@@ -224,8 +224,8 @@
                             <p:calendar  locale="el" size="12"  readonlyInput="true"  navigator="true" showOn="button" yearRange="c-120:c+10" 
                                          pattern="dd/MM/yyyy" value="#{insertProadmission.newPatient.birthdate}" id="patientBirthDate" required="true" requiredMessage="#{bundle.birthDate}: #{bundle.mandatoryField}"/>
 
-                            <h:outputText value="#{bundle.phone}:" />
-                            <p:inputText id="patientPhone" size="60" value="#{insertProadmission.newPatient.phone1}" required="true" requiredMessage="#{bundle.phonee}: #{bundle.mandatoryField}">                                       
+                            <h:outputText value="#{bundle.phone}:*" />
+                            <p:inputText id="patientPhone" size="60" value="#{insertProadmission.newPatient.phone1}" required="true" requiredMessage="#{bundle.phone}: #{bundle.mandatoryField}">                                       
                                 <f:validateLength minimum="2" maximum="20" />
                             </p:inputText>
 
